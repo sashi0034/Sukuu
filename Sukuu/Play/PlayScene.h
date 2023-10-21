@@ -10,7 +10,7 @@ namespace Play
 		void Update() override;
 
 	private:
-		struct Impl;
+		class Impl;
 		std::shared_ptr<Impl> p_impl;
 	};
 }
