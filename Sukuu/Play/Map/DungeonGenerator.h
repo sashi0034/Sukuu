@@ -12,7 +12,7 @@ namespace Play
 		uint32 minAreaWidthHeight = 12;
 		uint32 minRoomSize = 20;
 		uint32 minRoomWidthHeight = 6;
-		uint32 areaRoomPadding = 2;
+		uint32 areaRoomPadding = 4;
 	};
 
 	MapGrid GenerateFreshDungeon(const DungGenProps& props);

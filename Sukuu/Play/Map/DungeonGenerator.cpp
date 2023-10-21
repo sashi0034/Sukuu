@@ -66,7 +66,7 @@ public:
 			const bool isVertical = Random(0, 1);
 			if (isVertical)
 			{
-				const int sepY = Random(area.topY(), area.bottomY() - 1);
+				const int sepY = Random(area.topY(), area.bottomY() - 1) / 2 * 2; // 偶数正規化
 				const int sepH1 = sepY - area.y;
 				const int sepH2 = area.h - sepH1;
 				if (sepH1 <= props.minAreaWidthHeight || sepH2 <= props.minAreaWidthHeight) continue;
@@ -77,7 +77,7 @@ public:
 			}
 			else
 			{
-				const int sepX = Random(area.leftX(), area.rightX() - 1);
+				const int sepX = Random(area.leftX(), area.rightX() - 1) / 2 * 2; // 偶数正規化
 				const int sepW1 = sepX - area.x;
 				const int sepW2 = area.w - sepW1;
 				if (sepW1 <= props.minAreaWidthHeight || sepW2 <= props.minAreaWidthHeight) continue;
@@ -103,12 +103,12 @@ public:
 			for (auto in : step(props.maxProgramLoopCount))
 			{
 				const uint8 padding = props.areaRoomPadding;
-				const int x = Random(area.leftX() + padding, area.rightX() - 1 - padding);
-				const int w = Random(x, area.rightX() - 1 - padding) - x;
+				const int x = Random(area.leftX() + padding, area.rightX() - 1 - padding) / 2 * 2; // 偶数正規化
+				const int w = (Random(x, area.rightX() - 1 - padding) - x) / 2 * 2 + 1; // 奇数正規化
 				if (w <= props.minRoomWidthHeight) continue;
 
-				const int y = Random(area.topY() + padding, area.bottomY() - 1 - padding);
-				const int h = Random(y, area.bottomY() - 1 - padding) - y;
+				const int y = Random(area.topY() + padding, area.bottomY() - 1 - padding) / 2 * 2; // 偶数正規化
+				const int h = (Random(y, area.bottomY() - 1 - padding) - y) / 2 * 2 + 1; // 奇数正規化
 				if (h <= props.minRoomWidthHeight) continue;
 
 				if (w * h <= props.minRoomSize) continue;
@@ -148,8 +148,8 @@ public:
 		int y2;
 		while (true)
 		{
-			y1 = Random(range1.first, range1.second);
-			y2 = Random(range2.first, range2.second);
+			y1 = Random(range1.first, range1.second + 1) / 2 * 2; // 偶数正規化
+			y2 = Random(range2.first, range2.second + 1) / 2 * 2; // 偶数正規化
 			// パスが連続しないようにする
 			if (leftExists.any([&](const RoomPathway& p) { return std::abs(p.y - y1) == 1; })) continue;
 			if (rightExists.any([&](const RoomPathway& p) { return std::abs(p.y - y2) == 1; })) continue;
@@ -186,8 +186,8 @@ public:
 		int x2;
 		while (true)
 		{
-			x1 = Random(range1.first, range1.second);
-			x2 = Random(range2.first, range2.second);
+			x1 = Random(range1.first, range1.second + 1) / 2 * 2; // 偶数正規化
+			x2 = Random(range2.first, range2.second + 1) / 2 * 2; // 偶数正規化
 			// パスが連続しないようにする
 			if (topExists.any([&](const RoomPathway& p) { return std::abs(p.x - x1) == 1; })) continue;
 			if (bottomExists.any([&](const RoomPathway& p) { return std::abs(p.x - x2) == 1; })) continue;

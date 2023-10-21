@@ -110,6 +110,13 @@ namespace Play
 	void PlayScene::Update()
 	{
 		ActorBase::Update();
+		if (MouseL.down())
+		{
+			p_impl->m_map = GenerateFreshDungeon(DungGenProps{
+				.size = {80, 80},
+				.areaDivision = 8,
+			});
+		}
 		p_impl->Update();
 	}
 }
