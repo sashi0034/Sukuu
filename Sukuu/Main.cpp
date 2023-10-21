@@ -1,5 +1,6 @@
 ﻿#include "stdafx.h"
 
+#include "Play/PlayScene.h"
 #include "Util/ActorContainer.h"
 #include "Util/TomlParametersWrapper.h"
 
@@ -15,12 +16,15 @@ void Main()
 	Window::Resize(1280, 720);
 
 	TomlParametersWrapper tomlParametersWrapper{};
-	ActorContainer actors{};
+	ActorContainer actorRoot{};
+	actorRoot.Birth(Play::PlayScene());
+
+	AssetImages::RegisterAll();
 
 	while (System::Update())
 	{
 		tomlParametersWrapper.Update();
-		actors.Update();
+		actorRoot.Update();
 	}
 }
 

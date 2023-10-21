@@ -120,6 +120,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Play\PlayScene.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -326,6 +327,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Params.h" />
+    <ClInclude Include="Play\Forward.h" />
+    <ClInclude Include="Play\PlayScene.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Util\ActorBase.h" />
     <ClInclude Include="Util\ActorContainer.h" />
@@ -419,9 +422,11 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Play\" />
-  </ItemGroup>
-  <ItemGroup>
+    <Content Include="App\asset\generate_constexpr.py" />
+    <Content Include="App\asset\image\brick_stylish_24x24.png" />
+    <Content Include="App\asset\image\magma_tile_24x24.png" />
+    <Content Include="App\asset\image\phine_32x32.png" />
+    <Content Include="App\asset\image\punicat_24x24.png" />
     <Content Include="App\asset\parameters.toml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
