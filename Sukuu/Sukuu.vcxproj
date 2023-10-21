@@ -124,6 +124,12 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Util\ActorBase.cpp" />
+    <ClCompile Include="Util\ActorContainer.cpp" />
+    <ClCompile Include="Util\CoordinateVisualizer.cpp" />
+    <ClCompile Include="Util\CoroActor.cpp" />
+    <ClCompile Include="Util\CoroUtil.cpp" />
+    <ClCompile Include="Util\TomlParametersWrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="App\engine\texture\box-shadow\128.png" />
@@ -319,7 +325,16 @@
     <Xml Include="App\example\xml\test.xml" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Params.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Util\ActorBase.h" />
+    <ClInclude Include="Util\ActorContainer.h" />
+    <ClInclude Include="Util\CoordinateVisualizer.h" />
+    <ClInclude Include="Util\CoroActor.h" />
+    <ClInclude Include="Util\CoroTask.h" />
+    <ClInclude Include="Util\CoroUtil.h" />
+    <ClInclude Include="Util\EasingAnimation.h" />
+    <ClInclude Include="Util\TomlParametersWrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App\example\obj\blacksmith.obj">
@@ -402,6 +417,12 @@
     <None Include="App\example\shader\hlsl\terrain_normal.hlsl">
       <FileType>Document</FileType>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Play\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App\asset\parameters.toml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
