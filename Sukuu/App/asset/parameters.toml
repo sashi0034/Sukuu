@@ -6,5 +6,5 @@ move_duration = 0.3
 anim_interval = 250
 
 [play.en_slime_cat]
-move_duration = 0.35
+move_duration = 0.2
 anim_interval = 250

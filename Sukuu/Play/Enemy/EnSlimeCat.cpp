@@ -23,11 +23,11 @@ struct Play::EnSlimeCat::Impl
 		getTexture().draw(m_pos.viewPos.movedBy(GetCharacterCellPadding(catRect.size)));
 	}
 
-	void ProcessAsync(YieldExtended& yield, ActorBase& self)
+	void FlowchartAsync(YieldExtended& yield, ActorBase& self)
 	{
 		while (true)
 		{
-			processLoop(yield, self);
+			flowchartLoop(yield, self);
 		}
 	}
 
@@ -52,7 +52,7 @@ private:
 		}
 	}
 
-	void processLoop(YieldExtended& yield, ActorBase& self)
+	void flowchartLoop(YieldExtended& yield, ActorBase& self)
 	{
 		yield();
 
@@ -80,7 +80,7 @@ namespace Play
 
 		StartCoro(*this, [*this](YieldExtended yield) mutable
 		{
-			p_impl->ProcessAsync(yield, *this);
+			p_impl->FlowchartAsync(yield, *this);
 		});
 	}
 

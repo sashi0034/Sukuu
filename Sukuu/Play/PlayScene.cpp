@@ -6,6 +6,7 @@
 #include "Map/BgMapDrawer.h"
 #include "Map/DungeonGenerator.h"
 #include "Map/MapGrid.h"
+#include "Map/MazeGenerator.h"
 #include "Util/ActorContainer.h"
 
 namespace Play
@@ -60,9 +61,12 @@ namespace Play
 		s_instance = this;
 
 		p_impl->m_map = GenerateFreshDungeon(DungGenProps{
-			.size = {80, 80},
+			.size = {81, 81},
 			.areaDivision = 8,
 		});
+		// p_impl->m_map = GenerateFreshMaze(MazeGenProps{
+		// 	.size = {81, 81},
+		// });
 
 		p_impl->m_player = AsParent().Birth(Player());
 
@@ -86,7 +90,7 @@ namespace Play
 		// if (MouseL.down())
 		// {
 		// 	p_impl->m_map = GenerateFreshDungeon(DungGenProps{
-		// 		.size = {80, 80},
+		// 		.size = {81, 81},
 		// 		.areaDivision = 8,
 		// 	});
 		// }

@@ -11,6 +11,7 @@ namespace Play
 		{
 			Grid<bool> dugFlag;
 			Grid<bool> roomEntryFlag;
+			Array<Rect> createdRooms;
 		};
 	}
 
@@ -47,10 +48,12 @@ public:
 					break;
 			}
 
+			// 部屋作成
 			for (auto p : step({x, y}, {props.roomSize, props.roomSize}))
 			{
 				digAt(state, p);
 			}
+			state.createdRooms.push_back({{x, y}, {props.roomSize, props.roomSize}});
 
 			if (Random(0, 1) == 0)
 			{
@@ -174,6 +177,7 @@ namespace Play
 		MazeGenState state{
 			.dugFlag = Grid<bool>{props.size},
 			.roomEntryFlag = Grid<bool>{props.size},
+			.createdRooms = {}
 		};
 		internal.createRooms(state);
 		internal.digPassageCompletely(state);
@@ -181,8 +185,10 @@ namespace Play
 		MapGrid grid{props.size};
 		for (auto p : step({0, 0}, props.size))
 		{
-			if (state.dugFlag[p]) grid.At(p).kind = TerrainKind::Floor;
+			if (state.roomEntryFlag[p]) grid.At(p).kind = TerrainKind::Floor;
+			else if (state.dugFlag[p]) grid.At(p).kind = TerrainKind::Pathway;
 		}
+		grid.Rooms().swap(state.createdRooms);
 		return grid;
 	}
 }

@@ -38,11 +38,11 @@ struct Play::Player::Impl
 			.draw(m_pos.viewPos.movedBy(GetCharacterCellPadding(playerRect.size)));
 	}
 
-	void ProcessAsync(YieldExtended& yield, ActorBase& self)
+	void FlowchartAsync(YieldExtended& yield, ActorBase& self)
 	{
 		while (true)
 		{
-			processLoop(yield, self);
+			flowchartLoop(yield, self);
 		}
 	}
 
@@ -58,7 +58,7 @@ private:
 			/ (m_moveSpeed * (m_act == PlayerAct::Running ? 2.0 : 1.0));
 	}
 
-	void processLoop(YieldExtended& yield, ActorBase& self)
+	void flowchartLoop(YieldExtended& yield, ActorBase& self)
 	{
 		// キー入力待ち
 		auto moveDir = Dir4::Invalid;
@@ -108,7 +108,7 @@ namespace Play
 
 		StartCoro(*this, [*this](YieldExtended yield) mutable
 		{
-			p_impl->ProcessAsync(yield, *this);
+			p_impl->FlowchartAsync(yield, *this);
 		});
 	}
 
