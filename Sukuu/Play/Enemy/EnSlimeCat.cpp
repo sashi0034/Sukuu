@@ -1,6 +1,8 @@
 ﻿#include "stdafx.h"
 #include "EnSlimeCat.h"
 
+#include <iso646.h>
+
 #include "Play/PlayScene.h"
 #include "Play/Chara/CharaUtil.h"
 #include "Util/TomlParametersWrapper.h"
@@ -55,15 +57,72 @@ private:
 	void flowchartLoop(YieldExtended& yield, ActorBase& self)
 	{
 		yield();
-
-		while (CanMoveTo(PlayScene::Instance().GetMap(), m_pos.actualPos, m_direction))
+		const bool preRandomBool = Random(0, 1);
+		int proceededCount = 0;
+		while (true)
 		{
+			auto&& map = PlayScene::Instance().GetMap();
+			const TerrainKind currentTerrain = GetTerrainAt(map, m_pos.actualPos);
+
+			// 部屋から出れるかチェック
+			if (proceededCount > 0 &&
+				currentTerrain == TerrainKind::Floor &&
+				Random(0, GetTomlParameter<int>(U"play.en_slime_cat.floor_turn_likely")) != 0)
+			{
+				if (GetTerrainFor(map, m_pos.actualPos, m_direction.Rotated(preRandomBool)) == TerrainKind::Pathway)
+				{
+					m_direction = m_direction.Rotated(preRandomBool);
+					break;
+				}
+				if (GetTerrainFor(map, m_pos.actualPos, m_direction.Rotated(not preRandomBool)) == TerrainKind::Pathway)
+				{
+					m_direction = m_direction.Rotated(not preRandomBool);
+					break;
+				}
+			}
+
+			// 通路を曲がるかチェック
+			if (proceededCount > 0 &&
+				currentTerrain == TerrainKind::Pathway &&
+				Random(0, GetTomlParameter<int>(U"play.en_slime_cat.pathway_turn_unlikely")) == 0)
+			{
+				if (CanMoveTo(map, m_pos.actualPos, m_direction.Rotated(preRandomBool)))
+				{
+					m_direction = m_direction.Rotated(preRandomBool);
+					break;
+				}
+				if (CanMoveTo(map, m_pos.actualPos, m_direction.Rotated(not preRandomBool)))
+				{
+					m_direction = m_direction.Rotated(not preRandomBool);
+					break;
+				}
+			}
+
+			// 直線方向に進めるかチェック
+			if (CanMoveTo(map, m_pos.actualPos, m_direction) == false)
+			{
+				// 直進できないなら、曲がれるかチェック
+				if (CanMoveTo(map, m_pos.actualPos, m_direction.Rotated(preRandomBool)))
+				{
+					m_direction = m_direction.Rotated(preRandomBool);
+				}
+				else if (CanMoveTo(map, m_pos.actualPos, m_direction.Rotated(not preRandomBool)))
+				{
+					m_direction = m_direction.Rotated(not preRandomBool);
+				}
+				else
+				{
+					m_direction = m_direction.Reversed();
+					break;
+				}
+			}
+
+			// 直線方向に進む
 			auto nextPos = m_pos.actualPos + m_direction.ToXY() * CellPx_24;
 			ProcessMoveCharaPos(yield, self, m_pos, nextPos,
 			                    GetTomlParameter<double>(U"play.en_slime_cat.move_duration"));
+			proceededCount++;
 		}
-
-		m_direction = Dir4Type((m_direction + 1) % 4);
 	}
 };
 

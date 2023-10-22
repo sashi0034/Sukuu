@@ -21,7 +21,9 @@ namespace Play
 
 	struct CharaPosition
 	{
+		// 実座標
 		CharaVec2 actualPos;
+		// ビューの座標は、できるだけ実座標に近づけるがフレーム間隔による浮動小数点誤差で数ピクセルずれる可能性がある
 		Vec2 viewPos;
 
 		void SetPos(const Vec2& pos)
@@ -43,6 +45,8 @@ namespace Play
 		double m_timer{};
 	};
 
+	TerrainKind GetTerrainAt(const MapGrid& map, const CharaVec2& pos);
+	TerrainKind GetTerrainFor(const MapGrid& map, const CharaVec2& pos, Dir4Type dir);
 	bool CanMoveTo(const MapGrid& map, const CharaVec2& currentActualPos, Dir4Type dir);
 
 	void ProcessMoveCharaPos(

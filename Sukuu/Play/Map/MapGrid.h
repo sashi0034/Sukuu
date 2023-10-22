@@ -4,6 +4,7 @@ namespace Play
 {
 	enum class TerrainKind
 	{
+		None,
 		Wall,
 		Floor,
 		Pathway,
@@ -27,7 +28,7 @@ namespace Play
 		MapGrid() : MapGrid(Size{}) { return; };
 		MapGrid(const Size& size) { m_data.resize(size); }
 
-		bool HasData() const { return m_data.size() != Size{0, 0}; }
+		bool IsValid() const { return m_data.size() != Size{0, 0}; }
 
 		const Grid<MapCell>& Data() const { return m_data; }
 

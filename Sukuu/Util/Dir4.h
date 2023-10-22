@@ -28,6 +28,11 @@ namespace Util
 			return a[value()];
 		}
 
+		Dir4Type RotatedL() const { return Dir4Type((value() + 3) % 4); }
+		Dir4Type RotatedR() const { return Dir4Type((value() + 1) % 4); }
+		Dir4Type Rotated(bool isLeft) const { return isLeft ? RotatedL() : RotatedR(); }
+		Dir4Type Reversed() const { return Dir4Type((value() + 2) % 4); }
+
 		Index GetIndex() const { return static_cast<Index>(value()); }
 		bool IsValid() const { return 0 <= value() && value() <= 3; }
 	};

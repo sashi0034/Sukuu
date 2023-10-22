@@ -18,6 +18,20 @@ namespace Play
 		return (t % (milliInterval * numFrames)) / milliInterval;
 	}
 
+	TerrainKind GetTerrainAt(const MapGrid& map, const CharaVec2& pos)
+	{
+		const Point p = pos.MapPoint();
+		if (map.Data().inBounds(p) == false) return TerrainKind::None;
+		return map.Data()[p].kind;
+	}
+
+	TerrainKind GetTerrainFor(const MapGrid& map, const CharaVec2& pos, Dir4Type dir)
+	{
+		const Point p = pos.MapPoint() + dir.ToXY().asPoint();
+		if (map.Data().inBounds(p) == false) return TerrainKind::None;
+		return map.Data()[p].kind;
+	}
+
 	bool CanMoveTo(const MapGrid& map, const CharaVec2& currentActualPos, Dir4Type dir)
 	{
 		const Point next = currentActualPos.MapPoint() + dir.ToXY().asPoint();
