@@ -8,7 +8,7 @@ namespace Util
 	{
 		virtual ~IActor() = default;
 		virtual void Update() = 0;
-		virtual float OrderPriority() const = 0;
+		virtual double OrderPriority() const = 0;
 		virtual bool IsActive() const = 0;
 		virtual bool IsDead() const = 0;
 	};
@@ -19,7 +19,7 @@ namespace Util
 		ActorBase();
 		~ActorBase() override = default;
 		void Update() override;
-		float OrderPriority() const override;
+		double OrderPriority() const override;
 
 		void SetActive(bool isActive);
 		bool IsActive() const override;

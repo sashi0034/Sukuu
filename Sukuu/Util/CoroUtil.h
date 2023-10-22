@@ -18,7 +18,7 @@ namespace Util
 		void WaitForTrue(const std::function<bool()>& discriminant);
 		void WaitForFalse(const std::function<bool()>& discriminant);
 		void WaitForDead(const ActorBase& coro);
-		void operator()() const { yield(); }
+		void operator()() { yield(); }
 
 	private:
 		CoroTaskYield& yield;

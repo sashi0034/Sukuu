@@ -43,7 +43,7 @@ namespace Util
 		p_impl->children->Update();
 	}
 
-	float ActorBase::OrderPriority() const
+	double ActorBase::OrderPriority() const
 	{
 		return 0;
 	}

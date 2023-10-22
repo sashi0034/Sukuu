@@ -39,4 +39,14 @@ namespace Play
 				moveDuration)
 		);
 	}
+
+	Vec2 GetInitialPos(const MapGrid& map)
+	{
+		return map.Rooms().RandomRoomPoint() * CellPx_24;
+	}
+
+	double CharaOrderPriority(const CharaPosition& pos)
+	{
+		return 1000.0 + (pos.viewPos.y / (CellPx_24 * 1024));
+	}
 }

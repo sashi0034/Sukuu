@@ -35,7 +35,7 @@ namespace Play
 	{
 	public:
 		void Reset(double t = 0) { m_timer = t; }
-		void Tick(double dt=Scene::DeltaTime()) { m_timer += dt; }
+		void Tick(double dt = Scene::DeltaTime()) { m_timer += dt; }
 		int SliceFrames(uint64 milliInterval, const Array<int>& pattern) const;
 		int SliceFrames(uint64 milliInterval, uint32 numFrames) const;
 
@@ -47,4 +47,8 @@ namespace Play
 
 	void ProcessMoveCharaPos(
 		YieldExtended& yield, ActorBase& self, CharaPosition& pos, const Vec2& nextPos, double moveDuration);
+
+	Vec2 GetInitialPos(const MapGrid& map);
+
+	double CharaOrderPriority(const CharaPosition& pos);
 }

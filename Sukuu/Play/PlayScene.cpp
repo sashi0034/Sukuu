@@ -2,6 +2,7 @@
 #include "PlayScene.h"
 
 #include "Player.h"
+#include "Enemy/EnSlimeCat.h"
 #include "Map/BgMapDrawer.h"
 #include "Map/DungeonGenerator.h"
 #include "Map/MapGrid.h"
@@ -64,6 +65,13 @@ namespace Play
 		});
 
 		p_impl->m_player = AsParent().Birth(Player());
+
+		// TODO: EnemyManager
+		for (int i = 0; i < 10; ++i)
+		{
+			auto enemy = AsParent().Birth(EnSlimeCat());
+			enemy.Init();
+		}
 
 		p_impl->m_player.Init();
 	}

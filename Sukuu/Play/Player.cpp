@@ -104,7 +104,8 @@ namespace Play
 
 	void Player::Init()
 	{
-		p_impl->m_pos.SetPos(PlayScene::Instance().GetMap().Rooms().RandomRoomPoint() * CellPx_24);
+		p_impl->m_pos.SetPos(GetInitialPos(PlayScene::Instance().GetMap()));
+
 		StartCoro(*this, [&](YieldExtended yield)
 		{
 			p_impl->ProcessAsync(yield, *this);
@@ -115,6 +116,11 @@ namespace Play
 	{
 		ActorBase::Update();
 		p_impl->Update();
+	}
+
+	double Player::OrderPriority() const
+	{
+		return CharaOrderPriority(p_impl->m_pos);
 	}
 
 	Mat3x2 Player::CameraTransform() const

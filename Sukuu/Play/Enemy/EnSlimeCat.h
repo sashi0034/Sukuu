@@ -1,18 +1,15 @@
 ﻿#pragma once
-
-#include "Forward.h"
+#include "IEnemy.h"
 
 namespace Play
 {
-	class Player : public ActorBase
+	class EnSlimeCat : public ActorBase, public IEnemy
 	{
 	public:
-		Player();
+		EnSlimeCat();
 		void Init();
 		void Update() override;
 		double OrderPriority() const override;
-
-		Mat3x2 CameraTransform() const;
 
 	private:
 		struct Impl;
