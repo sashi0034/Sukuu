@@ -14,6 +14,13 @@ namespace Play
 		TerrainKind kind = TerrainKind::Wall;
 	};
 
+	class MapRooms : public Array<Rect>
+	{
+	public:
+		Point RandomRoomPoint() const;
+		Point RandomRoomPoint(int index) const;
+	};
+
 	class MapGrid
 	{
 	public:
@@ -27,7 +34,11 @@ namespace Play
 		MapCell& At(const Point& point) { return m_data[point]; };
 		const MapCell& At(const Point& point) const { return m_data[point]; };
 
+		MapRooms& Rooms() { return m_rooms; };
+		const MapRooms& Rooms() const { return m_rooms; };
+
 	private:
 		Grid<MapCell> m_data{};
+		MapRooms m_rooms{};
 	};
 }

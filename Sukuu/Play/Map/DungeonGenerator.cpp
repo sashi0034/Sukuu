@@ -294,6 +294,7 @@ namespace Play
 			{
 				dung.At(p).kind = TerrainKind::Floor;
 			}
+			dung.Rooms().push_back({areaRoom.room});
 		}
 
 		// 通路を反映
