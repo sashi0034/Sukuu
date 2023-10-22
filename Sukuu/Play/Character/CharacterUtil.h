@@ -1,15 +1,16 @@
 ﻿#pragma once
 #include "Play/Forward.h"
 #include "Play/Map/MapGrid.h"
+#include "Util/CoroUtil.h"
 #include "Util/Dir4.h"
 
 namespace Play
 {
-	class CharacterPos : public Vec2
+	class CharaVec2 : public Vec2
 	{
 	public:
 		using Vec2::Vec2;
-		CharacterPos(Vec2 v): Vector2D<double>(v.x, v.y) { return; }
+		CharaVec2(Vec2 v): Vector2D<double>(v.x, v.y) { return; }
 
 		Point MapPoint() const
 		{
@@ -18,5 +19,20 @@ namespace Play
 		}
 	};
 
-	bool CanMoveTo(const MapGrid& map, const CharacterPos& current, Dir4Type dir);
+	struct CharaPosition
+	{
+		CharaVec2 actualPos;
+		Vec2 viewPos;
+
+		void SetPos(const Vec2& pos)
+		{
+			actualPos = pos;
+			viewPos = pos;
+		}
+	};
+
+	bool CanMoveTo(const MapGrid& map, const CharaVec2& current, Dir4Type dir);
+
+	void ProcessMoveCharaPos(
+		YieldExtended& yield, ActorBase& self, CharaPosition& pos, const Vec2& nextPos, double moveDuration);
 }
