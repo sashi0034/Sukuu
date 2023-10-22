@@ -106,7 +106,7 @@ namespace Play
 	{
 		p_impl->m_pos.SetPos(GetInitialPos(PlayScene::Instance().GetMap()));
 
-		StartCoro(*this, [&](YieldExtended yield)
+		StartCoro(*this, [*this](YieldExtended yield) mutable
 		{
 			p_impl->ProcessAsync(yield, *this);
 		});

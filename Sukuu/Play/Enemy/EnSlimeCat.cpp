@@ -25,7 +25,10 @@ struct Play::EnSlimeCat::Impl
 
 	void ProcessAsync(YieldExtended& yield, ActorBase& self)
 	{
-		yield();
+		while (true)
+		{
+			processLoop(yield, self);
+		}
 	}
 
 private:
@@ -48,6 +51,20 @@ private:
 			return {};
 		}
 	}
+
+	void processLoop(YieldExtended& yield, ActorBase& self)
+	{
+		yield();
+
+		while (CanMoveTo(PlayScene::Instance().GetMap(), m_pos.actualPos, m_direction))
+		{
+			auto nextPos = m_pos.actualPos + m_direction.ToXY() * CellPx_24;
+			ProcessMoveCharaPos(yield, self, m_pos, nextPos,
+			                    GetTomlParameter<double>(U"play.en_slime_cat.move_duration"));
+		}
+
+		m_direction = Dir4Type((m_direction + 1) % 4);
+	}
 };
 
 namespace Play
@@ -61,7 +78,7 @@ namespace Play
 	{
 		p_impl->m_pos.SetPos(GetInitialPos(PlayScene::Instance().GetMap()));
 
-		StartCoro(*this, [&](YieldExtended yield)
+		StartCoro(*this, [*this](YieldExtended yield) mutable
 		{
 			p_impl->ProcessAsync(yield, *this);
 		});

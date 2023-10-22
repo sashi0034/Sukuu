@@ -18,9 +18,9 @@ namespace Play
 		return (t % (milliInterval * numFrames)) / milliInterval;
 	}
 
-	bool CanMoveTo(const MapGrid& map, const CharaVec2& current, Dir4Type dir)
+	bool CanMoveTo(const MapGrid& map, const CharaVec2& currentActualPos, Dir4Type dir)
 	{
-		const Point next = current.MapPoint() + dir.ToXY().asPoint();
+		const Point next = currentActualPos.MapPoint() + dir.ToXY().asPoint();
 		if (map.Data().inBounds(next) == false) return false;
 		return map.At(next).kind != TerrainKind::Wall;
 	}

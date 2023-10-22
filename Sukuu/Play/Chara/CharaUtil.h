@@ -43,7 +43,7 @@ namespace Play
 		double m_timer{};
 	};
 
-	bool CanMoveTo(const MapGrid& map, const CharaVec2& current, Dir4Type dir);
+	bool CanMoveTo(const MapGrid& map, const CharaVec2& currentActualPos, Dir4Type dir);
 
 	void ProcessMoveCharaPos(
 		YieldExtended& yield, ActorBase& self, CharaPosition& pos, const Vec2& nextPos, double moveDuration);
