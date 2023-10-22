@@ -4,20 +4,17 @@
 
 namespace Util
 {
-	namespace Dir4Index
+	class Dir4Type : public EnumValue<int>
 	{
-		enum : int
+	public:
+		enum Index : int
 		{
 			Right = 0,
 			Up = 1,
 			Left = 2,
 			Down = 3,
 		};
-	}
 
-	class Dir4Type : public EnumValue<int>
-	{
-	public:
 		constexpr Dir4Type(int v): EnumValue(v) { return; }
 
 		Vec2 ToXY() const
@@ -31,16 +28,17 @@ namespace Util
 			return a[value()];
 		}
 
+		Index GetIndex() const { return static_cast<Index>(value()); }
 		bool IsValid() const { return 0 <= value() && value() <= 3; }
 	};
 
 	namespace Dir4
 	{
 		constexpr Dir4Type Invalid{-1};
-		constexpr Dir4Type Right{Dir4Index::Right};
-		constexpr Dir4Type Up{Dir4Index::Up};
-		constexpr Dir4Type Left{Dir4Index::Left};
-		constexpr Dir4Type Down{Dir4Index::Down};
+		constexpr Dir4Type Right{Dir4Type::Right};
+		constexpr Dir4Type Up{Dir4Type::Up};
+		constexpr Dir4Type Left{Dir4Type::Left};
+		constexpr Dir4Type Down{Dir4Type::Down};
 
 		inline Dir4Type FromIndex(int index)
 		{

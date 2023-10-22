@@ -342,6 +342,7 @@
     <ClInclude Include="Play\Map\MapGrid.h" />
     <ClInclude Include="Play\Map\MazeGenerator.h" />
     <ClInclude Include="Play\Player.h" />
+    <ClInclude Include="Play\Player_detail\PlayerAnimation.h" />
     <ClInclude Include="Play\PlayScene.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Util\ActorBase.h" />
@@ -439,6 +440,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App\asset\generate_constexpr.py" />
+    <Content Include="App\asset\image\beatrice_32x32.png" />
     <Content Include="App\asset\image\brick_stylish_24x24.png" />
     <Content Include="App\asset\image\magma_tile_24x24.png" />
     <Content Include="App\asset\image\phine_32x32.png" />

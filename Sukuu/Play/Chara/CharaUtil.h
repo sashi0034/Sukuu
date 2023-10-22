@@ -31,6 +31,18 @@ namespace Play
 		}
 	};
 
+	class AnimTimer
+	{
+	public:
+		void Reset(double t = 0) { m_timer = t; }
+		void Tick(double dt=Scene::DeltaTime()) { m_timer += dt; }
+		int SliceFrames(uint64 milliInterval, const Array<int>& pattern) const;
+		int SliceFrames(uint64 milliInterval, uint32 numFrames) const;
+
+	private:
+		double m_timer{};
+	};
+
 	bool CanMoveTo(const MapGrid& map, const CharaVec2& current, Dir4Type dir);
 
 	void ProcessMoveCharaPos(
