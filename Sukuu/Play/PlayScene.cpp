@@ -2,7 +2,6 @@
 #include "PlayScene.h"
 
 #include "Player.h"
-#include "Map/AutoTiler.h"
 #include "Map/BgMapDrawer.h"
 #include "Map/DungeonGenerator.h"
 #include "Map/MapGrid.h"
@@ -10,20 +9,44 @@
 
 namespace Play
 {
+	namespace CameraKind
+	{
+		enum Value
+		{
+			Player,
+			Debug,
+			Max,
+		};
+	}
+
 	class PlayScene::Impl
 	{
 	public:
 		MapGrid m_map;
 		Player m_player;
-		Camera2D m_camera;
+		Camera2D m_debugCamera;
+		CameraKind::Value m_camera = CameraKind::Player;
 
 		void UpdateScene(ActorBase& self)
 		{
-			m_camera.update();
-			const auto t = m_camera.createTransformer();
+#ifdef  _DEBUG
+			// デバッグ用にカメラ変更
+			if (KeyNum0.down())
+				m_camera =
+					static_cast<CameraKind::Value>((m_camera + 1) % CameraKind::Max);
+#endif
+			if (m_camera == CameraKind::Debug) m_debugCamera.update();
+
+			const auto t = m_camera == CameraKind::Player
+				               ? Transformer2D(m_player.CameraTransform())
+				               : m_debugCamera.createTransformer();
+
 			const ScopedRenderStates2D sampler{SamplerState::BorderNearest};
 
+			// 背景描画
 			DrawBgMap(m_map);
+
+			// キャラクターなどの通常更新
 			self.ActorBase::Update();
 		}
 	};
@@ -52,13 +75,13 @@ namespace Play
 
 	void PlayScene::Update()
 	{
-		if (MouseL.down())
-		{
-			p_impl->m_map = GenerateFreshDungeon(DungGenProps{
-				.size = {80, 80},
-				.areaDivision = 8,
-			});
-		}
+		// if (MouseL.down())
+		// {
+		// 	p_impl->m_map = GenerateFreshDungeon(DungGenProps{
+		// 		.size = {80, 80},
+		// 		.areaDivision = 8,
+		// 	});
+		// }
 		p_impl->UpdateScene(*this);
 	}
 

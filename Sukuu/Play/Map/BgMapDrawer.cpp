@@ -75,7 +75,7 @@ namespace Play
 
 	void DrawBgMap(const MapGrid& map)
 	{
-		const auto inversed = Graphics2D::GetCameraTransform().inverse();
+		const auto inversed = (Graphics2D::GetCameraTransform() * Graphics2D::GetLocalTransform()).inverse();
 		const auto mapTl = inversed.transformPoint(Vec2{0, 0}).asPoint() / 24;
 		const auto mapBr = inversed.transformPoint(Scene::Size()).asPoint() / 24;
 		for (int y = std::max(0, mapTl.y); y < std::min(mapBr.y + 1, map.Data().size().y); ++y)

@@ -7,15 +7,21 @@
 #include "Util/Dir4.h"
 #include "Util/EasingAnimation.h"
 
+namespace
+{
+	constexpr Rect playerRect{0, 0, 32, 32};
+}
+
 struct Play::Player::Impl
 {
 	Vec2 m_pos;
 	double m_moveSpeed = 1.0;
+	double m_cameraScale = 4;
 
 	void Update()
 	{
-		(void)TextureAsset(AssetImages::phine_32x32)(0, 0, 32, 32)
-			.draw(m_pos.movedBy(-4, -8));
+		(void)TextureAsset(AssetImages::phine_32x32)(playerRect)
+			.draw(m_pos.movedBy(GetCharacter24Padding(playerRect.size)));
 	}
 
 	void ProcessAsync(YieldExtended& yield, ActorBase& self)
@@ -35,13 +41,13 @@ private:
 		auto moveDir = Dir4::Invalid;
 		while (true)
 		{
-			yield();
-
 			if (KeyW.pressed()) moveDir = Dir4::Up;
 			if (KeyA.pressed()) moveDir = Dir4::Left;
 			if (KeyS.pressed()) moveDir = Dir4::Down;
 			if (KeyD.pressed()) moveDir = Dir4::Right;
 			if (moveDir != Dir4::Invalid) break;
+
+			yield();
 		}
 
 		// 移動
@@ -70,5 +76,12 @@ namespace Play
 	{
 		ActorBase::Update();
 		p_impl->Update();
+	}
+
+	Mat3x2 Player::CameraTransform() const
+	{
+		return Mat3x2::Translate({Scene::Center()})
+		       .translated(-p_impl->m_pos - playerRect.size / 2)
+		       .scaled(p_impl->m_cameraScale, Scene::Center());
 	}
 }
