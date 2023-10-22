@@ -70,7 +70,7 @@ namespace Play
 
 	PlayScene::~PlayScene()
 	{
-		s_instance = nullptr;
+		if (s_instance->p_impl == this->p_impl && p_impl.use_count() == 1) s_instance = nullptr;
 	}
 
 	void PlayScene::Update()

@@ -11,7 +11,7 @@ namespace Play
 
 	constexpr int CharacterPadding_4 = 4;
 
-	inline constexpr Point GetCharacter24Padding(const Size& spriteSize)
+	constexpr Point GetCharacterCellPadding(const Size& spriteSize)
 	{
 		return {(CellPx_24 - spriteSize.x) / 2, CellPx_24 - spriteSize.y - CharacterPadding_4};
 	};

@@ -4,7 +4,20 @@
 
 namespace Util
 {
-	template <double easing(double), typename T>
+	namespace EaseOption
+	{
+		enum : uint64
+		{
+			EndStop = 1 << 0,
+		};
+
+		constexpr uint64 None = 0;
+
+		constexpr uint64 Default =
+			EndStop;
+	};
+
+	template <double easing(double), uint64 option, typename T>
 	class EasingAnimation : public ActorBase
 	{
 	public:
@@ -24,7 +37,7 @@ namespace Util
 			m_state->time += Scene::DeltaTime();
 			if (m_state->time >= m_state->duration)
 			{
-				m_state->time = m_state->duration;
+				if constexpr (option & EaseOption::EndStop) m_state->time = m_state->duration;
 				Kill();
 			}
 			const double e = easing(m_state->time / m_state->duration);
@@ -44,10 +57,10 @@ namespace Util
 		std::shared_ptr<State> m_state{};
 	};
 
-	template <double easing(double), typename T>
-	EasingAnimation<easing, T> AnimateEasing(ActorBase& parent, T* valuePtr, T endValue, double duration)
+	template <double easing(double), uint64 option = EaseOption::Default, typename T>
+	EasingAnimation<easing, option, T> AnimateEasing(ActorBase& parent, T* valuePtr, T endValue, double duration)
 	{
-		return parent.AsParent().Birth(EasingAnimation<easing, T>(valuePtr, endValue, duration));
+		return parent.AsParent().Birth(EasingAnimation<easing, option, T>(valuePtr, endValue, duration));
 	}
 
 	constexpr double BoomerangParabola(double value)
