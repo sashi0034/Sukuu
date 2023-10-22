@@ -2,7 +2,7 @@
 #include "Player.h"
 
 #include "PlayScene.h"
-#include "Character\CharacterUtil.h"
+#include "Chara\CharaUtil.h"
 #include "Util/CoroUtil.h"
 #include "Util/Dir4.h"
 #include "Util/EasingAnimation.h"

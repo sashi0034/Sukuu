@@ -1,5 +1,5 @@
 ﻿#include "stdafx.h"
-#include "CharacterUtil.h"
+#include "CharaUtil.h"
 
 #include "Util/EasingAnimation.h"
 
