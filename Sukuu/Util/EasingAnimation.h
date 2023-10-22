@@ -2,7 +2,7 @@
 #include "ActorBase.h"
 #include "ActorContainer.h"
 
-namespace ExUiBasic
+namespace Util
 {
 	template <double easing(double), typename T>
 	class EasingAnimation : public ActorBase

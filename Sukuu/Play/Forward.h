@@ -7,5 +7,5 @@ namespace Play
 {
 	using namespace Util;
 
-	constexpr int CellDots_24 = 24;
+	constexpr int CellPx_24 = 24;
 }

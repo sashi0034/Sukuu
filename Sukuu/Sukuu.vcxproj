@@ -348,8 +348,10 @@
     <ClInclude Include="Util\CoroActor.h" />
     <ClInclude Include="Util\CoroTask.h" />
     <ClInclude Include="Util\CoroUtil.h" />
+    <ClInclude Include="Util\Dir4.h" />
     <ClInclude Include="Util\EasingAnimation.h" />
     <ClInclude Include="Util\TomlParametersWrapper.h" />
+    <ClInclude Include="Util\Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App\example\obj\blacksmith.obj">
