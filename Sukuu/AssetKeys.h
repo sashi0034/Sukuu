@@ -1,6 +1,6 @@
 #pragma once
 
-namespace AssetFonts
+namespace AssetKeys
 {
 	constexpr StringView F24 = U"F24";
 	constexpr StringView F48 = U"F48";

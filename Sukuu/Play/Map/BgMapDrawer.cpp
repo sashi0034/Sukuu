@@ -1,7 +1,7 @@
 ﻿#include "stdafx.h"
 #include "BgMapDrawer.h"
 
-#include "AssetManual.h"
+#include "AssetKeys.h"
 #include "AssetsGenerated.h"
 #include "AutoTiler.h"
 #include "MapGrid.h"
@@ -97,7 +97,7 @@ namespace Play
 				const int player = PlayScene::Instance().GetPlayer().DistField()[Point{x, y}].distance;
 				if (player < PlayerDistanceInfinity &&
 					GetTomlParameter<bool>(U"play.debug.visualize_player_distance"))
-					(void)FontAsset(AssetFonts::F24)(U"{}"_fmt(player))
+					(void)FontAsset(AssetKeys::F24)(U"{}"_fmt(player))
 						.drawAt(drawingPoint + Point{CellPx_24, CellPx_24} / 2);
 #endif
 			}
