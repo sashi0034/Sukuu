@@ -30,7 +30,7 @@ namespace Play
 				{
 					const auto checkingPos = pos + dir.ToXY().asPoint();
 					auto& f = distField.m_field[checkingPos];
-					if (f.distance != -1 && f.distance <= currDist + 1) continue;
+					if (f.distance <= currDist + 1) continue;
 					f.distance = currDist + 1;
 					distField.m_wroteHistory.push_back(checkingPos);
 					todoQueue.push_back(checkingPos);
@@ -69,7 +69,7 @@ namespace Play
 			for (int x = 0; x < maxDist; ++x)
 			{
 				auto& checking = m_field[playerPoint + dir.ToXY().asPoint() * x];
-				if (checking.distance == -1) break;
+				if (checking.distance == PlayerDistanceInfinity) break;
 				checking.directStraight = true;
 			}
 		}

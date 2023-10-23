@@ -10,3 +10,8 @@ move_duration = 0.2
 anim_interval = 250
 floor_turn_likely = 3
 pathway_turn_unlikely = 2
+player_followiung_intensity = 3
+lost_player_penalty = 2.0
+
+[play.debug]
+visualize_player_distance = false

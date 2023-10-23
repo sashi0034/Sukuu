@@ -6,6 +6,7 @@
 #include "AutoTiler.h"
 #include "MapGrid.h"
 #include "Play/PlayScene.h"
+#include "Util/TomlParametersWrapper.h"
 
 namespace Play
 {
@@ -93,10 +94,11 @@ namespace Play
 				drawTileAt(map, y, x, TextureAsset(AssetImages::brick_stylish_24x24),
 				           TerrainKind::Wall, {TerrainKind::Wall});
 #ifdef _DEBUG
-				// const int player = PlayScene::Instance().GetPlayer().DistField()[Point{x, y}].distance;
-				// if (player >= 0)
-				// 	(void)FontAsset(AssetFonts::F24)(U"{}"_fmt(player))
-				// 		.drawAt(drawingPoint + Point{CellPx_24, CellPx_24} / 2);
+				const int player = PlayScene::Instance().GetPlayer().DistField()[Point{x, y}].distance;
+				if (player < PlayerDistanceInfinity &&
+					GetTomlParameter<bool>(U"play.debug.visualize_player_distance"))
+					(void)FontAsset(AssetFonts::F24)(U"{}"_fmt(player))
+						.drawAt(drawingPoint + Point{CellPx_24, CellPx_24} / 2);
 #endif
 			}
 		}
