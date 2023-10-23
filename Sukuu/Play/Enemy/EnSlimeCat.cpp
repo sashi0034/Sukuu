@@ -23,7 +23,24 @@ struct Play::EnSlimeCat::Impl
 	void Update()
 	{
 		m_animTimer.Tick();
-		getTexture().draw(m_pos.viewPos.movedBy(GetCharacterCellPadding(catRect.size)));
+		const auto drawingPos = m_pos.viewPos.movedBy(GetCharacterCellPadding(catRect.size));
+		(void)getTexture().draw(drawingPos);
+
+		// 吹き出し描画
+		if (m_playerFollowing > 0)
+		{
+			ScopedRenderStates2D sampler{SamplerState::ClampLinear};
+			const auto drawingRect = RectF{
+				drawingPos.movedBy(0, GetTomlParameter<int>(U"play.en_slime_cat.baloon_offset_y")), catRect.size
+			};
+
+			(void)Shape2D::RectBalloon(drawingRect,
+			                           drawingPos.movedBy(catRect.size.x / 2 - 1, 0),
+			                           0.5)
+				.draw();
+
+			(void)TextureAsset(U"😎").resized(drawingRect.size).draw(drawingRect.pos);
+		}
 	}
 
 	void FlowchartAsync(YieldExtended& yield, ActorBase& self)

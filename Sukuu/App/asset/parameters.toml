@@ -12,6 +12,7 @@ floor_turn_likely = 3
 pathway_turn_unlikely = 2
 player_followiung_intensity = 3
 lost_player_penalty = 2.0
+baloon_offset_y = -32
 
 [play.debug]
-visualize_player_distance = false
+visualize_player_distance = true

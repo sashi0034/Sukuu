@@ -9,5 +9,8 @@ namespace AssetKeys
 	{
 		FontAsset::Register(F24, 24);
 		FontAsset::Register(F48, 48);
+
+		TextureAsset::Register(U"😎", U"😎"_emoji);
+		TextureAsset::Register(U"🤔", U"🤔"_emoji);
 	}
 }
