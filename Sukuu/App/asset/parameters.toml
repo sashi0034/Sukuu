@@ -4,15 +4,19 @@ bg_priority = -1000
 [play.player]
 move_duration = 0.3
 anim_interval = 250
+collider_padding = -8
 
 [play.en_slime_cat]
 move_duration = 0.2
 anim_interval = 250
 floor_turn_likely = 3
 pathway_turn_unlikely = 2
-player_followiung_intensity = 3
-lost_player_penalty = 2.0
+player_followiung_intensity = 8
+lost_player_penalty = 1.0
 baloon_offset_y = -32
+dead_animation_offset = "(0, -32)"
+dead_animation_duration = 1.0
+dead_pause_duration = 2.0
 
 [play.debug]
 visualize_player_distance = false

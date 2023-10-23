@@ -39,10 +39,15 @@ namespace Play
 		}
 	};
 
+	void PlayerDistFieldInternal::Clear()
+	{
+		Impl::clearOld(*this);
+	}
+
 	void PlayerDistFieldInternal::Refresh(const MapGrid& map, const CharaVec2& playerPos)
 	{
 		// 前回の書き込みをクリア
-		Impl::clearOld(*this);
+		Clear();
 
 		const Point playerPoint = playerPos.MapPoint();
 

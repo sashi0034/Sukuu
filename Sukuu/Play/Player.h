@@ -13,6 +13,8 @@ namespace Play
 		void Update() override;
 		double OrderPriority() const override;
 
+		void SendEnemyCollide(const RectF& rect);
+
 		Mat3x2 CameraTransform() const;
 		const PlayerDistField& DistField() const;
 		bool IsCompletedGoal() const;

@@ -9,6 +9,7 @@ namespace Play
 	{
 	public:
 		const PlayerDistField& Field() const { return m_field; }
+		void Clear();
 		void Refresh(
 			const MapGrid& map,
 			const CharaVec2& playerPos);

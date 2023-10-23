@@ -7,7 +7,7 @@
 
 namespace Play
 {
-	static TextureRegion GetPlayerTexture(
+	static TextureRegion GetUsualPlayerTexture(
 		const Rect& playerRect, Dir4Type direction, AnimTimer animTimer, bool isWalking)
 	{
 		auto&& sheet = TextureAsset(AssetImages::beatrice_32x32);
@@ -57,5 +57,11 @@ namespace Play
 		default:
 			return {};
 		}
+	}
+
+	static TextureRegion GetDeadPlayerTexture(const Rect& playerRect)
+	{
+		auto&& sheet = TextureAsset(AssetImages::beatrice_32x32);
+		return sheet(playerRect.movedBy(0, playerRect.h * 6));
 	}
 }

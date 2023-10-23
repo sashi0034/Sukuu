@@ -19,12 +19,16 @@ namespace
 		Idle,
 		Walk,
 		Running,
+		Dead,
 	};
 }
 
 struct Play::Player::Impl
 {
+	CoroActor m_flowchart{};
+
 	CharaPosition m_pos;
+	Vec2 m_animOffset{};
 	double m_moveSpeed = 1.0;
 	double m_cameraScale = 4;
 	PlayerAct m_act = PlayerAct::Idle;
@@ -32,21 +36,60 @@ struct Play::Player::Impl
 	Dir4Type m_direction{Dir4::Down};
 	PlayerDistFieldInternal m_distField{};
 	bool m_completedGoal{};
+	bool m_isImmortal{};
 
 	void Update()
 	{
 		m_animTimer.Tick(Scene::DeltaTime() * (m_act == PlayerAct::Running ? 2 : 1));
 
-		(void)GetPlayerTexture(playerRect, m_direction, m_animTimer, isWalking())
-			.draw(m_pos.viewPos.movedBy(GetCharacterCellPadding(playerRect.size)));
+		const auto drawingPos = m_pos.viewPos.movedBy(GetCharacterCellPadding(playerRect.size) + m_animOffset);
+		if (m_act == PlayerAct::Dead)
+		{
+			(void)GetDeadPlayerTexture(playerRect).draw(drawingPos);
+		}
+		else
+		{
+			(void)GetUsualPlayerTexture(playerRect, m_direction, m_animTimer, isWalking()).draw(drawingPos);
+		}
 	}
 
-	void FlowchartAsync(YieldExtended& yield, ActorBase& self)
+	void StartFlowchart(ActorBase& self)
 	{
-		while (true)
+		m_flowchart = StartCoro(self, [this, self](YieldExtended yield) mutable
 		{
-			flowchartLoop(yield, self);
-		}
+			while (true)
+			{
+				flowchartLoop(yield, self);
+			}
+		});
+	}
+
+	void EnemyCollide(ActorBase& self, const RectF& enemy)
+	{
+		if (m_isImmortal) return;;
+		if (m_act == PlayerAct::Dead) return;
+
+		const auto player = RectF{m_pos.actualPos, playerRect.size}.stretched(
+			GetTomlParameter<int>(U"play.player.collider_padding"));
+
+		if (enemy.intersects(player) == false) return;
+		// 以下、当たった状態
+
+		m_act = PlayerAct::Dead;
+		m_flowchart.Kill();
+		m_distField.Clear();
+
+		// やられた演出
+		StartCoro(self, [this, self](YieldExtended yield) mutable
+		{
+			AnimateEasing<BoomerangParabola>(
+				self,
+				&m_animOffset,
+				GetTomlParameter<Vec2>(U"play.en_slime_cat.dead_animation_offset"),
+				GetTomlParameter<double>(U"play.en_slime_cat.dead_animation_duration"));
+			yield.WaitForTime(GetTomlParameter<double>(U"play.en_slime_cat.dead_pause_duration"));
+			StartFlowchart(self);
+		});
 	}
 
 private:
@@ -63,6 +106,12 @@ private:
 
 	void flowchartLoop(YieldExtended& yield, ActorBase& self)
 	{
+		if (m_act == PlayerAct::Dead)
+		{
+			m_act = PlayerAct::Idle;
+			m_distField.Refresh(PlayScene::Instance().GetMap(), m_pos.actualPos);
+		}
+
 		// キー入力待ち
 		auto moveDir = Dir4::Invalid;
 		while (true)
@@ -110,7 +159,8 @@ private:
 
 		switch (auto checkingGimmick = PlayScene::Instance().GetGimmick()[newPoint])
 		{
-		case GimmickKind::Stairs:
+		case GimmickKind::Stairs: {
+			m_isImmortal = true;
 			// ゴール到達
 			yield.WaitForDead(
 				AnimateEasing<EaseInBack>(self, &m_cameraScale, 8.0, 0.5));
@@ -118,6 +168,7 @@ private:
 				AnimateEasing<EaseOutCirc>(self, &m_cameraScale, 10.0, 0.5));
 			m_completedGoal = true;
 			break;
+		}
 		default: ;
 			m_act = storedAct;
 			break;
@@ -137,10 +188,7 @@ namespace Play
 
 		p_impl->m_distField.Resize(PlayScene::Instance().GetMap().Data().size());
 
-		StartCoro(*this, [*this](YieldExtended yield) mutable
-		{
-			p_impl->FlowchartAsync(yield, *this);
-		});
+		p_impl->StartFlowchart(*this);
 	}
 
 	void Player::Update()
@@ -152,6 +200,11 @@ namespace Play
 	double Player::OrderPriority() const
 	{
 		return CharaOrderPriority(p_impl->m_pos);
+	}
+
+	void Player::SendEnemyCollide(const RectF& rect)
+	{
+		p_impl->EnemyCollide(*this, rect);
 	}
 
 	Mat3x2 Player::CameraTransform() const

@@ -22,6 +22,14 @@ struct Play::EnSlimeCat::Impl
 
 	void Update()
 	{
+		// プレイヤーとの当たり判定
+		auto&& player = PlayScene::Instance().GetPlayer();
+		if (player.DistField()[m_pos.actualPos.MapPoint()].distance != PlayerDistanceInfinity)
+		{
+			player.SendEnemyCollide({m_pos.actualPos, catRect.size});
+		}
+
+		// アニメーション更新
 		m_animTimer.Tick();
 		const auto drawingPos = m_pos.viewPos.movedBy(GetCharacterCellPadding(catRect.size));
 		(void)getTexture().draw(drawingPos);
@@ -75,18 +83,21 @@ private:
 	void checkFollowPlayer(YieldExtended& yield, const Point currentPoint)
 	{
 		auto&& playerDf = PlayScene::Instance().GetPlayer().DistField();
-		const int playerDist = playerDf[currentPoint].distance;
+		const int currentDist = playerDf[currentPoint].distance;
 		const bool nearPlayer =
 			playerDf[currentPoint].directStraight // 現在の点がプレイヤー十字上
-			|| playerDf[currentPoint + m_direction.RotatedR().ToXY().asPoint()].directStraight; // 次の点がプレイヤー十字上
+			|| playerDf[currentPoint + m_direction.ToXY().asPoint()].directStraight; // 次の点がプレイヤー十字上
 
-		if (nearPlayer == false && m_playerFollowing == 0) return;
+		const auto nextDist = playerDf[currentPoint + m_direction.ToXY().asPoint()].distance;
 
-		const bool isMovingAway = playerDf[currentPoint + m_direction.ToXY().asPoint()].distance > playerDist;
-
-		if (isMovingAway && m_playerFollowing > 0)
+		if (nextDist < currentDist && (nearPlayer || m_playerFollowing > 0))
 		{
-			// プレイヤーから遠ざかっている
+			// プレイヤーに近づいている
+			m_playerFollowing = GetTomlParameter<int>(U"play.en_slime_cat.player_followiung_intensity");
+		}
+		if (nextDist > currentDist || m_playerFollowing > 0)
+		{
+			// 追跡中だけど、プレイヤーから遠ざかっている
 			m_playerFollowing--;
 
 			// プレイヤー見失った
@@ -94,23 +105,24 @@ private:
 			{
 				// ペナルティ
 				yield.WaitForTime(GetTomlParameter<double>(U"play.en_slime_cat.lost_player_penalty"));
-				return;
 			}
 		}
 
+		// プレイヤーが近くにいない
+		if (nearPlayer == false || m_playerFollowing == 0) return;
+
 		const int backDist = playerDf[currentPoint + m_direction.Reversed().ToXY().asPoint()].distance;
 		// プレイヤーが後ろ向きにいないなら追跡
-		if (backDist >= playerDist)
+		if (backDist >= currentDist)
 		{
-			m_playerFollowing = GetTomlParameter<int>(U"play.en_slime_cat.player_followiung_intensity");
 			// このまま正面に進むとプレイヤーから離れてしまうとき
-			if (isMovingAway)
+			if (nextDist > currentDist)
 			{
-				if (playerDf[currentPoint + m_direction.RotatedL().ToXY().asPoint()].distance < playerDist)
+				if (playerDf[currentPoint + m_direction.RotatedL().ToXY().asPoint()].distance < currentDist)
 				{
 					m_direction = m_direction.RotatedL();
 				}
-				else if (playerDf[currentPoint + m_direction.RotatedR().ToXY().asPoint()].distance < playerDist)
+				else if (playerDf[currentPoint + m_direction.RotatedR().ToXY().asPoint()].distance < currentDist)
 				{
 					m_direction = m_direction.RotatedR();
 				}
