@@ -15,6 +15,7 @@ namespace Play
 
 		Mat3x2 CameraTransform() const;
 		const PlayerDistField& DistField() const;
+		bool IsCompletedGoal() const;
 
 	private:
 		struct Impl;

@@ -31,6 +31,7 @@ struct Play::Player::Impl
 	AnimTimer m_animTimer{};
 	Dir4Type m_direction{Dir4::Down};
 	PlayerDistFieldInternal m_distField{};
+	bool m_completedGoal{};
 
 	void Update()
 	{
@@ -96,6 +97,31 @@ private:
 		const auto nextPos = Vec2(m_pos.actualPos + moveDir.ToXY() * CellPx_24);
 		ProcessMoveCharaPos(yield, self, m_pos, nextPos, moveDuration());
 		m_distField.Refresh(PlayScene::Instance().GetMap(), nextPos);
+
+		// ギミックチェック
+		const auto newPoint = CharaVec2(nextPos).MapPoint();
+		checkGimmickAt(yield, self, newPoint);
+	}
+
+	void checkGimmickAt(YieldExtended& yield, ActorBase& self, const Point newPoint)
+	{
+		const auto storedAct = m_act;
+		m_act = PlayerAct::Idle;
+
+		switch (auto checkingGimmick = PlayScene::Instance().GetGimmick()[newPoint])
+		{
+		case GimmickKind::Stairs:
+			// ゴール到達
+			yield.WaitForDead(
+				AnimateEasing<EaseInBack>(self, &m_cameraScale, 8.0, 0.5));
+			yield.WaitForDead(
+				AnimateEasing<EaseOutCirc>(self, &m_cameraScale, 10.0, 0.5));
+			m_completedGoal = true;
+			break;
+		default: ;
+			m_act = storedAct;
+			break;
+		}
 	}
 };
 
@@ -138,5 +164,10 @@ namespace Play
 	const PlayerDistField& Player::DistField() const
 	{
 		return p_impl->m_distField.Field();
+	}
+
+	bool Player::IsCompletedGoal() const
+	{
+		return p_impl->m_completedGoal;
 	}
 }

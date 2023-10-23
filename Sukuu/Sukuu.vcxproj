@@ -134,6 +134,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Sukuu\GamesSupervisor.cpp" />
     <ClCompile Include="Util\ActorBase.cpp" />
     <ClCompile Include="Util\ActorContainer.cpp" />
     <ClCompile Include="Util\CoordinateVisualizer.cpp" />
@@ -353,6 +354,7 @@
     <ClInclude Include="Play\Player_detail\PlayerDefinition.h" />
     <ClInclude Include="Play\PlayScene.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Sukuu\GamesSupervisor.h" />
     <ClInclude Include="Util\ActorBase.h" />
     <ClInclude Include="Util\ActorContainer.h" />
     <ClInclude Include="Util\CoordinateVisualizer.h" />

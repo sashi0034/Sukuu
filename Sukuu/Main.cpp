@@ -1,11 +1,13 @@
 ﻿#include "stdafx.h"
 
 #include "AssetKeys.h"
-#include "Play/PlayScene.h"
+#include "AssetsGenerated.h"
+#include "Sukuu/GamesSupervisor.h"
 #include "Util/ActorContainer.h"
 #include "Util/TomlParametersWrapper.h"
 
 using namespace Util;
+using namespace Sukuu;
 
 void Main()
 {
@@ -18,7 +20,7 @@ void Main()
 
 	TomlParametersWrapper tomlParametersWrapper{};
 	ActorContainer actorRoot{};
-	actorRoot.Birth(Play::PlayScene());
+	actorRoot.Birth(GamesSupervisor());
 
 	AssetImages::RegisterAll();
 	AssetKeys::RegisterAll();
