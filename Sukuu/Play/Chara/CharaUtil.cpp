@@ -72,7 +72,7 @@ namespace Play
 
 	Vec2 GetInitialPos(const MapGrid& map)
 	{
-		return map.Rooms().RandomRoomPoint() * CellPx_24;
+		return map.Rooms().RandomRoomPoint(false) * CellPx_24;
 	}
 
 	double CharaOrderPriority(const CharaPosition& pos)

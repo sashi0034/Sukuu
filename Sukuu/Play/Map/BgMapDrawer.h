@@ -1,7 +1,7 @@
 ﻿#pragma once
-#include "MapGrid.h"
+#include "Play/PlayScene.h"
 
 namespace Play
 {
-	void DrawBgMap(const MapGrid& map);
+	void DrawBgMap(const PlayScene& scene);
 }

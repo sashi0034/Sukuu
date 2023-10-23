@@ -18,8 +18,8 @@ namespace Play
 	class MapRooms : public Array<Rect>
 	{
 	public:
-		Point RandomRoomPoint() const;
-		Point RandomRoomPoint(int index) const;
+		Point RandomRoomPoint(bool isOdd) const;
+		Point RandomRoomPoint(int index, bool isOdd) const;
 	};
 
 	class MapGrid

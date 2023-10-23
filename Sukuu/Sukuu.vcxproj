@@ -341,6 +341,7 @@
     <ClInclude Include="Play\Enemy\EnSlimeCat.h" />
     <ClInclude Include="Play\Enemy\IEnemy.h" />
     <ClInclude Include="Play\Forward.h" />
+    <ClInclude Include="Play\Gimmick.h" />
     <ClInclude Include="Play\Map\AutoTiler.h" />
     <ClInclude Include="Play\Map\DungeonGenerator.h" />
     <ClInclude Include="Play\Map\BgMapDrawer.h" />
@@ -452,6 +453,7 @@
     <Content Include="App\asset\image\magma_tile_24x24.png" />
     <Content Include="App\asset\image\phine_32x32.png" />
     <Content Include="App\asset\image\punicat_24x24.png" />
+    <Content Include="App\asset\image\stairs_24x24.png" />
     <Content Include="App\asset\parameters.toml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

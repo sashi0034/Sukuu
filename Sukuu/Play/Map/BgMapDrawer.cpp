@@ -21,8 +21,7 @@ namespace Play
 		const Array<TerrainKind>& neighborKind)
 	{
 		const auto& mapData = mapGrid.Data();
-		constexpr uint32 tileSize{24};
-		constexpr uint32 tileHalf{tileSize / 2};
+		constexpr uint32 tileHalf{CellPx_24 / 2};
 
 		if (mapData[y][x].kind != targetKind) return;
 
@@ -32,7 +31,7 @@ namespace Play
 			.connectR = x == mapData.size().x - 1 || neighborKind.includes(mapData[y][x + 1].kind),
 			.connectB = y == mapData.size().y - 1 || neighborKind.includes(mapData[y + 1][x].kind),
 		};
-		const auto src = GetAutoTileSrcPoint(tileSize, connect);
+		const auto src = GetAutoTileSrcPoint(CellPx_24, connect);
 
 		const bool isSafeRange = 0 < x && x < mapData.size().x - 1 && 0 < y && y < mapData.size().y - 1;
 		const bool diagonalLT = isSafeRange && connect.connectL && connect.connectT &&
@@ -49,52 +48,74 @@ namespace Play
 			// 隅付き描画
 			(void)texture(
 					diagonalLT
-						? GetAutoTileDiagonalSrc(tileSize, AutoTileDiagonal::LT)
+						? GetAutoTileDiagonalSrc(CellPx_24, AutoTileDiagonal::LT)
 						: src.movedBy(0, 0),
 					Size{tileHalf, tileHalf})
-				.draw(Point{x * tileSize, y * tileSize}.movedBy(0, 0));
+				.draw(Point{x * CellPx_24, y * CellPx_24}.movedBy(0, 0));
 			(void)texture(
 					diagonalRT
-						? GetAutoTileDiagonalSrc(tileSize, AutoTileDiagonal::RT)
+						? GetAutoTileDiagonalSrc(CellPx_24, AutoTileDiagonal::RT)
 						: src.movedBy(tileHalf, 0),
 					Size{tileHalf, tileHalf})
-				.draw(Point{x * tileSize, y * tileSize}.movedBy(tileHalf, 0));
+				.draw(Point{x * CellPx_24, y * CellPx_24}.movedBy(tileHalf, 0));
 			(void)texture(
 					diagonalLB
-						? GetAutoTileDiagonalSrc(tileSize, AutoTileDiagonal::LB)
+						? GetAutoTileDiagonalSrc(CellPx_24, AutoTileDiagonal::LB)
 						: src.movedBy(0, tileHalf),
 					Size{tileHalf, tileHalf})
-				.draw(Point{x * tileSize, y * tileSize}.movedBy(0, tileHalf));
+				.draw(Point{x * CellPx_24, y * CellPx_24}.movedBy(0, tileHalf));
 			(void)texture(
 					diagonalRB
-						? GetAutoTileDiagonalSrc(tileSize, AutoTileDiagonal::RB)
+						? GetAutoTileDiagonalSrc(CellPx_24, AutoTileDiagonal::RB)
 						: src.movedBy(tileHalf, tileHalf),
 					Size{tileHalf, tileHalf})
-				.draw(Point{x * tileSize, y * tileSize}.movedBy(tileHalf, tileHalf));
+				.draw(Point{x * CellPx_24, y * CellPx_24}.movedBy(tileHalf, tileHalf));
 		}
 		else
 		{
 			// 通常描画
-			(void)texture(src, Size{tileSize, tileSize})
-				.draw(Point{x * tileSize, y * tileSize});
+			(void)texture(src, Size{CellPx_24, CellPx_24})
+				.draw(Point{x * CellPx_24, y * CellPx_24});
 		}
 	}
 
-	void DrawBgMap(const MapGrid& map)
+	void drawGimmickAt(
+		const GimmickGrid& gimmickGrid,
+		const Point& point)
+	{
+		switch (gimmickGrid[point])
+		{
+		case GimmickKind::None:
+			break;
+		case GimmickKind::Stairs:
+			(void)TextureAsset(AssetImages::stairs_24x24).draw(point * CellPx_24);
+			break;
+		default: ;
+		}
+	}
+
+	void DrawBgMap(const PlayScene& scene)
 	{
 		const auto inversed = (Graphics2D::GetCameraTransform() * Graphics2D::GetLocalTransform()).inverse();
 		const auto mapTl = inversed.transformPoint(Vec2{0, 0}).asPoint() / CellPx_24;
 		const auto mapBr = inversed.transformPoint(Scene::Size()).asPoint() / CellPx_24;
+		auto&& map = scene.GetMap();
+		auto&& gimmick = scene.GetGimmick();
 		for (int y = std::max(0, mapTl.y); y < std::min(mapBr.y + 1, map.Data().size().y); ++y)
 		{
 			for (int x = std::max(0, mapTl.x); x < std::min(mapBr.x + 1, map.Data().size().x); ++x)
 			{
+				// BG描画
 				const auto drawingPoint = Point{x, y} * CellPx_24;
 				(void)TextureAsset(AssetImages::magma_tile_24x24).draw(drawingPoint);
 				drawTileAt(map, y, x, TextureAsset(AssetImages::brick_stylish_24x24),
 				           TerrainKind::Wall, {TerrainKind::Wall});
+
+				// ギミック描画
+				drawGimmickAt(gimmick, {x, y});
+
 #ifdef _DEBUG
-				const int player = PlayScene::Instance().GetPlayer().DistField()[Point{x, y}].distance;
+				const int player = scene.GetPlayer().DistField()[Point{x, y}].distance;
 				if (player < PlayerDistanceInfinity &&
 					GetTomlParameter<bool>(U"play.debug.visualize_player_distance"))
 					(void)FontAsset(AssetKeys::F24)(U"{}"_fmt(player))

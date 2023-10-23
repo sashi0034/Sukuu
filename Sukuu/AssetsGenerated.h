@@ -7,6 +7,7 @@ namespace AssetImages
 	constexpr StringView magma_tile_24x24 = U"asset/image/magma_tile_24x24.png";
 	constexpr StringView phine_32x32 = U"asset/image/phine_32x32.png";
 	constexpr StringView punicat_24x24 = U"asset/image/punicat_24x24.png";
+	constexpr StringView stairs_24x24 = U"asset/image/stairs_24x24.png";
 
 	inline void RegisterAll()
 	{
@@ -15,5 +16,6 @@ namespace AssetImages
 		TextureAsset::Register(magma_tile_24x24, magma_tile_24x24);
 		TextureAsset::Register(phine_32x32, phine_32x32);
 		TextureAsset::Register(punicat_24x24, punicat_24x24);
+		TextureAsset::Register(stairs_24x24, stairs_24x24);
 	}
 }

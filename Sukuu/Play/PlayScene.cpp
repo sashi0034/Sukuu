@@ -25,11 +25,12 @@ namespace Play
 	{
 	public:
 		MapGrid m_map;
+		GimmickGrid m_gimmick;
 		Player m_player;
 		Camera2D m_debugCamera;
 		CameraKind::Value m_camera = CameraKind::Player;
 
-		void UpdateScene(ActorBase& self)
+		void UpdateScene(PlayScene& self)
 		{
 #ifdef  _DEBUG
 			// デバッグ用にカメラ変更
@@ -46,7 +47,7 @@ namespace Play
 			const ScopedRenderStates2D sampler{SamplerState::BorderNearest};
 
 			// 背景描画
-			DrawBgMap(m_map);
+			DrawBgMap(self);
 
 			// キャラクターなどの通常更新
 			self.ActorBase::Update();
@@ -67,6 +68,9 @@ namespace Play
 		// p_impl->m_map = GenerateFreshMaze(MazeGenProps{
 		// 	.size = {81, 81},
 		// });
+
+		p_impl->m_gimmick.resize(p_impl->m_map.Data().size(), GimmickKind::None);
+		p_impl->m_gimmick[p_impl->m_map.Rooms().RandomRoomPoint(true)] = GimmickKind::Stairs;
 
 		p_impl->m_player = AsParent().Birth(Player());
 
@@ -101,7 +105,27 @@ namespace Play
 		return p_impl->m_map;
 	}
 
+	const MapGrid& PlayScene::GetMap() const
+	{
+		return p_impl->m_map;
+	}
+
+	GimmickGrid& PlayScene::GetGimmick()
+	{
+		return p_impl->m_gimmick;
+	}
+
+	const GimmickGrid& PlayScene::GetGimmick() const
+	{
+		return p_impl->m_gimmick;
+	}
+
 	Player& PlayScene::GetPlayer()
+	{
+		return p_impl->m_player;
+	}
+
+	const Player& PlayScene::GetPlayer() const
 	{
 		return p_impl->m_player;
 	}
