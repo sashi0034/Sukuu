@@ -48,6 +48,8 @@ namespace Play
 	TerrainKind GetTerrainAt(const MapGrid& map, const CharaVec2& pos);
 	TerrainKind GetTerrainFor(const MapGrid& map, const CharaVec2& pos, Dir4Type dir);
 	bool CanMoveTo(const MapGrid& map, const CharaVec2& currentActualPos, Dir4Type dir);
+	bool CanMovePointTo(const MapGrid& map, const Point& point, Dir4Type dir);
+	bool CanMovePointAt(const MapGrid& map, const Point& point);
 
 	void ProcessMoveCharaPos(
 		YieldExtended& yield, ActorBase& self, CharaPosition& pos, const Vec2& nextPos, double moveDuration);

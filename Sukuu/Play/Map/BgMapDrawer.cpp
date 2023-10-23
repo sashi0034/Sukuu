@@ -1,11 +1,11 @@
 ﻿#include "stdafx.h"
 #include "BgMapDrawer.h"
 
-#include <iso646.h>
-
-#include "Assets.h"
+#include "AssetManual.h"
+#include "AssetsGenerated.h"
 #include "AutoTiler.h"
 #include "MapGrid.h"
+#include "Play/PlayScene.h"
 
 namespace Play
 {
@@ -82,15 +82,22 @@ namespace Play
 	void DrawBgMap(const MapGrid& map)
 	{
 		const auto inversed = (Graphics2D::GetCameraTransform() * Graphics2D::GetLocalTransform()).inverse();
-		const auto mapTl = inversed.transformPoint(Vec2{0, 0}).asPoint() / 24;
-		const auto mapBr = inversed.transformPoint(Scene::Size()).asPoint() / 24;
+		const auto mapTl = inversed.transformPoint(Vec2{0, 0}).asPoint() / CellPx_24;
+		const auto mapBr = inversed.transformPoint(Scene::Size()).asPoint() / CellPx_24;
 		for (int y = std::max(0, mapTl.y); y < std::min(mapBr.y + 1, map.Data().size().y); ++y)
 		{
 			for (int x = std::max(0, mapTl.x); x < std::min(mapBr.x + 1, map.Data().size().x); ++x)
 			{
-				(void)TextureAsset(AssetImages::magma_tile_24x24).draw(x * 24, y * 24);
+				const auto drawingPoint = Point{x, y} * CellPx_24;
+				(void)TextureAsset(AssetImages::magma_tile_24x24).draw(drawingPoint);
 				drawTileAt(map, y, x, TextureAsset(AssetImages::brick_stylish_24x24),
 				           TerrainKind::Wall, {TerrainKind::Wall});
+#ifdef _DEBUG
+				// const int player = PlayScene::Instance().GetPlayer().DistField()[Point{x, y}].distance;
+				// if (player >= 0)
+				// 	(void)FontAsset(AssetFonts::F24)(U"{}"_fmt(player))
+				// 		.drawAt(drawingPoint + Point{CellPx_24, CellPx_24} / 2);
+#endif
 			}
 		}
 	}

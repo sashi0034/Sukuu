@@ -87,13 +87,6 @@ namespace Play
 
 	void PlayScene::Update()
 	{
-		// if (MouseL.down())
-		// {
-		// 	p_impl->m_map = GenerateFreshDungeon(DungGenProps{
-		// 		.size = {81, 81},
-		// 		.areaDivision = 8,
-		// 	});
-		// }
 		p_impl->UpdateScene(*this);
 	}
 
@@ -106,5 +99,10 @@ namespace Play
 	MapGrid& PlayScene::GetMap()
 	{
 		return p_impl->m_map;
+	}
+
+	Player& PlayScene::GetPlayer()
+	{
+		return p_impl->m_player;
 	}
 }

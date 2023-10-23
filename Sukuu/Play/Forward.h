@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Assets.h"
+#include "AssetsGenerated.h"
 #include "Util/ActorBase.h"
 
 namespace Play

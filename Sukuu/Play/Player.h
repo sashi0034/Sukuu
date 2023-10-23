@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "Forward.h"
+#include "Player_detail\PlayerDefinition.h"
 
 namespace Play
 {
@@ -13,6 +14,7 @@ namespace Play
 		double OrderPriority() const override;
 
 		Mat3x2 CameraTransform() const;
+		const PlayerDistField& DistField() const;
 
 	private:
 		struct Impl;

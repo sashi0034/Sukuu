@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Forward.h"
+#include "Player.h"
 #include "Map/MapGrid.h"
 
 namespace Play
@@ -12,6 +13,7 @@ namespace Play
 		void Update() override;
 
 		MapGrid& GetMap();
+		Player& GetPlayer();
 
 		static PlayScene& Instance();
 

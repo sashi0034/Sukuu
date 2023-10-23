@@ -32,11 +32,27 @@ namespace Play
 		return map.Data()[p].kind;
 	}
 
+	bool canMoveAtInternal(const MapGrid& map, const Point next)
+	{
+		if (map.Data().inBounds(next) == false) return false;
+		return map.At(next).kind != TerrainKind::Wall;
+	}
+
 	bool CanMoveTo(const MapGrid& map, const CharaVec2& currentActualPos, Dir4Type dir)
 	{
 		const Point next = currentActualPos.MapPoint() + dir.ToXY().asPoint();
-		if (map.Data().inBounds(next) == false) return false;
-		return map.At(next).kind != TerrainKind::Wall;
+		return canMoveAtInternal(map, next);
+	}
+
+	bool CanMovePointTo(const MapGrid& map, const Point& point, Dir4Type dir)
+	{
+		const Point next = point + dir.ToXY().asPoint();
+		return canMoveAtInternal(map, next);
+	}
+
+	bool CanMovePointAt(const MapGrid& map, const Point& point)
+	{
+		return canMoveAtInternal(map, point);
 	}
 
 	void ProcessMoveCharaPos(

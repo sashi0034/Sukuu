@@ -4,6 +4,7 @@
 #include "PlayScene.h"
 #include "Chara\CharaUtil.h"
 #include "Player_detail/PlayerAnimation.h"
+#include "Player_detail/PlayerDistField.h"
 #include "Util/CoroUtil.h"
 #include "Util/Dir4.h"
 #include "Util/EasingAnimation.h"
@@ -29,6 +30,7 @@ struct Play::Player::Impl
 	PlayerAct m_act = PlayerAct::Idle;
 	AnimTimer m_animTimer{};
 	Dir4Type m_direction{Dir4::Down};
+	PlayerDistFieldInternal m_distField{};
 
 	void Update()
 	{
@@ -93,6 +95,7 @@ private:
 		// 移動
 		const auto nextPos = Vec2(m_pos.actualPos + moveDir.ToXY() * CellPx_24);
 		ProcessMoveCharaPos(yield, self, m_pos, nextPos, moveDuration());
+		m_distField.Refresh(PlayScene::Instance().GetMap(), nextPos);
 	}
 };
 
@@ -105,6 +108,8 @@ namespace Play
 	void Player::Init()
 	{
 		p_impl->m_pos.SetPos(GetInitialPos(PlayScene::Instance().GetMap()));
+
+		p_impl->m_distField.Resize(PlayScene::Instance().GetMap().Data().size());
 
 		StartCoro(*this, [*this](YieldExtended yield) mutable
 		{
@@ -128,5 +133,10 @@ namespace Play
 		return Mat3x2::Translate({Scene::Center()})
 		       .translated(-p_impl->m_pos.viewPos - playerRect.size / 2)
 		       .scaled(p_impl->m_cameraScale, Scene::Center());
+	}
+
+	const PlayerDistField& Player::DistField() const
+	{
+		return p_impl->m_distField.Field();
 	}
 }

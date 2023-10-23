@@ -1,6 +1,6 @@
 #pragma once
 #include "Play/Forward.h"
-#include "Assets.h"
+#include "AssetsGenerated.h"
 #include "Play/Chara/CharaUtil.h"
 #include "Util/Dir4.h"
 #include "Util/TomlParametersWrapper.h"

@@ -128,6 +128,7 @@
     <ClCompile Include="Play\Map\MapGrid.cpp" />
     <ClCompile Include="Play\Map\MazeGenerator.cpp" />
     <ClCompile Include="Play\Player.cpp" />
+    <ClCompile Include="Play\Player_detail\PlayerDistField.cpp" />
     <ClCompile Include="Play\PlayScene.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -334,7 +335,8 @@
     <Xml Include="App\example\xml\test.xml" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Assets.h" />
+    <ClInclude Include="AssetManual.h" />
+    <ClInclude Include="AssetsGenerated.h" />
     <ClInclude Include="Play\Chara\CharaUtil.h" />
     <ClInclude Include="Play\Enemy\EnSlimeCat.h" />
     <ClInclude Include="Play\Enemy\IEnemy.h" />
@@ -346,6 +348,8 @@
     <ClInclude Include="Play\Map\MazeGenerator.h" />
     <ClInclude Include="Play\Player.h" />
     <ClInclude Include="Play\Player_detail\PlayerAnimation.h" />
+    <ClInclude Include="Play\Player_detail\PlayerDistField.h" />
+    <ClInclude Include="Play\Player_detail\PlayerDefinition.h" />
     <ClInclude Include="Play\PlayScene.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Util\ActorBase.h" />

@@ -1,5 +1,6 @@
 ﻿#include "stdafx.h"
 
+#include "AssetManual.h"
 #include "Play/PlayScene.h"
 #include "Util/ActorContainer.h"
 #include "Util/TomlParametersWrapper.h"
@@ -20,6 +21,7 @@ void Main()
 	actorRoot.Birth(Play::PlayScene());
 
 	AssetImages::RegisterAll();
+	AssetFonts::RegisterAll();
 
 	while (System::Update())
 	{
