@@ -37,20 +37,18 @@ struct Play::Player::Impl
 	PlayerDistFieldInternal m_distField{};
 	bool m_completedGoal{};
 	bool m_isImmortal{};
+	std::function<void()> m_scoopDrawing = EmptyLambda<void()>();
 
 	void Update()
 	{
 		m_animTimer.Tick(Scene::DeltaTime() * (m_act == PlayerAct::Running ? 2 : 1));
 
+		m_scoopDrawing();
+		m_scoopDrawing = EmptyLambda<void()>();
+
 		const auto drawingPos = m_pos.viewPos.movedBy(GetCharacterCellPadding(playerRect.size) + m_animOffset);
-		if (m_act == PlayerAct::Dead)
-		{
-			(void)GetDeadPlayerTexture(playerRect).draw(drawingPos);
-		}
-		else
-		{
-			(void)GetUsualPlayerTexture(playerRect, m_direction, m_animTimer, isWalking()).draw(drawingPos);
-		}
+		(void)getPlayerTexture()
+			.draw(drawingPos);
 	}
 
 	void StartFlowchart(ActorBase& self)
@@ -92,7 +90,20 @@ struct Play::Player::Impl
 		});
 	}
 
+	Mat3x2 CameraTransform() const
+	{
+		return Mat3x2::Translate({Scene::Center()})
+		       .translated(-m_pos.viewPos - playerRect.size / 2)
+		       .scaled(m_cameraScale, Scene::Center());
+	}
+
 private:
+	TextureRegion getPlayerTexture() const
+	{
+		if (m_act == PlayerAct::Dead) return GetDeadPlayerTexture(playerRect);
+		return GetUsualPlayerTexture(playerRect, m_direction, m_animTimer, isWalking());
+	}
+
 	bool isWalking() const
 	{
 		return m_act == PlayerAct::Walk || m_act == PlayerAct::Running;
@@ -130,6 +141,9 @@ private:
 				m_animTimer.Reset();
 			}
 
+			// プレイヤーを掬おうとしてるかチェック
+			checkScoopFromMouse(yield, self);
+
 			yield();
 		}
 
@@ -150,6 +164,19 @@ private:
 		// ギミックチェック
 		const auto newPoint = CharaVec2(nextPos).MapPoint();
 		checkGimmickAt(yield, self, newPoint);
+	}
+
+	void checkScoopFromMouse(YieldExtended& yield, ActorBase& self)
+	{
+		if (RectF(m_pos.actualPos, {CellPx_24, CellPx_24}).intersects(Cursor::PosF()) == false)
+			return;
+		// 以下、マウスカーソルが当たった状態
+
+		m_scoopDrawing = [this]()
+		{
+			RectF(m_pos.actualPos, {CellPx_24, CellPx_24}).draw(
+				GetTomlParameter<ColorF>(U"play.en_slime_cat.scoop_rect_color_1"));
+		};
 	}
 
 	void checkGimmickAt(YieldExtended& yield, ActorBase& self, const Point newPoint)
@@ -209,9 +236,7 @@ namespace Play
 
 	Mat3x2 Player::CameraTransform() const
 	{
-		return Mat3x2::Translate({Scene::Center()})
-		       .translated(-p_impl->m_pos.viewPos - playerRect.size / 2)
-		       .scaled(p_impl->m_cameraScale, Scene::Center());
+		return p_impl->CameraTransform();
 	}
 
 	const PlayerDistField& Player::DistField() const

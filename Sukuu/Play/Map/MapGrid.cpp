@@ -13,7 +13,7 @@ namespace Play
 		auto&& size = (*this)[index].size;
 		const int odd = isOdd ? 1 : 0;
 		return (*this)[index].tl()
-			+ Point{Random(0, size.x - 1), Random(0, size.y - 1)} / 2 * 2
+			+ Point{Random(0, size.x - 1 - odd), Random(0, size.y - 1 - odd)} / 2 * 2
 			+ Point{odd, odd};
 	}
 }

@@ -41,7 +41,7 @@ namespace Play
 			if (m_camera == CameraKind::Debug) m_debugCamera.update();
 
 			const auto t = m_camera == CameraKind::Player
-				               ? Transformer2D(m_player.CameraTransform())
+				               ? Transformer2D(m_player.CameraTransform(), TransformCursor::Yes)
 				               : m_debugCamera.createTransformer();
 
 			const ScopedRenderStates2D sampler{SamplerState::BorderNearest};

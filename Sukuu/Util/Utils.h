@@ -15,4 +15,17 @@ namespace Util
 	private:
 		T m_value;
 	};
+
+	template <typename FuncType>
+	std::function<FuncType> EmptyLambda()
+	{
+		return [](auto&&... args) -> decltype(auto)
+		{
+			(void)sizeof...(args);
+			if constexpr (!std::is_void_v<decltype(std::declval<FuncType>()(std::declval<decltype(args)>()...))>)
+			{
+				return decltype(std::declval<FuncType>()(std::declval<decltype(args)>()...)){};
+			}
+		};
+	}
 }
