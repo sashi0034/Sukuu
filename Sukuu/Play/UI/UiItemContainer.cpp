@@ -1,15 +1,15 @@
 ﻿#include "stdafx.h"
 #include "UiItemContainer.h"
 
-#include "AssetKeys.h"
 #include "UiItemButton.h"
+#include "Play/PlayScene.h"
 #include "Util/CoroUtil.h"
 #include "Util/EasingAnimation.h"
 #include "Util/TomlParametersWrapper.h"
 
 struct Play::UiItemContainer::Impl
 {
-	std::array<UiItemButton, 9> m_items;
+	std::array<UiItemButton, MaxItemPossession> m_items;
 	Vec2 m_offset{};
 	double m_scale = 1.0;
 	CoroActor m_animation{};
@@ -19,15 +19,15 @@ struct Play::UiItemContainer::Impl
 	{
 		const auto center = Point{Scene::Center().x, 60};
 		const Transformer2D transform{Mat3x2::Translate(m_offset).scaled(m_scale, center)};
+		const auto& playerItems = PlayScene::Instance().GetPlayer().PersonalData().items;
 
 		for (int i = 0; i < m_items.size(); ++i)
 		{
 			m_items[i].Tick({
 				.label = m_itemLabel,
 				.index = (i + 1),
-				.font = static_cast<Font>(FontAsset(AssetKeys::F24)),
-				.center = center.movedBy({(i - m_items.size() / 2) * 80, 0}),
-				.icon = static_cast<Texture>(TextureAsset(U"😎"))
+				.center = center.movedBy({(i - m_items.size() / 2) * 96, 0}),
+				.item = playerItems[i]
 			});
 		}
 

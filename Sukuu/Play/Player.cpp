@@ -28,6 +28,7 @@ struct Play::Player::Impl
 	CoroActor m_flowchart{};
 	ActorBase m_focusAnimation{};
 
+	PlayerPersonalData m_personal{};
 	CharaPosition m_pos;
 	Vec2 m_animOffset{};
 	double m_moveSpeed = 1.0;
@@ -101,7 +102,7 @@ struct Play::Player::Impl
 	Mat3x2 CameraTransform() const
 	{
 		return Mat3x2::Translate({Scene::Center()})
-		       .translated(-m_pos.viewPos - playerRect.size / 2)
+		       .translated(-m_pos.viewPos - Vec2{CellPx_24, CellPx_24} / 2)
 		       .scaled(m_cameraScale * m_focusCameraRate, Scene::Center());
 	}
 
@@ -301,6 +302,8 @@ namespace Play
 		p_impl->m_distField.Resize(PlayScene::Instance().GetMap().Data().size());
 
 		p_impl->StartFlowchart(*this);
+
+		p_impl->m_personal.items[0] = ConsumableItem::Helmet;
 	}
 
 	void Player::Update()
@@ -317,6 +320,11 @@ namespace Play
 	void Player::SendEnemyCollide(const RectF& rect)
 	{
 		p_impl->EnemyCollide(*this, rect);
+	}
+
+	const PlayerPersonalData& Player::PersonalData() const
+	{
+		return p_impl->m_personal;
 	}
 
 	Mat3x2 Player::CameraTransform() const

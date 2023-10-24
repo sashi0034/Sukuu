@@ -91,7 +91,8 @@ private:
 	{
 		auto&& playerDf = PlayScene::Instance().GetPlayer().DistField();
 		const int currentDist = playerDf[currentPoint].distance;
-		const auto nextDist = playerDf[currentPoint + m_direction.ToXY().asPoint()].distance;
+		const auto nextPoint = currentPoint + m_direction.ToXY().asPoint();
+		const auto nextDist = playerDf[nextPoint].distance;
 
 		if ((nextDist > currentDist || currentDist == PlayerDistanceInfinity) && m_playerFollowing > 0)
 		{
@@ -119,7 +120,8 @@ private:
 		if (isInPathway)
 		{
 			// 通路の中
-			if (playerDf[currentPoint].directStraight && nextDist < currentDist) resetFollowing();
+			if ((playerDf[currentPoint].directStraight || playerDf[nextPoint].directStraight) && nextDist < currentDist)
+				resetFollowing();
 		}
 		else
 		{

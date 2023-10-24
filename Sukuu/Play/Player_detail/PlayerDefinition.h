@@ -1,5 +1,8 @@
 ﻿#pragma once
 
+#include "Play/ConsumableItem.h"
+#include "Play/Forward.h"
+
 namespace Play
 {
 	constexpr int PlayerDistanceInfinity = INT32_MAX / 2;
@@ -8,6 +11,11 @@ namespace Play
 	{
 		int distance = PlayerDistanceInfinity;
 		bool directStraight = false;
+	};
+
+	struct PlayerPersonalData
+	{
+		std::array<ConsumableItem, MaxItemPossession> items;
 	};
 
 	using PlayerDistField = Grid<PlayerPosRelation>;

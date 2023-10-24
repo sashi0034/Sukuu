@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "UiItemButton.h"
 
+#include "AssetKeys.h"
 #include "Util/CoroActor.h"
 #include "Util/CoroUtil.h"
 #include "Util/EasingAnimation.h"
@@ -8,29 +9,37 @@
 class Play::UiItemButton::Impl
 {
 public:
+	bool m_enteredBefore{};
+	double m_scale{1};
+
 	void Tick(ActorBase& self, const ItemButtonParam& param)
 	{
-		const int w = 60 * m_scale;
+		const int w = 80 * m_scale;
 		constexpr int r = 10;
+
+		auto&& itemProps = GetItemProps(param.item);
+		const bool isItemContaining = param.item != ConsumableItem::None;
 
 		const auto rect = RoundRect{param.center - Point{w / 2, w / 2}, w, w, r};
 		const bool entered = rect.rect.mouseOver();
 		(void)rect
 		      .drawShadow(Vec2{6, 6}, 24, 3)
-		      .draw(Color{U"#3b3b3b"}.lerp(Palette::White, entered ? 0.7 : 0.0));
+		      .draw(Color{U"#3b3b3b"}.lerp(Palette::White, entered && isItemContaining ? 0.7 : 0.0));
 		const auto textPos = param.center - Point{w / 3, w / 2};
 		Circle(textPos, w / 4)
 			.drawShadow(Vec2{2, 2}, 8, 2)
 			.draw(Color{U"#404040"});
-		(void)param.font(U"{}"_fmt(param.index)).drawAt(textPos);
-		(void)param.icon.resized(Vec2{w, w} * 0.8f).drawAt(
-			param.center, ColorF(entered ? 0.7 : 1.0));
+		(void)FontAsset(AssetKeys::F24)(U"{}"_fmt(param.index)).drawAt(textPos);
+
+		if (isItemContaining)
+			(void)TextureAsset(itemProps.emoji).resized(Vec2{w, w} * 0.8f).drawAt(
+				param.center, ColorF(entered ? 0.7 : 1.0));
 
 		if (entered && not m_enteredBefore)
 		{
 			m_scale = 1;
 			AnimateEasing<BoomerangParabola>(self, &m_scale, 1.1, 0.2);
-			param.label.ShowMessage(param.font(U"Hello world"));
+			if (isItemContaining) param.label.ShowMessage(FontAsset(AssetKeys::F24)(itemProps.desc));
 		}
 		else if (not entered && m_enteredBefore)
 		{
@@ -40,10 +49,6 @@ public:
 		}
 		m_enteredBefore = entered;
 	}
-
-private:
-	bool m_enteredBefore{};
-	double m_scale{1};
 };
 
 namespace Play

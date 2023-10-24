@@ -15,6 +15,7 @@ namespace Play
 
 		void SendEnemyCollide(const RectF& rect);
 
+		const PlayerPersonalData& PersonalData() const;
 		Mat3x2 CameraTransform() const;
 		Point CurrentPoint() const;
 		const PlayerDistField& DistField() const;

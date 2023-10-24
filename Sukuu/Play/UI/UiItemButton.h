@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "Play/ConsumableItem.h"
 #include "Play/Forward.h"
 
 namespace Play
@@ -9,9 +10,8 @@ namespace Play
 	{
 		UiItemLabel& label;
 		int index;
-		Font font;
 		Point center;
-		Texture icon;
+		ConsumableItem item;
 	};
 
 	class UiItemButton : public ActorBase

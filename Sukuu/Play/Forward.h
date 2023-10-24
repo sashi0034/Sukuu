@@ -14,5 +14,7 @@ namespace Play
 	constexpr Point GetCharacterCellPadding(const Size& spriteSize)
 	{
 		return {(CellPx_24 - spriteSize.x) / 2, CellPx_24 - spriteSize.y - CharacterPadding_4};
-	};
+	}
+
+	constexpr int MaxItemPossession = 9;
 }
