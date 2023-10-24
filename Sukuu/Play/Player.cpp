@@ -93,7 +93,7 @@ struct Play::Player::Impl
 		m_flowchart.Kill();
 		m_distField.Clear();
 		m_scoopDrawing = {};
-		focusFor<EaseOutBack>(self, GetTomlParameter<double>(U"play.player.focus_scale_large"));
+		focusCameraFor<EaseOutBack>(self, GetTomlParameter<double>(U"play.player.focus_scale_large"));
 
 		// やられた演出
 		StartCoro(self, [this, self](YieldExtended yield) mutable
@@ -102,13 +102,20 @@ struct Play::Player::Impl
 			yield.WaitForTime(0.5, Scene::DeltaTime);
 			SetTimeScale(1);
 
-			AnimateEasing<BoomerangParabola>(
+			yield.WaitForDead(AnimateEasing<BoomerangParabola>(
+					self,
+					&m_animOffset,
+					GetTomlParameter<Vec2>(U"play.player.dead_animation_offset_1"),
+					GetTomlParameter<double>(U"play.player.dead_animation_duration_1"))
+			);
+			yield.WaitForDead(AnimateEasing<BoomerangParabola>(
 				self,
 				&m_animOffset,
-				GetTomlParameter<Vec2>(U"play.player.dead_animation_offset"),
-				GetTomlParameter<double>(U"play.player.dead_animation_duration"));
+				GetTomlParameter<Vec2>(U"play.player.dead_animation_offset_2"),
+				GetTomlParameter<double>(U"play.player.dead_animation_duration_2")));
 			yield.WaitForTime(GetTomlParameter<double>(U"play.player.dead_pause_duration"));
-			focusFor<EaseInOutBack>(self, 1.0);
+
+			focusCameraFor<EaseInOutBack>(self, 1.0);
 			StartFlowchart(self);
 		});
 	}
@@ -197,7 +204,7 @@ private:
 	}
 
 	template <double easing(double) = EaseInOutSine>
-	void focusFor(ActorBase& self, double scale)
+	void focusCameraFor(ActorBase& self, double scale)
 	{
 		m_focusAnimation.Kill();
 		AnimateEasing<easing>(self, &m_focusCameraRate, scale, 0.5);
@@ -210,14 +217,14 @@ private:
 		// 以下、マウスカーソルが当たった状態
 
 		// マウスクリックまで待機
-		focusFor(self, GetTomlParameter<double>(U"play.player.focus_scale_large"));
+		focusCameraFor(self, GetTomlParameter<double>(U"play.player.focus_scale_large"));
 		m_scoopDrawing = [this, self]() mutable
 		{
 			if (RectF(m_pos.actualPos, {CellPx_24, CellPx_24}).intersects(Cursor::PosF()) == false)
 			{
 				// 解除
 				m_scoopDrawing = {};
-				focusFor(self, 1.0);
+				focusCameraFor(self, 1.0);
 				return;
 			}
 			RectF(m_pos.actualPos.MapPoint() * CellPx_24, {CellPx_24, CellPx_24})
@@ -273,7 +280,7 @@ private:
 		}
 
 	dropped:;
-		focusFor(self, 1.0);
+		focusCameraFor(self, 1.0);
 		yield.WaitForTrue([]()
 		{
 			return MouseL.pressed() == false;
