@@ -51,6 +51,9 @@ namespace Play
 
 		const Point playerPoint = playerPos.MapPoint();
 
+		// プレイヤーが壁などにいるなら、更新しない
+		if (CanMovePointAt(map, playerPoint) == false) return;
+
 		m_field[playerPoint] = {.distance = 0};
 		if (CanMovePointAt(map, playerPoint) == false) return;
 

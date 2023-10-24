@@ -24,10 +24,4 @@ namespace Play
 		PlayerDistField m_field{};
 		Array<Point> m_wroteHistory{};
 	};
-
-	void RefreshPlayerDistField(
-		PlayerDistField& distField,
-		const MapGrid& map,
-		const CharaVec2& oldPos,
-		const CharaVec2& newPos);
 }

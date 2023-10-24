@@ -95,22 +95,7 @@ struct Play::Player::Impl
 		// やられた演出
 		StartCoro(self, [this, self](YieldExtended yield) mutable
 		{
-			SetTimeScale(GetTomlParameter<double>(U"play.player.hitstopping_timescale"));
-			yield.WaitForTime(0.5, Scene::DeltaTime);
-			SetTimeScale(1);
-
-			yield.WaitForDead(AnimateEasing<BoomerangParabola>(
-					self,
-					&m_animOffset,
-					GetTomlParameter<Vec2>(U"play.player.dead_animation_offset_1"),
-					GetTomlParameter<double>(U"play.player.dead_animation_duration_1"))
-			);
-			yield.WaitForDead(AnimateEasing<BoomerangParabola>(
-				self,
-				&m_animOffset,
-				GetTomlParameter<Vec2>(U"play.player.dead_animation_offset_2"),
-				GetTomlParameter<double>(U"play.player.dead_animation_duration_2")));
-			yield.WaitForTime(GetTomlParameter<double>(U"play.player.dead_pause_duration"));
+			AnimatePlayerDie(yield, self, m_animOffset);
 
 			focusCameraFor<EaseInOutBack>(self, 1.0);
 			StartFlowchart(self);
@@ -292,7 +277,7 @@ private:
 				if (r.intersects(Cursor::PosF()) == false) continue;
 
 				// 移動させる
-				m_distField.Clear();
+				// m_distField.Clear();
 				m_scoopDrawing = {};
 				m_isImmortal = true;
 				const double animDuration = GetTomlParameter<double>(U"play.player.scoop_move_duration");
@@ -300,6 +285,7 @@ private:
 				ProcessMoveCharaPos(
 					yield, self, m_pos, checkingPos,
 					animDuration);
+				m_distField.Refresh(PlayScene::Instance().GetMap(), m_pos.actualPos);
 				m_isImmortal = false;
 				goto dropped;
 			}
@@ -342,13 +328,7 @@ private:
 		breakFlowchart();
 		StartCoro(self, [this, self](YieldExtended yield) mutable
 		{
-			const auto stairs = PlayScene::Instance().GetGimmick().GetSinglePoint(GimmickKind::Stairs);
-			const Vec2 warpPos = stairs.movedBy(0, 1) * CellPx_24;
-			const double animDuration = GetTomlParameter<double>(U"play.player.warp_duration");
-			AnimateEasing<BoomerangParabola>(
-				self, &m_animOffset, GetTomlParameter<Vec2>(U"play.player.warp_jump_offset"), animDuration);
-			ProcessMoveCharaPos<EaseInOutBack>(
-				yield, self, m_pos, warpPos, animDuration);
+			AnimatePlayerUsingWing(yield, self, m_animOffset, m_pos);
 			StartFlowchart(self);
 		});
 		return true;

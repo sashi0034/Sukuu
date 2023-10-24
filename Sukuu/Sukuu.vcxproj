@@ -130,6 +130,7 @@
     <ClCompile Include="Play\Map\MapGrid.cpp" />
     <ClCompile Include="Play\Map\MazeGenerator.cpp" />
     <ClCompile Include="Play\Player.cpp" />
+    <ClCompile Include="Play\Player_detail\PlayerAnimation.cpp" />
     <ClCompile Include="Play\Player_detail\PlayerDistField.cpp" />
     <ClCompile Include="Play\PlayScene.cpp" />
     <ClCompile Include="Play\UI\UiItemButton.cpp" />
