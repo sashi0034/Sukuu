@@ -141,6 +141,7 @@
     <ClCompile Include="Util\CoroActor.cpp" />
     <ClCompile Include="Util\CoroUtil.cpp" />
     <ClCompile Include="Util\TomlParametersWrapper.cpp" />
+    <ClCompile Include="Util\Utilities.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="App\engine\texture\box-shadow\128.png" />
@@ -364,7 +365,7 @@
     <ClInclude Include="Util\Dir4.h" />
     <ClInclude Include="Util\EasingAnimation.h" />
     <ClInclude Include="Util\TomlParametersWrapper.h" />
-    <ClInclude Include="Util\Utils.h" />
+    <ClInclude Include="Util\Utilities.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App\example\obj\blacksmith.obj">

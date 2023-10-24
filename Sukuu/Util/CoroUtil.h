@@ -1,6 +1,7 @@
 ﻿#pragma once
 #include "ActorContainer.h"
 #include "CoroActor.h"
+#include "Utilities.h"
 
 namespace Util
 {
@@ -14,7 +15,7 @@ namespace Util
 	public:
 		YieldExtended(CoroTaskYield& y) : yield(y) { return; }
 
-		void WaitForTime(double seconds);
+		void WaitForTime(double seconds, const std::function<double()>& dt = GetDeltaTime);
 		void WaitForTrue(const std::function<bool()>& discriminant);
 		void WaitForFalse(const std::function<bool()>& discriminant);
 		void WaitForDead(const ActorBase& coro);

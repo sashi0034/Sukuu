@@ -1,14 +1,16 @@
 ﻿#include "stdafx.h"
 #include "CoroUtil.h"
 
+#include "Utilities.h"
+
 namespace Util
 {
-	CoroTask YieldExtended::WaitForTime(double seconds)
+	void YieldExtended::WaitForTime(double seconds, const std::function<double()>& dt)
 	{
 		double totalTime = 0;
 		while (totalTime < seconds)
 		{
-			totalTime += Scene::DeltaTime();
+			totalTime += dt();
 			yield();
 		}
 	}

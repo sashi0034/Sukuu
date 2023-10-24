@@ -1,8 +1,7 @@
 ﻿#include "stdafx.h"
 #include "EnSlimeCat.h"
 
-#include <iso646.h>
-
+#include "AssetsGenerated.h"
 #include "Play/PlayScene.h"
 #include "Play/Chara/CharaUtil.h"
 #include "Util/TomlParametersWrapper.h"

@@ -41,7 +41,7 @@ struct Play::Player::Impl
 
 	void Update()
 	{
-		m_animTimer.Tick(Scene::DeltaTime() * (m_act == PlayerAct::Running ? 2 : 1));
+		m_animTimer.Tick(GetDeltaTime() * (m_act == PlayerAct::Running ? 2 : 1));
 
 		if (m_scoopDrawing) m_scoopDrawing();;
 		m_scoopDrawing = {};
@@ -80,6 +80,10 @@ struct Play::Player::Impl
 		// やられた演出
 		StartCoro(self, [this, self](YieldExtended yield) mutable
 		{
+			SetTimeScale(0.01);
+			yield.WaitForTime(0.5, Scene::DeltaTime);
+			SetTimeScale(1);
+
 			AnimateEasing<BoomerangParabola>(
 				self,
 				&m_animOffset,
@@ -204,11 +208,7 @@ private:
 				for (int i = 0; i < 4; ++i)
 				{
 					auto r = RectF(m_pos.actualPos.movedBy(Dir4Type(i).ToXY() * CellPx_24), {CellPx_24, CellPx_24});
-					r.draw(
-						GetTomlParameter<ColorF>(U"play.en_slime_cat.scoop_rect_color_2"));
-					// r.intersects(Cursor::PosF())
-					// 	? GetTomlParameter<ColorF>(U"play.en_slime_cat.scoop_rect_color_3")
-					// 	: GetTomlParameter<ColorF>(U"play.en_slime_cat.scoop_rect_color_2"));
+					r.draw(GetTomlParameter<ColorF>(U"play.en_slime_cat.scoop_rect_color_2"));
 				}
 			};
 

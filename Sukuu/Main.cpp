@@ -16,7 +16,7 @@ void Main()
 	Window::SetStyle(WindowStyle::Sizable);
 	Scene::SetResizeMode(ResizeMode::Keep);
 	Scene::Resize(1920, 1080);
-	Window::Resize(1280, 720);
+	Window::Resize(Size{1280, 720});
 
 	TomlParametersWrapper tomlParametersWrapper{};
 	ActorContainer actorRoot{};

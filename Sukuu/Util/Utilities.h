@@ -2,6 +2,11 @@
 
 namespace Util
 {
+	void SetTimeScale(double scale);
+	double GetTimeScale();
+
+	double GetDeltaTime();
+
 	template <typename T>
 	class EnumValue
 	{

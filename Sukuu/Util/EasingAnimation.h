@@ -9,6 +9,7 @@ namespace Util
 		enum : uint64
 		{
 			EndStop = 1 << 0,
+			IgnoreTimeScale = 1 << 1,
 		};
 
 		constexpr uint64 None = 0;
@@ -34,7 +35,11 @@ namespace Util
 
 		void Update() override
 		{
-			m_state->time += Scene::DeltaTime();
+			if constexpr (option & EaseOption::IgnoreTimeScale)
+				m_state->time += Scene::DeltaTime();
+			else
+				m_state->time += GetDeltaTime();
+
 			if (m_state->time >= m_state->duration)
 			{
 				if constexpr (option & EaseOption::EndStop) m_state->time = m_state->duration;
