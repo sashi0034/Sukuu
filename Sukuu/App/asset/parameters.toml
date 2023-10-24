@@ -18,6 +18,9 @@ dead_animation_offset = "(0, -32)"
 dead_animation_duration = 1.0
 dead_pause_duration = 2.0
 scoop_rect_color_1 = "#6c95ebd0"
+scoop_rect_color_2 = "#ffd217d0"
+scoop_rect_color_3 = "#a2ff17d0"
+scoop_move_duration = 0.5
 
 [play.debug]
 visualize_player_distance = false

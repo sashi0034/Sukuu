@@ -37,14 +37,14 @@ struct Play::Player::Impl
 	PlayerDistFieldInternal m_distField{};
 	bool m_completedGoal{};
 	bool m_isImmortal{};
-	std::function<void()> m_scoopDrawing = EmptyLambda<void()>();
+	std::function<void()> m_scoopDrawing = {};
 
 	void Update()
 	{
 		m_animTimer.Tick(Scene::DeltaTime() * (m_act == PlayerAct::Running ? 2 : 1));
 
-		m_scoopDrawing();
-		m_scoopDrawing = EmptyLambda<void()>();
+		if (m_scoopDrawing) m_scoopDrawing();;
+		m_scoopDrawing = {};
 
 		const auto drawingPos = m_pos.viewPos.movedBy(GetCharacterCellPadding(playerRect.size) + m_animOffset);
 		(void)getPlayerTexture()
@@ -127,10 +127,7 @@ private:
 		auto moveDir = Dir4::Invalid;
 		while (true)
 		{
-			if (KeyW.pressed()) moveDir = Dir4::Up;
-			if (KeyA.pressed()) moveDir = Dir4::Left;
-			if (KeyS.pressed()) moveDir = Dir4::Down;
-			if (KeyD.pressed()) moveDir = Dir4::Right;
+			moveDir = checkMoveInput();
 			if (moveDir != Dir4::Invalid &&
 				CanMoveTo(PlayScene::Instance().GetMap(), m_pos.actualPos, moveDir))
 				break;
@@ -166,17 +163,79 @@ private:
 		checkGimmickAt(yield, self, newPoint);
 	}
 
+	static Dir4Type checkMoveInput()
+	{
+		if (KeyW.pressed()) return Dir4::Up;
+		if (KeyA.pressed()) return Dir4::Left;
+		if (KeyS.pressed()) return Dir4::Down;
+		if (KeyD.pressed()) return Dir4::Right;
+		return Dir4::Invalid;
+	}
+
 	void checkScoopFromMouse(YieldExtended& yield, ActorBase& self)
 	{
+		if (MouseL.pressed()) return;
 		if (RectF(m_pos.actualPos, {CellPx_24, CellPx_24}).intersects(Cursor::PosF()) == false)
 			return;
 		// 以下、マウスカーソルが当たった状態
 
-		m_scoopDrawing = [this]()
+		// マウスクリックまで待機
+		while (true)
 		{
-			RectF(m_pos.actualPos, {CellPx_24, CellPx_24}).draw(
-				GetTomlParameter<ColorF>(U"play.en_slime_cat.scoop_rect_color_1"));
-		};
+			if (checkMoveInput() != Dir4::Invalid) return;
+			if (RectF(m_pos.actualPos, {CellPx_24, CellPx_24}).intersects(Cursor::PosF()) == false)
+				return;
+
+			m_scoopDrawing = [this]()
+			{
+				RectF(m_pos.actualPos, {CellPx_24, CellPx_24})
+					.draw(GetTomlParameter<ColorF>(U"play.en_slime_cat.scoop_rect_color_1"));
+			};
+
+			yield();
+			if (MouseL.down()) break;
+		}
+
+		// ドラッグ解除まで待機
+		while (true)
+		{
+			m_scoopDrawing = [this]()
+			{
+				for (int i = 0; i < 4; ++i)
+				{
+					auto r = RectF(m_pos.actualPos.movedBy(Dir4Type(i).ToXY() * CellPx_24), {CellPx_24, CellPx_24});
+					r.draw(
+						GetTomlParameter<ColorF>(U"play.en_slime_cat.scoop_rect_color_2"));
+					// r.intersects(Cursor::PosF())
+					// 	? GetTomlParameter<ColorF>(U"play.en_slime_cat.scoop_rect_color_3")
+					// 	: GetTomlParameter<ColorF>(U"play.en_slime_cat.scoop_rect_color_2"));
+				}
+			};
+
+			yield();
+			if (MouseL.pressed() == false) break;
+
+			// 目標が決まったかチェック
+			for (int i = 0; i < 4; ++i)
+			{
+				const auto checkingPos = m_pos.actualPos.movedBy(Dir4Type(i).ToXY() * CellPx_24);
+				auto r = RectF(checkingPos, {CellPx_24, CellPx_24});
+				if (r.intersects(Cursor::PosF()) == false) continue;
+
+				// 移動させる
+				m_distField.Clear();
+				m_isImmortal = true;
+				const double animDuration = GetTomlParameter<double>(U"play.en_slime_cat.scoop_move_duration");
+				AnimateEasing<BoomerangParabola>(self, &m_animOffset, Vec2{0, -32}, animDuration);
+				ProcessMoveCharaPos(
+					yield, self, m_pos, checkingPos,
+					animDuration);
+				m_isImmortal = false;
+				goto dropped;
+			}
+		}
+
+	dropped:;
 	}
 
 	void checkGimmickAt(YieldExtended& yield, ActorBase& self, const Point newPoint)
