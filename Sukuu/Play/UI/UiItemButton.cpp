@@ -35,13 +35,17 @@ public:
 			(void)TextureAsset(itemProps.emoji).resized(Vec2{w, w} * 0.8f).drawAt(
 				param.center, ColorF(entered ? 0.7 : 1.0));
 
+		const bool justUsed = entered && MouseL.down()
+			                      ? param.requestUse()
+			                      : false;
+
 		if (entered && not m_enteredBefore)
 		{
 			m_scale = 1;
 			AnimateEasing<BoomerangParabola>(self, &m_scale, 1.1, 0.2);
 			if (isItemContaining) param.label.ShowMessage(FontAsset(AssetKeys::F24)(itemProps.desc));
 		}
-		else if (not entered && m_enteredBefore)
+		else if ((not entered && m_enteredBefore) || justUsed)
 		{
 			m_scale = 1;
 			AnimateEasing<BoomerangParabola>(self, &m_scale, 0.9, 0.2);

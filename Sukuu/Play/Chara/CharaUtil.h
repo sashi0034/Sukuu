@@ -51,7 +51,12 @@ namespace Play
 	bool CanMovePointTo(const MapGrid& map, const Point& point, Dir4Type dir);
 	bool CanMovePointAt(const MapGrid& map, const Point& point);
 
+	template <double easing(double) = EaseInLinear>
 	void ProcessMoveCharaPos(
+		YieldExtended& yield, ActorBase& self, CharaPosition& pos, const Vec2& nextPos, double moveDuration);
+	template void ProcessMoveCharaPos<EaseInLinear>(
+		YieldExtended& yield, ActorBase& self, CharaPosition& pos, const Vec2& nextPos, double moveDuration);
+	template void ProcessMoveCharaPos<EaseInOutBack>(
 		YieldExtended& yield, ActorBase& self, CharaPosition& pos, const Vec2& nextPos, double moveDuration);
 
 	Vec2 GetInitialPos(const MapGrid& map);

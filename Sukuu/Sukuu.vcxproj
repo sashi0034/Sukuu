@@ -123,6 +123,7 @@
     <ClCompile Include="Play\Chara\CharaUtil.cpp" />
     <ClCompile Include="Play\ConsumableItem.cpp" />
     <ClCompile Include="Play\Enemy\EnSlimeCat.cpp" />
+    <ClCompile Include="Play\GimmickGrid.cpp" />
     <ClCompile Include="Play\Map\AutoTiler.cpp" />
     <ClCompile Include="Play\Map\DungeonGenerator.cpp" />
     <ClCompile Include="Play\Map\BgMapDrawer.cpp" />
@@ -347,7 +348,7 @@
     <ClInclude Include="Play\Enemy\EnSlimeCat.h" />
     <ClInclude Include="Play\Enemy\IEnemy.h" />
     <ClInclude Include="Play\Forward.h" />
-    <ClInclude Include="Play\Gimmick.h" />
+    <ClInclude Include="Play\GimmickGrid.h" />
     <ClInclude Include="Play\Map\AutoTiler.h" />
     <ClInclude Include="Play\Map\DungeonGenerator.h" />
     <ClInclude Include="Play\Map\BgMapDrawer.h" />

@@ -88,11 +88,8 @@ struct Play::Player::Impl
 		if (enemy.intersects(player) == false) return;
 		// 以下、当たった状態
 
-		m_cameraOffsetDestination = {0, 0};
 		m_act = PlayerAct::Dead;
-		m_flowchart.Kill();
-		m_distField.Clear();
-		m_scoopDrawing = {};
+		breakFlowchart();
 		focusCameraFor<EaseOutBack>(self, GetTomlParameter<double>(U"play.player.focus_scale_large"));
 
 		// やられた演出
@@ -120,6 +117,27 @@ struct Play::Player::Impl
 		});
 	}
 
+	bool UseItem(ActorBase& self, ConsumableItem item)
+	{
+		if (m_act != PlayerAct::Idle) return false;
+
+		switch (item)
+		{
+		case ConsumableItem::None:
+			break;
+		case ConsumableItem::Wing:
+			return gotoStairsByWing(self);
+		case ConsumableItem::Helmet:
+			break;
+		case ConsumableItem::Pin:
+			break;
+		case ConsumableItem::Max:
+			break;
+		default: ;
+		}
+		return false;
+	}
+
 	Mat3x2 CameraTransform() const
 	{
 		return Mat3x2::Translate({Scene::Center()})
@@ -145,13 +163,21 @@ private:
 			/ (m_moveSpeed * (m_act == PlayerAct::Running ? 2.0 : 1.0));
 	}
 
+	void breakFlowchart()
+	{
+		m_cameraOffsetDestination = {0, 0};
+		m_flowchart.Kill();
+		m_distField.Clear();
+		m_scoopDrawing = {};
+	}
+
 	void flowchartLoop(YieldExtended& yield, ActorBase& self)
 	{
 		if (m_act == PlayerAct::Dead)
 		{
 			m_act = PlayerAct::Idle;
-			m_distField.Refresh(PlayScene::Instance().GetMap(), m_pos.actualPos);
 		}
+		m_distField.Refresh(PlayScene::Instance().GetMap(), m_pos.actualPos);
 
 		// キー入力待ち
 		auto moveDir = Dir4::Invalid;
@@ -187,7 +213,7 @@ private:
 		// 移動
 		const auto nextPos = Vec2(m_pos.actualPos + moveDir.ToXY() * CellPx_24);
 		ProcessMoveCharaPos(yield, self, m_pos, nextPos, moveDuration());
-		m_distField.Refresh(PlayScene::Instance().GetMap(), nextPos);
+		// m_distField.Refresh(PlayScene::Instance().GetMap(), nextPos);
 
 		// ギミックチェック
 		const auto newPoint = CharaVec2(nextPos).MapPoint();
@@ -310,6 +336,23 @@ private:
 			break;
 		}
 	}
+
+	bool gotoStairsByWing(ActorBase& self)
+	{
+		breakFlowchart();
+		StartCoro(self, [this, self](YieldExtended yield) mutable
+		{
+			const auto stairs = PlayScene::Instance().GetGimmick().GetSinglePoint(GimmickKind::Stairs);
+			const Vec2 warpPos = stairs.movedBy(0, 1) * CellPx_24;
+			const double animDuration = GetTomlParameter<double>(U"play.player.warp_duration");
+			AnimateEasing<BoomerangParabola>(
+				self, &m_animOffset, GetTomlParameter<Vec2>(U"play.player.warp_jump_offset"), animDuration);
+			ProcessMoveCharaPos<EaseInOutBack>(
+				yield, self, m_pos, warpPos, animDuration);
+			StartFlowchart(self);
+		});
+		return true;
+	}
 };
 
 namespace Play
@@ -344,6 +387,16 @@ namespace Play
 	void Player::SendEnemyCollide(const RectF& rect)
 	{
 		p_impl->EnemyCollide(*this, rect);
+	}
+
+	bool Player::RequestUseItem(int itemIndex)
+	{
+		const bool used = p_impl->UseItem(*this, p_impl->m_personal.items[itemIndex]);
+		if (used)
+		{
+			p_impl->m_personal.items[itemIndex] = ConsumableItem::None;
+		}
+		return used;
 	}
 
 	const PlayerPersonalData& Player::PersonalData() const

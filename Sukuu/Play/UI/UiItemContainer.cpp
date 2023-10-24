@@ -19,7 +19,8 @@ struct Play::UiItemContainer::Impl
 	{
 		const auto center = Point{Scene::Center().x, 60};
 		const Transformer2D transform{Mat3x2::Translate(m_offset).scaled(m_scale, center)};
-		const auto& playerItems = PlayScene::Instance().GetPlayer().PersonalData().items;
+		auto&& player = PlayScene::Instance().GetPlayer();
+		const auto& playerItems = player.PersonalData().items;
 
 		for (int i = 0; i < m_items.size(); ++i)
 		{
@@ -27,7 +28,8 @@ struct Play::UiItemContainer::Impl
 				.label = m_itemLabel,
 				.index = (i + 1),
 				.center = center.movedBy({(i - m_items.size() / 2) * 96, 0}),
-				.item = playerItems[i]
+				.item = playerItems[i],
+				.requestUse = [&]() { return player.RequestUseItem(i); }
 			});
 		}
 

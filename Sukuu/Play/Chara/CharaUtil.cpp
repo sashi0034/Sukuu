@@ -55,16 +55,17 @@ namespace Play
 		return canMoveAtInternal(map, point);
 	}
 
+	template <double easing(double)>
 	void ProcessMoveCharaPos(
 		YieldExtended& yield, ActorBase& self, CharaPosition& pos, const Vec2& nextPos, double moveDuration)
 	{
 		// 実座標を移動
-		Util::AnimateEasing<EaseInLinear, EaseOption::Default>(
+		Util::AnimateEasing<easing, EaseOption::Default>(
 			self, &pos.actualPos, CharaVec2(nextPos),
 			moveDuration);
 		// ビュー座標を移動し、これを待機
 		yield.WaitForDead(
-			Util::AnimateEasing<EaseInLinear, EaseOption::None>(
+			Util::AnimateEasing<easing, EaseOption::None>(
 				self, &pos.viewPos, nextPos,
 				moveDuration)
 		);

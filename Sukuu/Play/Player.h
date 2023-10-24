@@ -14,6 +14,7 @@ namespace Play
 		double OrderPriority() const override;
 
 		void SendEnemyCollide(const RectF& rect);
+		bool RequestUseItem(int itemIndex);
 
 		const PlayerPersonalData& PersonalData() const;
 		Mat3x2 CameraTransform() const;

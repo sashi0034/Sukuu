@@ -12,6 +12,7 @@ namespace Play
 		int index;
 		Point center;
 		ConsumableItem item;
+		std::function<bool()> requestUse;
 	};
 
 	class UiItemButton : public ActorBase

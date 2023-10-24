@@ -18,6 +18,8 @@ scoop_rect_color_1 = "#6c95ebd0"
 scoop_rect_color_2 = "#ffd217d0"
 scoop_rect_color_3 = "#a2ff17d0"
 scoop_move_duration = 0.5
+warp_duration = 1.5
+warp_jump_offset = "(0, -80)"
 
 [play.en_slime_cat]
 move_duration = 0.2
