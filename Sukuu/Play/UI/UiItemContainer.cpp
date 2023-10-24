@@ -33,18 +33,10 @@ struct Play::UiItemContainer::Impl
 
 		m_itemLabel.SetCenter(center + GetTomlParameter<Point>(U"play.ui_item_container.center"));
 		m_itemLabel.Update();
-
-		if (KeyZ.down() && m_animation.IsDead())
-		{
-			m_animation = StartCoro(self, [&](CoroTaskYield& yield)
-			{
-				startAnim(yield, self);
-			});
-		}
 	}
 
 private:
-	void startAnim(YieldExtended yield, ActorBase& self)
+	void animUnused(YieldExtended yield, ActorBase& self)
 	{
 		StartCoro(self, [&](YieldExtended yield1)
 		{

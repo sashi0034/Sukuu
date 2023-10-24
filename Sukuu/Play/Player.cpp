@@ -34,6 +34,8 @@ struct Play::Player::Impl
 	double m_moveSpeed = 1.0;
 	double m_cameraScale = 4.0;
 	double m_focusCameraRate = 1.0;
+	Vec2 m_cameraOffset{};
+	Vec2 m_cameraOffsetDestination{};
 	PlayerAct m_act = PlayerAct::Idle;
 	AnimTimer m_animTimer{};
 	Dir4Type m_direction{Dir4::Down};
@@ -46,7 +48,17 @@ struct Play::Player::Impl
 	{
 		m_animTimer.Tick(GetDeltaTime() * (m_act == PlayerAct::Running ? 2 : 1));
 
-		if (m_scoopDrawing) m_scoopDrawing();;
+		if (m_scoopDrawing)
+		{
+			m_scoopDrawing();
+		}
+		else
+		{
+			// ドラッグ中じゃないなら、カメラのオフセットを動かす
+			m_cameraOffset += (m_cameraOffsetDestination - m_cameraOffset)
+				* Scene::DeltaTime()
+				* GetTomlParameter<double>(U"play.player.camera_offset_speed");
+		}
 
 		const auto drawingPos = m_pos.viewPos.movedBy(GetCharacterCellPadding(playerRect.size) + m_animOffset);
 		(void)getPlayerTexture()
@@ -64,6 +76,7 @@ struct Play::Player::Impl
 		});
 	}
 
+	// エネミーとの衝突判定
 	void EnemyCollide(ActorBase& self, const RectF& enemy)
 	{
 		if (m_isImmortal) return;;
@@ -75,11 +88,12 @@ struct Play::Player::Impl
 		if (enemy.intersects(player) == false) return;
 		// 以下、当たった状態
 
+		m_cameraOffsetDestination = {0, 0};
 		m_act = PlayerAct::Dead;
 		m_flowchart.Kill();
 		m_distField.Clear();
 		m_scoopDrawing = {};
-		focusFor<EaseOutBack>(self, GetTomlParameter<double>(U"play.player.ficus_scale_large"));
+		focusFor<EaseOutBack>(self, GetTomlParameter<double>(U"play.player.focus_scale_large"));
 
 		// やられた演出
 		StartCoro(self, [this, self](YieldExtended yield) mutable
@@ -102,7 +116,7 @@ struct Play::Player::Impl
 	Mat3x2 CameraTransform() const
 	{
 		return Mat3x2::Translate({Scene::Center()})
-		       .translated(-m_pos.viewPos - Vec2{CellPx_24, CellPx_24} / 2)
+		       .translated(-m_pos.viewPos + m_cameraOffset - Vec2{CellPx_24, CellPx_24} / 2)
 		       .scaled(m_cameraScale * m_focusCameraRate, Scene::Center());
 	}
 
@@ -161,6 +175,7 @@ private:
 		}
 		m_act = KeyShift.pressed() ? PlayerAct::Running : PlayerAct::Walk;
 		m_direction = moveDir;
+		m_cameraOffsetDestination = -moveDir.ToXY() * GetTomlParameter<double>(U"play.player.camera_offset_amount");
 
 		// 移動
 		const auto nextPos = Vec2(m_pos.actualPos + moveDir.ToXY() * CellPx_24);
@@ -195,7 +210,7 @@ private:
 		// 以下、マウスカーソルが当たった状態
 
 		// マウスクリックまで待機
-		focusFor(self, GetTomlParameter<double>(U"play.player.ficus_scale_large"));
+		focusFor(self, GetTomlParameter<double>(U"play.player.focus_scale_large"));
 		m_scoopDrawing = [this, self]() mutable
 		{
 			if (RectF(m_pos.actualPos, {CellPx_24, CellPx_24}).intersects(Cursor::PosF()) == false)
@@ -273,6 +288,7 @@ private:
 		switch (auto checkingGimmick = PlayScene::Instance().GetGimmick()[newPoint])
 		{
 		case GimmickKind::Stairs: {
+			m_cameraOffsetDestination = {0, 0};
 			m_isImmortal = true;
 			// ゴール到達
 			yield.WaitForDead(
@@ -303,7 +319,8 @@ namespace Play
 
 		p_impl->StartFlowchart(*this);
 
-		p_impl->m_personal.items[0] = ConsumableItem::Helmet;
+		p_impl->m_personal.items[0] = ConsumableItem::Wing;
+		p_impl->m_personal.items[1] = ConsumableItem::Helmet;
 	}
 
 	void Player::Update()
