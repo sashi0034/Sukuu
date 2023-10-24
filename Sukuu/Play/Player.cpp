@@ -180,7 +180,7 @@ private:
 		return Dir4::Invalid;
 	}
 
-	template <double easing(double) = EaseOutCirc>
+	template <double easing(double) = EaseInOutSine>
 	void focusFor(ActorBase& self, double scale)
 	{
 		m_focusAnimation.Kill();

@@ -54,7 +54,7 @@ struct Play::EnSlimeCat::Impl
 			                           0.5)
 				.draw();
 
-			(void)TextureAsset(emotion).resized(drawingRect.size).draw(drawingRect.pos);
+			(void)TextureAsset(emotion).resized(drawingRect.stretched(-2).size).drawAt(drawingRect.center());
 		}
 	}
 
