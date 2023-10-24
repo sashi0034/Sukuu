@@ -14,7 +14,7 @@ namespace Play
 
 		Point MapPoint() const
 		{
-			return this->asPoint() / CellPx_24;
+			return (this->asPoint() + Point(CellPx_24, CellPx_24) / 2) / CellPx_24;
 			// return (this->asPoint() + Point{CellPx_24 / 2, CellPx_24 / 2}) / CellPx_24;
 		}
 	};

@@ -18,6 +18,7 @@ struct Play::EnSlimeCat::Impl
 	double m_speed = 1.0;
 	Dir4Type m_direction{Dir4::Down};
 	int m_playerFollowing = 0;
+	bool m_doingLostPenalty = false;
 
 	void Update()
 	{
@@ -34,7 +35,14 @@ struct Play::EnSlimeCat::Impl
 		(void)getTexture().draw(drawingPos);
 
 		// 吹き出し描画
-		if (m_playerFollowing > 0)
+		const AssetNameView emotion = [&]()
+		{
+			if (m_playerFollowing > 0) return U"😎";
+			if (m_doingLostPenalty) return U"🤔";
+			return U"";
+		}();
+
+		if (not emotion.empty())
 		{
 			ScopedRenderStates2D sampler{SamplerState::ClampLinear};
 			const auto drawingRect = RectF{
@@ -46,7 +54,7 @@ struct Play::EnSlimeCat::Impl
 			                           0.5)
 				.draw();
 
-			(void)TextureAsset(U"😎").resized(drawingRect.size).draw(drawingRect.pos);
+			(void)TextureAsset(emotion).resized(drawingRect.size).draw(drawingRect.pos);
 		}
 	}
 
@@ -83,18 +91,9 @@ private:
 	{
 		auto&& playerDf = PlayScene::Instance().GetPlayer().DistField();
 		const int currentDist = playerDf[currentPoint].distance;
-		const bool nearPlayer =
-			playerDf[currentPoint].directStraight // 現在の点がプレイヤー十字上
-			|| playerDf[currentPoint + m_direction.ToXY().asPoint()].directStraight; // 次の点がプレイヤー十字上
-
 		const auto nextDist = playerDf[currentPoint + m_direction.ToXY().asPoint()].distance;
 
-		if (nextDist < currentDist && (nearPlayer || m_playerFollowing > 0))
-		{
-			// プレイヤーに近づいている
-			m_playerFollowing = GetTomlParameter<int>(U"play.en_slime_cat.player_followiung_intensity");
-		}
-		if (nextDist > currentDist || m_playerFollowing > 0)
+		if ((nextDist > currentDist || currentDist == PlayerDistanceInfinity) && m_playerFollowing > 0)
 		{
 			// 追跡中だけど、プレイヤーから遠ざかっている
 			m_playerFollowing--;
@@ -103,34 +102,49 @@ private:
 			if (m_playerFollowing == 0)
 			{
 				// ペナルティ
+				m_doingLostPenalty = true;
 				yield.WaitForTime(GetTomlParameter<double>(U"play.en_slime_cat.lost_player_penalty"));
+				m_doingLostPenalty = false;
 			}
 		}
 
-		// プレイヤーが近くにいない
-		if (nearPlayer == false || m_playerFollowing == 0) return;
-
-		const int backDist = playerDf[currentPoint + m_direction.Reversed().ToXY().asPoint()].distance;
-		// プレイヤーが後ろ向きにいないなら追跡
-		if (backDist >= currentDist)
+		auto resetFollowing = [&]()
 		{
-			// このまま正面に進むとプレイヤーから離れてしまうとき
-			if (nextDist > currentDist)
-			{
-				if (playerDf[currentPoint + m_direction.RotatedL().ToXY().asPoint()].distance < currentDist)
-				{
-					m_direction = m_direction.RotatedL();
-				}
-				else if (playerDf[currentPoint + m_direction.RotatedR().ToXY().asPoint()].distance < currentDist)
-				{
-					m_direction = m_direction.RotatedR();
-				}
-			}
+			m_playerFollowing = GetTomlParameter<int>(U"play.en_slime_cat.player_followiung_intensity");
+		};
+		const auto playerPoint = PlayScene::Instance().GetPlayer().CurrentPoint();
+		const bool isInPathway =
+			PlayScene::Instance().GetMap().Data()[currentPoint].kind == TerrainKind::Pathway
+			|| PlayScene::Instance().GetMap().Data()[playerPoint].kind == TerrainKind::Pathway;
+		if (isInPathway)
+		{
+			// 通路の中
+			if (playerDf[currentPoint].directStraight && nextDist < currentDist) resetFollowing();
 		}
 		else
 		{
-			// 後ろにいる
-			m_direction = m_direction.Reversed();
+			// 部屋の中
+			if (nextDist < currentDist) resetFollowing();
+		}
+
+		if (m_playerFollowing == 0) return;
+		// 以下、プレイヤー追跡中
+
+		// このまま正面に進むとプレイヤーから離れてしまうとき、方向転換
+		if (nextDist > currentDist)
+		{
+			if (playerDf[currentPoint + m_direction.RotatedL().ToXY().asPoint()].distance < currentDist)
+			{
+				m_direction = m_direction.RotatedL();
+			}
+			else if (playerDf[currentPoint + m_direction.RotatedR().ToXY().asPoint()].distance < currentDist)
+			{
+				m_direction = m_direction.RotatedR();
+			}
+			else if (playerDf[currentPoint + m_direction.Reversed().ToXY().asPoint()].distance < currentDist)
+			{
+				m_direction = m_direction.Reversed();
+			}
 		}
 	}
 

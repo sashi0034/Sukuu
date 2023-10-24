@@ -26,11 +26,13 @@ namespace
 struct Play::Player::Impl
 {
 	CoroActor m_flowchart{};
+	ActorBase m_focusAnimation{};
 
 	CharaPosition m_pos;
 	Vec2 m_animOffset{};
 	double m_moveSpeed = 1.0;
-	double m_cameraScale = 4;
+	double m_cameraScale = 4.0;
+	double m_focusCameraRate = 1.0;
 	PlayerAct m_act = PlayerAct::Idle;
 	AnimTimer m_animTimer{};
 	Dir4Type m_direction{Dir4::Down};
@@ -44,7 +46,6 @@ struct Play::Player::Impl
 		m_animTimer.Tick(GetDeltaTime() * (m_act == PlayerAct::Running ? 2 : 1));
 
 		if (m_scoopDrawing) m_scoopDrawing();;
-		m_scoopDrawing = {};
 
 		const auto drawingPos = m_pos.viewPos.movedBy(GetCharacterCellPadding(playerRect.size) + m_animOffset);
 		(void)getPlayerTexture()
@@ -76,20 +77,23 @@ struct Play::Player::Impl
 		m_act = PlayerAct::Dead;
 		m_flowchart.Kill();
 		m_distField.Clear();
+		m_scoopDrawing = {};
+		focusFor<EaseOutBack>(self, GetTomlParameter<double>(U"play.player.ficus_scale_large"));
 
 		// やられた演出
 		StartCoro(self, [this, self](YieldExtended yield) mutable
 		{
-			SetTimeScale(0.01);
+			SetTimeScale(GetTomlParameter<double>(U"play.player.hit_stopping_timescale"));
 			yield.WaitForTime(0.5, Scene::DeltaTime);
 			SetTimeScale(1);
 
 			AnimateEasing<BoomerangParabola>(
 				self,
 				&m_animOffset,
-				GetTomlParameter<Vec2>(U"play.en_slime_cat.dead_animation_offset"),
-				GetTomlParameter<double>(U"play.en_slime_cat.dead_animation_duration"));
-			yield.WaitForTime(GetTomlParameter<double>(U"play.en_slime_cat.dead_pause_duration"));
+				GetTomlParameter<Vec2>(U"play.player.dead_animation_offset"),
+				GetTomlParameter<double>(U"play.player.dead_animation_duration"));
+			yield.WaitForTime(GetTomlParameter<double>(U"play.player.dead_pause_duration"));
+			focusFor<EaseInOutBack>(self, 1.0);
 			StartFlowchart(self);
 		});
 	}
@@ -98,7 +102,7 @@ struct Play::Player::Impl
 	{
 		return Mat3x2::Translate({Scene::Center()})
 		       .translated(-m_pos.viewPos - playerRect.size / 2)
-		       .scaled(m_cameraScale, Scene::Center());
+		       .scaled(m_cameraScale * m_focusCameraRate, Scene::Center());
 	}
 
 private:
@@ -131,6 +135,9 @@ private:
 		auto moveDir = Dir4::Invalid;
 		while (true)
 		{
+			// プレイヤーを掬おうとしてるかチェック
+			checkScoopFromMouse(yield, self);
+
 			moveDir = checkMoveInput();
 			if (moveDir != Dir4::Invalid &&
 				CanMoveTo(PlayScene::Instance().GetMap(), m_pos.actualPos, moveDir))
@@ -141,9 +148,6 @@ private:
 				m_act = PlayerAct::Idle;
 				m_animTimer.Reset();
 			}
-
-			// プレイヤーを掬おうとしてるかチェック
-			checkScoopFromMouse(yield, self);
 
 			yield();
 		}
@@ -176,44 +180,60 @@ private:
 		return Dir4::Invalid;
 	}
 
+	template <double easing(double) = EaseOutCirc>
+	void focusFor(ActorBase& self, double scale)
+	{
+		m_focusAnimation.Kill();
+		AnimateEasing<easing>(self, &m_focusCameraRate, scale, 0.5);
+	}
+
 	void checkScoopFromMouse(YieldExtended& yield, ActorBase& self)
 	{
-		if (MouseL.pressed()) return;
 		if (RectF(m_pos.actualPos, {CellPx_24, CellPx_24}).intersects(Cursor::PosF()) == false)
 			return;
 		// 以下、マウスカーソルが当たった状態
 
 		// マウスクリックまで待機
+		focusFor(self, GetTomlParameter<double>(U"play.player.ficus_scale_large"));
+		m_scoopDrawing = [this, self]() mutable
+		{
+			if (RectF(m_pos.actualPos, {CellPx_24, CellPx_24}).intersects(Cursor::PosF()) == false)
+			{
+				// 解除
+				m_scoopDrawing = {};
+				focusFor(self, 1.0);
+				return;
+			}
+			RectF(m_pos.actualPos.MapPoint() * CellPx_24, {CellPx_24, CellPx_24})
+				.draw(GetTomlParameter<ColorF>(U"play.player.scoop_rect_color_1"));
+		};
 		while (true)
 		{
-			if (checkMoveInput() != Dir4::Invalid) return;
+			if (checkMoveInput() != Dir4::Invalid && MouseL.pressed() == false) return;
 			if (RectF(m_pos.actualPos, {CellPx_24, CellPx_24}).intersects(Cursor::PosF()) == false)
 				return;
 
-			m_scoopDrawing = [this]()
-			{
-				RectF(m_pos.actualPos, {CellPx_24, CellPx_24})
-					.draw(GetTomlParameter<ColorF>(U"play.en_slime_cat.scoop_rect_color_1"));
-			};
-
 			yield();
-			if (MouseL.down()) break;
+			if (MouseL.pressed()) break;
 		}
 
 		// ドラッグ解除まで待機
+		m_scoopDrawing = [this]()
+		{
+			for (int i = 0; i < 4; ++i)
+			{
+				auto r = RectF(m_pos.actualPos.movedBy(Dir4Type(i).ToXY() * CellPx_24), {CellPx_24, CellPx_24});
+				r.draw(GetTomlParameter<ColorF>(U"play.player.scoop_rect_color_2"));
+			}
+		};
 		while (true)
 		{
-			m_scoopDrawing = [this]()
-			{
-				for (int i = 0; i < 4; ++i)
-				{
-					auto r = RectF(m_pos.actualPos.movedBy(Dir4Type(i).ToXY() * CellPx_24), {CellPx_24, CellPx_24});
-					r.draw(GetTomlParameter<ColorF>(U"play.en_slime_cat.scoop_rect_color_2"));
-				}
-			};
-
 			yield();
-			if (MouseL.pressed() == false) break;
+			if (MouseL.pressed() == false)
+			{
+				m_scoopDrawing = {};
+				break;
+			}
 
 			// 目標が決まったかチェック
 			for (int i = 0; i < 4; ++i)
@@ -224,8 +244,9 @@ private:
 
 				// 移動させる
 				m_distField.Clear();
+				m_scoopDrawing = {};
 				m_isImmortal = true;
-				const double animDuration = GetTomlParameter<double>(U"play.en_slime_cat.scoop_move_duration");
+				const double animDuration = GetTomlParameter<double>(U"play.player.scoop_move_duration");
 				AnimateEasing<BoomerangParabola>(self, &m_animOffset, Vec2{0, -32}, animDuration);
 				ProcessMoveCharaPos(
 					yield, self, m_pos, checkingPos,
@@ -236,6 +257,11 @@ private:
 		}
 
 	dropped:;
+		focusFor(self, 1.0);
+		yield.WaitForTrue([]()
+		{
+			return MouseL.pressed() == false;
+		});
 	}
 
 	void checkGimmickAt(YieldExtended& yield, ActorBase& self, const Point newPoint)
@@ -296,6 +322,11 @@ namespace Play
 	Mat3x2 Player::CameraTransform() const
 	{
 		return p_impl->CameraTransform();
+	}
+
+	Point Player::CurrentPoint() const
+	{
+		return p_impl->m_pos.actualPos.MapPoint();
 	}
 
 	const PlayerDistField& Player::DistField() const
