@@ -7,6 +7,7 @@
 #include "Map/DungeonGenerator.h"
 #include "Map/MapGrid.h"
 #include "Map/MazeGenerator.h"
+#include "UI/UiItemContainer.h"
 #include "Util/ActorContainer.h"
 
 namespace Play
@@ -29,6 +30,8 @@ namespace Play
 		Player m_player;
 		Camera2D m_debugCamera;
 		CameraKind::Value m_camera = CameraKind::Player;
+		ActorContainer m_ui{};
+		UiItemContainer m_uiItemContainer;
 
 		void UpdateScene(PlayScene& self)
 		{
@@ -72,6 +75,7 @@ namespace Play
 		p_impl->m_gimmick.resize(p_impl->m_map.Data().size(), GimmickKind::None);
 		p_impl->m_gimmick[p_impl->m_map.Rooms().RandomRoomPoint(true)] = GimmickKind::Stairs;
 
+		// 生成
 		p_impl->m_player = AsParent().Birth(Player());
 
 		// TODO: EnemyManager
@@ -81,6 +85,9 @@ namespace Play
 			enemy.Init();
 		}
 
+		p_impl->m_uiItemContainer = p_impl->m_ui.Birth(UiItemContainer());
+
+		// 初期化
 		p_impl->m_player.Init();
 	}
 
@@ -92,6 +99,7 @@ namespace Play
 	void PlayScene::Update()
 	{
 		p_impl->UpdateScene(*this);
+		p_impl->m_ui.Update();
 	}
 
 	PlayScene& PlayScene::Instance()

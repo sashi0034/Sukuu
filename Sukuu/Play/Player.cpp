@@ -83,7 +83,7 @@ struct Play::Player::Impl
 		// やられた演出
 		StartCoro(self, [this, self](YieldExtended yield) mutable
 		{
-			SetTimeScale(GetTomlParameter<double>(U"play.player.hit_stopping_timescale"));
+			SetTimeScale(GetTomlParameter<double>(U"play.player.hitstopping_timescale"));
 			yield.WaitForTime(0.5, Scene::DeltaTime);
 			SetTimeScale(1);
 

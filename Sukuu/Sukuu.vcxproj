@@ -130,6 +130,8 @@
     <ClCompile Include="Play\Player.cpp" />
     <ClCompile Include="Play\Player_detail\PlayerDistField.cpp" />
     <ClCompile Include="Play\PlayScene.cpp" />
+    <ClCompile Include="Play\UI\UiItemButton.cpp" />
+    <ClCompile Include="Play\UI\UiItemContainer.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -354,6 +356,8 @@
     <ClInclude Include="Play\Player_detail\PlayerDistField.h" />
     <ClInclude Include="Play\Player_detail\PlayerDefinition.h" />
     <ClInclude Include="Play\PlayScene.h" />
+    <ClInclude Include="Play\UI\UiItemButton.h" />
+    <ClInclude Include="Play\UI\UiItemContainer.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Sukuu\GamesSupervisor.h" />
     <ClInclude Include="Util\ActorBase.h" />

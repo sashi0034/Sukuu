@@ -6,7 +6,7 @@ move_duration = 0.3
 anim_interval = 250
 collider_padding = -8
 ficus_scale_large = 1.3
-hit_stopping_timescale = 0.1
+hitstopping_timescale = 0.1
 dead_animation_offset = "(0, -32)"
 dead_animation_duration = 1.0
 dead_pause_duration = 2.0
@@ -23,6 +23,17 @@ pathway_turn_unlikely = 2
 player_followiung_intensity = 4
 lost_player_penalty = 1.0
 baloon_offset_y = -32
+
+[play.ui_item_container]
+center = "(0, 80)"
+
+[play.ui_tutorial_navigation]
+arrowScale = 2.0
+arrowSpace = 20
+arrowSpring = 40
+arrowInterval = 0.5
+messageBackSize = "(800, 80)"
+messageTop = 200
 
 [play.debug]
 visualize_player_distance = false
