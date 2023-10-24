@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "Forward.h"
-#include "GimmickGrid.h"
+#include "Gimmick/GimmickGrid.h"
 #include "Player.h"
 #include "Map/MapGrid.h"
 

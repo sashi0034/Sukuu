@@ -3,6 +3,7 @@
 
 #include "Player.h"
 #include "Enemy/EnSlimeCat.h"
+#include "Gimmick/GimmickInstaller.h"
 #include "Map/BgMapDrawer.h"
 #include "Map/DungeonGenerator.h"
 #include "Map/MapGrid.h"
@@ -27,6 +28,7 @@ namespace Play
 	public:
 		MapGrid m_map;
 		GimmickGrid m_gimmick;
+		BgMapDrawer m_bgMapDrawer{};
 		Player m_player;
 		Camera2D m_debugCamera;
 		CameraKind::Value m_camera = CameraKind::Player;
@@ -50,7 +52,7 @@ namespace Play
 			const ScopedRenderStates2D sampler{SamplerState::BorderNearest};
 
 			// 背景描画
-			DrawBgMap(self);
+			m_bgMapDrawer.Tick(self);
 
 			// キャラクターなどの通常更新
 			self.ActorBase::Update();
@@ -73,7 +75,7 @@ namespace Play
 		// });
 
 		p_impl->m_gimmick.resize(p_impl->m_map.Data().size(), GimmickKind::None);
-		p_impl->m_gimmick[p_impl->m_map.Rooms().RandomRoomPoint(true)] = GimmickKind::Stairs;
+		InstallGimmicks(p_impl->m_gimmick, p_impl->m_map);
 
 		// 生成
 		p_impl->m_player = AsParent().Birth(Player());

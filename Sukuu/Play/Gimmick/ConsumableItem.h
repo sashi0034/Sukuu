@@ -8,6 +8,7 @@ namespace Play
 		Wing,
 		Helmet,
 		Pin,
+
 		Max,
 	};
 

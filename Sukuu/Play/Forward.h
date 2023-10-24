@@ -16,5 +16,10 @@ namespace Play
 		return {(CellPx_24 - spriteSize.x) / 2, CellPx_24 - spriteSize.y - CharacterPadding_4};
 	}
 
+	constexpr Point GetItemCellPadding(const Size& spriteSize)
+	{
+		return {(CellPx_24 - spriteSize.x) / 2, (CellPx_24 - spriteSize.y) / 2 - CharacterPadding_4};
+	}
+
 	constexpr int MaxItemPossession = 9;
 }

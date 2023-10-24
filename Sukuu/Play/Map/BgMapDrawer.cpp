@@ -6,19 +6,20 @@
 #include "AutoTiler.h"
 #include "MapGrid.h"
 #include "Play/PlayScene.h"
+#include "Play/Chara/CharaUtil.h"
 #include "Util/TomlParametersWrapper.h"
 
-namespace Play
+struct Play::BgMapDrawer::Impl
 {
-	class MapGrid;
+	AnimTimer m_animTimer{};
 
-	void drawTileAt(
+	void DrawTileAt(
 		const MapGrid& mapGrid,
 		int y,
 		int x,
 		const Texture& texture,
 		TerrainKind targetKind,
-		const Array<TerrainKind>& neighborKind)
+		const Array<TerrainKind>& neighborKind) const
 	{
 		const auto& mapData = mapGrid.Data();
 		constexpr uint32 tileHalf{CellPx_24 / 2};
@@ -79,9 +80,9 @@ namespace Play
 		}
 	}
 
-	void drawGimmickAt(
+	void DrawGimmickAt(
 		const GimmickGrid& gimmickGrid,
-		const Point& point)
+		const Point& point) const
 	{
 		switch (gimmickGrid[point])
 		{
@@ -90,12 +91,39 @@ namespace Play
 		case GimmickKind::Stairs:
 			(void)TextureAsset(AssetImages::stairs_24x24).draw(point * CellPx_24);
 			break;
+		case GimmickKind::Item_Wing:
+			drawGimmickAt(point, AssetImages::wing_16x16, 16, 4);
+			break;
+		case GimmickKind::Item_Helmet:
+			drawGimmickAt(point, AssetImages::helmet_16x16, 16, 4);
+			break;
+		case GimmickKind::Item_Pin:
+			drawGimmickAt(point, AssetImages::pin_16x16, 16, 3);
+			break;
 		default: ;
 		}
 	}
 
-	void DrawBgMap(const PlayScene& scene)
+private:
+	void drawGimmickAt(const Point& point, AssetNameView name, int cellSize, int numFrames) const
 	{
+		(void)TextureAsset(name)(
+				Rect{Point{cellSize, 0} * m_animTimer.SliceFrames(250, numFrames), {cellSize, cellSize}})
+			.draw(point * CellPx_24 + GetItemCellPadding({cellSize, cellSize}));
+	}
+};
+
+namespace Play
+{
+	BgMapDrawer::BgMapDrawer() :
+		p_impl(std::make_shared<Impl>())
+	{
+	}
+
+	void BgMapDrawer::Tick(const PlayScene& scene)
+	{
+		p_impl->m_animTimer.Tick();
+
 		const auto inversed = (Graphics2D::GetCameraTransform() * Graphics2D::GetLocalTransform()).inverse();
 		const auto mapTl = inversed.transformPoint(Vec2{0, 0}).asPoint() / CellPx_24;
 		const auto mapBr = inversed.transformPoint(Scene::Size()).asPoint() / CellPx_24;
@@ -108,11 +136,11 @@ namespace Play
 				// BG描画
 				const auto drawingPoint = Point{x, y} * CellPx_24;
 				(void)TextureAsset(AssetImages::magma_tile_24x24).draw(drawingPoint);
-				drawTileAt(map, y, x, TextureAsset(AssetImages::brick_stylish_24x24),
-				           TerrainKind::Wall, {TerrainKind::Wall});
+				p_impl->DrawTileAt(map, y, x, TextureAsset(AssetImages::brick_stylish_24x24),
+				                   TerrainKind::Wall, {TerrainKind::Wall});
 
 				// ギミック描画
-				drawGimmickAt(gimmick, {x, y});
+				p_impl->DrawGimmickAt(gimmick, {x, y});
 
 #ifdef _DEBUG
 				const int player = scene.GetPlayer().DistField()[Point{x, y}].distance;

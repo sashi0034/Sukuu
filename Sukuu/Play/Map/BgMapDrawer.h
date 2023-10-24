@@ -3,5 +3,14 @@
 
 namespace Play
 {
-	void DrawBgMap(const PlayScene& scene);
+	class BgMapDrawer
+	{
+	public:
+		BgMapDrawer();
+		void Tick(const PlayScene& scene);
+
+	private:
+		struct Impl;
+		std::shared_ptr<Impl> p_impl;
+	};
 }

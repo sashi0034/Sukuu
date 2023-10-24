@@ -121,9 +121,10 @@
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Play\Chara\CharaUtil.cpp" />
-    <ClCompile Include="Play\ConsumableItem.cpp" />
     <ClCompile Include="Play\Enemy\EnSlimeCat.cpp" />
-    <ClCompile Include="Play\GimmickGrid.cpp" />
+    <ClCompile Include="Play\Gimmick\ConsumableItem.cpp" />
+    <ClCompile Include="Play\Gimmick\GimmickGrid.cpp" />
+    <ClCompile Include="Play\Gimmick\GimmickInstaller.cpp" />
     <ClCompile Include="Play\Map\AutoTiler.cpp" />
     <ClCompile Include="Play\Map\DungeonGenerator.cpp" />
     <ClCompile Include="Play\Map\BgMapDrawer.cpp" />
@@ -345,11 +346,12 @@
     <ClInclude Include="AssetKeys.h" />
     <ClInclude Include="AssetsGenerated.h" />
     <ClInclude Include="Play\Chara\CharaUtil.h" />
-    <ClInclude Include="Play\ConsumableItem.h" />
     <ClInclude Include="Play\Enemy\EnSlimeCat.h" />
     <ClInclude Include="Play\Enemy\IEnemy.h" />
     <ClInclude Include="Play\Forward.h" />
-    <ClInclude Include="Play\GimmickGrid.h" />
+    <ClInclude Include="Play\Gimmick\ConsumableItem.h" />
+    <ClInclude Include="Play\Gimmick\GimmickGrid.h" />
+    <ClInclude Include="Play\Gimmick\GimmickInstaller.h" />
     <ClInclude Include="Play\Map\AutoTiler.h" />
     <ClInclude Include="Play\Map\DungeonGenerator.h" />
     <ClInclude Include="Play\Map\BgMapDrawer.h" />
@@ -460,11 +462,22 @@
   <ItemGroup>
     <Content Include="App\asset\generate_constexpr.py" />
     <Content Include="App\asset\image\beatrice_32x32.png" />
+    <Content Include="App\asset\image\bookmark_16x16.png" />
     <Content Include="App\asset\image\brick_stylish_24x24.png" />
+    <Content Include="App\asset\image\clock_16x16.png" />
+    <Content Include="App\asset\image\grave_16x16.gif" />
+    <Content Include="App\asset\image\helmet_16x16.png" />
+    <Content Include="App\asset\image\hourglass_16x16.png" />
+    <Content Include="App\asset\image\light_bulb_16x16.png" />
     <Content Include="App\asset\image\magma_tile_24x24.png" />
+    <Content Include="App\asset\image\magnet_16x16.png" />
     <Content Include="App\asset\image\phine_32x32.png" />
+    <Content Include="App\asset\image\pin_16x16.png" />
     <Content Include="App\asset\image\punicat_24x24.png" />
+    <Content Include="App\asset\image\solt_16x16.png" />
     <Content Include="App\asset\image\stairs_24x24.png" />
+    <Content Include="App\asset\image\test_tube_16x16.png" />
+    <Content Include="App\asset\image\wing_16x16.png" />
     <Content Include="App\asset\parameters.toml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
