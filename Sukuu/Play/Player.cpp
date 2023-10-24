@@ -304,7 +304,8 @@ private:
 		const auto storedAct = m_act;
 		m_act = PlayerAct::Idle;
 
-		switch (auto checkingGimmick = PlayScene::Instance().GetGimmick()[newPoint])
+		auto&& gimmickGrid = PlayScene::Instance().GetGimmick();
+		switch (gimmickGrid[newPoint])
 		{
 		case GimmickKind::Stairs: {
 			m_cameraOffsetDestination = {0, 0};
@@ -317,8 +318,27 @@ private:
 			m_completedGoal = true;
 			break;
 		}
+		case GimmickKind::Item_Wing: [[fallthrough]];
+		case GimmickKind::Item_Helmet: [[fallthrough]];
+		case GimmickKind::Item_Pin:
+			obtainItemAt(newPoint, gimmickGrid);
+			break;
 		default: ;
 			m_act = storedAct;
+			break;
+		}
+	}
+
+	void obtainItemAt(const Point point, GimmickGrid& gimmickGrid)
+	{
+		for (int i = 0; i < m_personal.items.size(); ++i)
+		{
+			if (m_personal.items[i] != ConsumableItem::None) continue;
+
+			// アイテム入手
+			m_personal.items[i] = GimmickToItem(gimmickGrid[point]);
+			assert(m_personal.items[i] != ConsumableItem::None);
+			gimmickGrid[point] = GimmickKind::None;
 			break;
 		}
 	}
