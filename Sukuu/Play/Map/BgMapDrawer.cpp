@@ -129,10 +129,18 @@ namespace Play
 		const auto mapBr = inversed.transformPoint(Scene::Size()).asPoint() / CellPx_24;
 		auto&& map = scene.GetMap();
 		auto&& gimmick = scene.GetGimmick();
-		for (int y = std::max(0, mapTl.y); y < std::min(mapBr.y + 1, map.Data().size().y); ++y)
+		for (int y = mapTl.y - 1; y < mapBr.y + 1; ++y)
 		{
-			for (int x = std::max(0, mapTl.x); x < std::min(mapBr.x + 1, map.Data().size().x); ++x)
+			for (int x = mapTl.x - 1; x < mapBr.x + 1; ++x)
 			{
+				if (map.Data().inBounds(x, y) == false)
+				{
+					// マップ範囲外
+					TextureAsset(AssetImages::brick_stylish_24x24)(Point{2, 1} * 24, {24, 24})
+						.draw(Point{x, y} * CellPx_24, Palette::Lightblue);
+					continue;
+				}
+
 				// BG描画
 				const auto drawingPoint = Point{x, y} * CellPx_24;
 
