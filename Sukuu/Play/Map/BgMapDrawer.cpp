@@ -135,7 +135,13 @@ namespace Play
 			{
 				// BG描画
 				const auto drawingPoint = Point{x, y} * CellPx_24;
-				(void)TextureAsset(AssetImages::magma_tile_24x24).draw(drawingPoint);
+
+				// (void)TextureAsset(AssetImages::magma_tile_24x24).draw(drawingPoint);
+				p_impl->DrawTileAt(map, y, x, TextureAsset(AssetImages::magma_tile_24x24),
+				                   TerrainKind::Pathway, {TerrainKind::Floor, TerrainKind::Pathway});
+				p_impl->DrawTileAt(map, y, x, TextureAsset(AssetImages::magma_tile_24x24),
+				                   TerrainKind::Floor, {TerrainKind::Floor, TerrainKind::Pathway});
+
 				p_impl->DrawTileAt(map, y, x, TextureAsset(AssetImages::brick_stylish_24x24),
 				                   TerrainKind::Wall, {TerrainKind::Wall});
 

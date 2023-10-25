@@ -48,7 +48,7 @@ struct Play::CaveVision::Impl
 	{
 		// スクリーン描画
 		constexpr float animSpeed = 0.3f;
-		m_caveVisionCb->animRate += Scene::DeltaTime() * animSpeed;
+		m_caveVisionCb->animRate += GetDeltaTime() * animSpeed;
 		Graphics2D::SetPSConstantBuffer(1, m_caveVisionCb);
 		const ScopedCustomShader2D shader{PixelShaderAsset(AssetKeys::PsCaveVision)};
 
