@@ -2,6 +2,7 @@
 
 #include "AssetKeys.h"
 #include "AssetsGenerated.h"
+#include "Sukuu/AssetReloader.h"
 #include "Sukuu/GamesSupervisor.h"
 #include "Util/ActorContainer.h"
 #include "Util/TomlParametersWrapper.h"
@@ -18,16 +19,18 @@ void Main()
 	Scene::Resize(1920, 1080);
 	Window::Resize(Size{1280, 720});
 
-	TomlParametersWrapper tomlParametersWrapper{};
 	ActorContainer actorRoot{};
 	actorRoot.Birth(GamesSupervisor());
+#if _DEBUG
+	actorRoot.Birth(TomlParametersWrapper());
+	actorRoot.Birth(AssetReloader());
+#endif
 
-	AssetImages::RegisterAll();
+	for (auto&& path : AssetImages::GetKeys()) TextureAsset::Register(path, path);
 	AssetKeys::RegisterAll();
 
 	while (System::Update())
 	{
-		tomlParametersWrapper.Update();
 		actorRoot.Update();
 	}
 }

@@ -1,12 +1,13 @@
 ﻿#pragma once
+#include "ActorBase.h"
 
 namespace Util
 {
-	class TomlParametersWrapper
+	class TomlParametersWrapper : public ActorBase
 	{
 	public:
 		TomlParametersWrapper();
-		void Update();
+		void Update() override;
 
 	private:
 		struct Impl;

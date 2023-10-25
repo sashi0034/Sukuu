@@ -119,8 +119,8 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="App\asset\shaders\cave_vision.hlsl" />
-    <None Include="App\asset\shaders\soft_shape.hlsl" />
+    <None Include="App\asset\shader\cave_vision.hlsl" />
+    <None Include="App\asset\shader\soft_shape.hlsl" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Play\Chara\CharaUtil.cpp" />
     <ClCompile Include="Play\Enemy\EnSlimeCat.cpp" />
@@ -143,6 +143,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="Sukuu\AssetReloader.cpp" />
     <ClCompile Include="Sukuu\GamesSupervisor.cpp" />
     <ClCompile Include="Util\ActorBase.cpp" />
     <ClCompile Include="Util\ActorContainer.cpp" />
@@ -369,6 +370,7 @@
     <ClInclude Include="Play\UI\UiItemButton.h" />
     <ClInclude Include="Play\UI\UiItemContainer.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Sukuu\AssetReloader.h" />
     <ClInclude Include="Sukuu\GamesSupervisor.h" />
     <ClInclude Include="Util\ActorBase.h" />
     <ClInclude Include="Util\ActorContainer.h" />
