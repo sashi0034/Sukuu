@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "Forward.h"
+#include "Chara/CharaUtil.h"
 #include "Player_detail\PlayerDefinition.h"
 
 namespace Play
@@ -18,6 +19,7 @@ namespace Play
 
 		const PlayerPersonalData& PersonalData() const;
 		Mat3x2 CameraTransform() const;
+		const CharaPosition& CurrentPos() const;
 		Point CurrentPoint() const;
 		const PlayerDistField& DistField() const;
 		bool IsCompletedGoal() const;

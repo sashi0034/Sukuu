@@ -8,6 +8,7 @@
 #include "Map/DungeonGenerator.h"
 #include "Map/MapGrid.h"
 #include "Map/MazeGenerator.h"
+#include "Other/CaveVision.h"
 #include "UI/UiItemContainer.h"
 #include "Util/ActorContainer.h"
 
@@ -34,6 +35,7 @@ namespace Play
 		CameraKind::Value m_camera = CameraKind::Player;
 		ActorContainer m_ui{};
 		UiItemContainer m_uiItemContainer;
+		CaveVision m_caveVision{};
 
 		void UpdateScene(PlayScene& self)
 		{
@@ -56,6 +58,9 @@ namespace Play
 
 			// キャラクターなどの通常更新
 			self.ActorBase::Update();
+
+			// 視界マスク更新
+			m_caveVision.UpdateMask(m_player.CurrentPos().viewPos + Point(CellPx_24, CellPx_24) / 2);
 		}
 	};
 
@@ -103,6 +108,7 @@ namespace Play
 	void PlayScene::Update()
 	{
 		p_impl->UpdateScene(*this);
+		p_impl->m_caveVision.UpdateScreen();
 		p_impl->m_ui.Update();
 	}
 

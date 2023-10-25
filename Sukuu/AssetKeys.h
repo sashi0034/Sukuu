@@ -2,8 +2,11 @@
 
 namespace AssetKeys
 {
-	constexpr StringView F24 = U"F24";
-	constexpr StringView F48 = U"F48";
+	constexpr AssetNameView F24 = U"F24";
+	constexpr AssetNameView F48 = U"F48";
+
+	constexpr AssetNameView PsCaveVision = U"asset/shaders/cave_vision";
+	constexpr AssetNameView VsCaveVision = U"asset/shaders/soft_shape";
 
 	inline void RegisterAll()
 	{
@@ -15,5 +18,8 @@ namespace AssetKeys
 		TextureAsset::Register(U"🪶", U"🪶"_emoji);
 		TextureAsset::Register(U"⛑️", U"⛑️"_emoji);
 		TextureAsset::Register(U"📌", U"📌"_emoji);
+
+		PixelShaderAsset::Register(PsCaveVision, HLSL(PsCaveVision + U".hlsl"));
+		VertexShaderAsset::Register(VsCaveVision, HLSL(VsCaveVision + U".hlsl"));
 	}
 }

@@ -5,6 +5,7 @@ namespace AssetImages
 	constexpr StringView beatrice_32x32 = U"asset/image/beatrice_32x32.png";
 	constexpr StringView bookmark_16x16 = U"asset/image/bookmark_16x16.png";
 	constexpr StringView brick_stylish_24x24 = U"asset/image/brick_stylish_24x24.png";
+	constexpr StringView brick_stylish_light_24x24 = U"asset/image/brick_stylish_light_24x24 .png";
 	constexpr StringView clock_16x16 = U"asset/image/clock_16x16.png";
 	constexpr StringView helmet_16x16 = U"asset/image/helmet_16x16.png";
 	constexpr StringView hourglass_16x16 = U"asset/image/hourglass_16x16.png";
@@ -17,6 +18,8 @@ namespace AssetImages
 	constexpr StringView solt_16x16 = U"asset/image/solt_16x16.png";
 	constexpr StringView stairs_24x24 = U"asset/image/stairs_24x24.png";
 	constexpr StringView test_tube_16x16 = U"asset/image/test_tube_16x16.png";
+	constexpr StringView tex_aqua_noise = U"asset/image/tex_aqua_noise.png";
+	constexpr StringView tex_cosmos_noise = U"asset/image/tex_cosmos_noise.png";
 	constexpr StringView wing_16x16 = U"asset/image/wing_16x16.png";
 
 	inline void RegisterAll()
@@ -24,6 +27,7 @@ namespace AssetImages
 		TextureAsset::Register(beatrice_32x32, beatrice_32x32);
 		TextureAsset::Register(bookmark_16x16, bookmark_16x16);
 		TextureAsset::Register(brick_stylish_24x24, brick_stylish_24x24);
+		TextureAsset::Register(brick_stylish_light_24x24, brick_stylish_light_24x24);
 		TextureAsset::Register(clock_16x16, clock_16x16);
 		TextureAsset::Register(helmet_16x16, helmet_16x16);
 		TextureAsset::Register(hourglass_16x16, hourglass_16x16);
@@ -36,6 +40,8 @@ namespace AssetImages
 		TextureAsset::Register(solt_16x16, solt_16x16);
 		TextureAsset::Register(stairs_24x24, stairs_24x24);
 		TextureAsset::Register(test_tube_16x16, test_tube_16x16);
+		TextureAsset::Register(tex_aqua_noise, tex_aqua_noise);
+		TextureAsset::Register(tex_cosmos_noise, tex_cosmos_noise);
 		TextureAsset::Register(wing_16x16, wing_16x16);
 	}
 }

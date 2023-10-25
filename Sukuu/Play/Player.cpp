@@ -413,6 +413,11 @@ namespace Play
 		return p_impl->CameraTransform();
 	}
 
+	const CharaPosition& Player::CurrentPos() const
+	{
+		return p_impl->m_pos;
+	}
+
 	Point Player::CurrentPoint() const
 	{
 		return p_impl->m_pos.actualPos.MapPoint();
