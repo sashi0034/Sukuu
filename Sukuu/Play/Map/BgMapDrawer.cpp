@@ -160,7 +160,7 @@ namespace Play
 				const int player = scene.GetPlayer().DistField()[Point{x, y}].distance;
 				if (player < PlayerDistanceInfinity &&
 					GetTomlParameter<bool>(U"play.debug.visualize_player_distance"))
-					(void)FontAsset(AssetKeys::F24)(U"{}"_fmt(player))
+					(void)FontAsset(AssetKeys::RocknRoll24)(U"{}"_fmt(player))
 						.drawAt(drawingPoint + Point{CellPx_24, CellPx_24} / 2);
 #endif
 			}

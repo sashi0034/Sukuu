@@ -2,8 +2,8 @@
 
 namespace AssetKeys
 {
-	constexpr AssetNameView F24 = U"F24";
-	constexpr AssetNameView F48 = U"F48";
+	constexpr AssetNameView RocknRoll24 = U"RocknRoll24";
+	constexpr AssetNameView RocknRoll48 = U"RocknRoll48";
 
 	constexpr AssetNameView PsCaveVision = U"asset/shader/cave_vision";
 	constexpr AssetNameView VsCaveVision = U"asset/shader/soft_shape";
@@ -16,8 +16,8 @@ namespace AssetKeys
 
 	inline void RegisterAll()
 	{
-		FontAsset::Register(F24, 24);
-		FontAsset::Register(F48, 48);
+		FontAsset::Register(RocknRoll24, 24, U"asset/font/RocknRoll/RocknRollOne-Regular.ttf");
+		FontAsset::Register(RocknRoll48, 48, U"asset/font/RocknRoll/RocknRollOne-Regular.ttf");
 
 		TextureAsset::Register(U"😎", U"😎"_emoji);
 		TextureAsset::Register(U"🤔", U"🤔"_emoji);

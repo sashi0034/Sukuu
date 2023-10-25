@@ -119,6 +119,10 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Include="App\asset\font\DotGothic16\README-JP.md" />
+    <None Include="App\asset\font\DotGothic16\README.md" />
+    <None Include="App\asset\font\RocknRoll\README-JP.md" />
+    <None Include="App\asset\font\RocknRoll\README.md" />
     <None Include="App\asset\shader\cave_vision.hlsl" />
     <None Include="App\asset\shader\soft_shape.hlsl" />
     <ClCompile Include="Main.cpp" />
@@ -339,6 +343,8 @@
     <Media Include="App\example\video\river.mp4" />
   </ItemGroup>
   <ItemGroup>
+    <Font Include="App\asset\font\DotGothic16\DotGothic16-Regular.ttf" />
+    <Font Include="App\asset\font\RocknRoll\RocknRollOne-Regular.ttf" />
     <Font Include="App\example\font\DotGothic16\DotGothic16-Regular.ttf" />
     <Font Include="App\example\font\RocknRoll\RocknRollOne-Regular.ttf" />
   </ItemGroup>
@@ -366,6 +372,7 @@
     <ClInclude Include="Play\Map\MapGrid.h" />
     <ClInclude Include="Play\Map\MazeGenerator.h" />
     <ClInclude Include="Play\Other\CaveVision.h" />
+    <ClInclude Include="Play\Other\TimeLimiter.h" />
     <ClInclude Include="Play\Player.h" />
     <ClInclude Include="Play\Player_detail\PlayerAnimation.h" />
     <ClInclude Include="Play\Player_detail\PlayerDistField.h" />
@@ -374,6 +381,7 @@
     <ClInclude Include="Play\UI\UiItemButton.h" />
     <ClInclude Include="Play\UI\UiItemContainer.h" />
     <ClInclude Include="Play\UI\UiMiniMap.h" />
+    <ClInclude Include="Play\UI\UiTimeLimiter.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Sukuu\AssetReloader.h" />
     <ClInclude Include="Sukuu\GamesSupervisor.h" />
