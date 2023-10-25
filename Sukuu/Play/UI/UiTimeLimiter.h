@@ -16,6 +16,8 @@ namespace Play
 		void Update() override;
 		double OrderPriority() const override { return -1000; };
 
+		void Damage(double time);
+
 		const TimeLimiterData& GetData() const;
 
 	private:

@@ -92,6 +92,9 @@ struct Play::Player::Impl
 		breakFlowchart();
 		focusCameraFor<EaseOutBack>(self, GetTomlParameter<double>(U"play.player.focus_scale_large"));
 
+		// TODO: ダメージ量調整
+		PlayScene::Instance().GetTimeLimiter().Damage(30.0);
+
 		// やられた演出
 		StartCoro(self, [this, self](YieldExtended yield) mutable
 		{

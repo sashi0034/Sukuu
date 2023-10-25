@@ -4,6 +4,7 @@
 #include "Player.h"
 #include "Map/MapGrid.h"
 #include "Other/TimeLimiter.h"
+#include "UI/UiTimeLimiter.h"
 
 namespace Play
 {
@@ -30,6 +31,9 @@ namespace Play
 
 		Player& GetPlayer();
 		const Player& GetPlayer() const;
+
+		UiTimeLimiter& GetTimeLimiter();
+		const UiTimeLimiter& GetTimeLimiter() const;
 
 		PlaySingletonData CopyData() const;
 

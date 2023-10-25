@@ -168,6 +168,16 @@ namespace Play
 		return p_impl->m_player;
 	}
 
+	UiTimeLimiter& PlayScene::GetTimeLimiter()
+	{
+		return p_impl->m_uiTimeLimiter;
+	}
+
+	const UiTimeLimiter& PlayScene::GetTimeLimiter() const
+	{
+		return p_impl->m_uiTimeLimiter;
+	}
+
 	PlaySingletonData PlayScene::CopyData() const
 	{
 		return PlaySingletonData{
