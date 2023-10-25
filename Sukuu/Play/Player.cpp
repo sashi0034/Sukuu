@@ -361,16 +361,20 @@ namespace Play
 	{
 	}
 
-	void Player::Init()
+	void Player::Init(const PlayerPersonalData& data)
 	{
+		p_impl->m_personal = data;
+
 		p_impl->m_pos.SetPos(GetInitialPos(PlayScene::Instance().GetMap()));
 
 		p_impl->m_distField.Resize(PlayScene::Instance().GetMap().Data().size());
 
 		p_impl->StartFlowchart(*this);
 
-		p_impl->m_personal.items[0] = ConsumableItem::Wing;
-		p_impl->m_personal.items[1] = ConsumableItem::Helmet;
+#ifdef _DEBUG
+		// p_impl->m_personal.items[0] = ConsumableItem::Wing;
+		// p_impl->m_personal.items[1] = ConsumableItem::Helmet;
+#endif
 	}
 
 	void Player::Update()

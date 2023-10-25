@@ -9,7 +9,7 @@ namespace Play
 	{
 	public:
 		Player();
-		void Init();
+		void Init(const PlayerPersonalData& data);
 		void Update() override;
 		double OrderPriority() const override;
 

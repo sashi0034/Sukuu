@@ -8,7 +8,9 @@ using namespace Util;
 
 struct Sukuu::GamesSupervisor::Impl
 {
-	void FlowchartAsync(YieldExtended& yield, ActorBase& self) const
+	Play::PlaySingletonData m_playData{};
+
+	void FlowchartAsync(YieldExtended& yield, ActorBase& self)
 	{
 		while (true)
 		{
@@ -17,14 +19,15 @@ struct Sukuu::GamesSupervisor::Impl
 	}
 
 private:
-	static void flowchartLoop(YieldExtended& yield, ActorBase& self)
+	void flowchartLoop(YieldExtended& yield, ActorBase& self)
 	{
-		auto play = self.AsParent().Birth(Play::PlayScene());
+		auto play = self.AsParent().Birth(Play::PlayScene(m_playData));
 		yield.WaitForTrue([&]()
 		{
 			return play.GetPlayer().IsCompletedGoal();
 		});
 		play.Kill();
+		m_playData = play.CopyData();
 	}
 };
 

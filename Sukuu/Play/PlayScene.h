@@ -6,10 +6,16 @@
 
 namespace Play
 {
+	struct PlaySingletonData
+	{
+		PlayerPersonalData playerPersonal;
+	};
+
 	class PlayScene : public ActorBase
 	{
 	public:
 		PlayScene();
+		PlayScene(const PlaySingletonData& data);
 		~PlayScene() override;
 		void Update() override;
 
@@ -21,6 +27,8 @@ namespace Play
 
 		Player& GetPlayer();
 		const Player& GetPlayer() const;
+
+		PlaySingletonData CopyData() const;
 
 		static PlayScene& Instance();
 

@@ -61,7 +61,9 @@ namespace Play
 
 	PlayScene* s_instance = nullptr;
 
-	PlayScene::PlayScene() :
+	PlayScene::PlayScene() : PlayScene(PlaySingletonData{}) { return; }
+
+	PlayScene::PlayScene(const PlaySingletonData& data) :
 		p_impl(std::make_shared<Impl>())
 	{
 		s_instance = this;
@@ -90,7 +92,7 @@ namespace Play
 		p_impl->m_uiItemContainer = p_impl->m_ui.Birth(UiItemContainer());
 
 		// 初期化
-		p_impl->m_player.Init();
+		p_impl->m_player.Init(data.playerPersonal);
 	}
 
 	PlayScene::~PlayScene()
@@ -138,5 +140,12 @@ namespace Play
 	const Player& PlayScene::GetPlayer() const
 	{
 		return p_impl->m_player;
+	}
+
+	PlaySingletonData PlayScene::CopyData() const
+	{
+		return PlaySingletonData{
+			.playerPersonal = p_impl->m_player.PersonalData()
+		};
 	}
 }
