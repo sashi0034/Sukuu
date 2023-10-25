@@ -40,6 +40,9 @@ vision_render = 5
 render_cell = 8
 movable_color = "#70144840"
 border_color = "#d0d0f0"
+player_color = "#ffd14d"
+item_color = "#1c9ee3"
+stairs_color = "#5e8af7"
 
 [play.ui_item_container]
 center = "(0, 80)"
