@@ -1,4 +1,20 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=F1AF3F0CA5E68F42B405AEBD180BBF33/@KeyIndexDefined">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=F1AF3F0CA5E68F42B405AEBD180BBF33/Applicability/=Live/@EntryIndexedValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=F1AF3F0CA5E68F42B405AEBD180BBF33/Description/@EntryValue">Get toml params for source file</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=F1AF3F0CA5E68F42B405AEBD180BBF33/Field/=NAME/@KeyIndexDefined">True</s:Boolean>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=F1AF3F0CA5E68F42B405AEBD180BBF33/Field/=NAME/Order/@EntryValue">0</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=F1AF3F0CA5E68F42B405AEBD180BBF33/Reformat/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=F1AF3F0CA5E68F42B405AEBD180BBF33/Scope/=F6696F8185506F41B9C4252540BE9C18/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=F1AF3F0CA5E68F42B405AEBD180BBF33/Scope/=F6696F8185506F41B9C4252540BE9C18/Type/@EntryValue">InCppFile</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=F1AF3F0CA5E68F42B405AEBD180BBF33/Shortcut/@EntryValue">tomlcpp</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=F1AF3F0CA5E68F42B405AEBD180BBF33/ShortenQualifiedReferences/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=F1AF3F0CA5E68F42B405AEBD180BBF33/Text/@EntryValue">	template &lt;typename T&gt;
+	T getToml(const String&amp; key)
+	{
+		return Util::GetTomlParameter&lt;T&gt;(U"$NAME$." + key);
+	}
+</s:String>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=hitstopping/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Rockn/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Sukuu/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>

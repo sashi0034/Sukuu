@@ -7,6 +7,15 @@
 #include "Util/EasingAnimation.h"
 #include "Util/TomlParametersWrapper.h"
 
+namespace
+{
+	template <typename T>
+	T getToml(const String& key)
+	{
+		return Util::GetTomlParameter<T>(U"play.ui_item_container." + key);
+	}
+}
+
 struct Play::UiItemContainer::Impl
 {
 	std::array<UiItemButton, MaxItemPossession> m_items;
@@ -17,7 +26,7 @@ struct Play::UiItemContainer::Impl
 
 	void Update(ActorBase& self)
 	{
-		const auto center = Point{Scene::Center().x, 60};
+		const auto center = Point{Scene::Center().x, getToml<int>(U"base_vertical")};
 		const Transformer2D transform{Mat3x2::Translate(m_offset).scaled(m_scale, center)};
 		auto&& player = PlayScene::Instance().GetPlayer();
 		const auto& playerItems = player.PersonalData().items;
@@ -33,7 +42,7 @@ struct Play::UiItemContainer::Impl
 			});
 		}
 
-		m_itemLabel.SetCenter(center + GetTomlParameter<Point>(U"play.ui_item_container.center"));
+		m_itemLabel.SetCenter(center + getToml<Vec2>(U"label_center"));
 		m_itemLabel.Update();
 	}
 

@@ -14,6 +14,7 @@ namespace Play
 
 		void Init(const TimeLimiterData& data);
 		void Update() override;
+		double OrderPriority() const override { return -1000; };
 
 		const TimeLimiterData& GetData() const;
 

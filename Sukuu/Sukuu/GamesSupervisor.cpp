@@ -12,6 +12,11 @@ struct Sukuu::GamesSupervisor::Impl
 
 	void FlowchartAsync(YieldExtended& yield, ActorBase& self)
 	{
+		m_playData.timeLimiter = {
+			.maxTime = 120,
+			.remainingTime = 120,
+		};
+
 		while (true)
 		{
 			flowchartLoop(yield, self);

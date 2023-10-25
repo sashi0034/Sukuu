@@ -44,8 +44,24 @@ player_color = "#ffd14d"
 item_color = "#1c9ee3"
 stairs_color = "#5e8af7"
 
+[play.ui_time_limiter]
+circle_center = "(-160, 80)"
+circle_radius = 40
+circle_outer = 24
+bg_back_scale = 2.0
+bg_back_color = "#52555e"
+back_scale = 1.1
+back_color = "#7c7c7c"
+main_color = "#ffc700"
+empty_thickness = 2.0
+empty_color = "#070707"
+icon_size = 64
+text_offset = "(-96, -12)"
+rect_unit_width = 280
+
 [play.ui_item_container]
-center = "(0, 80)"
+base_vertical = 80
+label_center = "(0, 80)"
 
 [play.debug]
 visualize_player_distance = false
