@@ -102,16 +102,16 @@ public:
 
 namespace Play
 {
-	PlayScene* s_instance = nullptr;
+	std::unique_ptr<PlayScene> s_instance = nullptr;
 
 	PlayScene::PlayScene() : p_impl(std::make_shared<Impl>())
 	{
-		s_instance = this;
+		s_instance = std::make_unique<PlayScene>(*this);
 	}
 
 	PlayScene::~PlayScene()
 	{
-		if (s_instance->p_impl == this->p_impl && p_impl.use_count() == 1) s_instance = nullptr;
+		if (s_instance->p_impl == this->p_impl && p_impl.use_count() == 2) s_instance.release();
 	}
 
 	void PlayScene::Init(const PlaySingletonData& data)
