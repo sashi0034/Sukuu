@@ -20,11 +20,11 @@ void Main()
 	Window::Resize(Size{1280, 720});
 
 	ActorContainer actorRoot{};
-	actorRoot.Birth(GamesSupervisor());
 #if _DEBUG
 	actorRoot.Birth(TomlParametersWrapper());
 	actorRoot.Birth(AssetReloader());
 #endif
+	actorRoot.Birth(GamesSupervisor());
 
 	for (auto&& path : AssetImages::GetKeys()) TextureAsset::Register(path, path);
 	AssetKeys::RegisterAll();

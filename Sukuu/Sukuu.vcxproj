@@ -139,6 +139,7 @@
     <ClCompile Include="Play\PlayScene.cpp" />
     <ClCompile Include="Play\UI\UiItemButton.cpp" />
     <ClCompile Include="Play\UI\UiItemContainer.cpp" />
+    <ClCompile Include="Play\UI\UiMiniMap.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -369,6 +370,7 @@
     <ClInclude Include="Play\PlayScene.h" />
     <ClInclude Include="Play\UI\UiItemButton.h" />
     <ClInclude Include="Play\UI\UiItemContainer.h" />
+    <ClInclude Include="Play\UI\UiMiniMap.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Sukuu\AssetReloader.h" />
     <ClInclude Include="Sukuu\GamesSupervisor.h" />

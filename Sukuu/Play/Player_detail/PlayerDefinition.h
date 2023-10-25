@@ -18,5 +18,9 @@ namespace Play
 		std::array<ConsumableItem, MaxItemPossession> items;
 	};
 
-	using PlayerDistField = Grid<PlayerPosRelation>;
+	class PlayerDistField : public Grid<PlayerPosRelation>
+	{
+	public:
+		bool IsPlayerExistAt(const Point& p) const { return this->inBounds(p) && (*this)[p].distance == 0; }
+	};
 }

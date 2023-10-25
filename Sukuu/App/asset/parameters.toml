@@ -34,6 +34,13 @@ baloon_offset_y = -32
 default_vision_radius = 160
 dark_color = "#3D30A2"
 
+[play.ui_minimap]
+screen_point = "(100, 200)"
+vision_render = 5
+render_cell = 8
+movable_color = "#70144840"
+border_color = "#d0d0f0"
+
 [play.ui_item_container]
 center = "(0, 80)"
 

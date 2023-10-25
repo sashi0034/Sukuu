@@ -21,7 +21,8 @@ struct Sukuu::GamesSupervisor::Impl
 private:
 	void flowchartLoop(YieldExtended& yield, ActorBase& self)
 	{
-		auto play = self.AsParent().Birth(Play::PlayScene(m_playData));
+		auto play = self.AsParent().Birth(Play::PlayScene());
+		play.Init(m_playData);
 		yield.WaitForTrue([&]()
 		{
 			return play.GetPlayer().IsCompletedGoal();

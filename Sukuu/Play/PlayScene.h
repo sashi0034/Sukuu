@@ -15,8 +15,9 @@ namespace Play
 	{
 	public:
 		PlayScene();
-		PlayScene(const PlaySingletonData& data);
 		~PlayScene() override;
+
+		void Init(const PlaySingletonData& data);
 		void Update() override;
 
 		MapGrid& GetMap();

@@ -10,9 +10,10 @@
 #include "Map/MazeGenerator.h"
 #include "Other/CaveVision.h"
 #include "UI/UiItemContainer.h"
+#include "UI/UiMiniMap.h"
 #include "Util/ActorContainer.h"
 
-namespace Play
+namespace
 {
 	namespace CameraKind
 	{
@@ -23,86 +24,99 @@ namespace Play
 			Max,
 		};
 	}
+}
 
-	class PlayScene::Impl
+class Play::PlayScene::Impl
+{
+public:
+	MapGrid m_map;
+	GimmickGrid m_gimmick;
+	BgMapDrawer m_bgMapDrawer{};
+	Player m_player;
+	Camera2D m_debugCamera;
+	CameraKind::Value m_camera = CameraKind::Player;
+	ActorContainer m_ui{};
+	UiItemContainer m_uiItemContainer;
+	UiMiniMap m_uiMiniMap;
+	CaveVision m_caveVision{};
+
+	void Init(ActorBase& self, const PlaySingletonData& data)
 	{
-	public:
-		MapGrid m_map;
-		GimmickGrid m_gimmick;
-		BgMapDrawer m_bgMapDrawer{};
-		Player m_player;
-		Camera2D m_debugCamera;
-		CameraKind::Value m_camera = CameraKind::Player;
-		ActorContainer m_ui{};
-		UiItemContainer m_uiItemContainer;
-		CaveVision m_caveVision{};
-
-		void UpdateScene(PlayScene& self)
-		{
-#ifdef  _DEBUG
-			// デバッグ用にカメラ変更
-			if (KeyNum0.down())
-				m_camera =
-					static_cast<CameraKind::Value>((m_camera + 1) % CameraKind::Max);
-#endif
-			if (m_camera == CameraKind::Debug) m_debugCamera.update();
-
-			const auto t = m_camera == CameraKind::Player
-				               ? Transformer2D(m_player.CameraTransform(), TransformCursor::Yes)
-				               : m_debugCamera.createTransformer();
-
-			const ScopedRenderStates2D sampler{SamplerState::BorderNearest};
-
-			// 背景描画
-			m_bgMapDrawer.Tick(self);
-
-			// キャラクターなどの通常更新
-			self.ActorBase::Update();
-
-			// 視界マスク更新
-			m_caveVision.UpdateMask(m_player.CurrentPos().viewPos + Point(CellPx_24, CellPx_24) / 2);
-		}
-	};
-
-	PlayScene* s_instance = nullptr;
-
-	PlayScene::PlayScene() : PlayScene(PlaySingletonData{}) { return; }
-
-	PlayScene::PlayScene(const PlaySingletonData& data) :
-		p_impl(std::make_shared<Impl>())
-	{
-		s_instance = this;
-
-		p_impl->m_map = GenerateFreshDungeon(DungGenProps{
+		m_map = GenerateFreshDungeon(DungGenProps{
 			.size = {81, 81},
 			.areaDivision = 8,
 		});
-		// p_impl->m_map = GenerateFreshMaze(MazeGenProps{
+		// m_map = GenerateFreshMaze(MazeGenProps{
 		// 	.size = {81, 81},
 		// });
 
-		p_impl->m_gimmick.resize(p_impl->m_map.Data().size(), GimmickKind::None);
-		InstallGimmicks(p_impl->m_gimmick, p_impl->m_map);
+		m_gimmick.resize(m_map.Data().size(), GimmickKind::None);
+		InstallGimmicks(m_gimmick, m_map);
 
 		// 生成
-		p_impl->m_player = AsParent().Birth(Player());
+		m_player = self.AsParent().Birth(Player());
 
 		// TODO: EnemyManager
 		for (int i = 0; i < 10; ++i)
 		{
-			auto enemy = AsParent().Birth(EnSlimeCat());
+			auto enemy = self.AsParent().Birth(EnSlimeCat());
 			enemy.Init();
 		}
 
-		p_impl->m_uiItemContainer = p_impl->m_ui.Birth(UiItemContainer());
+		m_uiItemContainer = m_ui.Birth(UiItemContainer());
+
+		m_uiMiniMap = m_ui.Birth(UiMiniMap());
 
 		// 初期化
-		p_impl->m_player.Init(data.playerPersonal);
+		m_player.Init(data.playerPersonal);
+
+		m_uiMiniMap.Init(m_map.Data().size());
+	}
+
+	void UpdateScene(PlayScene& self)
+	{
+#ifdef  _DEBUG
+		// デバッグ用にカメラ変更
+		if (KeyNum0.down())
+			m_camera =
+				static_cast<CameraKind::Value>((m_camera + 1) % CameraKind::Max);
+#endif
+		if (m_camera == CameraKind::Debug) m_debugCamera.update();
+
+		const auto t = m_camera == CameraKind::Player
+			               ? Transformer2D(m_player.CameraTransform(), TransformCursor::Yes)
+			               : m_debugCamera.createTransformer();
+
+		const ScopedRenderStates2D sampler{SamplerState::BorderNearest};
+
+		// 背景描画
+		m_bgMapDrawer.Tick(self);
+
+		// キャラクターなどの通常更新
+		self.ActorBase::Update();
+
+		// 視界マスク更新
+		m_caveVision.UpdateMask(m_player.CurrentPos().viewPos + Point(CellPx_24, CellPx_24) / 2);
+	}
+};
+
+namespace Play
+{
+	PlayScene* s_instance = nullptr;
+
+	PlayScene::PlayScene() : p_impl(std::make_shared<Impl>())
+	{
+		s_instance = this;
 	}
 
 	PlayScene::~PlayScene()
 	{
 		if (s_instance->p_impl == this->p_impl && p_impl.use_count() == 1) s_instance = nullptr;
+	}
+
+	void PlayScene::Init(const PlaySingletonData& data)
+	{
+		p_impl->Init(*this, data);
 	}
 
 	void PlayScene::Update()
