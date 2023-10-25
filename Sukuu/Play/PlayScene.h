@@ -3,12 +3,14 @@
 #include "Gimmick/GimmickGrid.h"
 #include "Player.h"
 #include "Map/MapGrid.h"
+#include "Other/TimeLimiter.h"
 
 namespace Play
 {
 	struct PlaySingletonData
 	{
 		PlayerPersonalData playerPersonal;
+		TimeLimiterData timeLimiter;
 	};
 
 	class PlayScene : public ActorBase

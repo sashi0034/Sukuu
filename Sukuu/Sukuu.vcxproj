@@ -140,6 +140,7 @@
     <ClCompile Include="Play\UI\UiItemButton.cpp" />
     <ClCompile Include="Play\UI\UiItemContainer.cpp" />
     <ClCompile Include="Play\UI\UiMiniMap.cpp" />
+    <ClCompile Include="Play\UI\UiTimeLimiter.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
@@ -184,6 +185,8 @@
     <ResourceCompile Include="App\Resource.rc" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="App\asset\font\DotGothic16\OFL.txt" />
+    <Text Include="App\asset\font\RocknRoll\OFL.txt" />
     <Text Include="App\dll\soundtouch\COPYING.TXT" />
     <Text Include="App\engine\font\fontawesome\LICENSE.txt" />
     <Text Include="App\engine\soundfont\GMGSx.sf2.txt" />

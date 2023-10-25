@@ -11,6 +11,7 @@
 #include "Other/CaveVision.h"
 #include "UI/UiItemContainer.h"
 #include "UI/UiMiniMap.h"
+#include "UI/UiTimeLimiter.h"
 #include "Util/ActorContainer.h"
 
 namespace
@@ -38,6 +39,7 @@ public:
 	ActorContainer m_ui{};
 	UiItemContainer m_uiItemContainer;
 	UiMiniMap m_uiMiniMap;
+	UiTimeLimiter m_uiTimeLimiter;
 	CaveVision m_caveVision{};
 
 	void Init(ActorBase& self, const PlaySingletonData& data)
@@ -67,10 +69,14 @@ public:
 
 		m_uiMiniMap = m_ui.Birth(UiMiniMap());
 
+		m_uiTimeLimiter = m_ui.Birth(UiTimeLimiter());
+
 		// 初期化
 		m_player.Init(data.playerPersonal);
 
 		m_uiMiniMap.Init(m_map.Data().size());
+
+		m_uiTimeLimiter.Init(data.timeLimiter);
 	}
 
 	void UpdateScene(PlayScene& self)
@@ -165,7 +171,8 @@ namespace Play
 	PlaySingletonData PlayScene::CopyData() const
 	{
 		return PlaySingletonData{
-			.playerPersonal = p_impl->m_player.PersonalData()
+			.playerPersonal = p_impl->m_player.PersonalData(),
+			.timeLimiter = p_impl->m_uiTimeLimiter.GetData()
 		};
 	}
 }
