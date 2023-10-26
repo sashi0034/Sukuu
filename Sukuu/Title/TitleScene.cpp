@@ -27,6 +27,7 @@ struct Title::TitleScene::Impl
 
 	void Update()
 	{
+		if (MouseL.down()) m_concluded = true;
 	}
 };
 
@@ -48,7 +49,7 @@ namespace Title
 		p_impl->Update();
 	}
 
-	bool TitleScene::IsConcluded()
+	bool TitleScene::IsConcluded() const
 	{
 		return p_impl->m_concluded;
 	}

@@ -5,7 +5,16 @@
 #include "Title/TitleScene.h"
 #include "Util/CoroUtil.h"
 
-using namespace Util;
+namespace
+{
+	using namespace Util;
+
+	template <typename T>
+	T getToml(const String& key)
+	{
+		return Util::GetTomlParameter<T>(U"sukuu." + key);
+	}
+}
 
 struct Sukuu::GamesSupervisor::Impl
 {
@@ -27,11 +36,18 @@ struct Sukuu::GamesSupervisor::Impl
 private:
 	void flowchartLoop(YieldExtended& yield, ActorBase& self)
 	{
-		auto title = self.AsParent().Birth(Title::TitleScene());
-		title.Init();
-		yield.WaitForTrue([&]() { return title.IsConcluded(); });
-		title.Kill();
+		const auto entryPoint = getToml<String>(U"entry_point");
+		if (entryPoint == U"title") goto title;
+		if (entryPoint == U"play") goto play;
 
+	title:
+		{
+			auto title = self.AsParent().Birth(Title::TitleScene());
+			title.Init();
+			yield.WaitForTrue([&]() { return title.IsConcluded(); });
+			title.Kill();
+		}
+	play:
 		while (true)
 		{
 			auto play = self.AsParent().Birth(Play::PlayScene());

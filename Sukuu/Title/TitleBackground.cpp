@@ -16,20 +16,25 @@ namespace
 	constexpr std::array<StringView, 15> mapData = {
 		U"               ", // 00
 		U"               ", // 01
-		U"      ---      ", // 02
+		U"    ^ --- ^    ", // 02
 		U"      -#-      ", // 03
-		U"      ---      ", // 04
+		U"  ^   ---   ^  ", // 04
 		U"     -----     ", // 05
 		U"  -----------  ", // 06
-		U"  -----------  ", // 07
+		U"  -!-------!-  ", // 07
 		U"  -----------  ", // 08
 		U"     -----     ", // 09
-		U"      ---      ", // 0a
-		U"      ---      ", // 0b
-		U"      ---      ", // 0c
+		U"  ^   ---   ^  ", // 0a
+		U"      -!-      ", // 0b
+		U"    ^ --- ^    ", // 0c
 		U"               ", // 0d
 		U"               ", // 0e
 	};
+
+	constexpr double billboardPixelartScale(double boardPixel)
+	{
+		return boardPixel / 12.0;
+	}
 }
 
 struct Title::TitleBackground::Impl
@@ -38,8 +43,10 @@ struct Title::TitleBackground::Impl
 	MSRenderTexture m_renderTexture{Scene::Size(), TextureFormat::R8G8B8A8_Unorm_SRGB, HasDepth::Yes};
 	SimpleFollowCamera3D m_camera{};
 	double m_cameraFollowDeg{};
-	Mesh m_playerBillboard{MeshData::Billboard()};
+	Mesh m_billboard{MeshData::Billboard()};
 	Play::AnimTimer m_animTimer{};
+	Array<Vec2> m_treePoss{};
+	Array<Vec2> m_hourglassPoss{};
 
 	void Init()
 	{
@@ -55,6 +62,11 @@ struct Title::TitleBackground::Impl
 		for (const auto p : step(mapSize))
 		{
 			auto targetP = p.movedBy((maxMapSize - mapSize) / 2);
+			const auto worldP = [targetP]()
+			{
+				const auto w = (targetP - maxMapSize / 2).xy() * 2;;
+				return Vec2{w.x, -w.y};
+			};
 			switch (mapData[p.y][p.x])
 			{
 			case U'-':
@@ -63,6 +75,14 @@ struct Title::TitleBackground::Impl
 			case U'#':
 				stairsPoint = targetP;
 				mapGrid.At(targetP).kind = Play::TerrainKind::Floor;
+				break;
+			case U'!':
+				m_hourglassPoss.push_back(worldP());
+				mapGrid.At(targetP).kind = Play::TerrainKind::Floor;
+				break;
+			case U'^':
+				m_treePoss.push_back(worldP());
+				mapGrid.At(targetP).kind = Play::TerrainKind::Wall;
 				break;
 			default:
 				mapGrid.At(targetP).kind = Play::TerrainKind::Wall;
@@ -126,16 +146,29 @@ private:
 		const ScopedRenderTarget3D target{m_renderTexture.clear(getToml<ColorF>(U"bg_color"))};
 		const ScopedRenderStates3D state{SamplerState::BorderNearest};
 
-		constexpr double dotScale = 2.0;
-
+		constexpr double dotScale = 2;
 		(void)Plane{maxMapSize.x * dotScale}.draw(m_mapTexture, Palette::Thistle);
 
 		const ScopedRenderStates3D states{BlendState::Default2D, DepthStencilState::DepthTest};
 
-		m_playerBillboard.draw(
-			m_camera.billboard(Vec3{0, 1, 0}, dotScale),
+		m_billboard.draw(
+			m_camera.billboard(Vec3{0, billboardPixelartScale(32) / dotScale, 0}, billboardPixelartScale(32)),
 			Play::GetUsualPlayerTexture(Dir4::FromXY({-m_camera.getEyePosition().xz()}), m_animTimer, false),
 			Palette::Thistle);
+		for (const auto& p : m_hourglassPoss)
+		{
+			m_billboard.draw(
+				m_camera.billboard({p.x, billboardPixelartScale(16) / dotScale, p.y}, billboardPixelartScale(16)),
+				TextureAsset(AssetImages::hourglass_16x16)(Rect(m_animTimer.SliceFrames(200, 3) * 16, 0, 16, 16)),
+				Palette::Thistle);
+		}
+		for (const auto& p : m_treePoss)
+		{
+			m_billboard.draw(
+				m_camera.billboard({p.x, billboardPixelartScale(48) / dotScale, p.y}, billboardPixelartScale(48)),
+				TextureAsset(AssetImages::dark_tree_48x48)(Rect(m_animTimer.SliceFrames(250, 6) * 48, 0, 48, 48)),
+				Palette::Thistle);
+		}
 	}
 
 	void apply3D() const

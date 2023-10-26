@@ -7,6 +7,8 @@ namespace AssetImages
 	constexpr StringView brick_stylish_24x24 = U"asset/image/brick_stylish_24x24.png";
 	constexpr StringView brick_stylish_light_24x24 = U"asset/image/brick_stylish_light_24x24 .png";
 	constexpr StringView clock_16x16 = U"asset/image/clock_16x16.png";
+	constexpr StringView dark_tree_16x16 = U"asset/image/dark_tree_16x16.png";
+	constexpr StringView dark_tree_48x48 = U"asset/image/dark_tree_48x48.png";
 	constexpr StringView helmet_16x16 = U"asset/image/helmet_16x16.png";
 	constexpr StringView hourglass_16x16 = U"asset/image/hourglass_16x16.png";
 	constexpr StringView light_bulb_16x16 = U"asset/image/light_bulb_16x16.png";
@@ -20,6 +22,8 @@ namespace AssetImages
 	constexpr StringView test_tube_16x16 = U"asset/image/test_tube_16x16.png";
 	constexpr StringView tex_aqua_noise = U"asset/image/tex_aqua_noise.png";
 	constexpr StringView tex_cosmos_noise = U"asset/image/tex_cosmos_noise.png";
+	constexpr StringView tree_16x16 = U"asset/image/tree_16x16.png";
+	constexpr StringView tree_48x48 = U"asset/image/tree_48x48.png";
 	constexpr StringView wing_16x16 = U"asset/image/wing_16x16.png";
 
 	inline Array<StringView> GetKeys()
@@ -30,6 +34,8 @@ namespace AssetImages
 			brick_stylish_24x24,
 			brick_stylish_light_24x24,
 			clock_16x16,
+			dark_tree_16x16,
+			dark_tree_48x48,
 			helmet_16x16,
 			hourglass_16x16,
 			light_bulb_16x16,
@@ -43,6 +49,8 @@ namespace AssetImages
 			test_tube_16x16,
 			tex_aqua_noise,
 			tex_cosmos_noise,
+			tree_16x16,
+			tree_48x48,
 			wing_16x16,
 		};
 	}

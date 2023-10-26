@@ -11,7 +11,7 @@ namespace Title
 		void Init();
 		void Update() override;
 
-		bool IsConcluded();
+		bool IsConcluded() const;
 
 	private:
 		struct Impl;

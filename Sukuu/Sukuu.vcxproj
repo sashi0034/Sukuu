@@ -488,7 +488,10 @@
     <Content Include="App\asset\image\beatrice_32x32.png" />
     <Content Include="App\asset\image\bookmark_16x16.png" />
     <Content Include="App\asset\image\brick_stylish_24x24.png" />
+    <Content Include="App\asset\image\brick_stylish_light_24x24 .png" />
     <Content Include="App\asset\image\clock_16x16.png" />
+    <Content Include="App\asset\image\dark_tree_16x16.png" />
+    <Content Include="App\asset\image\dark_tree_48x48.png" />
     <Content Include="App\asset\image\grave_16x16.gif" />
     <Content Include="App\asset\image\helmet_16x16.png" />
     <Content Include="App\asset\image\hourglass_16x16.png" />
@@ -503,6 +506,8 @@
     <Content Include="App\asset\image\test_tube_16x16.png" />
     <Content Include="App\asset\image\tex_aqua_noise.png" />
     <Content Include="App\asset\image\tex_cosmos_noise.png" />
+    <Content Include="App\asset\image\tree_16x16.png" />
+    <Content Include="App\asset\image\tree_48x48.png" />
     <Content Include="App\asset\image\wing_16x16.png" />
     <Content Include="App\asset\parameters.toml" />
   </ItemGroup>
