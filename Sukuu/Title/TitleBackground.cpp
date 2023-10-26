@@ -2,6 +2,7 @@
 #include "TitleBackground.h"
 
 #include "Play/Map/BgMapDrawer.h"
+#include "Play/Player_detail/PlayerAnimation.h"
 
 namespace
 {
@@ -11,25 +12,23 @@ namespace
 		return Util::GetTomlParameter<T>(U"title.background." + key);
 	}
 
-	constexpr Size maxMapSize{64, 64};
-	constexpr std::array<StringView, 16> mapData = {
-		// c:    7       f
-		U"                ", // 00
-		U"                ", // 01
-		U"                ", // 02
-		U"       --       ", // 03
-		U"       --       ", // 04
-		U"     ------     ", // 05
-		U"     ------     ", // 06
-		U"  ------------  ", // 07
-		U"  ------------  ", // 08
-		U"     ------     ", // 09
-		U"     ------     ", // 0a
-		U"       --       ", // 0b
-		U"       --       ", // 0c
-		U"       --       ", // 0d
-		U"                ", // 0e
-		U"                ", // 0f
+	constexpr Size maxMapSize{55, 55};
+	constexpr std::array<StringView, 15> mapData = {
+		U"               ", // 00
+		U"               ", // 01
+		U"      ---      ", // 02
+		U"      -#-      ", // 03
+		U"      ---      ", // 04
+		U"     -----     ", // 05
+		U"  -----------  ", // 06
+		U"  -----------  ", // 07
+		U"  -----------  ", // 08
+		U"     -----     ", // 09
+		U"      ---      ", // 0a
+		U"      ---      ", // 0b
+		U"      ---      ", // 0c
+		U"               ", // 0d
+		U"               ", // 0e
 	};
 }
 
@@ -39,6 +38,8 @@ struct Title::TitleBackground::Impl
 	MSRenderTexture m_renderTexture{Scene::Size(), TextureFormat::R8G8B8A8_Unorm_SRGB, HasDepth::Yes};
 	SimpleFollowCamera3D m_camera{};
 	double m_cameraFollowDeg{};
+	Mesh m_playerBillboard{MeshData::Billboard()};
+	Play::AnimTimer m_animTimer{};
 
 	void Init()
 	{
@@ -50,12 +51,17 @@ struct Title::TitleBackground::Impl
 		Play::MapGrid mapGrid{maxMapSize};
 		for (const auto p : step(maxMapSize))
 			mapGrid.At(p).kind = Play::TerrainKind::Wall;
+		Point stairsPoint{};
 		for (const auto p : step(mapSize))
 		{
 			auto targetP = p.movedBy((maxMapSize - mapSize) / 2);
 			switch (mapData[p.y][p.x])
 			{
 			case U'-':
+				mapGrid.At(targetP).kind = Play::TerrainKind::Floor;
+				break;
+			case U'#':
+				stairsPoint = targetP;
 				mapGrid.At(targetP).kind = Play::TerrainKind::Floor;
 				break;
 			default:
@@ -69,6 +75,9 @@ struct Title::TitleBackground::Impl
 		{
 			Play::DrawBgMapTileAt(mapGrid, p.x, p.y);
 		}
+		// 階段
+		(void)TextureAsset(AssetImages::stairs_24x24)({0, 0}, Size{1, 1} * Play::CellPx_24)
+			.draw(stairsPoint * Play::CellPx_24);
 
 		resetCamera();
 	}
@@ -86,6 +95,8 @@ struct Title::TitleBackground::Impl
 		m_camera.setTarget(getToml<Vec3>(U"camera_target_position"), ToRadians(m_cameraFollowDeg));
 		m_camera.setFollowOffset(getToml<double>(U"camera_follow_distance"), getToml<double>(U"camera_follow_height"));
 		m_camera.update(2.0, GetDeltaTime());
+
+		m_animTimer.Tick();
 
 		// 3D描画
 		draw3D();
@@ -108,18 +119,30 @@ private:
 	void draw3D() const
 	{
 		Graphics3D::SetCameraTransform(m_camera);
+		auto sunDir = m_camera.getEyePosition().normalized();
+		sunDir.y = 0.5;
+		Graphics3D::SetSunDirection(sunDir);
 
 		const ScopedRenderTarget3D target{m_renderTexture.clear(getToml<ColorF>(U"bg_color"))};
 		const ScopedRenderStates3D state{SamplerState::BorderNearest};
 
-		(void)Plane{maxMapSize.x * 2}.draw(m_mapTexture);
+		constexpr double dotScale = 2.0;
+
+		(void)Plane{maxMapSize.x * dotScale}.draw(m_mapTexture, Palette::Thistle);
+
+		const ScopedRenderStates3D states{BlendState::Default2D, DepthStencilState::DepthTest};
+
+		m_playerBillboard.draw(
+			m_camera.billboard(Vec3{0, 1, 0}, dotScale),
+			Play::GetUsualPlayerTexture(Dir4::FromXY({-m_camera.getEyePosition().xz()}), m_animTimer, false),
+			Palette::Thistle);
 	}
 
 	void apply3D() const
 	{
 		Graphics3D::Flush();
 		m_renderTexture.resolve();
-		Shader::LinearToScreen(m_renderTexture);
+		(void)m_renderTexture.resized(Scene::Size()).draw();
 	}
 };
 

@@ -49,5 +49,12 @@ namespace Util
 		{
 			return {index};
 		}
+
+		inline Dir4Type FromXY(const Vec2& p)
+		{
+			return Math::Abs(p.x) >= Math::Abs(p.y)
+				       ? (p.x < 0 ? Left : Right)
+				       : (p.y < 0 ? Up : Down);
+		}
 	};
 }
