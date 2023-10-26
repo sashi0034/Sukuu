@@ -69,21 +69,29 @@ namespace Play
 		}
 	}
 
-	void AnimatePlayerDie(YieldExtended& yield, ActorBase& self, Vec2& m_animOffset)
+	void AnimatePlayerDie(YieldExtended& yield, ActorBase& self, Vec2& animOffset, Vec2& cameraOffset)
 	{
 		SetTimeScale(GetTomlParameter<double>(U"play.player.hitstopping_timescale"));
 		yield.WaitForTime(0.5, Scene::DeltaTime);
 		SetTimeScale(1);
 
+		// カメラシェイク
+		StartCoro(self, [self, &cameraOffset](YieldExtended yield1) mutable
+		{
+			yield1.WaitForDead(AnimateEasing<EaseOutBack>(self, &cameraOffset, Vec2{-40, 0}, 0.1));
+			yield1.WaitForDead(AnimateEasing<EaseOutBack>(self, &cameraOffset, Vec2{20, 0}, 0.1));
+			yield1.WaitForDead(AnimateEasing<EaseOutBack>(self, &cameraOffset, Vec2{0, 0}, 0.1));
+		});
+
 		yield.WaitForDead(AnimateEasing<BoomerangParabola>(
 				self,
-				&m_animOffset,
+				&animOffset,
 				GetTomlParameter<Vec2>(U"play.player.dead_animation_offset_1"),
 				GetTomlParameter<double>(U"play.player.dead_animation_duration_1"))
 		);
 		yield.WaitForDead(AnimateEasing<BoomerangParabola>(
 			self,
-			&m_animOffset,
+			&animOffset,
 			GetTomlParameter<Vec2>(U"play.player.dead_animation_offset_2"),
 			GetTomlParameter<double>(U"play.player.dead_animation_duration_2")));
 		yield.WaitForTime(GetTomlParameter<double>(U"play.player.dead_pause_duration"));

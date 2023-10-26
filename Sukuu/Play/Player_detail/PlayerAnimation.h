@@ -12,7 +12,7 @@ namespace Play
 
 	TextureRegion GetDeadPlayerTexture(const Rect& playerRect);
 
-	void AnimatePlayerDie(YieldExtended& yield, ActorBase& self, Vec2& m_animOffset);
+	void AnimatePlayerDie(YieldExtended& yield, ActorBase& self, Vec2& animOffset, Vec2& cameraOffset);
 
 	void AnimatePlayerUsingWing(YieldExtended& yield, ActorBase& self, Vec2& animOffset, CharaPosition& pos);
 }

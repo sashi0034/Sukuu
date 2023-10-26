@@ -98,7 +98,7 @@ struct Play::Player::Impl
 		// やられた演出
 		StartCoro(self, [this, self](YieldExtended yield) mutable
 		{
-			AnimatePlayerDie(yield, self, m_animOffset);
+			AnimatePlayerDie(yield, self, m_animOffset, m_cameraOffset);
 
 			focusCameraFor<EaseInOutBack>(self, 1.0);
 			StartFlowchart(self);
