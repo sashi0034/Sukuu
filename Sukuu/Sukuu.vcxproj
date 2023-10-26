@@ -151,6 +151,7 @@
     </ClCompile>
     <ClCompile Include="Sukuu\AssetReloader.cpp" />
     <ClCompile Include="Sukuu\GamesSupervisor.cpp" />
+    <ClCompile Include="Title\TitleScene.cpp" />
     <ClCompile Include="Util\ActorBase.cpp" />
     <ClCompile Include="Util\ActorContainer.cpp" />
     <ClCompile Include="Util\CoordinateVisualizer.cpp" />
@@ -385,6 +386,8 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Sukuu\AssetReloader.h" />
     <ClInclude Include="Sukuu\GamesSupervisor.h" />
+    <ClInclude Include="Title\Forward.h" />
+    <ClInclude Include="Title\TitleScene.h" />
     <ClInclude Include="Util\ActorBase.h" />
     <ClInclude Include="Util\ActorContainer.h" />
     <ClInclude Include="Util\CoordinateVisualizer.h" />

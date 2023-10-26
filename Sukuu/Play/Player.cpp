@@ -12,8 +12,6 @@
 
 namespace
 {
-	constexpr Rect playerRect{0, 0, 32, 32};
-
 	enum class PlayerAct
 	{
 		Idle,
@@ -60,7 +58,7 @@ struct Play::Player::Impl
 				* GetTomlParameter<double>(U"play.player.camera_offset_speed");
 		}
 
-		const auto drawingPos = m_pos.viewPos.movedBy(GetCharacterCellPadding(playerRect.size) + m_animOffset);
+		const auto drawingPos = m_pos.viewPos.movedBy(GetCharacterCellPadding(PlayerCellRect.size) + m_animOffset);
 		(void)getPlayerTexture()
 			.draw(drawingPos);
 	}
@@ -82,7 +80,7 @@ struct Play::Player::Impl
 		if (m_isImmortal) return;;
 		if (m_act == PlayerAct::Dead) return;
 
-		const auto player = RectF{m_pos.actualPos, playerRect.size}.stretched(
+		const auto player = RectF{m_pos.actualPos, PlayerCellRect.size}.stretched(
 			GetTomlParameter<int>(U"play.player.collider_padding"));
 
 		if (enemy.intersects(player) == false) return;
@@ -136,8 +134,8 @@ struct Play::Player::Impl
 private:
 	TextureRegion getPlayerTexture() const
 	{
-		if (m_act == PlayerAct::Dead) return GetDeadPlayerTexture(playerRect);
-		return GetUsualPlayerTexture(playerRect, m_direction, m_animTimer, isWalking());
+		if (m_act == PlayerAct::Dead) return GetDeadPlayerTexture();
+		return GetUsualPlayerTexture(m_direction, m_animTimer, isWalking());
 	}
 
 	bool isWalking() const

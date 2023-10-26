@@ -19,15 +19,15 @@ void Main()
 	Scene::Resize(1920, 1080);
 	Window::Resize(Size{1280, 720});
 
+	for (auto&& path : AssetImages::GetKeys()) TextureAsset::Register(path, path);
+	AssetKeys::RegisterAll();
+
 	ActorContainer actorRoot{};
 #if _DEBUG
 	actorRoot.Birth(TomlParametersWrapper());
 	actorRoot.Birth(AssetReloader());
 #endif
 	actorRoot.Birth(GamesSupervisor());
-
-	for (auto&& path : AssetImages::GetKeys()) TextureAsset::Register(path, path);
-	AssetKeys::RegisterAll();
 
 	while (System::Update())
 	{

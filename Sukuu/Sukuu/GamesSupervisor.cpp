@@ -2,6 +2,7 @@
 #include "GamesSupervisor.h"
 
 #include "Play/PlayScene.h"
+#include "Title/TitleScene.h"
 #include "Util/CoroUtil.h"
 
 using namespace Util;
@@ -26,14 +27,22 @@ struct Sukuu::GamesSupervisor::Impl
 private:
 	void flowchartLoop(YieldExtended& yield, ActorBase& self)
 	{
-		auto play = self.AsParent().Birth(Play::PlayScene());
-		play.Init(m_playData);
-		yield.WaitForTrue([&]()
+		auto title = self.AsParent().Birth(Title::TitleScene());
+		title.Init();
+		yield.WaitForTrue([&]() { return title.IsConcluded(); });
+		title.Kill();
+
+		while (true)
 		{
-			return play.GetPlayer().IsCompletedGoal();
-		});
-		play.Kill();
-		m_playData = play.CopyData();
+			auto play = self.AsParent().Birth(Play::PlayScene());
+			play.Init(m_playData);
+			yield.WaitForTrue([&]()
+			{
+				return play.GetPlayer().IsCompletedGoal();
+			});
+			play.Kill();
+			m_playData = play.CopyData();
+		}
 	}
 };
 

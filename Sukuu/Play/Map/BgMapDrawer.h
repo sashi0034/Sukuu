@@ -3,6 +3,8 @@
 
 namespace Play
 {
+	void DrawBgMapTileAt(const MapGrid& map, int x, int y);
+
 	class BgMapDrawer
 	{
 	public:

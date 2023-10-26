@@ -66,3 +66,12 @@ label_center = "(0, 80)"
 
 [play.debug]
 visualize_player_distance = false
+
+[title.scene]
+bg_color = "#313338"
+camera_fov = 15
+camera_initial_position = "(0, 20, 0)"
+camera_target_position = "(0, 1, 0)"
+camera_rotation_speed = 5
+camera_follow_distance = 40.0
+camera_follow_height = 40.0

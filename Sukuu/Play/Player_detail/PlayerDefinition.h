@@ -7,6 +7,8 @@ namespace Play
 {
 	constexpr int PlayerDistanceInfinity = INT32_MAX / 2;
 
+	constexpr Rect PlayerCellRect{0, 0, 32, 32};
+
 	struct PlayerPosRelation
 	{
 		int distance = PlayerDistanceInfinity;

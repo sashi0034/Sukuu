@@ -9,17 +9,15 @@
 #include "Play/Chara/CharaUtil.h"
 #include "Util/TomlParametersWrapper.h"
 
-struct Play::BgMapDrawer::Impl
+namespace Play
 {
-	AnimTimer m_animTimer{};
-
-	void DrawTileAt(
+	static void drawTileAt(
 		const MapGrid& mapGrid,
-		int y,
 		int x,
+		int y,
 		const Texture& texture,
 		TerrainKind targetKind,
-		const Array<TerrainKind>& neighborKind) const
+		const Array<TerrainKind>& neighborKind)
 	{
 		const auto& mapData = mapGrid.Data();
 		constexpr uint32 tileHalf{CellPx_24 / 2};
@@ -79,6 +77,11 @@ struct Play::BgMapDrawer::Impl
 				.draw(Point{x * CellPx_24, y * CellPx_24});
 		}
 	}
+}
+
+struct Play::BgMapDrawer::Impl
+{
+	AnimTimer m_animTimer{};
 
 	void DrawGimmickAt(
 		const GimmickGrid& gimmickGrid,
@@ -120,6 +123,17 @@ namespace Play
 	{
 	}
 
+	void DrawBgMapTileAt(const MapGrid& map, int x, int y)
+	{
+		drawTileAt(map, x, y, TextureAsset(AssetImages::magma_tile_24x24),
+		           TerrainKind::Pathway, {TerrainKind::Floor, TerrainKind::Pathway});
+		drawTileAt(map, x, y, TextureAsset(AssetImages::magma_tile_24x24),
+		           TerrainKind::Floor, {TerrainKind::Floor, TerrainKind::Pathway});
+
+		drawTileAt(map, x, y, TextureAsset(AssetImages::brick_stylish_24x24),
+		           TerrainKind::Wall, {TerrainKind::Wall});
+	}
+
 	void BgMapDrawer::Tick(const PlayScene& scene)
 	{
 		p_impl->m_animTimer.Tick();
@@ -144,14 +158,7 @@ namespace Play
 				// BG描画
 				const auto drawingPoint = Point{x, y} * CellPx_24;
 
-				// (void)TextureAsset(AssetImages::magma_tile_24x24).draw(drawingPoint);
-				p_impl->DrawTileAt(map, y, x, TextureAsset(AssetImages::magma_tile_24x24),
-				                   TerrainKind::Pathway, {TerrainKind::Floor, TerrainKind::Pathway});
-				p_impl->DrawTileAt(map, y, x, TextureAsset(AssetImages::magma_tile_24x24),
-				                   TerrainKind::Floor, {TerrainKind::Floor, TerrainKind::Pathway});
-
-				p_impl->DrawTileAt(map, y, x, TextureAsset(AssetImages::brick_stylish_24x24),
-				                   TerrainKind::Wall, {TerrainKind::Wall});
+				DrawBgMapTileAt(map, x, y);
 
 				// ギミック描画
 				p_impl->DrawGimmickAt(gimmick, {x, y});

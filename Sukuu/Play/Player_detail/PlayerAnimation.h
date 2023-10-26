@@ -8,9 +8,9 @@
 namespace Play
 {
 	TextureRegion GetUsualPlayerTexture(
-		const Rect& playerRect, Dir4Type direction, AnimTimer animTimer, bool isWalking);
+		Dir4Type direction, AnimTimer animTimer, bool isWalking);
 
-	TextureRegion GetDeadPlayerTexture(const Rect& playerRect);
+	TextureRegion GetDeadPlayerTexture();
 
 	void AnimatePlayerDie(YieldExtended& yield, ActorBase& self, Vec2& animOffset, Vec2& cameraOffset);
 
