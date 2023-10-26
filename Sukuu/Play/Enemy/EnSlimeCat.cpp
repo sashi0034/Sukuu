@@ -49,10 +49,13 @@ struct Play::EnSlimeCat::Impl
 				drawingPos.movedBy(0, GetTomlParameter<int>(U"play.en_slime_cat.baloon_offset_y")), catRect.size
 			};
 
-			(void)Shape2D::RectBalloon(drawingRect,
-			                           drawingPos.movedBy(catRect.size.x / 2 - 1, 0),
-			                           0.5)
-				.draw();
+			const auto tri = Triangle(drawingRect.bl().moveBy(4, -1),
+			                          drawingRect.bl().moveBy(8, -1),
+			                          drawingPos.movedBy(CellPx_24 / 2, 0));
+
+			(void)drawingRect.rounded(4).draw(Palette::White).drawFrame(0.5, Palette::Darkslategray);
+
+			(void)tri.draw(Palette::White);
 
 			(void)TextureAsset(emotion).resized(drawingRect.stretched(-2).size).drawAt(drawingRect.center());
 		}
