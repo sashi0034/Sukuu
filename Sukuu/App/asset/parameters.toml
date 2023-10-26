@@ -68,6 +68,8 @@ label_center = "(0, 80)"
 visualize_player_distance = false
 
 [title.scene]
+
+[title.background]
 bg_color = "#313338"
 camera_fov = 15
 camera_initial_position = "(0, 20, 0)"
