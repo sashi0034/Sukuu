@@ -2,6 +2,7 @@
 #include "EnSlimeCat.h"
 
 #include "AssetsGenerated.h"
+#include "EnemyUtil.h"
 #include "Play/PlayScene.h"
 #include "Play/Chara/CharaUtil.h"
 #include "Util/TomlParametersWrapper.h"
@@ -17,17 +18,15 @@ struct Play::EnSlimeCat::Impl
 	AnimTimer m_animTimer;
 	double m_speed = 1.0;
 	Dir4Type m_direction{Dir4::Down};
-	int m_playerFollowing = 0;
+	EnemyPlayerTracker m_playerTracker{};
 	bool m_doingLostPenalty = false;
+	int m_tireCount{};
+	int m_tirePenalty{};
 
 	void Update()
 	{
 		// プレイヤーとの当たり判定
-		auto&& player = PlayScene::Instance().GetPlayer();
-		if (player.DistField()[m_pos.actualPos.MapPoint()].distance != PlayerDistanceInfinity)
-		{
-			player.SendEnemyCollide({m_pos.actualPos, catRect.size});
-		}
+		CheckSendEnemyCollide(PlayScene::Instance().GetPlayer(), m_pos);
 
 		// アニメーション更新
 		m_animTimer.Tick();
@@ -37,28 +36,12 @@ struct Play::EnSlimeCat::Impl
 		// 吹き出し描画
 		const AssetNameView emotion = [&]()
 		{
-			if (m_playerFollowing > 0) return U"😎";
+			if (m_playerTracker.IsTracking()) return U"😎";
 			if (m_doingLostPenalty) return U"🤔";
 			return U"";
 		}();
 
-		if (not emotion.empty())
-		{
-			ScopedRenderStates2D sampler{SamplerState::ClampLinear};
-			const auto drawingRect = RectF{
-				drawingPos.movedBy(0, GetTomlParameter<int>(U"play.en_slime_cat.baloon_offset_y")), catRect.size
-			};
-
-			const auto tri = Triangle(drawingRect.bl().moveBy(4, -1),
-			                          drawingRect.bl().moveBy(8, -1),
-			                          drawingPos.movedBy(CellPx_24 / 2, 0));
-
-			(void)drawingRect.rounded(4).draw(Palette::White).drawFrame(0.5, Palette::Darkslategray);
-
-			(void)tri.draw(Palette::White);
-
-			(void)TextureAsset(emotion).resized(drawingRect.stretched(-2).size).drawAt(drawingRect.center());
-		}
+		if (not emotion.empty()) DrawCharaEmotion(drawingPos, emotion);
 	}
 
 	void FlowchartAsync(YieldExtended& yield, ActorBase& self)
@@ -92,65 +75,16 @@ private:
 
 	void checkFollowPlayer(YieldExtended& yield, const Point currentPoint)
 	{
-		auto&& playerDf = PlayScene::Instance().GetPlayer().DistField();
-		const int currentDist = playerDf[currentPoint].distance;
-		const auto nextPoint = currentPoint + m_direction.ToXY().asPoint();
-		const auto nextDist = playerDf[nextPoint].distance;
-
-		if ((nextDist > currentDist || currentDist == PlayerDistanceInfinity) && m_playerFollowing > 0)
-		{
-			// 追跡中だけど、プレイヤーから遠ざかっている
-			m_playerFollowing--;
-
-			// プレイヤー見失った
-			if (m_playerFollowing == 0)
+		m_playerTracker.Track(
+			m_direction,
+			currentPoint,
+			GetTomlParameter<int>(U"play.en_slime_cat.max_player_concern"),
+			[&]()
 			{
-				// ペナルティ
 				m_doingLostPenalty = true;
 				yield.WaitForTime(GetTomlParameter<double>(U"play.en_slime_cat.lost_player_penalty"));
 				m_doingLostPenalty = false;
-			}
-		}
-
-		auto resetFollowing = [&]()
-		{
-			m_playerFollowing = GetTomlParameter<int>(U"play.en_slime_cat.player_followiung_intensity");
-		};
-		const auto playerPoint = PlayScene::Instance().GetPlayer().CurrentPoint();
-		const bool isInPathway =
-			PlayScene::Instance().GetMap().Data()[currentPoint].kind == TerrainKind::Pathway
-			|| PlayScene::Instance().GetMap().Data()[playerPoint].kind == TerrainKind::Pathway;
-		if (isInPathway)
-		{
-			// 通路の中
-			if ((playerDf[currentPoint].directStraight || playerDf[nextPoint].directStraight) && nextDist < currentDist)
-				resetFollowing();
-		}
-		else
-		{
-			// 部屋の中
-			if (nextDist < currentDist) resetFollowing();
-		}
-
-		if (m_playerFollowing == 0) return;
-		// 以下、プレイヤー追跡中
-
-		// このまま正面に進むとプレイヤーから離れてしまうとき、方向転換
-		if (nextDist > currentDist)
-		{
-			if (playerDf[currentPoint + m_direction.RotatedL().ToXY().asPoint()].distance < currentDist)
-			{
-				m_direction = m_direction.RotatedL();
-			}
-			else if (playerDf[currentPoint + m_direction.RotatedR().ToXY().asPoint()].distance < currentDist)
-			{
-				m_direction = m_direction.RotatedR();
-			}
-			else if (playerDf[currentPoint + m_direction.Reversed().ToXY().asPoint()].distance < currentDist)
-			{
-				m_direction = m_direction.Reversed();
-			}
-		}
+			});
 	}
 
 	void flowchartLoop(YieldExtended& yield, ActorBase& self)
@@ -168,69 +102,51 @@ private:
 			checkFollowPlayer(yield, currentPoint);
 
 			// 曲がるかチェック
-			if (checkTurn(map, currentTerrain, proceededCount, preRandomBool)) break;
+			if (not m_playerTracker.IsTracking() && checkTurn(map, currentTerrain, proceededCount, preRandomBool))
+				break;
 
-			// 直線方向に進めるかチェック
-			if (CanMoveTo(map, m_pos.actualPos, m_direction) == false)
-			{
-				// 直進できないなら、曲がれるかチェック
-				if (CanMoveTo(map, m_pos.actualPos, m_direction.Rotated(preRandomBool)))
-				{
-					m_direction = m_direction.Rotated(preRandomBool);
-				}
-				else if (CanMoveTo(map, m_pos.actualPos, m_direction.Rotated(not preRandomBool)))
-				{
-					m_direction = m_direction.Rotated(not preRandomBool);
-				}
-				else
-				{
-					m_direction = m_direction.Reversed();
-					break;
-				}
-			}
+			// 進行可能方向に向く
+			if (FaceEnemyMovableDir(m_direction, m_pos, map, preRandomBool) == false) return;
 
-			// 直線方向に進む
+			// 進路方向に進む
 			auto nextPos = m_pos.actualPos + m_direction.ToXY() * CellPx_24;
-			ProcessMoveCharaPos(yield, self, m_pos, nextPos,
-			                    GetTomlParameter<double>(U"play.en_slime_cat.move_duration"));
+			const double moveDuration = GetTomlParameter<double>(U"play.en_slime_cat.move_duration");
+			ProcessMoveCharaPos(yield, self, m_pos, nextPos, moveDuration * (m_tirePenalty > 0 ? 2.0 : 1.0));
 			proceededCount++;
+
+			// 疲れを表現
+			if (m_tirePenalty > 0)
+			{
+				m_tirePenalty--;
+			}
+			else
+			{
+				m_tireCount--;
+			}
+			if (m_tireCount < 0)
+			{
+				m_tireCount = GetTomlParameter<int>(U"play.en_slime_cat.tire_count");
+				m_tirePenalty = Random(0, GetTomlParameter<int>(U"play.en_slime_cat.tire_penalty"));
+			}
 		}
 	}
 
-	bool checkTurn(const MapGrid& map, const TerrainKind currentTerrain, int proceededCount, const bool preRandomBool)
+	bool checkTurn(const MapGrid& map, TerrainKind currentTerrain, int proceededCount, bool leftPriority)
 	{
 		// 部屋から出れるかチェック
 		if (proceededCount > 0 &&
 			currentTerrain == TerrainKind::Floor &&
-			Random(0, GetTomlParameter<int>(U"play.en_slime_cat.floor_turn_likely")) != 0)
+			RandomBool(GetTomlParameter<double>(U"play.en_slime_cat.floor_turn_pr")))
 		{
-			if (GetTerrainFor(map, m_pos.actualPos, m_direction.Rotated(preRandomBool)) == TerrainKind::Pathway)
-			{
-				m_direction = m_direction.Rotated(preRandomBool);
-				return true;
-			}
-			if (GetTerrainFor(map, m_pos.actualPos, m_direction.Rotated(not preRandomBool)) == TerrainKind::Pathway)
-			{
-				m_direction = m_direction.Rotated(not preRandomBool);
-				return true;
-			}
+			return RotateEnemyDirFacingPathway(m_direction, m_pos, map, leftPriority);
 		}
 
 		// 通路を曲がるかチェック
 		if (proceededCount > 0 &&
 			currentTerrain == TerrainKind::Pathway &&
-			Random(0, GetTomlParameter<int>(U"play.en_slime_cat.pathway_turn_unlikely")) == 0)
+			RandomBool(GetTomlParameter<double>(U"play.en_slime_cat.pathway_turn_pr")))
 		{
-			if (CanMoveTo(map, m_pos.actualPos, m_direction.Rotated(preRandomBool)))
-			{
-				m_direction = m_direction.Rotated(preRandomBool);
-				return true;
-			}
-			if (CanMoveTo(map, m_pos.actualPos, m_direction.Rotated(not preRandomBool)))
-			{
-				m_direction = m_direction.Rotated(not preRandomBool);
-				return true;
-			}
+			return RotateEnemyDirFacingMovable(m_direction, m_pos, map, leftPriority);
 		}
 		return false;
 	}

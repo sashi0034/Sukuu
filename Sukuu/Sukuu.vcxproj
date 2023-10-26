@@ -127,6 +127,7 @@
     <None Include="App\asset\shader\soft_shape.hlsl" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Play\Chara\CharaUtil.cpp" />
+    <ClCompile Include="Play\Enemy\EnemyUtil.cpp" />
     <ClCompile Include="Play\Enemy\EnSlimeCat.cpp" />
     <ClCompile Include="Play\Gimmick\ConsumableItem.cpp" />
     <ClCompile Include="Play\Gimmick\GimmickGrid.cpp" />
@@ -362,6 +363,7 @@
     <ClInclude Include="AssetKeys.h" />
     <ClInclude Include="AssetsGenerated.h" />
     <ClInclude Include="Play\Chara\CharaUtil.h" />
+    <ClInclude Include="Play\Enemy\EnemyUtil.h" />
     <ClInclude Include="Play\Enemy\EnSlimeCat.h" />
     <ClInclude Include="Play\Enemy\IEnemy.h" />
     <ClInclude Include="Play\Forward.h" />

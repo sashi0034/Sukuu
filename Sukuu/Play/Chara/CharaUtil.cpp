@@ -2,6 +2,7 @@
 #include "CharaUtil.h"
 
 #include "Util/EasingAnimation.h"
+#include "Util/TomlParametersWrapper.h"
 
 namespace Play
 {
@@ -79,5 +80,23 @@ namespace Play
 	double CharaOrderPriority(const CharaPosition& pos)
 	{
 		return 1000.0 + (pos.viewPos.y / (CellPx_24 * 1024));
+	}
+
+	void DrawCharaEmotion(const Vec2& drawingPos, AssetNameView emoji)
+	{
+		ScopedRenderStates2D sampler{SamplerState::ClampLinear};
+		const auto drawingRect = RectF{
+			drawingPos.movedBy(0, GetTomlParameter<int>(U"play.chara.baloon_offset_y")), {CellPx_24, CellPx_24}
+		};
+
+		const auto tri = Triangle(drawingRect.bl().moveBy(4, -1),
+		                          drawingRect.bl().moveBy(8, -1),
+		                          drawingPos.movedBy(CellPx_24 / 2, 0));
+
+		(void)drawingRect.rounded(4).draw(Palette::White).drawFrame(0.5, Palette::Darkslategray);
+
+		(void)tri.draw(Palette::White);
+
+		(void)TextureAsset(emoji).resized(drawingRect.stretched(-2).size).drawAt(drawingRect.center());
 	}
 }

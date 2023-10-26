@@ -62,4 +62,6 @@ namespace Play
 	Vec2 GetInitialPos(const MapGrid& map);
 
 	double CharaOrderPriority(const CharaPosition& pos);
+
+	void DrawCharaEmotion(const Vec2& drawingPos, AssetNameView emoji);
 }

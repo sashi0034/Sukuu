@@ -24,14 +24,18 @@ scoop_move_duration = 0.5
 warp_duration = 1.5
 warp_jump_offset = "(0, -80)"
 
+[play.chara]
+baloon_offset_y = -32
+
 [play.en_slime_cat]
 move_duration = 0.2
 anim_interval = 250
-floor_turn_likely = 3
-pathway_turn_unlikely = 2
-player_followiung_intensity = 4
+floor_turn_pr = 0.75
+pathway_turn_pr = 0.5
+max_player_concern = 4
 lost_player_penalty = 1.0
-baloon_offset_y = -32
+tire_count = 40
+tire_penalty = 10
 
 [play.cave_vision]
 default_vision_radius = 160
