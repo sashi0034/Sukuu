@@ -37,6 +37,14 @@ lost_player_penalty = 1.0
 tire_count = 40
 tire_penalty = 10
 
+[play.en_knight]
+move_duration = 0.5
+min_move_duration = 0.1
+speedup = 0.001
+sleeping_sensing = 5
+max_player_concern = 8
+lost_player_penalty = 3.0
+
 [play.cave_vision]
 default_vision_radius = 160
 dark_color = "#3D30A2"

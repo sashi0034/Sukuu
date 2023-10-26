@@ -2,6 +2,7 @@
 #include "PlayScene.h"
 
 #include "Player.h"
+#include "Enemy/EnKnight.h"
 #include "Enemy/EnSlimeCat.h"
 #include "Gimmick/GimmickInstaller.h"
 #include "Map/BgMapDrawer.h"
@@ -62,6 +63,12 @@ public:
 		for (int i = 0; i < 10; ++i)
 		{
 			auto enemy = self.AsParent().Birth(EnSlimeCat());
+			enemy.Init();
+		}
+
+		for (int i = 0; i < 5; ++i)
+		{
+			auto enemy = self.AsParent().Birth(EnKnight());
 			enemy.Init();
 		}
 

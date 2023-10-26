@@ -15,9 +15,9 @@ namespace
 struct Play::EnSlimeCat::Impl
 {
 	CharaPosition m_pos;
+	Dir4Type m_dir{Dir4::Down};
 	AnimTimer m_animTimer;
 	double m_speed = 1.0;
-	Dir4Type m_direction{Dir4::Down};
 	EnemyPlayerTracker m_playerTracker{};
 	bool m_doingLostPenalty = false;
 	int m_tireCount{};
@@ -44,12 +44,15 @@ struct Play::EnSlimeCat::Impl
 		if (not emotion.empty()) DrawCharaEmotion(drawingPos, emotion);
 	}
 
-	void FlowchartAsync(YieldExtended& yield, ActorBase& self)
+	void StartFlowchart(ActorBase& self)
 	{
-		while (true)
+		StartCoro(self, [this, self](YieldExtended yield) mutable
 		{
-			flowchartLoop(yield, self);
-		}
+			while (true)
+			{
+				flowchartLoop(yield, self);
+			}
+		});
 	}
 
 private:
@@ -58,7 +61,7 @@ private:
 		auto&& sheet = TextureAsset(AssetImages::punicat_24x24);
 		const int interval = GetTomlParameter<int>(U"play.en_slime_cat.anim_interval");
 
-		switch (m_direction.GetIndex())
+		switch (m_dir.GetIndex())
 		{
 		case Dir4Type::Right:
 			return sheet(catRect.movedBy(catRect.size * Point{m_animTimer.SliceFrames(interval, 4), 3}));
@@ -76,7 +79,7 @@ private:
 	void checkFollowPlayer(YieldExtended& yield, const Point currentPoint)
 	{
 		m_playerTracker.Track(
-			m_direction,
+			m_dir,
 			currentPoint,
 			GetTomlParameter<int>(U"play.en_slime_cat.max_player_concern"),
 			[&]()
@@ -106,10 +109,10 @@ private:
 				break;
 
 			// 進行可能方向に向く
-			if (FaceEnemyMovableDir(m_direction, m_pos, map, preRandomBool) == false) return;
+			if (FaceEnemyMovableDir(m_dir, m_pos, map, preRandomBool) == false) return;
 
 			// 進路方向に進む
-			auto nextPos = m_pos.actualPos + m_direction.ToXY() * CellPx_24;
+			auto nextPos = m_pos.actualPos + m_dir.ToXY() * CellPx_24;
 			const double moveDuration = GetTomlParameter<double>(U"play.en_slime_cat.move_duration");
 			ProcessMoveCharaPos(yield, self, m_pos, nextPos, moveDuration * (m_tirePenalty > 0 ? 2.0 : 1.0));
 			proceededCount++;
@@ -133,20 +136,20 @@ private:
 
 	bool checkTurn(const MapGrid& map, TerrainKind currentTerrain, int proceededCount, bool leftPriority)
 	{
+		if (proceededCount == 0) return false;
+
 		// 部屋から出れるかチェック
-		if (proceededCount > 0 &&
-			currentTerrain == TerrainKind::Floor &&
+		if (currentTerrain == TerrainKind::Floor &&
 			RandomBool(GetTomlParameter<double>(U"play.en_slime_cat.floor_turn_pr")))
 		{
-			return RotateEnemyDirFacingPathway(m_direction, m_pos, map, leftPriority);
+			return RotateEnemyDirFacingPathway(m_dir, m_pos, map, leftPriority);
 		}
 
 		// 通路を曲がるかチェック
-		if (proceededCount > 0 &&
-			currentTerrain == TerrainKind::Pathway &&
+		if (currentTerrain == TerrainKind::Pathway &&
 			RandomBool(GetTomlParameter<double>(U"play.en_slime_cat.pathway_turn_pr")))
 		{
-			return RotateEnemyDirFacingMovable(m_direction, m_pos, map, leftPriority);
+			return RotateEnemyDirFacingMovable(m_dir, m_pos, map, leftPriority);
 		}
 		return false;
 	}
@@ -163,10 +166,7 @@ namespace Play
 	{
 		p_impl->m_pos.SetPos(GetInitialPos(PlayScene::Instance().GetMap()));
 
-		StartCoro(*this, [*this](YieldExtended yield) mutable
-		{
-			p_impl->FlowchartAsync(yield, *this);
-		});
+		p_impl->StartFlowchart(*this);
 	}
 
 	void EnSlimeCat::Update()
