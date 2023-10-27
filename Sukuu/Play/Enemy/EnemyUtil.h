@@ -3,7 +3,7 @@
 
 namespace Play
 {
-	void CheckSendEnemyCollide(Player& player, CharaPosition& pos);
+	void CheckSendEnemyCollide(Player& player, CharaPosition& pos, EnemyKind enemy);
 
 	bool IsEnemyCollided(const CharaPosition& pos, const RectF& collider);
 

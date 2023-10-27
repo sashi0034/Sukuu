@@ -10,7 +10,7 @@
 	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=F1AF3F0CA5E68F42B405AEBD180BBF33/Shortcut/@EntryValue">tomlcpp</s:String>
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=F1AF3F0CA5E68F42B405AEBD180BBF33/ShortenQualifiedReferences/@EntryValue">True</s:Boolean>
 	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=F1AF3F0CA5E68F42B405AEBD180BBF33/Text/@EntryValue">	template &lt;typename T&gt;
-	T getToml(const String&amp; key)
+	inline T getToml(const String&amp; key)
 	{
 		return Util::GetTomlParameter&lt;T&gt;(U"$NAME$." + key);
 	}

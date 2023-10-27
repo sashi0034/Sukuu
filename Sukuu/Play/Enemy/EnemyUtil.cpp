@@ -6,11 +6,11 @@
 
 namespace Play
 {
-	void CheckSendEnemyCollide(Player& player, CharaPosition& pos)
+	void CheckSendEnemyCollide(Player& player, CharaPosition& pos, EnemyKind enemy)
 	{
 		if (player.DistField()[pos.actualPos.MapPoint()].distance != PlayerDistanceInfinity)
 		{
-			player.SendEnemyCollide({pos.actualPos, {CellPx_24, CellPx_24}});
+			player.SendEnemyCollide({pos.actualPos, {CellPx_24, CellPx_24}}, enemy);
 		}
 	}
 

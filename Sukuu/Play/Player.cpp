@@ -91,7 +91,7 @@ struct Play::Player::Impl
 	}
 
 	// エネミーとの衝突判定
-	void EnemyCollide(ActorView self, const RectF& enemy)
+	void EnemyCollide(ActorView self, const RectF& rect, EnemyKind enemy)
 	{
 		if (m_immortal.IsImmortal()) return;;
 		if (m_act == PlayerAct::Dead) return;
@@ -99,7 +99,7 @@ struct Play::Player::Impl
 		const auto player = RectF{m_pos.actualPos, PlayerCellRect.size}.stretched(
 			getToml<int>(U"collider_padding"));
 
-		if (enemy.intersects(player) == false) return;
+		if (rect.intersects(player) == false) return;
 		// 以下、当たった状態
 
 		if (m_guardHelmet)
@@ -115,8 +115,8 @@ struct Play::Player::Impl
 		breakFlowchart();
 		focusCameraFor<EaseOutBack>(self, getToml<double>(U"focus_scale_large"));
 
-		// TODO: ダメージ量調整
-		PlayScene::Instance().GetTimeLimiter().Damage(30.0);
+		// ペナルティとして時間減らす
+		PlayScene::Instance().GetTimeLimiter().Damage(GetEnemyAttackDamage(enemy));
 
 		// やられた演出
 		StartCoro(self, [this, self](YieldExtended yield) mutable
@@ -445,9 +445,9 @@ namespace Play
 		return CharaOrderPriority(p_impl->m_pos);
 	}
 
-	void Player::SendEnemyCollide(const RectF& rect)
+	void Player::SendEnemyCollide(const RectF& rect, EnemyKind enemy)
 	{
-		p_impl->EnemyCollide(*this, rect);
+		p_impl->EnemyCollide(*this, rect, enemy);
 	}
 
 	bool Player::RequestUseItem(int itemIndex)

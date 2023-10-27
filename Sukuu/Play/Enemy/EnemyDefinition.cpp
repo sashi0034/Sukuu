@@ -2,9 +2,29 @@
 #include "EnemyDefinition.h"
 
 #include "Util/ActorContainer.h"
+#include "Util/TomlParametersWrapper.h"
 
 namespace Play
 {
+	template <typename T>
+	inline T getToml(const String& key)
+	{
+		return Util::GetTomlParameter<T>(U"play.enemy." + key);
+	}
+
+	double GetEnemyAttackDamage(EnemyKind kind)
+	{
+		switch (kind)
+		{
+		case EnemyKind::SlimeCat:
+			return getToml<double>(U"attacker_slime_cat");
+		case EnemyKind::Knight:
+			return getToml<double>(U"attacker_knight");
+		default: ;
+			return 1.0;
+		}
+	}
+
 	void EnemyContainer::Refresh()
 	{
 		for (int i = this->size() - 1; i >= 0; --i)

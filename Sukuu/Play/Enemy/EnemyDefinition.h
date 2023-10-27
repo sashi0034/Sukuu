@@ -6,6 +6,14 @@
 
 namespace Play
 {
+	enum class EnemyKind
+	{
+		SlimeCat,
+		Knight,
+	};
+
+	double GetEnemyAttackDamage(EnemyKind kind);
+
 	class EnemyBase : public ActorBase
 	{
 	public:

@@ -26,7 +26,7 @@ struct Play::EnSlimeCat::Impl
 	void Update()
 	{
 		// プレイヤーとの当たり判定
-		CheckSendEnemyCollide(PlayScene::Instance().GetPlayer(), m_pos);
+		CheckSendEnemyCollide(PlayScene::Instance().GetPlayer(), m_pos, EnemyKind::SlimeCat);
 
 		// アニメーション更新
 		m_animTimer.Tick();

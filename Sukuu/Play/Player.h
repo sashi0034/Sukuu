@@ -2,6 +2,7 @@
 
 #include "Forward.h"
 #include "Chara/CharaUtil.h"
+#include "Enemy/EnemyDefinition.h"
 #include "Player_detail\PlayerDefinition.h"
 
 namespace Play
@@ -14,7 +15,7 @@ namespace Play
 		void Update() override;
 		double OrderPriority() const override;
 
-		void SendEnemyCollide(const RectF& rect);
+		void SendEnemyCollide(const RectF& rect, EnemyKind enemy);
 		bool RequestUseItem(int itemIndex);
 
 		const PlayerPersonalData& PersonalData() const;

@@ -6,14 +6,14 @@
 #include "Play/PlayScene.h"
 #include "Play/Effect/FragmentTextureEffect.h"
 
-namespace Play
+namespace
 {
-	using namespace Item_detail;
+	using namespace Play::Item_detail;
 
 	constexpr Rect spriteRect{0, 0, 16, 16};
 
 	template <typename T>
-	T getToml(const String& key)
+	inline T getToml(const String& key)
 	{
 		return Util::GetTomlParameter<T>(U"play.item_pin." + key);
 	}
