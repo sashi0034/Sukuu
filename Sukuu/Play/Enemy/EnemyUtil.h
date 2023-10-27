@@ -7,6 +7,8 @@ namespace Play
 
 	bool IsEnemyCollided(const CharaPosition& pos, const RectF& collider);
 
+	void PerformEnemyDestroyed(const Vec2& drawingPos, const TextureRegion& texture);
+
 	bool FaceEnemyMovableDir(Dir4Type& dir, const CharaPosition& pos, const MapGrid& map, bool leftPriority);
 
 	bool RotateEnemyDirFacingPathway(Dir4Type& dir, const CharaPosition& pos, const MapGrid& map, bool leftPriority);

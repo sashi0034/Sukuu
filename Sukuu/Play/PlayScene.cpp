@@ -51,6 +51,8 @@ public:
 	UiTimeLimiter m_uiTimeLimiter;
 	CaveVision m_caveVision{};
 	int m_hitStoppingRequested{};
+	EffectWrapper m_fgEffect{};
+	EffectWrapper m_bgEffect{};
 
 	void Init(ActorBase& self, const PlaySingletonData& data)
 	{
@@ -66,6 +68,9 @@ public:
 		InstallGimmicks(m_gimmick, m_map);
 
 		// 生成
+		m_fgEffect = self.AsParent().Birth(EffectWrapper(32767));
+		m_bgEffect = self.AsParent().Birth(EffectWrapper(-32768));
+
 		m_player = self.AsParent().Birth(Player());
 
 		// TODO: EnemyManager
@@ -117,6 +122,8 @@ public:
 		// キャラクターなどの通常更新
 		self.ActorBase::Update();
 		m_enemies.Refresh();
+		m_bgEffect.GetEffect().setSpeed(GetTimeScale());
+		m_fgEffect.GetEffect().setSpeed(GetTimeScale());
 
 		// ヒットストッピング管理
 		SetTimeScale(m_hitStoppingRequested > 0 ? getToml<double>(U"hitstopping_timescale") : 1.0);
@@ -213,6 +220,26 @@ namespace Play
 	const UiTimeLimiter& PlayScene::GetTimeLimiter() const
 	{
 		return p_impl->m_uiTimeLimiter;
+	}
+
+	EffectWrapper& PlayScene::FgEffect()
+	{
+		return p_impl->m_fgEffect;
+	}
+
+	const EffectWrapper& PlayScene::FgEffect() const
+	{
+		return p_impl->m_fgEffect;
+	}
+
+	EffectWrapper& PlayScene::BgEffect()
+	{
+		return p_impl->m_bgEffect;
+	}
+
+	const EffectWrapper& PlayScene::BgEffect() const
+	{
+		return p_impl->m_bgEffect;
 	}
 
 	void PlayScene::RequestHitstopping(double time)

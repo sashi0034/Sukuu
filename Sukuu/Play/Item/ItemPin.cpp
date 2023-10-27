@@ -4,6 +4,7 @@
 #include "AssetsGenerated.h"
 #include "detail/ItemUtil.h"
 #include "Play/PlayScene.h"
+#include "Play/Effect/FragmentTextureEffect.h"
 
 namespace Play
 {
@@ -34,7 +35,7 @@ struct Play::ItemPin::Impl
 		(void)TextureAsset(AssetImages::pin_16x16)(spriteRect.movedBy(
 			      m_animTimer.SliceFrames(200, 3) * spriteRect.w, 0))
 		      .rotatedAt(spriteRect.center(), m_rotation)
-		      .draw(m_pos.viewPos.movedBy(GetItemCellPadding(spriteRect.size)));
+		      .draw(getDrawPos());
 		PlayScene::Instance().GetEnemies().SendDamageCollider(m_attack, GetItemCollider(m_pos, spriteRect.size));
 	}
 
@@ -47,6 +48,11 @@ struct Play::ItemPin::Impl
 	}
 
 private:
+	Vec2 getDrawPos() const
+	{
+		return m_pos.viewPos.movedBy(GetItemCellPadding(spriteRect.size));
+	}
+
 	void flowchartLoop(YieldExtended& yield, ActorView self)
 	{
 		// 壁にぶつかるまで進む
@@ -58,10 +64,20 @@ private:
 			ProcessMoveCharaPos(yield, self, m_pos, nextPos, getToml<double>(U"move_duration"));
 		}
 
-		// また取れるようにする
 		if (m_attack.AttackedCount() == 0)
+		{
+			// また取れるようにする
 			PlayScene::Instance().GetGimmick()[m_pos.actualPos.MapPoint()] =
 				GimmickKind::Item_Pin;
+		}
+		else
+		{
+			// エフェクト
+			PlayScene::Instance().FgEffect().add(EmitFragmentTextureEffect(
+				getDrawPos().moveBy(spriteRect.size / 2),
+				TextureAsset(AssetImages::pin_16x16)(spriteRect),
+				Palette::Bisque, 64));
+		}
 
 		// 消滅
 		m_killed = true;

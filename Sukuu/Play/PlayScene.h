@@ -6,6 +6,7 @@
 #include "Map/MapGrid.h"
 #include "Other/TimeLimiter.h"
 #include "UI/UiTimeLimiter.h"
+#include "Util/EffectWrapper.h"
 
 namespace Play
 {
@@ -39,6 +40,12 @@ namespace Play
 
 		UiTimeLimiter& GetTimeLimiter();
 		const UiTimeLimiter& GetTimeLimiter() const;
+
+		EffectWrapper& FgEffect();
+		const EffectWrapper& FgEffect() const;
+
+		EffectWrapper& BgEffect();
+		const EffectWrapper& BgEffect() const;
 
 		void RequestHitstopping(double time);
 

@@ -30,8 +30,8 @@ struct Play::EnSlimeCat::Impl
 
 		// アニメーション更新
 		m_animTimer.Tick();
-		const auto drawingPos = m_pos.viewPos.movedBy(GetCharacterCellPadding(catRect.size));
-		(void)getTexture().draw(drawingPos);
+		const auto drawingPos = GetDrawPos();
+		(void)GetTexture().draw(drawingPos);
 
 		// 吹き出し描画
 		const AssetNameView emotion = [&]()
@@ -55,8 +55,12 @@ struct Play::EnSlimeCat::Impl
 		});
 	}
 
-private:
-	TextureRegion getTexture() const
+	Vec2 GetDrawPos() const
+	{
+		return m_pos.viewPos.movedBy(GetCharacterCellPadding(catRect.size));
+	}
+
+	TextureRegion GetTexture() const
 	{
 		auto&& sheet = TextureAsset(AssetImages::punicat_24x24);
 		const int interval = GetTomlParameter<int>(U"play.en_slime_cat.anim_interval");
@@ -76,6 +80,7 @@ private:
 		}
 	}
 
+private:
 	void checkFollowPlayer(YieldExtended& yield, const Point currentPoint)
 	{
 		m_playerTracker.Track(
@@ -183,8 +188,8 @@ namespace Play
 	bool EnSlimeCat::SendDamageCollider(ItemAttackerAffair& attacker, const RectF& collider)
 	{
 		if (not IsEnemyCollided(p_impl->m_pos, collider)) return false;
-		PlayScene::Instance().RequestHitstopping(0.5);
 		attacker.IncAttacked();
+		PerformEnemyDestroyed(p_impl->GetDrawPos(), p_impl->GetTexture());
 		Kill();
 		return true;
 	}

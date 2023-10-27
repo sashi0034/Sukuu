@@ -127,6 +127,7 @@
     <None Include="App\asset\shader\soft_shape.hlsl" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Play\Chara\CharaUtil.cpp" />
+    <ClCompile Include="Play\Effect\FragmentTextureEffect.cpp" />
     <ClCompile Include="Play\Enemy\EnemyDefinition.cpp" />
     <ClCompile Include="Play\Enemy\EnemyUtil.cpp" />
     <ClCompile Include="Play\Enemy\EnKnight.cpp" />
@@ -163,6 +164,7 @@
     <ClCompile Include="Util\CoordinateVisualizer.cpp" />
     <ClCompile Include="Util\CoroActor.cpp" />
     <ClCompile Include="Util\CoroUtil.cpp" />
+    <ClCompile Include="Util\EffectWrapper.cpp" />
     <ClCompile Include="Util\TomlParametersWrapper.cpp" />
     <ClCompile Include="Util\Utilities.cpp" />
   </ItemGroup>
@@ -367,6 +369,7 @@
     <ClInclude Include="AssetKeys.h" />
     <ClInclude Include="AssetsGenerated.h" />
     <ClInclude Include="Play\Chara\CharaUtil.h" />
+    <ClInclude Include="Play\Effect\FragmentTextureEffect.h" />
     <ClInclude Include="Play\Enemy\EnemyDefinition.h" />
     <ClInclude Include="Play\Enemy\EnemyUtil.h" />
     <ClInclude Include="Play\Enemy\EnKnight.h" />
@@ -407,6 +410,7 @@
     <ClInclude Include="Util\CoroUtil.h" />
     <ClInclude Include="Util\Dir4.h" />
     <ClInclude Include="Util\EasingAnimation.h" />
+    <ClInclude Include="Util\EffectWrapper.h" />
     <ClInclude Include="Util\TomlParametersWrapper.h" />
     <ClInclude Include="Util\Utilities.h" />
   </ItemGroup>

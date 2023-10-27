@@ -35,8 +35,8 @@ struct Play::EnKnight::Impl
 
 		// アニメーション更新
 		m_animTimer.Tick();
-		const auto drawingPos = m_pos.viewPos.movedBy(GetCharacterCellPadding(knightRect.size));
-		(void)getTexture().draw(drawingPos);
+		const auto drawingPos = GetDrawPos();
+		(void)GetTexture().draw(drawingPos);
 
 		// 吹き出し描画
 		const AssetNameView emotion = [&]()
@@ -50,6 +50,11 @@ struct Play::EnKnight::Impl
 		if (not emotion.empty()) DrawCharaEmotion(drawingPos, emotion);
 	}
 
+	Vec2 GetDrawPos() const
+	{
+		return m_pos.viewPos.movedBy(GetCharacterCellPadding(knightRect.size));
+	}
+
 	void StartFlowchart(ActorBase& self)
 	{
 		StartCoro(self, [this, self](YieldExtended yield) mutable
@@ -61,8 +66,7 @@ struct Play::EnKnight::Impl
 		});
 	}
 
-private:
-	TextureRegion getTexture() const
+	TextureRegion GetTexture() const
 	{
 		auto&& sheet = TextureAsset(AssetImages::temple_knight_side_32x32);
 		if (m_sleeping) return sheet(knightRect.movedBy(0, knightRect.h));
@@ -72,6 +76,7 @@ private:
 		return m_dir == Dir4::Left || m_dir == Dir4::Up ? t.mirrored() : t;
 	}
 
+private:
 	void flowchartLoop(YieldExtended& yield, ActorView self)
 	{
 		// スリープ中
@@ -172,6 +177,7 @@ namespace Play
 	{
 		if (not IsEnemyCollided(p_impl->m_pos, collider)) return false;
 		attacker.IncAttacked();
+		PerformEnemyDestroyed(p_impl->GetDrawPos(), p_impl->GetTexture());
 		Kill();
 		return true;
 	}

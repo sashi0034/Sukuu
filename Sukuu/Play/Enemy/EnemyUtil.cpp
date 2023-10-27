@@ -2,6 +2,7 @@
 #include "EnemyUtil.h"
 
 #include "Play/PlayScene.h"
+#include "Play/Effect/FragmentTextureEffect.h"
 
 namespace Play
 {
@@ -16,6 +17,17 @@ namespace Play
 	bool IsEnemyCollided(const CharaPosition& pos, const RectF& collider)
 	{
 		return RectF{pos.actualPos, Vec2{CellPx_24, CellPx_24}}.intersects(collider);
+	}
+
+	void PerformEnemyDestroyed(const Vec2& drawingPos, const TextureRegion& texture)
+	{
+		auto&& playScene = PlayScene::Instance();
+		playScene.RequestHitstopping(0.5);
+		playScene.FgEffect().add(EmitFragmentTextureEffect(
+			drawingPos.movedBy(texture.size / 2),
+			texture,
+			Palette::Crimson,
+			96));
 	}
 
 	bool FaceEnemyMovableDir(Dir4Type& dir, const CharaPosition& pos, const MapGrid& map, bool leftPriority)
