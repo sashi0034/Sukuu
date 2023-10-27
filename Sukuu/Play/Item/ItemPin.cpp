@@ -20,6 +20,7 @@ namespace Play
 
 struct Play::ItemPin::Impl
 {
+	bool m_killed{};
 	CharaPosition m_pos{};
 	Dir4Type m_dir{Dir4::Invalid};
 	AnimTimer m_animTimer{};
@@ -37,7 +38,7 @@ struct Play::ItemPin::Impl
 		PlayScene::Instance().GetEnemies().SendDamageCollider(m_attack, GetItemCollider(m_pos, spriteRect.size));
 	}
 
-	void StartFlowchart(ActorBase& self)
+	void StartFlowchart(ActorView self)
 	{
 		StartCoro(self, [this,self](YieldExtended yield) mutable
 		{
@@ -46,7 +47,7 @@ struct Play::ItemPin::Impl
 	}
 
 private:
-	void flowchartLoop(YieldExtended& yield, ActorBase& self)
+	void flowchartLoop(YieldExtended& yield, ActorView self)
 	{
 		// 壁にぶつかるまで進む
 		while (true)
@@ -63,7 +64,7 @@ private:
 				GimmickKind::Item_Pin;
 
 		// 消滅
-		self.Kill();
+		m_killed = true;
 	}
 };
 
@@ -85,6 +86,7 @@ namespace Play
 	{
 		ActorBase::Update();
 		p_impl->Update();
+		if (p_impl->m_killed) Kill();
 	}
 
 	double ItemPin::OrderPriority() const

@@ -63,7 +63,7 @@ namespace Util
 	};
 
 	template <double easing(double), uint64 option = EaseOption::Default, typename T>
-	EasingAnimation<easing, option, T> AnimateEasing(ActorBase& parent, T* valuePtr, T endValue, double duration)
+	EasingAnimation<easing, option, T> AnimateEasing(ActorView parent, T* valuePtr, T endValue, double duration)
 	{
 		return parent.AsParent().Birth(EasingAnimation<easing, option, T>(valuePtr, endValue, duration));
 	}

@@ -12,7 +12,11 @@ namespace Util
 		// [[nodiscard]] CoroTaskCall& GetTask() const { return *m_task; };
 		void Update() override;
 
+		friend class CoroView;
+
 	private:
 		std::shared_ptr<CoroTaskCall> m_task;
 	};
+
+	using CoroWeak = ActorWeak;
 }

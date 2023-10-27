@@ -69,7 +69,7 @@ namespace Play
 		return sheet(playerRect.movedBy(0, playerRect.h * 6));
 	}
 
-	void AnimatePlayerDie(YieldExtended& yield, ActorBase& self, Vec2& animOffset, Vec2& cameraOffset)
+	void AnimatePlayerDie(YieldExtended& yield, ActorView self, Vec2& animOffset, Vec2& cameraOffset)
 	{
 		PlayScene::Instance().RequestHitstopping(0.5);
 		yield.WaitForTime(0.5, Scene::DeltaTime);

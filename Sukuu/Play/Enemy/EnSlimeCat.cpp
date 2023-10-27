@@ -90,7 +90,7 @@ private:
 			});
 	}
 
-	void flowchartLoop(YieldExtended& yield, ActorBase& self)
+	void flowchartLoop(YieldExtended& yield, ActorView self)
 	{
 		yield();
 		const bool preRandomBool = Random(0, 1);

@@ -24,8 +24,7 @@ namespace
 
 struct Play::Player::Impl
 {
-	CoroActor m_flowchart{};
-	ActorBase m_focusAnimation{};
+	CoroWeak m_flowchart{};
 
 	PlayerPersonalData m_personal{};
 	CharaPosition m_pos;
@@ -64,7 +63,7 @@ struct Play::Player::Impl
 			.draw(drawingPos);
 	}
 
-	void StartFlowchart(ActorBase& self)
+	void StartFlowchart(ActorView self)
 	{
 		m_flowchart = StartCoro(self, [this, self](YieldExtended yield) mutable
 		{
@@ -76,7 +75,7 @@ struct Play::Player::Impl
 	}
 
 	// エネミーとの衝突判定
-	void EnemyCollide(ActorBase& self, const RectF& enemy)
+	void EnemyCollide(ActorView self, const RectF& enemy)
 	{
 		if (m_isImmortal) return;;
 		if (m_act == PlayerAct::Dead) return;
@@ -161,7 +160,7 @@ private:
 		m_scoopDrawing = {};
 	}
 
-	void flowchartLoop(YieldExtended& yield, ActorBase& self)
+	void flowchartLoop(YieldExtended& yield, ActorView self)
 	{
 		if (m_act == PlayerAct::Dead)
 		{
@@ -220,13 +219,12 @@ private:
 	}
 
 	template <double easing(double) = EaseInOutSine>
-	void focusCameraFor(ActorBase& self, double scale)
+	void focusCameraFor(ActorView self, double scale)
 	{
-		m_focusAnimation.Kill();
 		AnimateEasing<easing>(self, &m_focusCameraRate, scale, 0.5);
 	}
 
-	void checkScoopFromMouse(YieldExtended& yield, ActorBase& self)
+	void checkScoopFromMouse(YieldExtended& yield, ActorView self)
 	{
 		if (RectF(m_pos.actualPos, {CellPx_24, CellPx_24}).intersects(Cursor::PosF()) == false)
 			return;
@@ -304,7 +302,7 @@ private:
 		});
 	}
 
-	void checkGimmickAt(YieldExtended& yield, ActorBase& self, const Point newPoint)
+	void checkGimmickAt(YieldExtended& yield, ActorView self, const Point newPoint)
 	{
 		const auto storedAct = m_act;
 		m_act = PlayerAct::Idle;
@@ -378,7 +376,7 @@ namespace Play
 
 #ifdef _DEBUG
 		p_impl->m_personal.items[0] = ConsumableItem::Pin;
-		// p_impl->m_personal.items[1] = ConsumableItem::Helmet;
+		p_impl->m_personal.items[1] = ConsumableItem::Wing;
 #endif
 	}
 

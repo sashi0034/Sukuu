@@ -53,11 +53,11 @@ namespace Play
 
 	template <double easing(double) = EaseInLinear>
 	void ProcessMoveCharaPos(
-		YieldExtended& yield, ActorBase& self, CharaPosition& pos, const Vec2& nextPos, double moveDuration);
+		YieldExtended& yield, ActorView self, CharaPosition& pos, const Vec2& nextPos, double moveDuration);
 	template void ProcessMoveCharaPos<EaseInLinear>(
-		YieldExtended& yield, ActorBase& self, CharaPosition& pos, const Vec2& nextPos, double moveDuration);
+		YieldExtended& yield, ActorView self, CharaPosition& pos, const Vec2& nextPos, double moveDuration);
 	template void ProcessMoveCharaPos<EaseInOutBack>(
-		YieldExtended& yield, ActorBase& self, CharaPosition& pos, const Vec2& nextPos, double moveDuration);
+		YieldExtended& yield, ActorView self, CharaPosition& pos, const Vec2& nextPos, double moveDuration);
 
 	Vec2 GetInitialPos(const MapGrid& map);
 

@@ -58,7 +58,7 @@ namespace Play
 
 	template <double easing(double)>
 	void ProcessMoveCharaPos(
-		YieldExtended& yield, ActorBase& self, CharaPosition& pos, const Vec2& nextPos, double moveDuration)
+		YieldExtended& yield, ActorView self, CharaPosition& pos, const Vec2& nextPos, double moveDuration)
 	{
 		// 実座標を移動
 		Util::AnimateEasing<easing, EaseOption::Default>(

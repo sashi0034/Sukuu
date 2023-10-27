@@ -5,7 +5,7 @@
 
 namespace Util
 {
-	inline CoroActor StartCoro(ActorBase& parent, const CoroTaskFunc& coro)
+	inline CoroActor StartCoro(ActorView parent, const CoroTaskFunc& coro)
 	{
 		return parent.AsParent().Birth(CoroActor(coro));
 	}
@@ -18,7 +18,7 @@ namespace Util
 		void WaitForTime(double seconds, const std::function<double()>& dt = GetDeltaTime);
 		void WaitForTrue(const std::function<bool()>& discriminant);
 		void WaitForFalse(const std::function<bool()>& discriminant);
-		void WaitForDead(const ActorBase& coro);
+		void WaitForDead(ActorView coro);
 		void operator()() { yield(); }
 
 	private:

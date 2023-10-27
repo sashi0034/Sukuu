@@ -31,7 +31,7 @@ namespace Util
 		}
 	}
 
-	CoroTask YieldExtended::WaitForDead(const ActorBase& coro)
+	CoroTask YieldExtended::WaitForDead(ActorView coro)
 	{
 		WaitForTrue([coro]() { return coro.IsDead(); });
 	}

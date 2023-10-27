@@ -72,7 +72,7 @@ private:
 		return m_dir == Dir4::Left || m_dir == Dir4::Up ? t.mirrored() : t;
 	}
 
-	void flowchartLoop(YieldExtended& yield, ActorBase& self)
+	void flowchartLoop(YieldExtended& yield, ActorView self)
 	{
 		// スリープ中
 		while (m_sleeping)
