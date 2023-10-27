@@ -22,6 +22,8 @@ scoop_rect_color_3 = "#a2ff17d0"
 scoop_move_duration = 0.5
 warp_duration = 1.5
 warp_jump_offset = "(0, -80)"
+initial_immortal = 2.5
+recover_immortal = 1.5
 
 [play.chara]
 baloon_offset_y = -32

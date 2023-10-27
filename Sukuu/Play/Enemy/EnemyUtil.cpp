@@ -89,25 +89,31 @@ namespace Play
 		int maxConcern,
 		const std::function<void()>& onLostPlayer)
 	{
-		auto&& playerDf = PlayScene::Instance().GetPlayer().DistField();
+		auto&& player = PlayScene::Instance().GetPlayer();
+		auto&& playerDf = player.DistField();
 		const int currentDist = playerDf[currentPoint].distance;
 		const auto nextPoint = currentPoint + direction.ToXY().asPoint();
 		const auto nextDist = playerDf[nextPoint].distance;
 
-		if ((nextDist > currentDist || currentDist == PlayerDistanceInfinity) && m_concern > 0)
+		const bool isGettingAway = nextDist > currentDist || currentDist == PlayerDistanceInfinity;
+		const bool isPlayerImmortal = player.IsImmortal();
+		if ((isGettingAway || isPlayerImmortal) && m_concern > 0)
 		{
 			// 追跡中だけど、プレイヤーから遠ざかっている
 			m_concern--;
 
 			// プレイヤー見失った
-			if (m_concern == 0)
+			if (m_concern <= 0)
 			{
 				// ペナルティ
 				if (onLostPlayer) onLostPlayer();
 			}
 		}
 
-		auto resetTracking = [&]()
+		// プレイヤーが無敵のときは、追跡しない
+		if (isPlayerImmortal) return;
+
+		const auto resetTracking = [&]()
 		{
 			m_concern = maxConcern;
 		};

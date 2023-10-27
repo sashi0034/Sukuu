@@ -56,6 +56,8 @@ namespace Play
 		YieldExtended& yield, ActorView self, CharaPosition& pos, const Vec2& nextPos, double moveDuration);
 	template void ProcessMoveCharaPos<EaseInLinear>(
 		YieldExtended& yield, ActorView self, CharaPosition& pos, const Vec2& nextPos, double moveDuration);
+	template void ProcessMoveCharaPos<EaseOutCirc>(
+		YieldExtended& yield, ActorView self, CharaPosition& pos, const Vec2& nextPos, double moveDuration);
 	template void ProcessMoveCharaPos<EaseInOutBack>(
 		YieldExtended& yield, ActorView self, CharaPosition& pos, const Vec2& nextPos, double moveDuration);
 

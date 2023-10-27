@@ -6,6 +6,7 @@
 #include "Item/ItemPin.h"
 #include "Player_detail/PlayerAnimation.h"
 #include "Player_detail/PlayerDistField.h"
+#include "Player_detail/PlayerInternal.h"
 #include "Util/CoroUtil.h"
 #include "Util/Dir4.h"
 #include "Util/EasingAnimation.h"
@@ -20,6 +21,12 @@ namespace
 		Running,
 		Dead,
 	};
+
+	template <typename T>
+	T getToml(const String& key)
+	{
+		return Util::GetTomlParameter<T>(U"play.player." + key);
+	}
 }
 
 struct Play::Player::Impl
@@ -39,11 +46,13 @@ struct Play::Player::Impl
 	Dir4Type m_direction{Dir4::Down};
 	PlayerDistFieldInternal m_distField{};
 	bool m_completedGoal{};
-	bool m_isImmortal{};
+	PlayerImmortality m_immortal{};
 	std::function<void()> m_scoopDrawing = {};
 
 	void Update()
 	{
+		m_immortal.immortalTime = std::max(m_immortal.immortalTime - GetDeltaTime(), 0.0);
+
 		m_animTimer.Tick(GetDeltaTime() * (m_act == PlayerAct::Running ? 2 : 1));
 
 		if (m_scoopDrawing)
@@ -55,12 +64,12 @@ struct Play::Player::Impl
 			// ドラッグ中じゃないなら、カメラのオフセットを動かす
 			m_cameraOffset += (m_cameraOffsetDestination - m_cameraOffset)
 				* Scene::DeltaTime()
-				* GetTomlParameter<double>(U"play.player.camera_offset_speed");
+				* getToml<double>(U"camera_offset_speed");
 		}
 
 		const auto drawingPos = m_pos.viewPos.movedBy(GetCharacterCellPadding(PlayerCellRect.size) + m_animOffset);
 		(void)getPlayerTexture()
-			.draw(drawingPos);
+			.draw(drawingPos, ColorF{1.0, getTextureAlpha()});
 	}
 
 	void StartFlowchart(ActorView self)
@@ -77,18 +86,18 @@ struct Play::Player::Impl
 	// エネミーとの衝突判定
 	void EnemyCollide(ActorView self, const RectF& enemy)
 	{
-		if (m_isImmortal) return;;
+		if (m_immortal.IsImmortal()) return;;
 		if (m_act == PlayerAct::Dead) return;
 
 		const auto player = RectF{m_pos.actualPos, PlayerCellRect.size}.stretched(
-			GetTomlParameter<int>(U"play.player.collider_padding"));
+			getToml<int>(U"collider_padding"));
 
 		if (enemy.intersects(player) == false) return;
 		// 以下、当たった状態
 
 		m_act = PlayerAct::Dead;
 		breakFlowchart();
-		focusCameraFor<EaseOutBack>(self, GetTomlParameter<double>(U"play.player.focus_scale_large"));
+		focusCameraFor<EaseOutBack>(self, getToml<double>(U"focus_scale_large"));
 
 		// TODO: ダメージ量調整
 		PlayScene::Instance().GetTimeLimiter().Damage(30.0);
@@ -99,6 +108,7 @@ struct Play::Player::Impl
 			AnimatePlayerDie(yield, self, m_animOffset, m_cameraOffset);
 
 			focusCameraFor<EaseInOutBack>(self, 1.0);
+			m_immortal.immortalTime = getToml<double>(U"recover_immortal");
 			StartFlowchart(self);
 		});
 	}
@@ -141,6 +151,17 @@ private:
 		return GetUsualPlayerTexture(m_direction, m_animTimer, isWalking());
 	}
 
+	double getTextureAlpha() const
+	{
+		if (m_immortal.immortalTime > 0)
+		{
+			return (static_cast<int>(Scene::Time() * 1000) % 200 < 100)
+				       ? 0.9
+				       : 0.1;
+		}
+		return 1.0;
+	}
+
 	bool isWalking() const
 	{
 		return m_act == PlayerAct::Walk || m_act == PlayerAct::Running;
@@ -148,7 +169,7 @@ private:
 
 	double moveDuration() const
 	{
-		return GetTomlParameter<double>(U"play.player.move_duration")
+		return getToml<double>(U"move_duration")
 			/ (m_moveSpeed * (m_act == PlayerAct::Running ? 2.0 : 1.0));
 	}
 
@@ -197,7 +218,7 @@ private:
 		}
 		m_act = KeyShift.pressed() ? PlayerAct::Running : PlayerAct::Walk;
 		m_direction = moveDir;
-		m_cameraOffsetDestination = -moveDir.ToXY() * GetTomlParameter<double>(U"play.player.camera_offset_amount");
+		m_cameraOffsetDestination = -moveDir.ToXY() * getToml<double>(U"camera_offset_amount");
 
 		// 移動
 		const auto nextPos = Vec2(m_pos.actualPos + moveDir.ToXY() * CellPx_24);
@@ -231,7 +252,7 @@ private:
 		// 以下、マウスカーソルが当たった状態
 
 		// マウスクリックまで待機
-		focusCameraFor(self, GetTomlParameter<double>(U"play.player.focus_scale_large"));
+		focusCameraFor(self, getToml<double>(U"focus_scale_large"));
 		m_scoopDrawing = [this, self]() mutable
 		{
 			if (RectF(m_pos.actualPos, {CellPx_24, CellPx_24}).intersects(Cursor::PosF()) == false)
@@ -242,7 +263,7 @@ private:
 				return;
 			}
 			RectF(m_pos.actualPos.MapPoint() * CellPx_24, {CellPx_24, CellPx_24})
-				.draw(GetTomlParameter<ColorF>(U"play.player.scoop_rect_color_1"));
+				.draw(getToml<ColorF>(U"scoop_rect_color_1"));
 		};
 		while (true)
 		{
@@ -260,7 +281,7 @@ private:
 			for (int i = 0; i < 4; ++i)
 			{
 				auto r = RectF(m_pos.actualPos.movedBy(Dir4Type(i).ToXY() * CellPx_24), {CellPx_24, CellPx_24});
-				r.draw(GetTomlParameter<ColorF>(U"play.player.scoop_rect_color_2"));
+				r.draw(getToml<ColorF>(U"scoop_rect_color_2"));
 			}
 		};
 		while (true)
@@ -282,14 +303,14 @@ private:
 				// 移動させる
 				// m_distField.Clear();
 				m_scoopDrawing = {};
-				m_isImmortal = true;
-				const double animDuration = GetTomlParameter<double>(U"play.player.scoop_move_duration");
+				m_immortal.immortalStock++;
+				const double animDuration = getToml<double>(U"scoop_move_duration");
 				AnimateEasing<BoomerangParabola>(self, &m_animOffset, Vec2{0, -32}, animDuration);
 				ProcessMoveCharaPos(
 					yield, self, m_pos, checkingPos,
 					animDuration);
 				m_distField.Refresh(PlayScene::Instance().GetMap(), m_pos.actualPos);
-				m_isImmortal = false;
+				m_immortal.immortalStock--;
 				goto dropped;
 			}
 		}
@@ -312,7 +333,7 @@ private:
 		{
 		case GimmickKind::Stairs: {
 			m_cameraOffsetDestination = {0, 0};
-			m_isImmortal = true;
+			m_immortal.immortalStock++;
 			// ゴール到達
 			yield.WaitForDead(
 				AnimateEasing<EaseInBack>(self, &m_cameraScale, 8.0, 0.5));
@@ -372,6 +393,8 @@ namespace Play
 
 		p_impl->m_distField.Resize(PlayScene::Instance().GetMap().Data().size());
 
+		p_impl->m_immortal.immortalTime = getToml<double>(U"initial_immortal");
+
 		p_impl->StartFlowchart(*this);
 
 #ifdef _DEBUG
@@ -429,6 +452,11 @@ namespace Play
 	const PlayerDistField& Player::DistField() const
 	{
 		return p_impl->m_distField.Field();
+	}
+
+	bool Player::IsImmortal() const
+	{
+		return p_impl->m_immortal.IsImmortal();
 	}
 
 	bool Player::IsCompletedGoal() const

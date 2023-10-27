@@ -22,6 +22,7 @@ namespace Play
 		const CharaPosition& CurrentPos() const;
 		Point CurrentPoint() const;
 		const PlayerDistField& DistField() const;
+		bool IsImmortal() const;
 		bool IsCompletedGoal() const;
 
 	private:
