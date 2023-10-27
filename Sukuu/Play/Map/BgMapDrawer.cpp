@@ -2,7 +2,7 @@
 #include "BgMapDrawer.h"
 
 #include "AssetKeys.h"
-#include "AssetsGenerated.h"
+#include "Assets.generated.h"
 #include "AutoTiler.h"
 #include "MapGrid.h"
 #include "Play/PlayScene.h"

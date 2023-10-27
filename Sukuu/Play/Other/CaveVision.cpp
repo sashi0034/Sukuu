@@ -2,7 +2,7 @@
 #include "CaveVision.h"
 
 #include "AssetKeys.h"
-#include "AssetsGenerated.h"
+#include "Assets.generated.h"
 #include "Util/TomlParametersWrapper.h"
 
 namespace

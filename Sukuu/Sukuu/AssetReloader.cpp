@@ -2,7 +2,7 @@
 #include "AssetReloader.h"
 
 #include "AssetKeys.h"
-#include "AssetsGenerated.h"
+#include "Assets.generated.h"
 
 namespace Sukuu
 {

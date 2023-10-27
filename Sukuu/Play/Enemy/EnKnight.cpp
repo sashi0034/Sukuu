@@ -1,7 +1,7 @@
 ﻿#include "stdafx.h"
 #include "EnKnight.h"
 
-#include "AssetsGenerated.h"
+#include "Assets.generated.h"
 #include "EnemyUtil.h"
 #include "Play/PlayScene.h"
 #include "Play/Chara/CharaUtil.h"

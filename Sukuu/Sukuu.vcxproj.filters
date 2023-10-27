@@ -836,9 +836,6 @@
     <ClInclude Include="Play\Enemy\EnSlimeCat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Play\Enemy\IEnemy.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Play\Forward.h">
       <Filter>Header Files</Filter>
     </ClInclude>

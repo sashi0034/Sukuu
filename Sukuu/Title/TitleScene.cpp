@@ -1,6 +1,8 @@
 ﻿#include "stdafx.h"
 #include "TitleScene.h"
 
+#include "AssetKeys.h"
+#include "GitRevision.h"
 #include "TitleBackground.h"
 #include "Util/ActorContainer.h"
 
@@ -27,6 +29,9 @@ struct Title::TitleScene::Impl
 
 	void Update()
 	{
+		FontAsset(AssetKeys::RocknRoll24)(U"Build on git-" + GitRevisionLiteral)
+			.draw(Arg::bottomLeft = Scene::Size().y0().yx());
+
 		if (MouseL.down()) m_concluded = true;
 	}
 };

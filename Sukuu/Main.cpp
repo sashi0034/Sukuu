@@ -1,7 +1,7 @@
 ﻿#include "stdafx.h"
 
 #include "AssetKeys.h"
-#include "AssetsGenerated.h"
+#include "Assets.generated.h"
 #include "Sukuu/AssetReloader.h"
 #include "Sukuu/GamesSupervisor.h"
 #include "Util/ActorContainer.h"

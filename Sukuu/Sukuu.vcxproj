@@ -86,6 +86,12 @@
     <PostBuildEvent>
       <Command>xcopy /I /D /Y "$(OutDir)$(TargetFileName)" "$(ProjectDir)App"</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>$(SolutionDir)get_git_revision.bat</Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message>Write the current Git revision number</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -117,6 +123,12 @@
     <PostBuildEvent>
       <Command>xcopy /I /D /Y "$(OutDir)$(TargetFileName)" "$(ProjectDir)App"</Command>
     </PostBuildEvent>
+    <PreBuildEvent>
+      <Command>$(SolutionDir)get_git_revision.bat</Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message>Write the current Git revision number.</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="App\asset\font\DotGothic16\README-JP.md" />
@@ -125,6 +137,8 @@
     <None Include="App\asset\font\RocknRoll\README.md" />
     <None Include="App\asset\shader\cave_vision.hlsl" />
     <None Include="App\asset\shader\soft_shape.hlsl" />
+    <ClInclude Include="GitRevision.h" />
+    <ClCompile Include="GitRevision.generated.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Play\Chara\CharaUtil.cpp" />
     <ClCompile Include="Play\Effect\FragmentTextureEffect.cpp" />
@@ -368,7 +382,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AssetKeys.h" />
-    <ClInclude Include="AssetsGenerated.h" />
+    <ClInclude Include="Assets.generated.h" />
     <ClInclude Include="Play\Chara\CharaUtil.h" />
     <ClInclude Include="Play\Effect\FragmentTextureEffect.h" />
     <ClInclude Include="Play\Enemy\EnemyDefinition.h" />

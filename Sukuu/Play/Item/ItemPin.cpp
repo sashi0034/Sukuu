@@ -1,7 +1,7 @@
 ﻿#include "stdafx.h"
 #include "ItemPin.h"
 
-#include "AssetsGenerated.h"
+#include "Assets.generated.h"
 #include "detail/ItemUtil.h"
 #include "Play/PlayScene.h"
 #include "Play/Effect/FragmentTextureEffect.h"
