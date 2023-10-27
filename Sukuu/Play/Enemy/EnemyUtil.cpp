@@ -13,6 +13,11 @@ namespace Play
 		}
 	}
 
+	bool IsEnemyCollided(const CharaPosition& pos, const RectF& collider)
+	{
+		return RectF{pos.actualPos, Vec2{CellPx_24, CellPx_24}}.intersects(collider);
+	}
+
 	bool FaceEnemyMovableDir(Dir4Type& dir, const CharaPosition& pos, const MapGrid& map, bool leftPriority)
 	{
 		// 直線方向に進めるかチェック

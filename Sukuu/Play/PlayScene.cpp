@@ -35,6 +35,7 @@ public:
 	GimmickGrid m_gimmick;
 	BgMapDrawer m_bgMapDrawer{};
 	Player m_player;
+	EnemyContainer m_enemies{};
 	Camera2D m_debugCamera;
 	CameraKind::Value m_camera = CameraKind::Player;
 	ActorContainer m_ui{};
@@ -62,13 +63,13 @@ public:
 		// TODO: EnemyManager
 		for (int i = 0; i < 10; ++i)
 		{
-			auto enemy = self.AsParent().Birth(EnSlimeCat());
+			auto enemy = m_enemies.Birth(self.AsParent(), EnSlimeCat());
 			enemy.Init();
 		}
 
 		for (int i = 0; i < 5; ++i)
 		{
-			auto enemy = self.AsParent().Birth(EnKnight());
+			auto enemy = m_enemies.Birth(self.AsParent(), EnKnight());
 			enemy.Init();
 		}
 
@@ -107,6 +108,7 @@ public:
 
 		// キャラクターなどの通常更新
 		self.ActorBase::Update();
+		m_enemies.Refresh();
 
 		// 視界マスク更新
 		m_caveVision.UpdateMask(m_player.CurrentPos().viewPos + Point(CellPx_24, CellPx_24) / 2);
@@ -173,6 +175,16 @@ namespace Play
 	const Player& PlayScene::GetPlayer() const
 	{
 		return p_impl->m_player;
+	}
+
+	// EnemyContainer& PlayScene::GetEnemies()
+	// {
+	// 	return p_impl->m_enemies;
+	// }
+
+	const EnemyContainer& PlayScene::GetEnemies() const
+	{
+		return p_impl->m_enemies;
 	}
 
 	UiTimeLimiter& PlayScene::GetTimeLimiter()

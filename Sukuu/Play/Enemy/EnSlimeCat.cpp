@@ -179,4 +179,11 @@ namespace Play
 	{
 		return CharaOrderPriority(p_impl->m_pos);
 	}
+
+	bool EnSlimeCat::SendDamageCollider(const RectF& collider)
+	{
+		if (not IsEnemyCollided(p_impl->m_pos, collider)) return false;
+		Kill();
+		return true;
+	}
 }

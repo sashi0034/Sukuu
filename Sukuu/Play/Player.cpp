@@ -3,6 +3,7 @@
 
 #include "PlayScene.h"
 #include "Chara\CharaUtil.h"
+#include "Item/ItemPin.h"
 #include "Player_detail/PlayerAnimation.h"
 #include "Player_detail/PlayerDistField.h"
 #include "Util/CoroUtil.h"
@@ -115,8 +116,11 @@ struct Play::Player::Impl
 			return gotoStairsByWing(self);
 		case ConsumableItem::Helmet:
 			break;
-		case ConsumableItem::Pin:
-			break;
+		case ConsumableItem::Pin: {
+			auto pin = PlayScene::Instance().AsParent().Birth(ItemPin());
+			pin.Init(m_pos.actualPos, m_direction);
+			return true;
+		}
 		case ConsumableItem::Max:
 			break;
 		default: ;
@@ -373,7 +377,7 @@ namespace Play
 		p_impl->StartFlowchart(*this);
 
 #ifdef _DEBUG
-		// p_impl->m_personal.items[0] = ConsumableItem::Wing;
+		p_impl->m_personal.items[0] = ConsumableItem::Pin;
 		// p_impl->m_personal.items[1] = ConsumableItem::Helmet;
 #endif
 	}

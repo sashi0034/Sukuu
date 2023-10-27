@@ -45,6 +45,10 @@ sleeping_sensing = 5
 max_player_concern = 8
 lost_player_penalty = 3.0
 
+[play.item_pin]
+move_duration = 0.05
+rotation_speed = 20
+
 [play.cave_vision]
 default_vision_radius = 160
 dark_color = "#3D30A2"

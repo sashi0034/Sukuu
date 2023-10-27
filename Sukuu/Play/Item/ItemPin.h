@@ -1,18 +1,16 @@
 ﻿#pragma once
 
-#include "EnemyDefinition.h"
+#include "Play/Chara/CharaUtil.h"
 
 namespace Play
 {
-	class EnKnight : public EnemyBase
+	class ItemPin : public ActorBase
 	{
 	public:
-		EnKnight();
-		void Init();
+		ItemPin();
+		void Init(const CharaVec2& pos, Dir4Type dir);
 		void Update() override;
 		double OrderPriority() const override;
-
-		bool SendDamageCollider(const RectF& collider) override;
 
 	private:
 		struct Impl;

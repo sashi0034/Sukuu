@@ -5,6 +5,8 @@ namespace Play
 {
 	void CheckSendEnemyCollide(Player& player, CharaPosition& pos);
 
+	bool IsEnemyCollided(const CharaPosition& pos, const RectF& collider);
+
 	bool FaceEnemyMovableDir(Dir4Type& dir, const CharaPosition& pos, const MapGrid& map, bool leftPriority);
 
 	bool RotateEnemyDirFacingPathway(Dir4Type& dir, const CharaPosition& pos, const MapGrid& map, bool leftPriority);

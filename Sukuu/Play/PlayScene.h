@@ -2,6 +2,7 @@
 #include "Forward.h"
 #include "Gimmick/GimmickGrid.h"
 #include "Player.h"
+#include "Enemy/EnemyDefinition.h"
 #include "Map/MapGrid.h"
 #include "Other/TimeLimiter.h"
 #include "UI/UiTimeLimiter.h"
@@ -31,6 +32,9 @@ namespace Play
 
 		Player& GetPlayer();
 		const Player& GetPlayer() const;
+
+		// EnemyContainer& GetEnemies();
+		const EnemyContainer& GetEnemies() const;
 
 		UiTimeLimiter& GetTimeLimiter();
 		const UiTimeLimiter& GetTimeLimiter() const;
