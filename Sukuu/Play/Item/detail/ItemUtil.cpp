@@ -10,6 +10,6 @@ namespace Play::Item_detail
 
 	RectF GetItemCollider(const CharaPosition& pos, const Size& size)
 	{
-		return RectF{pos.actualPos.movedBy(Size{CellPx_24, CellPx_24} - size) / 2, size};
+		return RectF{pos.actualPos.movedBy((Size{CellPx_24, CellPx_24} - size) / 2), size};
 	}
 }
