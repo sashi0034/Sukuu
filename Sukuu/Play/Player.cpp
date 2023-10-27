@@ -2,7 +2,7 @@
 #include "Player.h"
 
 #include "PlayScene.h"
-#include "Chara\CharaUtil.h"
+#include "Chara/CharaUtil.h"
 #include "Item/ItemPin.h"
 #include "Player_detail/PlayerAnimation.h"
 #include "Player_detail/PlayerDistField.h"
@@ -47,6 +47,7 @@ struct Play::Player::Impl
 	PlayerDistFieldInternal m_distField{};
 	bool m_completedGoal{};
 	PlayerImmortality m_immortal{};
+	bool m_guardHelmet{};
 	std::function<void()> m_scoopDrawing = {};
 
 	void Update()
@@ -67,9 +68,15 @@ struct Play::Player::Impl
 				* getToml<double>(U"camera_offset_speed");
 		}
 
-		const auto drawingPos = m_pos.viewPos.movedBy(GetCharacterCellPadding(PlayerCellRect.size) + m_animOffset);
+		const auto drawingPos = getDrawPos();
 		(void)getPlayerTexture()
 			.draw(drawingPos, ColorF{1.0, getTextureAlpha()});
+
+		// ヘルメット
+		if (m_guardHelmet)
+		{
+			TextureAsset(AssetImages::helmet_16x16)(0, 0, 16, 16).drawAt(drawingPos + getHelmetOffset());
+		}
 	}
 
 	void StartFlowchart(ActorView self)
@@ -95,6 +102,15 @@ struct Play::Player::Impl
 		if (enemy.intersects(player) == false) return;
 		// 以下、当たった状態
 
+		if (m_guardHelmet)
+		{
+			// ヘルメットガード発動
+			m_guardHelmet = false;
+			m_immortal.immortalTime = 1.0;
+			EffectHelmetConsume(getDrawPos() + getHelmetOffset(), getPlayerTexture());
+			return;
+		}
+
 		m_act = PlayerAct::Dead;
 		breakFlowchart();
 		focusCameraFor<EaseOutBack>(self, getToml<double>(U"focus_scale_large"));
@@ -113,19 +129,22 @@ struct Play::Player::Impl
 		});
 	}
 
-	bool UseItem(ActorBase& self, ConsumableItem item)
+	bool UseItem(ActorView self, ConsumableItem item)
 	{
-		if (m_act != PlayerAct::Idle) return false;
-
 		switch (item)
 		{
 		case ConsumableItem::None:
 			break;
 		case ConsumableItem::Wing:
+			if (m_act != PlayerAct::Idle) return false;
 			return gotoStairsByWing(self);
-		case ConsumableItem::Helmet:
-			break;
+		case ConsumableItem::Helmet: {
+			if (m_guardHelmet) return false;
+			m_guardHelmet = true;
+			return true;
+		}
 		case ConsumableItem::Pin: {
+			if (m_act != PlayerAct::Idle) return false;
 			auto pin = PlayScene::Instance().AsParent().Birth(ItemPin());
 			pin.Init(m_pos.actualPos, m_direction);
 			return true;
@@ -145,6 +164,18 @@ struct Play::Player::Impl
 	}
 
 private:
+	Vec2 getDrawPos() const
+	{
+		return m_pos.viewPos.movedBy(GetCharacterCellPadding(PlayerCellRect.size) + m_animOffset);
+	}
+
+	Vec2 getHelmetOffset() const
+	{
+		return PlayerCellRect.size / 2
+			+ getToml<Point>(U"helmet_offset")
+			+ Point{0, Math::Abs(3 - m_animTimer.SliceFrames(getToml<int>(U"helmet_animation"), 6))};
+	}
+
 	TextureRegion getPlayerTexture() const
 	{
 		if (m_act == PlayerAct::Dead) return GetDeadPlayerTexture();
@@ -367,7 +398,7 @@ private:
 		}
 	}
 
-	bool gotoStairsByWing(ActorBase& self)
+	bool gotoStairsByWing(ActorView self)
 	{
 		breakFlowchart();
 		StartCoro(self, [this, self](YieldExtended yield) mutable

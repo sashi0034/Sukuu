@@ -24,6 +24,8 @@ warp_duration = 1.5
 warp_jump_offset = "(0, -80)"
 initial_immortal = 2.5
 recover_immortal = 1.5
+helmet_offset = "(0, -10)"
+helmet_animation = 200
 
 [play.chara]
 baloon_offset_y = -32

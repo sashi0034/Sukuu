@@ -14,5 +14,7 @@ namespace Play
 
 	void AnimatePlayerDie(YieldExtended& yield, ActorView self, Vec2& animOffset, Vec2& cameraOffset);
 
-	void AnimatePlayerUsingWing(YieldExtended& yield, ActorBase& self, Vec2& animOffset, CharaPosition& pos);
+	void AnimatePlayerUsingWing(YieldExtended& yield, ActorView self, Vec2& animOffset, CharaPosition& pos);
+
+	void EffectHelmetConsume(const Vec2& helmetPos, const TextureRegion& helmetTex);
 }

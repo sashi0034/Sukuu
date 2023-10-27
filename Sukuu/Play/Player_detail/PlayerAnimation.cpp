@@ -3,6 +3,7 @@
 #include "PlayerAnimation.h"
 
 #include "Play/PlayScene.h"
+#include "Play/Effect/FragmentTextureEffect.h"
 #include "Util/EasingAnimation.h"
 
 namespace Play
@@ -96,7 +97,7 @@ namespace Play
 		yield.WaitForTime(GetTomlParameter<double>(U"play.player.dead_pause_duration"));
 	}
 
-	void AnimatePlayerUsingWing(YieldExtended& yield, ActorBase& self, Vec2& animOffset, CharaPosition& pos)
+	void AnimatePlayerUsingWing(YieldExtended& yield, ActorView self, Vec2& animOffset, CharaPosition& pos)
 	{
 		const auto stairs = PlayScene::Instance().GetGimmick().GetSinglePoint(GimmickKind::Stairs);
 		const Vec2 warpPos = stairs.movedBy(0, 1) * CellPx_24;
@@ -105,5 +106,14 @@ namespace Play
 			self, &animOffset, GetTomlParameter<Vec2>(U"play.player.warp_jump_offset"), animDuration);
 		ProcessMoveCharaPos<EaseInOutBack>(
 			yield, self, pos, warpPos, animDuration);
+	}
+
+	void EffectHelmetConsume(const Vec2& helmetPos, const TextureRegion& helmetTex)
+	{
+		PlayScene::Instance().FgEffect().add(EmitFragmentTextureEffect(
+			helmetPos,
+			helmetTex,
+			Palette::Burlywood
+		));
 	}
 }
