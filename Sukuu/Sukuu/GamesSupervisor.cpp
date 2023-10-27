@@ -10,7 +10,7 @@ namespace
 	using namespace Util;
 
 	template <typename T>
-	T getToml(const String& key)
+	inline T getToml(const String& key)
 	{
 		return Util::GetTomlParameter<T>(U"sukuu." + key);
 	}

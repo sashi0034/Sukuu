@@ -24,9 +24,9 @@ void Main()
 
 	ActorContainer actorRoot{};
 #if _DEBUG
-	actorRoot.Birth(TomlParametersWrapper());
 	actorRoot.Birth(AssetReloader());
 #endif
+	actorRoot.Birth(TomlParametersWrapper());
 	actorRoot.Birth(GamesSupervisor());
 
 	while (System::Update())

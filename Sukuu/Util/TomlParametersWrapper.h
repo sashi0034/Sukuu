@@ -1,4 +1,6 @@
 ﻿#pragma once
+#include <source_location>
+
 #include "ActorBase.h"
 
 namespace Util
@@ -17,19 +19,10 @@ namespace Util
 	TOMLValue GetTomlParameters(const String& valuePath);
 
 	template <typename T>
-	T GetTomlParameter(const String& valuePath)
+	inline T GetTomlParameter(const String& valuePath)
 	{
-#if _DEBUG
 		return GetTomlParameters(valuePath).get<T>();
-#else
-		static bool initialized = false;
-		static T value;
-		if (not initialized)
-		{
-			value = GetTomlParameters(valuePath).get<T>();
-			initialized = true;
-		}
-		return value;
-#endif
+
+		// TODO: リリースビルド用の処理を作成
 	}
 }
