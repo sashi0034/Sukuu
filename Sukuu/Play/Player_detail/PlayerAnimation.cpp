@@ -65,17 +65,14 @@ namespace Play
 
 	TextureRegion GetDeadPlayerTexture()
 	{
-		{
-			auto&& sheet = TextureAsset(AssetImages::beatrice_32x32);
-			return sheet(playerRect.movedBy(0, playerRect.h * 6));
-		}
+		auto&& sheet = TextureAsset(AssetImages::beatrice_32x32);
+		return sheet(playerRect.movedBy(0, playerRect.h * 6));
 	}
 
 	void AnimatePlayerDie(YieldExtended& yield, ActorBase& self, Vec2& animOffset, Vec2& cameraOffset)
 	{
-		SetTimeScale(GetTomlParameter<double>(U"play.player.hitstopping_timescale"));
+		PlayScene::Instance().RequestHitstopping(0.5);
 		yield.WaitForTime(0.5, Scene::DeltaTime);
-		SetTimeScale(1);
 
 		// カメラシェイク
 		StartCoro(self, [self, &cameraOffset](YieldExtended yield1) mutable

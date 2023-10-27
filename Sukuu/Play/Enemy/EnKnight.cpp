@@ -168,9 +168,10 @@ namespace Play
 		return CharaOrderPriority(p_impl->m_pos);
 	}
 
-	bool EnKnight::SendDamageCollider(const RectF& collider)
+	bool EnKnight::SendDamageCollider(ItemAttackerAffair& attacker, const RectF& collider)
 	{
 		if (not IsEnemyCollided(p_impl->m_pos, collider)) return false;
+		attacker.IncAttacked();
 		Kill();
 		return true;
 	}

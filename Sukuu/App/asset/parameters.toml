@@ -1,8 +1,8 @@
 [sukuu]
 entry_point = "play"
 
-[play]
-bg_priority = -1000
+[play.scene]
+hitstopping_timescale = 0.1
 
 [play.player]
 move_duration = 0.3
@@ -11,7 +11,6 @@ collider_padding = -8
 focus_scale_large = 1.3
 camera_offset_amount = 20.0
 camera_offset_speed = 2.0
-hitstopping_timescale = 0.1
 dead_animation_offset_1 = "(0, -32)"
 dead_animation_duration_1 = 0.7
 dead_animation_offset_2 = "(0, -4)"

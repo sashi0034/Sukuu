@@ -23,6 +23,7 @@ namespace Play
 
 		void Init(const PlaySingletonData& data);
 		void Update() override;
+		void Kill() override;
 
 		MapGrid& GetMap();
 		const MapGrid& GetMap() const;
@@ -38,6 +39,8 @@ namespace Play
 
 		UiTimeLimiter& GetTimeLimiter();
 		const UiTimeLimiter& GetTimeLimiter() const;
+
+		void RequestHitstopping(double time);
 
 		PlaySingletonData CopyData() const;
 

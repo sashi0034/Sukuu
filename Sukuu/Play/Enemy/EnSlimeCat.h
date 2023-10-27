@@ -12,7 +12,7 @@ namespace Play
 		void Update() override;
 		double OrderPriority() const override;
 
-		bool SendDamageCollider(const RectF& collider) override;
+		bool SendDamageCollider(ItemAttackerAffair& attacker, const RectF& collider) override;
 
 	private:
 		struct Impl;

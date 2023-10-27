@@ -7,7 +7,7 @@ namespace Util
 	{
 	public:
 		void Update();
-		void Clear();
+		void Kill();
 
 		template <typename T>
 		const T& Birth(const T& actor)

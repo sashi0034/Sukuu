@@ -5,7 +5,7 @@ namespace Util
 {
 	CoroActor::CoroActor()
 	{
-		Kill();
+		ActorBase::Kill();
 	}
 
 	CoroActor::CoroActor(const CoroTaskFunc& task) :

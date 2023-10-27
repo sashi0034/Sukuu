@@ -19,6 +19,11 @@ namespace Util
 	void ActorBase::Kill()
 	{
 		p_impl->isAlive = false;
+		if (p_impl->children != nullptr)
+		{
+			p_impl->children->Kill();
+		}
+		p_impl->children.reset();
 	}
 
 	bool ActorBase::IsDead() const

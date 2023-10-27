@@ -10,6 +10,7 @@ namespace Util
 		virtual void Update() = 0;
 		virtual double OrderPriority() const = 0;
 		virtual bool IsActive() const = 0;
+		virtual void Kill() = 0;
 		virtual bool IsDead() const = 0;
 	};
 

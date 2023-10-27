@@ -14,6 +14,7 @@
 #include "UI/UiMiniMap.h"
 #include "UI/UiTimeLimiter.h"
 #include "Util/ActorContainer.h"
+#include "Util/TomlParametersWrapper.h"
 
 namespace
 {
@@ -25,6 +26,12 @@ namespace
 			Debug,
 			Max,
 		};
+	}
+
+	template <typename T>
+	T getToml(const String& key)
+	{
+		return Util::GetTomlParameter<T>(U"play.scene." + key);
 	}
 }
 
@@ -43,6 +50,7 @@ public:
 	UiMiniMap m_uiMiniMap;
 	UiTimeLimiter m_uiTimeLimiter;
 	CaveVision m_caveVision{};
+	int m_hitStoppingRequested{};
 
 	void Init(ActorBase& self, const PlaySingletonData& data)
 	{
@@ -110,6 +118,9 @@ public:
 		self.ActorBase::Update();
 		m_enemies.Refresh();
 
+		// ヒットストッピング管理
+		SetTimeScale(m_hitStoppingRequested > 0 ? getToml<double>(U"hitstopping_timescale") : 1.0);
+
 		// 視界マスク更新
 		m_caveVision.UpdateMask(m_player.CurrentPos().viewPos + Point(CellPx_24, CellPx_24) / 2);
 	}
@@ -126,7 +137,8 @@ namespace Play
 
 	PlayScene::~PlayScene()
 	{
-		if (s_instance->p_impl == this->p_impl && p_impl.use_count() == 2) s_instance.release();
+		if (s_instance->p_impl == this->p_impl && p_impl.use_count() == 2)
+			s_instance.reset(nullptr);
 	}
 
 	void PlayScene::Init(const PlaySingletonData& data)
@@ -139,6 +151,12 @@ namespace Play
 		p_impl->UpdateScene(*this);
 		p_impl->m_caveVision.UpdateScreen();
 		p_impl->m_ui.Update();
+	}
+
+	void PlayScene::Kill()
+	{
+		ActorBase::Kill();
+		p_impl->m_ui.Kill();
 	}
 
 	PlayScene& PlayScene::Instance()
@@ -195,6 +213,16 @@ namespace Play
 	const UiTimeLimiter& PlayScene::GetTimeLimiter() const
 	{
 		return p_impl->m_uiTimeLimiter;
+	}
+
+	void PlayScene::RequestHitstopping(double time)
+	{
+		p_impl->m_hitStoppingRequested++;
+		StartCoro(*this, [this, time](YieldExtended yield)
+		{
+			yield.WaitForTime(time, Scene::DeltaTime);
+			p_impl->m_hitStoppingRequested--;
+		});
 	}
 
 	PlaySingletonData PlayScene::CopyData() const

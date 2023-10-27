@@ -33,8 +33,12 @@ namespace Util
 		}
 	}
 
-	void ActorContainer::Clear()
+	void ActorContainer::Kill()
 	{
+		for (auto&& child : m_actorList)
+		{
+			child->Kill();
+		}
 		m_actorList.clear();
 	}
 }

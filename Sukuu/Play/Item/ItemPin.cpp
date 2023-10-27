@@ -24,6 +24,7 @@ struct Play::ItemPin::Impl
 	Dir4Type m_dir{Dir4::Invalid};
 	AnimTimer m_animTimer{};
 	double m_rotation{};
+	ItemAttackerAffair m_attack{ConsumableItem::Pin};
 
 	void Update()
 	{
@@ -33,7 +34,7 @@ struct Play::ItemPin::Impl
 			      m_animTimer.SliceFrames(200, 3) * spriteRect.w, 0))
 		      .rotatedAt(spriteRect.center(), m_rotation)
 		      .draw(m_pos.viewPos.movedBy(GetItemCellPadding(spriteRect.size)));
-		PlayScene::Instance().GetEnemies().SendDamageCollider(GetItemCollider(m_pos, spriteRect.size));
+		PlayScene::Instance().GetEnemies().SendDamageCollider(m_attack, GetItemCollider(m_pos, spriteRect.size));
 	}
 
 	void StartFlowchart(ActorBase& self)
@@ -57,7 +58,11 @@ private:
 		}
 
 		// また取れるようにする
-		PlayScene::Instance().GetGimmick()[m_pos.actualPos.MapPoint()] = GimmickKind::Item_Pin;
+		if (m_attack.AttackedCount() == 0)
+			PlayScene::Instance().GetGimmick()[m_pos.actualPos.MapPoint()] =
+				GimmickKind::Item_Pin;
+
+		// 消滅
 		self.Kill();
 	}
 };

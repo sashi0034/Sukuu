@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "Play/Forward.h"
+#include "Play/Item/ConsumableItem.h"
 #include "Util/ActorContainer.h"
 
 namespace Play
@@ -10,7 +11,7 @@ namespace Play
 	public:
 		EnemyBase() = default;
 		~EnemyBase() override = default;
-		virtual bool SendDamageCollider(const RectF& collider) = 0;
+		virtual bool SendDamageCollider(ItemAttackerAffair& attacker, const RectF& collider) = 0;
 	};
 
 	class EnemyContainer : public Array<std::unique_ptr<EnemyBase>>
@@ -26,6 +27,6 @@ namespace Play
 
 		void Refresh();
 
-		int SendDamageCollider(const RectF& collider) const;
+		int SendDamageCollider(ItemAttackerAffair& attacker, const RectF& collider) const;
 	};
 }

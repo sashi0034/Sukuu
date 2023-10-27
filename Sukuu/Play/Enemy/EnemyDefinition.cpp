@@ -14,13 +14,13 @@ namespace Play
 		}
 	}
 
-	int EnemyContainer::SendDamageCollider(const RectF& collider) const
+	int EnemyContainer::SendDamageCollider(ItemAttackerAffair& attacker, const RectF& collider) const
 	{
 		int count{};
 		for (auto&& enemy : *this)
 		{
 			if (enemy->IsDead()) continue;
-			if (enemy->SendDamageCollider(collider)) count++;
+			if (enemy->SendDamageCollider(attacker, collider)) count++;
 		}
 		return count;
 	}
