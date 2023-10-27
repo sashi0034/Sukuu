@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-#include "Play/Gimmick/ConsumableItem.h"
+#include "Play/Item/ConsumableItem.h"
 #include "Play/Forward.h"
 
 namespace Play
