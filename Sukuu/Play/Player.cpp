@@ -184,6 +184,11 @@ struct Play::Player::Impl
 			sun.Init(m_pos.actualPos, m_direction);
 			return true;
 		}
+		case ConsumableItem::Tube: {
+			if (m_act == PlayerAct::Dead) return false;
+			PlayScene::Instance().GetTimeLimiter().Heal(getToml<int>(U"tube_heal_amount"));
+			return false;
+		}
 		case ConsumableItem::Max:
 			break;
 		default: ;

@@ -28,6 +28,7 @@ helmet_offset = "(0, -10)"
 helmet_animation = 200
 light_bulb_duration = 12.0
 explorer_enemies_duration = 6.0
+tube_heal_amount = 90
 
 [play.chara]
 baloon_offset_y = -32
@@ -110,6 +111,7 @@ back_scale = 1.1
 back_color = "#7c7c7c"
 main_color = "#ffc700"
 damage_color = "#9d2b21"
+heal_color = "#fefffb"
 empty_thickness = 2.0
 empty_color = "#070707"
 icon_size = 64
