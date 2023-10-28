@@ -30,5 +30,41 @@ namespace Play
 		{
 			installGimmickRandomly(gimmick, map, GimmickKind::Item_Wing);
 		}
+		for (auto i : step(2))
+		{
+			installGimmickRandomly(gimmick, map, GimmickKind::Item_Mine);
+		}
+		for (auto i : step(2))
+		{
+			installGimmickRandomly(gimmick, map, GimmickKind::Item_LightBulb);
+		}
+		for (auto i : step(2))
+		{
+			installGimmickRandomly(gimmick, map, GimmickKind::Item_Magnet);
+		}
+		for (auto i : step(2))
+		{
+			installGimmickRandomly(gimmick, map, GimmickKind::Item_Bookmark);
+		}
+		for (auto i : step(2))
+		{
+			installGimmickRandomly(gimmick, map, GimmickKind::Item_Explorer);
+		}
+		for (auto i : step(2))
+		{
+			installGimmickRandomly(gimmick, map, GimmickKind::Item_Grave);
+		}
+		for (auto i : step(2))
+		{
+			installGimmickRandomly(gimmick, map, GimmickKind::Item_Sun);
+		}
+		for (auto i : step(2))
+		{
+			installGimmickRandomly(gimmick, map, GimmickKind::Item_Tube);
+		}
+		for (auto i : step(2))
+		{
+			installGimmickRandomly(gimmick, map, GimmickKind::Item_Solt);
+		}
 	}
 }

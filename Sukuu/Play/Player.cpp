@@ -375,7 +375,16 @@ private:
 		}
 		case GimmickKind::Item_Wing: [[fallthrough]];
 		case GimmickKind::Item_Helmet: [[fallthrough]];
-		case GimmickKind::Item_Pin:
+		case GimmickKind::Item_Pin: [[fallthrough]];
+		case GimmickKind::Item_Mine: [[fallthrough]];
+		case GimmickKind::Item_LightBulb: [[fallthrough]];
+		case GimmickKind::Item_Magnet: [[fallthrough]];
+		case GimmickKind::Item_Bookmark: [[fallthrough]];
+		case GimmickKind::Item_Explorer: [[fallthrough]];
+		case GimmickKind::Item_Grave: [[fallthrough]];
+		case GimmickKind::Item_Sun: [[fallthrough]];
+		case GimmickKind::Item_Tube: [[fallthrough]];
+		case GimmickKind::Item_Solt: [[fallthrough]];
 			obtainItemAt(newPoint, gimmickGrid);
 			break;
 		default: ;

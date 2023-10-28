@@ -520,7 +520,6 @@
     <Content Include="App\asset\image\brick_stylish_light_24x24 .png" />
     <Content Include="App\asset\image\catfish_24x24.png" />
     <Content Include="App\asset\image\clock_16x16.png" />
-    <Content Include="App\asset\image\cpp_24x24.aseprite" />
     <Content Include="App\asset\image\dango_wolf_24x24.png" />
     <Content Include="App\asset\image\dark_tree_16x16.png" />
     <Content Include="App\asset\image\dark_tree_48x48.png" />

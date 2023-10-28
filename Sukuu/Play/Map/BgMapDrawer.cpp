@@ -103,15 +103,46 @@ struct Play::BgMapDrawer::Impl
 		case GimmickKind::Item_Pin:
 			drawGimmickAt(point, AssetImages::pin_16x16, 16, 3);
 			break;
+		case GimmickKind::Item_Mine:
+			drawGimmickAt(point, AssetImages::mine_flower_16x16, 16, 6, {0, 1});
+			break;
+		case GimmickKind::Item_LightBulb:
+			drawGimmickAt(point, AssetImages::light_bulb_16x16, 16, 3);
+			break;
+		case GimmickKind::Item_Magnet:
+			drawGimmickAt(point, AssetImages::magnet_16x16, 16, 3);
+			break;
+		case GimmickKind::Item_Bookmark:
+			drawGimmickAt(point, AssetImages::bookmark_16x16, 16, 3);
+			break;
+		case GimmickKind::Item_Explorer:
+			drawGimmickAt(point, AssetImages::folder_16x16, 16, 4);
+			break;
+		case GimmickKind::Item_Grave:
+			drawGimmickAt(point, AssetImages::grave_16x16, 16, 4);
+			break;
+		case GimmickKind::Item_Sun:
+			drawGimmickAt(point, AssetImages::omeme_patchouli_sun_16x1t, 16, 2);
+			break;
+		case GimmickKind::Item_Tube:
+			drawGimmickAt(point, AssetImages::test_tube_16x16, 16, 3);
+			break;
+		case GimmickKind::Item_Solt:
+			drawGimmickAt(point, AssetImages::solt_16x16, 16, 3);
+			break;
 		default: ;
 		}
 	}
 
 private:
-	void drawGimmickAt(const Point& point, AssetNameView name, int cellSize, int numFrames) const
+	void drawGimmickAt(
+		const Point& point, AssetNameView name, int cellSize, int numFrames, const Point& cellOffset = {}) const
 	{
 		(void)TextureAsset(name)(
-				Rect{Point{cellSize, 0} * m_animTimer.SliceFrames(250, numFrames), {cellSize, cellSize}})
+				Rect{
+					Point{cellSize, 0} * m_animTimer.SliceFrames(250, numFrames) + cellOffset * cellSize,
+					{cellSize, cellSize}
+				})
 			.draw(point * CellPx_24 + GetItemCellPadding({cellSize, cellSize}));
 	}
 };

@@ -8,6 +8,15 @@ namespace Play
 		Wing,
 		Helmet,
 		Pin,
+		Mine,
+		LightBulb,
+		Magnet,
+		Bookmark,
+		Explorer,
+		Grave,
+		Sun,
+		Tube,
+		Solt,
 
 		Max,
 	};
