@@ -159,7 +159,7 @@ struct Play::Player::Impl
 			return true;
 		}
 		case ConsumableItem::LightBulb:
-			return checkUseItemLightBulb(self);
+			return CheckUseItemLightBulb(self, m_vision);
 		case ConsumableItem::Magnet: {
 			if (canInstallGimmickNow() == false) return false;
 			auto magnet = PlayScene::Instance().AsParent().Birth(ItemMagnet());
@@ -169,7 +169,7 @@ struct Play::Player::Impl
 		case ConsumableItem::Bookmark:
 			return PlayScene::Instance().GetMiniMap().SpotStairsAndAllItems();
 		case ConsumableItem::Explorer:
-			return checkUseItemExplorer(self);
+			return CheckUseItemExplorer(self);
 		case ConsumableItem::Max:
 			break;
 		default: ;
@@ -442,35 +442,6 @@ private:
 		{
 			AnimatePlayerUsingWing(yield, self, m_animOffset, m_pos);
 			StartFlowchart(self);
-		});
-		return true;
-	}
-
-	bool checkUseItemLightBulb(ActorView self)
-	{
-		// 視界クリア
-		if (m_vision.mistRemoval) return false;
-		m_vision.mistRemoval = true;
-		StartCoro(self, [this](YieldExtended yield)
-		{
-			yield.WaitForTime(getToml<double>(U"light_bulb_duration"));
-			m_vision.mistRemoval = false;
-		});
-		return true;
-	}
-
-	static bool checkUseItemExplorer(ActorView self)
-	{
-		// エネミーを一定時間全表示
-		auto&& minimap = PlayScene::Instance().GetMiniMap();
-		if (minimap.IsShowEnemies()) return false;
-		minimap.SetShowEnemies(true);
-		StartCoro(self, [](YieldExtended yield)
-		{
-			yield.WaitForTime(getToml<double>(U"explorer_enemies_duration"));
-			auto&& minimap1 = PlayScene::Instance().GetMiniMap();
-			if (minimap1.IsShowEnemies() == false) return;
-			minimap1.SetShowEnemies(false);
 		});
 		return true;
 	}
