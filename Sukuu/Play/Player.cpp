@@ -3,6 +3,7 @@
 
 #include "PlayScene.h"
 #include "Chara/CharaUtil.h"
+#include "Item/ItemMagnet.h"
 #include "Item/ItemMine.h"
 #include "Item/ItemPin.h"
 #include "Player_detail/PlayerAnimation.h"
@@ -152,7 +153,7 @@ struct Play::Player::Impl
 			return true;
 		}
 		case ConsumableItem::Mine: {
-			if (m_act != PlayerAct::Idle) return false;
+			if (canInstallGimmickNow() == false) return false;
 			auto mine = PlayScene::Instance().AsParent().Birth(ItemMine());
 			mine.Init(m_pos.actualPos);
 			return true;
@@ -161,6 +162,12 @@ struct Play::Player::Impl
 			if (m_vision.mistRemoval) return false;
 			m_vision.mistRemoval = true;
 			return true;
+		case ConsumableItem::Magnet: {
+			if (canInstallGimmickNow() == false) return false;
+			auto magnet = PlayScene::Instance().AsParent().Birth(ItemMagnet());
+			magnet.Init(m_pos.actualPos);
+			return true;
+		}
 		case ConsumableItem::Max:
 			break;
 		default: ;
@@ -417,6 +424,13 @@ private:
 			gimmickGrid[point] = GimmickKind::None;
 			break;
 		}
+	}
+
+	bool canInstallGimmickNow() const
+	{
+		if (m_act != PlayerAct::Idle) return false;
+		if (PlayScene::Instance().GetGimmick()[m_pos.actualPos.MapPoint()] != GimmickKind::None) return false;
+		return true;
 	}
 
 	bool gotoStairsByWing(ActorView self)

@@ -7,7 +7,7 @@
 namespace Play
 {
 	template <typename T>
-	inline T getToml(const String& key)
+	static inline T getToml(const String& key)
 	{
 		return Util::GetTomlParameter<T>(U"play.enemy." + key);
 	}

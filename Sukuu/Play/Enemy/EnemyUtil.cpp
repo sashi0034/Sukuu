@@ -3,6 +3,16 @@
 
 #include "Play/PlayScene.h"
 #include "Play/Effect/FragmentTextureEffect.h"
+#include "Util/TomlParametersWrapper.h"
+
+namespace
+{
+	template <typename T>
+	inline T getToml(const String& key)
+	{
+		return Util::GetTomlParameter<T>(U"play.enemy." + key);
+	}
+}
 
 namespace Play
 {
@@ -19,7 +29,7 @@ namespace Play
 		return RectF{pos.actualPos, Vec2{CellPx_24, CellPx_24}}.intersects(collider);
 	}
 
-	void performEnemyDestroyed(const Vec2& drawingPos, const TextureRegion& texture)
+	static void performEnemyDestroyed(const Vec2& drawingPos, const TextureRegion& texture)
 	{
 		auto&& playScene = PlayScene::Instance();
 		playScene.RequestHitstopping(0.5);
@@ -195,6 +205,16 @@ namespace Play
 			yield();
 			return true;
 		}
+		case GimmickKind::Installed_Magnet:
+			// マグネットに引っかかった
+			trappedState = EnemyTrappedState::Captured;
+			while (gimmick[currentPoint] == GimmickKind::Installed_Magnet)
+			{
+				yield.WaitForTime(getToml<double>(U"magnet_penalty"));
+				dir = dir.Rotated(RandomBool(0.5));
+			}
+			trappedState = EnemyTrappedState::Normal;
+			return true;
 		default:
 			break;
 		}

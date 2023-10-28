@@ -40,6 +40,7 @@ namespace Play
 		void Tick(double dt = GetDeltaTime()) { m_timer += dt; }
 		int SliceFrames(uint64 milliInterval, const Array<int>& pattern) const;
 		int SliceFrames(uint64 milliInterval, uint32 numFrames) const;
+		double Time() const { return m_timer; }
 
 	private:
 		double m_timer{};

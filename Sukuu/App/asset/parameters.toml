@@ -33,6 +33,7 @@ baloon_offset_y = -32
 [play.enemy]
 attacker_slime_cat = 30.0
 attacker_knight = 45.0
+magnet_penalty = 0.2
 
 [play.en_slime_cat]
 move_duration = 0.2
@@ -60,6 +61,16 @@ rotation_speed = 20
 anim_interval = 150
 scale_speed = 1440
 scale_rate = 0.1
+
+[play.item_magnet]
+anim_interval = 200
+scale_speed = 16.0
+scale_rate = 0.3
+lifetime = 15.0
+roll_radius = 8
+roll_jag = 8.0
+roll_speed = 2.0
+rotate_speed = 0.0
 
 [play.cave_vision]
 default_vision_radius = 160

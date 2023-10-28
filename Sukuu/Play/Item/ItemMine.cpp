@@ -22,18 +22,16 @@ namespace
 
 struct Play::ItemMine::Impl
 {
-	bool m_killed{};
 	CharaPosition m_pos{};
 	AnimTimer m_animTimer{};
-	double m_passed{};
 
 	void Update()
 	{
-		m_passed += GetDeltaTime();
 		m_animTimer.Tick();
+		const double passed = m_animTimer.Time();
 
 		const int animInterval = getToml<int>(U"anim_interval");
-		const double grewTime = m_passed - animInterval * 6 / 1000.0;
+		const double grewTime = passed - animInterval * 6 / 1000.0;
 
 		const double scalePhase = ToRadians(grewTime * getToml<double>(U"scale_speed"));
 		const double scale =

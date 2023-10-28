@@ -36,6 +36,7 @@ struct Play::EnSlimeCat::Impl : IEnemyInternal
 		// 吹き出し描画
 		const AssetNameView emotion = [&]()
 		{
+			if (m_trapped == EnemyTrappedState::Captured) return U"😬";
 			if (m_playerTracker.IsTracking()) return U"😎";
 			if (m_doingLostPenalty) return U"🤔";
 			return U"";

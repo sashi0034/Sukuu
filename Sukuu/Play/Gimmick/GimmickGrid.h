@@ -22,6 +22,7 @@ namespace Play
 		Item_Tube,
 		Item_Solt,
 		Installed_Mine,
+		Installed_Magnet,
 
 		Max,
 	};
