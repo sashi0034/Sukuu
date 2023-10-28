@@ -5,7 +5,7 @@ namespace Play
 {
 	constexpr int consumableItemSize = static_cast<int>(ConsumableItem::Max);
 
-	consteval std::array<ItemProps, consumableItemSize> propsData()
+	static consteval std::array<ItemProps, consumableItemSize> propsData()
 	{
 		std::array<ItemProps, consumableItemSize> data{};
 
