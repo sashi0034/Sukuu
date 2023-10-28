@@ -168,6 +168,9 @@ struct Play::Player::Impl
 			magnet.Init(m_pos.actualPos);
 			return true;
 		}
+		case ConsumableItem::Bookmark: {
+			return PlayScene::Instance().GetMiniMap().SpotStairsAndAllItems();
+		}
 		case ConsumableItem::Max:
 			break;
 		default: ;

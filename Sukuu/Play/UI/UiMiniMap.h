@@ -4,12 +4,16 @@
 
 namespace Play
 {
+	// TODO: インターフェースにする
+
 	class UiMiniMap : public ActorBase
 	{
 	public:
 		UiMiniMap();
 		void Init(const Size& mapSize);
 		void Update() override;
+
+		bool SpotStairsAndAllItems();
 
 	private:
 		struct Impl;

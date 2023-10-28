@@ -222,6 +222,16 @@ namespace Play
 		return p_impl->m_uiTimeLimiter;
 	}
 
+	UiMiniMap& PlayScene::GetMiniMap()
+	{
+		return p_impl->m_uiMiniMap;
+	}
+
+	const UiMiniMap& PlayScene::GetMiniMap() const
+	{
+		return p_impl->m_uiMiniMap;
+	}
+
 	EffectWrapper& PlayScene::FgEffect()
 	{
 		return p_impl->m_fgEffect;

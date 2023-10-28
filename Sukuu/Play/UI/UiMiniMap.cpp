@@ -2,6 +2,7 @@
 #include "UiMiniMap.h"
 
 #include "Play/PlayScene.h"
+#include "Util/EasingAnimation.h"
 #include "Util/TomlParametersWrapper.h"
 
 namespace
@@ -25,11 +26,16 @@ struct Play::UiMiniMap::Impl
 	Grid<ArriveFlag> m_flag{};
 	RenderTexture m_renderTexture{};
 	Array<Point> m_discoveredItemPoints{};
+	bool m_hasExploreStairsAndAllItems{};
+	Vec2 m_drawScale{1, 1};
 
 	void Update()
 	{
 		checkRefreshMap();
-		Transformer2D transform{Mat3x2::Translate(GetTomlParameter<Vec2>(U"play.ui_minimap.screen_point"))};
+		Transformer2D transform{
+			Mat3x2::Translate(GetTomlParameter<Vec2>(U"play.ui_minimap.screen_point"))
+			.scaled(m_drawScale)
+		};
 
 		// マップ描画
 		(void)m_renderTexture.draw();
@@ -59,6 +65,30 @@ struct Play::UiMiniMap::Impl
 		}
 	}
 
+	bool SpotStairsAndAllItems(ActorView self)
+	{
+		// 階段とアイテムを探して全て表示
+		auto&& gimmick = PlayScene::Instance().GetGimmick();
+		if (m_hasExploreStairsAndAllItems) return false;
+		const int renderCell = getRenderCellSize();
+		const auto scoped = scopeRenderMinimap();
+		for (auto&& p : step(gimmick.size()))
+		{
+			if (m_flag[p].isRendered) continue;
+			if (gimmick[p] == GimmickKind::Stairs ||
+				GimmickToItem(gimmick[p]) != ConsumableItem::None)
+			{
+				inquireStairsAndItemsAt(gimmick, renderCell, p, p * renderCell);
+			}
+		}
+		m_hasExploreStairsAndAllItems = true;
+
+		// マップの拡縮アニメーション
+		animateShake(self);
+
+		return true;
+	}
+
 private:
 	void checkRefreshMap()
 	{
@@ -73,12 +103,7 @@ private:
 		const int vision = GetTomlParameter<int>(U"play.ui_minimap.vision_render");
 		const int renderCell = getRenderCellSize();
 
-		const ScopedRenderTarget2D target{m_renderTexture};
-		const ScopedRenderStates2D blend{
-			BlendState{
-				true, Blend::One, Blend::Zero, BlendOp::Add, Blend::One, Blend::Zero, BlendOp::Max
-			}
-		};
+		const auto scoped = scopeRenderMinimap();
 
 		// 新たな範囲を調査
 		for (const auto p : step(Size{1, 1} * (vision + 1) * 2))
@@ -96,27 +121,30 @@ private:
 		}
 	}
 
+	std::pair<ScopedRenderTarget2D, ScopedRenderStates2D> scopeRenderMinimap()
+	{
+		return {
+			ScopedRenderTarget2D{m_renderTexture},
+			ScopedRenderStates2D{
+				BlendState{
+					true, Blend::One, Blend::Zero, BlendOp::Add, Blend::One, Blend::Zero, BlendOp::Max
+				}
+			}
+		};
+	}
+
 	void drawCellAt(const MapGrid& map, int renderCell, const Point& checking)
 	{
 		auto&& gimmick = PlayScene::Instance().GetGimmick();
 
 		// 描画
-		const auto drawingTl = checking * renderCell;
-		const int rc1 = renderCell; // - 1;
+		const Point drawingTl = checking * renderCell;
+		const int rc1 = renderCell;
 		Rect(drawingTl, Size{1, 1} * renderCell)
 			.draw(GetTomlParameter<Color>(U"play.ui_minimap.movable_color"));
 
-		if (gimmick[checking] == GimmickKind::Stairs)
-		{
-			// 階段を描画
-			Rect(drawingTl, (Size{1, 1} * renderCell).movedBy(-2, -2))
-				.drawFrame(2, GetTomlParameter<Color>(U"play.ui_minimap.stairs_color"));
-		}
-		if (GimmickToItem(gimmick[checking]) != ConsumableItem::None)
-		{
-			// アイテム発見
-			m_discoveredItemPoints.push_back(checking);
-		}
+		// 階段とアイテム描画
+		inquireStairsAndItemsAt(gimmick, renderCell, checking, drawingTl);
 
 		// 境界を描画
 		const auto borderColor = GetTomlParameter<Color>(U"play.ui_minimap.border_color");
@@ -128,6 +156,34 @@ private:
 			(void)Line(drawingTl, drawingTl.movedBy(0, rc1)).draw(borderColor);
 		if (CanMovePointTo(map, checking, Dir4::Down) == false)
 			(void)Line(drawingTl.movedBy(0, rc1), drawingTl.movedBy(rc1, rc1)).draw(borderColor);
+	}
+
+	void inquireStairsAndItemsAt(
+		const GimmickGrid& gimmick,
+		int renderCell,
+		const Point& checking,
+		const Point& drawingTl)
+	{
+		if (gimmick[checking] == GimmickKind::Stairs)
+		{
+			// 階段を描画
+			Rect(drawingTl, (Size{1, 1} * renderCell).movedBy(-2, -2))
+				.drawFrame(2, GetTomlParameter<Color>(U"play.ui_minimap.stairs_color"));
+		}
+		if (GimmickToItem(gimmick[checking]) != ConsumableItem::None)
+		{
+			// アイテム発見
+			m_discoveredItemPoints.push_back(checking);
+		}
+	}
+
+	void animateShake(ActorView self)
+	{
+		StartCoro(self, [this, self](YieldExtended yield)
+		{
+			yield.WaitForDead(AnimateEasing<EaseInBack>(self, &m_drawScale, {1, 0}, 0.3));
+			AnimateEasing<EaseOutBack>(self, &m_drawScale, {1, 1}, 0.3);
+		});
 	}
 };
 
@@ -146,6 +202,12 @@ namespace Play
 
 	void UiMiniMap::Update()
 	{
+		ActorBase::Update();
 		p_impl->Update();
+	}
+
+	bool UiMiniMap::SpotStairsAndAllItems()
+	{
+		return p_impl->SpotStairsAndAllItems(*this);
 	}
 }

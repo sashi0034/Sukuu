@@ -40,7 +40,7 @@ struct Play::UiTimeLimiter::Impl
 		drawUi();
 	}
 
-	void Damage(ActorBase& self, double time)
+	void Damage(ActorView self, double time)
 	{
 		m_fallingDamage += time;
 		m_shadowFallingDamage = m_fallingDamage;
