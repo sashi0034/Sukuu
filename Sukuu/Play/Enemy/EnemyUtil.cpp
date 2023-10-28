@@ -19,7 +19,7 @@ namespace Play
 		return RectF{pos.actualPos, Vec2{CellPx_24, CellPx_24}}.intersects(collider);
 	}
 
-	void PerformEnemyDestroyed(const Vec2& drawingPos, const TextureRegion& texture)
+	void performEnemyDestroyed(const Vec2& drawingPos, const TextureRegion& texture)
 	{
 		auto&& playScene = PlayScene::Instance();
 		playScene.RequestHitstopping(0.5);
@@ -28,6 +28,11 @@ namespace Play
 			texture,
 			Palette::Crimson,
 			96));
+	}
+
+	void PerformEnemyDestroyed(const IEnemyInternal& enemy)
+	{
+		performEnemyDestroyed(enemy.GetDrawPos(), enemy.GetTexture());
 	}
 
 	bool FaceEnemyMovableDir(Dir4Type& dir, const CharaPosition& pos, const MapGrid& map, bool leftPriority)
@@ -153,5 +158,46 @@ namespace Play
 				direction = direction.Reversed();
 			}
 		}
+	}
+
+	bool CheckEnemyTrappingGimmick(const Point& currentPoint, const std::function<void()>& onKilled)
+	{
+		auto&& gimmick = PlayScene::Instance().GetGimmick();
+		switch (gimmick[currentPoint])
+		{
+		case GimmickKind::Installed_Mine:
+			// 地雷を踏んだ
+			onKilled();
+			gimmick[currentPoint] = GimmickKind::None;
+			return true;
+		default:
+			break;
+		}
+		return false;
+	}
+
+	bool CheckEnemyTrappingGimmick(
+		YieldExtended& yield,
+		const Point& currentPoint,
+		const IEnemyInternal& enemy,
+		Dir4Type& dir,
+		EnemyTrappedState& trappedState)
+	{
+		auto&& gimmick = PlayScene::Instance().GetGimmick();
+		switch (gimmick[currentPoint])
+		{
+		case GimmickKind::Installed_Mine: {
+			// 地雷を踏んだ
+			gimmick[currentPoint] = GimmickKind::None;
+			// TODO: 爆発エフェクト
+			PerformEnemyDestroyed(enemy);
+			trappedState = EnemyTrappedState::Killed;
+			yield();
+			return true;
+		}
+		default:
+			break;
+		}
+		return false;
 	}
 }

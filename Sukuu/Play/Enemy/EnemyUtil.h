@@ -3,11 +3,19 @@
 
 namespace Play
 {
+	class IEnemyInternal
+	{
+	public:
+		virtual ~IEnemyInternal() = default;
+		virtual Vec2 GetDrawPos() const = 0;
+		virtual TextureRegion GetTexture() const = 0;
+	};
+
 	void CheckSendEnemyCollide(Player& player, CharaPosition& pos, EnemyKind enemy);
 
 	bool IsEnemyCollided(const CharaPosition& pos, const RectF& collider);
 
-	void PerformEnemyDestroyed(const Vec2& drawingPos, const TextureRegion& texture);
+	void PerformEnemyDestroyed(const IEnemyInternal& enemy);
 
 	bool FaceEnemyMovableDir(Dir4Type& dir, const CharaPosition& pos, const MapGrid& map, bool leftPriority);
 
@@ -28,4 +36,18 @@ namespace Play
 	private:
 		int m_concern = 0;
 	};
+
+	enum class EnemyTrappedState
+	{
+		Normal,
+		Killed,
+		Captured,
+	};
+
+	bool CheckEnemyTrappingGimmick(
+		YieldExtended& yield,
+		const Point& currentPoint,
+		const IEnemyInternal& enemy,
+		Dir4Type& dir,
+		EnemyTrappedState& trappedState);
 }

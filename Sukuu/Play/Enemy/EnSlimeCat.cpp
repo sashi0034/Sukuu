@@ -12,14 +12,14 @@ namespace
 	constexpr Rect catRect{0, 0, 24, 24};
 }
 
-struct Play::EnSlimeCat::Impl
+struct Play::EnSlimeCat::Impl : IEnemyInternal
 {
-	CharaPosition m_pos;
+	CharaPosition m_pos{};
 	Dir4Type m_dir{Dir4::Down};
-	AnimTimer m_animTimer;
-	double m_speed = 1.0;
+	AnimTimer m_animTimer{};
+	EnemyTrappedState m_trapped{};
 	EnemyPlayerTracker m_playerTracker{};
-	bool m_doingLostPenalty = false;
+	bool m_doingLostPenalty{};
 	int m_tireCount{};
 	int m_tirePenalty{};
 
@@ -55,12 +55,12 @@ struct Play::EnSlimeCat::Impl
 		});
 	}
 
-	Vec2 GetDrawPos() const
+	Vec2 GetDrawPos() const override
 	{
 		return m_pos.viewPos.movedBy(GetCharacterCellPadding(catRect.size));
 	}
 
-	TextureRegion GetTexture() const
+	TextureRegion GetTexture() const override
 	{
 		auto&& sheet = TextureAsset(AssetImages::punicat_24x24);
 		const int interval = GetTomlParameter<int>(U"play.en_slime_cat.anim_interval");
@@ -105,6 +105,9 @@ private:
 			auto&& map = PlayScene::Instance().GetMap();
 			const TerrainKind currentTerrain = GetTerrainAt(map, m_pos.actualPos);
 			const auto currentPoint = m_pos.actualPos.MapPoint();
+
+			// ギミック確認
+			CheckEnemyTrappingGimmick(yield, currentPoint, *this, m_dir, m_trapped);
 
 			// プレイヤー追跡チェック
 			checkFollowPlayer(yield, currentPoint);
@@ -178,6 +181,7 @@ namespace Play
 	{
 		ActorBase::Update();
 		p_impl->Update();
+		if (p_impl->m_trapped == EnemyTrappedState::Killed) Kill();
 	}
 
 	double EnSlimeCat::OrderPriority() const
@@ -189,7 +193,7 @@ namespace Play
 	{
 		if (not IsEnemyCollided(p_impl->m_pos, collider)) return false;
 		attacker.IncAttacked();
-		PerformEnemyDestroyed(p_impl->GetDrawPos(), p_impl->GetTexture());
+		PerformEnemyDestroyed(*p_impl);
 		Kill();
 		return true;
 	}

@@ -18,11 +18,12 @@ namespace
 	constexpr Rect knightRect{0, 0, 32, 32};
 }
 
-struct Play::EnKnight::Impl
+struct Play::EnKnight::Impl : IEnemyInternal
 {
-	CharaPosition m_pos;
+	EnemyTrappedState m_trapped{};
+	CharaPosition m_pos{};
 	Dir4Type m_dir{Dir4::Down};
-	AnimTimer m_animTimer;
+	AnimTimer m_animTimer{};
 	EnemyPlayerTracker m_playerTracker{};
 
 	bool m_sleeping = true;
@@ -66,7 +67,7 @@ struct Play::EnKnight::Impl
 		});
 	}
 
-	TextureRegion GetTexture() const
+	TextureRegion GetTexture() const override
 	{
 		auto&& sheet = TextureAsset(AssetImages::temple_knight_side_32x32);
 		if (m_sleeping) return sheet(knightRect.movedBy(0, knightRect.h));
@@ -98,6 +99,9 @@ private:
 			auto&& map = PlayScene::Instance().GetMap();
 			const TerrainKind currentTerrain = GetTerrainAt(map, m_pos.actualPos);
 			const auto currentPoint = m_pos.actualPos.MapPoint();
+
+			// ギミック確認
+			CheckEnemyTrappingGimmick(yield, currentPoint, *this, m_dir, m_trapped);
 
 			// プレイヤー追跡チェック
 			m_playerTracker.Track(
@@ -166,6 +170,7 @@ namespace Play
 	{
 		ActorBase::Update();
 		p_impl->Update();
+		if (p_impl->m_trapped == EnemyTrappedState::Killed) Kill();
 	}
 
 	double EnKnight::OrderPriority() const
@@ -177,7 +182,7 @@ namespace Play
 	{
 		if (not IsEnemyCollided(p_impl->m_pos, collider)) return false;
 		attacker.IncAttacked();
-		PerformEnemyDestroyed(p_impl->GetDrawPos(), p_impl->GetTexture());
+		PerformEnemyDestroyed(*p_impl);
 		Kill();
 		return true;
 	}

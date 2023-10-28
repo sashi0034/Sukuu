@@ -56,6 +56,11 @@ lost_player_penalty = 3.0
 move_duration = 0.05
 rotation_speed = 20
 
+[play.item_mine]
+anim_interval = 150
+scale_speed = 1440
+scale_rate = 0.1
+
 [play.cave_vision]
 default_vision_radius = 160
 dark_color = "#3D30A2"

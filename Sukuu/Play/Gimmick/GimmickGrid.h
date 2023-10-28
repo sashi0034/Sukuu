@@ -21,6 +21,7 @@ namespace Play
 		Item_Sun,
 		Item_Tube,
 		Item_Solt,
+		Installed_Mine,
 
 		Max,
 	};
