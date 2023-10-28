@@ -50,6 +50,7 @@ struct Play::Player::Impl
 	PlayerImmortality m_immortal{};
 	bool m_guardHelmet{};
 	std::function<void()> m_scoopDrawing = {};
+	PlayerVisionState m_vision{};
 
 	void Update()
 	{
@@ -156,6 +157,10 @@ struct Play::Player::Impl
 			mine.Init(m_pos.actualPos);
 			return true;
 		}
+		case ConsumableItem::LightBulb:
+			if (m_vision.mistRemoval) return false;
+			m_vision.mistRemoval = true;
+			return true;
 		case ConsumableItem::Max:
 			break;
 		default: ;
@@ -445,7 +450,7 @@ namespace Play
 		p_impl->StartFlowchart(*this);
 
 #ifdef _DEBUG
-		p_impl->m_personal.items[0] = ConsumableItem::Mine;
+		p_impl->m_personal.items[0] = ConsumableItem::LightBulb;
 		p_impl->m_personal.items[1] = ConsumableItem::Wing;
 #endif
 	}
@@ -509,5 +514,10 @@ namespace Play
 	bool Player::IsCompletedGoal() const
 	{
 		return p_impl->m_completedGoal;
+	}
+
+	const PlayerVisionState& Player::Vision() const
+	{
+		return p_impl->m_vision;
 	}
 }

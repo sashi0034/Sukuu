@@ -25,4 +25,9 @@ namespace Play
 	public:
 		bool IsPlayerExistAt(const Point& p) const { return this->inBounds(p) && (*this)[p].distance == 0; }
 	};
+
+	struct PlayerVisionState
+	{
+		bool mistRemoval{};
+	};
 }

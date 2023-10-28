@@ -3,7 +3,7 @@
 #include "Forward.h"
 #include "Chara/CharaUtil.h"
 #include "Enemy/EnemyDefinition.h"
-#include "Player_detail\PlayerDefinition.h"
+#include "Player_detail/PlayerDefinition.h"
 
 namespace Play
 {
@@ -25,6 +25,7 @@ namespace Play
 		const PlayerDistField& DistField() const;
 		bool IsImmortal() const;
 		bool IsCompletedGoal() const;
+		const PlayerVisionState& Vision() const;
 
 	private:
 		struct Impl;

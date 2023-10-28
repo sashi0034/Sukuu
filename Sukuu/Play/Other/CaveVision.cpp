@@ -3,6 +3,7 @@
 
 #include "AssetKeys.h"
 #include "Assets.generated.h"
+#include "Play/PlayScene.h"
 #include "Util/TomlParametersWrapper.h"
 
 namespace
@@ -27,8 +28,18 @@ struct Play::CaveVision::Impl
 
 	void UpdateMask(const Vec2& pos)
 	{
+		auto&& vision = PlayScene::Instance().GetPlayer().Vision();
+
+		// 霧払い済み
+		if (vision.mistRemoval)
+		{
+			m_maskTexture.clear(ColorF{1, 1});
+			return;
+		}
+
 		// マスク描画
-		ScopedRenderTarget2D target{m_maskTexture};
+		ScopedRenderTarget2D target{m_maskTexture.clear(ColorF{0, 1})};
+
 		Transformer2D t{
 			Mat3x2::Translate(pos)
 			.scaled({static_cast<double>(Scene::Size().x) / Scene::Size().y, 1.0}, pos)
@@ -37,7 +48,6 @@ struct Play::CaveVision::Impl
 
 		m_softShapeCb->time += GetDeltaTime() * 2;
 		m_softShapeCb->radius = GetTomlParameter<float>(U"play.cave_vision.default_vision_radius");
-		m_maskTexture.clear(Color(0, 0, 0, 255));
 		Graphics2D::SetVSConstantBuffer(1, m_softShapeCb);
 		const ScopedCustomShader2D shader{VertexShaderAsset(AssetKeys::VsCaveVision)};
 
