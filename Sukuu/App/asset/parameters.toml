@@ -26,6 +26,8 @@ initial_immortal = 2.5
 recover_immortal = 1.5
 helmet_offset = "(0, -10)"
 helmet_animation = 200
+light_bulb_duration = 12.0
+explorer_enemies_duration = 6.0
 
 [play.chara]
 baloon_offset_y = -32
@@ -82,6 +84,7 @@ render_cell = 8
 movable_color = "#70144840"
 border_color = "#d0d0f0"
 player_color = "#ffd14d"
+enemy_color = "#f23f42"
 item_color = "#1c9ee3"
 stairs_color = "#5e8af7"
 

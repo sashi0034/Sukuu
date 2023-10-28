@@ -19,6 +19,12 @@ namespace
 	{
 		return GetTomlParameter<int>(U"play.ui_minimap.render_cell");
 	}
+
+	template <typename T>
+	inline T getToml(const String& key)
+	{
+		return Util::GetTomlParameter<T>(U"play.ui_minimap." + key);
+	}
 }
 
 struct Play::UiMiniMap::Impl
@@ -28,12 +34,13 @@ struct Play::UiMiniMap::Impl
 	Array<Point> m_discoveredItemPoints{};
 	bool m_hasExploreStairsAndAllItems{};
 	Vec2 m_drawScale{1, 1};
+	bool m_showEnemies{};
 
 	void Update()
 	{
 		checkRefreshMap();
 		Transformer2D transform{
-			Mat3x2::Translate(GetTomlParameter<Vec2>(U"play.ui_minimap.screen_point"))
+			Mat3x2::Translate(getToml<Vec2>(U"screen_point"))
 			.scaled(m_drawScale)
 		};
 
@@ -49,10 +56,10 @@ struct Play::UiMiniMap::Impl
 			// プレイヤー描画
 			const auto playerPos =
 				scene.GetPlayer().CurrentPos().actualPos.movedBy(Point{CellPx_24, CellPx_24} / 2) / CellPx_24;
-			(void)Circle(playerPos * rc, rc / 2).draw(GetTomlParameter<Color>(U"play.ui_minimap.player_color"));
+			(void)Circle(playerPos * rc, rc / 2).draw(getToml<Color>(U"player_color"));
 		}
 
-		const auto itemColor = GetTomlParameter<Color>(U"play.ui_minimap.item_color");
+		const auto itemColor = getToml<Color>(U"item_color");
 		for (int i = m_discoveredItemPoints.size() - 1; i >= 0; i--)
 		{
 			// アイテム描画
@@ -62,6 +69,17 @@ struct Play::UiMiniMap::Impl
 				m_discoveredItemPoints.remove_at(i);
 			}
 			(void)Circle((p * rc).movedBy(rc / 2, rc / 2), rc / 2).draw(itemColor);
+		}
+
+		if (m_showEnemies)
+		{
+			// エネミー描画
+			const auto enemyColor = getToml<Color>(U"enemy_color");
+			PlayScene::Instance().GetEnemies().ForEach([&](auto&& enemy)
+			{
+				auto enemyPos = enemy.Pos().actualPos.movedBy(Point{CellPx_24, CellPx_24} / 2) / CellPx_24;
+				(void)Circle(enemyPos * rc, rc / 2).draw(enemyColor);
+			});
 		}
 	}
 
@@ -84,9 +102,18 @@ struct Play::UiMiniMap::Impl
 		m_hasExploreStairsAndAllItems = true;
 
 		// マップの拡縮アニメーション
-		animateShake(self);
+		AnimateShake(self);
 
 		return true;
+	}
+
+	void AnimateShake(ActorView self)
+	{
+		StartCoro(self, [this, self](YieldExtended yield)
+		{
+			yield.WaitForDead(AnimateEasing<EaseInBack>(self, &m_drawScale, {1, 0}, 0.3));
+			AnimateEasing<EaseOutBack>(self, &m_drawScale, {1, 1}, 0.3);
+		});
 	}
 
 private:
@@ -176,15 +203,6 @@ private:
 			m_discoveredItemPoints.push_back(checking);
 		}
 	}
-
-	void animateShake(ActorView self)
-	{
-		StartCoro(self, [this, self](YieldExtended yield)
-		{
-			yield.WaitForDead(AnimateEasing<EaseInBack>(self, &m_drawScale, {1, 0}, 0.3));
-			AnimateEasing<EaseOutBack>(self, &m_drawScale, {1, 1}, 0.3);
-		});
-	}
 };
 
 namespace Play
@@ -209,5 +227,16 @@ namespace Play
 	bool UiMiniMap::SpotStairsAndAllItems()
 	{
 		return p_impl->SpotStairsAndAllItems(*this);
+	}
+
+	void UiMiniMap::SetShowEnemies(bool isShow)
+	{
+		p_impl->AnimateShake(*this);
+		p_impl->m_showEnemies = isShow;
+	}
+
+	bool UiMiniMap::IsShowEnemies() const
+	{
+		return p_impl->m_showEnemies;
 	}
 }

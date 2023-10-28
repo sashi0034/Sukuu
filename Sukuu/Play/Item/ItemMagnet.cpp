@@ -53,15 +53,14 @@ private:
 		return m_pos.viewPos.movedBy(GetItemCellPadding(spriteRect.size));
 	}
 
-	TexturedQuad getTexture() const
+	TextureRegion getTexture() const
 	{
 		const double scalePhase = m_animTimer.Time() * getToml<double>(U"scale_speed");
 		const double scale = 1 + (1 - Math::Cos(scalePhase)) * getToml<double>(U"scale_rate");
 
 		return TextureAsset(AssetImages::magnet_16x16)(spriteRect.movedBy(
-			       m_animTimer.SliceFrames(getToml<double>(U"anim_interval"), 3) * spriteRect.w, 0))
-		       .scaled(scale)
-		       .rotated(m_animTimer.Time());
+				m_animTimer.SliceFrames(getToml<double>(U"anim_interval"), 3) * spriteRect.w, 0))
+			.scaled(scale);
 	}
 };
 

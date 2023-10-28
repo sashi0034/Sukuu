@@ -1,17 +1,19 @@
 ﻿#include "stdafx.h"
 #include "EnemyDefinition.h"
 
-#include "Util/ActorContainer.h"
 #include "Util/TomlParametersWrapper.h"
 
-namespace Play
+namespace
 {
 	template <typename T>
 	static inline T getToml(const String& key)
 	{
 		return Util::GetTomlParameter<T>(U"play.enemy." + key);
 	}
+}
 
+namespace Play
+{
 	double GetEnemyAttackDamage(EnemyKind kind)
 	{
 		switch (kind)
@@ -43,5 +45,14 @@ namespace Play
 			if (enemy->SendDamageCollider(attacker, collider)) count++;
 		}
 		return count;
+	}
+
+	void EnemyContainer::ForEach(const std::function<void(const EnemyBase&)>& func) const
+	{
+		for (auto& enemy : *this)
+		{
+			if (enemy->IsDead()) continue;
+			func(*enemy);
+		}
 	}
 }

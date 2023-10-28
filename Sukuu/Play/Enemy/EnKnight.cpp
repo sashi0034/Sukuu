@@ -187,4 +187,9 @@ namespace Play
 		Kill();
 		return true;
 	}
+
+	const CharaPosition& EnKnight::Pos() const
+	{
+		return p_impl->m_pos;
+	}
 }

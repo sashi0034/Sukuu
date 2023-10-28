@@ -14,6 +14,8 @@ namespace Play
 		void Update() override;
 
 		bool SpotStairsAndAllItems();
+		void SetShowEnemies(bool isShow);
+		bool IsShowEnemies() const;
 
 	private:
 		struct Impl;
