@@ -35,6 +35,13 @@ namespace Util
 
 	TOMLValue GetTomlParameters(const String& valuePath)
 	{
-		return s_instance->toml[valuePath];
+		auto&& value = s_instance->toml[valuePath];;
+#ifdef _DEBUG
+		if (value.isEmpty())
+		{
+			System::MessageBoxOK(U"TOML parameter error", U"'{}' is missing."_fmt(valuePath), MessageBoxStyle::Error);
+		}
+#endif
+		return value;
 	}
 }
