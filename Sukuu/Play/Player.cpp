@@ -54,6 +54,7 @@ struct Play::Player::Impl
 	bool m_guardHelmet{};
 	std::function<void()> m_scoopDrawing = {};
 	PlayerVisionState m_vision{};
+	double m_faintStealthTime{};
 
 	void Update()
 	{
@@ -61,8 +62,11 @@ struct Play::Player::Impl
 
 		m_animTimer.Tick(GetDeltaTime() * (m_act == PlayerAct::Running ? 2 : 1));
 
+		m_faintStealthTime = std::max(m_faintStealthTime - GetDeltaTime(), 0.0);
+
 		if (m_scoopDrawing)
 		{
+			// すくうの描画
 			m_scoopDrawing();
 		}
 		else
@@ -72,6 +76,8 @@ struct Play::Player::Impl
 				* Scene::DeltaTime()
 				* getToml<double>(U"camera_offset_speed");
 		}
+
+		const ScopedRenderStates2D rs = getRenderState();
 
 		const auto drawingPos = getDrawPos();
 		(void)getPlayerTexture()
@@ -187,7 +193,13 @@ struct Play::Player::Impl
 		case ConsumableItem::Tube: {
 			if (m_act == PlayerAct::Dead) return false;
 			PlayScene::Instance().GetTimeLimiter().Heal(getToml<int>(U"tube_heal_amount"));
-			return false;
+			return true;
+		}
+		case ConsumableItem::Solt: {
+			if (m_faintStealthTime > 0) return false;
+			m_faintStealthTime += getToml<double>(U"solt_faint");
+			refreshDistField();
+			return true;
 		}
 		case ConsumableItem::Max:
 			break;
@@ -207,6 +219,12 @@ private:
 	Vec2 getDrawPos() const
 	{
 		return m_pos.viewPos.movedBy(GetCharacterCellPadding(PlayerCellRect.size) + m_animOffset);
+	}
+
+	ScopedRenderStates2D getRenderState() const
+	{
+		if (m_faintStealthTime > 0) return ScopedRenderStates2D(BlendState::Additive);
+		return ScopedRenderStates2D{Graphics2D::GetBlendState()};
 	}
 
 	Vec2 getHelmetOffset() const
@@ -258,7 +276,7 @@ private:
 		{
 			m_act = PlayerAct::Idle;
 		}
-		m_distField.Refresh(PlayScene::Instance().GetMap(), m_pos.actualPos);
+		refreshDistField();
 
 		// キー入力待ち
 		auto moveDir = Dir4::Invalid;
@@ -294,7 +312,7 @@ private:
 		// 移動
 		const auto nextPos = Vec2(m_pos.actualPos + moveDir.ToXY() * CellPx_24);
 		ProcessMoveCharaPos(yield, self, m_pos, nextPos, moveDuration());
-		// m_distField.Refresh(PlayScene::Instance().GetMap(), nextPos);
+		// refreshDistField();
 
 		// ギミックチェック
 		const auto newPoint = CharaVec2(nextPos).MapPoint();
@@ -380,7 +398,7 @@ private:
 				ProcessMoveCharaPos(
 					yield, self, m_pos, checkingPos,
 					animDuration);
-				m_distField.Refresh(PlayScene::Instance().GetMap(), m_pos.actualPos);
+				refreshDistField();
 				m_immortal.immortalStock--;
 				goto dropped;
 			}
@@ -392,6 +410,13 @@ private:
 		{
 			return MouseL.pressed() == false;
 		});
+	}
+
+	void refreshDistField()
+	{
+		// ディスタンスフィールドの更新
+		const int maxDist = m_faintStealthTime > 0 ? 2 : 11;
+		m_distField.Refresh(PlayScene::Instance().GetMap(), m_pos.actualPos, maxDist);
 	}
 
 	void checkGimmickAt(YieldExtended& yield, ActorView self, const Point newPoint)

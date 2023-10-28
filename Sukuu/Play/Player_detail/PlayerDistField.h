@@ -12,7 +12,8 @@ namespace Play
 		void Clear();
 		void Refresh(
 			const MapGrid& map,
-			const CharaVec2& playerPos);
+			const CharaVec2& playerPos,
+			int maxDist);
 
 		void Resize(const Size& size)
 		{
