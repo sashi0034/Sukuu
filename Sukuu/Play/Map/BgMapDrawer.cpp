@@ -122,7 +122,7 @@ struct Play::BgMapDrawer::Impl
 			drawGimmickAt(point, AssetImages::grave_16x16, 16, 4);
 			break;
 		case GimmickKind::Item_Sun:
-			drawGimmickAt(point, AssetImages::omeme_patchouli_sun_16x1t, 16, 2);
+			drawGimmickAt(point, AssetImages::omeme_patchouli_sun_16x16, 16, 2);
 			break;
 		case GimmickKind::Item_Tube:
 			drawGimmickAt(point, AssetImages::test_tube_16x16, 16, 3);

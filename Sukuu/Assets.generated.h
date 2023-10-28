@@ -23,7 +23,7 @@ namespace AssetImages
 	constexpr StringView magma_tile_24x24 = U"asset/image/magma_tile_24x24.png";
 	constexpr StringView magnet_16x16 = U"asset/image/magnet_16x16.png";
 	constexpr StringView mine_flower_16x16 = U"asset/image/mine_flower_16x16.png";
-	constexpr StringView omeme_patchouli_sun_16x1t = U"asset/image/omeme_patchouli_sun_16x1t.png";
+	constexpr StringView omeme_patchouli_sun_16x16 = U"asset/image/omeme_patchouli_sun_16x16.png";
 	constexpr StringView phine_32x32 = U"asset/image/phine_32x32.png";
 	constexpr StringView pin_16x16 = U"asset/image/pin_16x16.png";
 	constexpr StringView punicat_24x24 = U"asset/image/punicat_24x24.png";
@@ -61,7 +61,7 @@ namespace AssetImages
 			magma_tile_24x24,
 			magnet_16x16,
 			mine_flower_16x16,
-			omeme_patchouli_sun_16x1t,
+			omeme_patchouli_sun_16x16,
 			phine_32x32,
 			pin_16x16,
 			punicat_24x24,

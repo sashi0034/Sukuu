@@ -7,6 +7,7 @@
 #include "Item/ItemMagnet.h"
 #include "Item/ItemMine.h"
 #include "Item/ItemPin.h"
+#include "Item/ItemSun.h"
 #include "Player_detail/PlayerAnimation.h"
 #include "Player_detail/PlayerDistField.h"
 #include "Player_detail/PlayerInternal.h"
@@ -175,6 +176,12 @@ struct Play::Player::Impl
 			if (canInstallGimmickNow() == false) return false;
 			auto grave = PlayScene::Instance().AsParent().Birth(ItemGrave());
 			grave.Init(m_pos.actualPos);
+			return true;
+		}
+		case ConsumableItem::Sun: {
+			if (m_act != PlayerAct::Idle) return false;
+			auto sun = PlayScene::Instance().AsParent().Birth(ItemSun());
+			sun.Init(m_pos.actualPos, m_direction);
 			return true;
 		}
 		case ConsumableItem::Max:

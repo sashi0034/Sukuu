@@ -79,6 +79,12 @@ anim_interval = 200
 scale_speed = 16.0
 scale_rate = 0.1
 
+[play.item_sun]
+move_duration = 0.1
+rotation_speed = 0.2
+movable_count = 40
+blinking_start = 32
+
 [play.cave_vision]
 default_vision_radius = 160
 dark_color = "#3D30A2"

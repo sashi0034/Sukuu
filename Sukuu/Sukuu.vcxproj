@@ -154,6 +154,7 @@
     <ClCompile Include="Play\Item\ItemMagnet.cpp" />
     <ClCompile Include="Play\Item\ItemMine.cpp" />
     <ClCompile Include="Play\Item\ItemPin.cpp" />
+    <ClCompile Include="Play\Item\ItemSun.cpp" />
     <ClCompile Include="Play\Map\AutoTiler.cpp" />
     <ClCompile Include="Play\Map\DungeonGenerator.cpp" />
     <ClCompile Include="Play\Map\BgMapDrawer.cpp" />
@@ -401,6 +402,7 @@
     <ClInclude Include="Play\Item\ItemMagnet.h" />
     <ClInclude Include="Play\Item\ItemMine.h" />
     <ClInclude Include="Play\Item\ItemPin.h" />
+    <ClInclude Include="Play\Item\ItemSun.h" />
     <ClInclude Include="Play\Map\AutoTiler.h" />
     <ClInclude Include="Play\Map\DungeonGenerator.h" />
     <ClInclude Include="Play\Map\BgMapDrawer.h" />

@@ -1,10 +1,10 @@
 ﻿#include "stdafx.h"
-#include "ItemPin.h"
+#include "ItemSun.h"
 
 #include "Assets.generated.h"
 #include "detail/ItemUtil.h"
 #include "Play/PlayScene.h"
-#include "Play/Effect/FragmentTextureEffect.h"
+#include "Util/EasingAnimation.h"
 
 namespace
 {
@@ -15,11 +15,11 @@ namespace
 	template <typename T>
 	inline T getToml(const String& key)
 	{
-		return Util::GetTomlParameter<T>(U"play.item_pin." + key);
+		return Util::GetTomlParameter<T>(U"play.item_sun." + key);
 	}
 }
 
-struct Play::ItemPin::Impl
+struct Play::ItemSun::Impl
 {
 	bool m_killed{};
 	CharaPosition m_pos{};
@@ -27,15 +27,24 @@ struct Play::ItemPin::Impl
 	AnimTimer m_animTimer{};
 	double m_rotation{};
 	ItemAttackerAffair m_attack{ConsumableItem::Pin};
+	bool m_blinking{};
 
 	void Update()
 	{
 		m_animTimer.Tick();
-		m_rotation += GetDeltaTime() * getToml<double>(U"rotation_speed");
-		(void)TextureAsset(AssetImages::pin_16x16)(spriteRect.movedBy(
-			      m_animTimer.SliceFrames(200, 3) * spriteRect.w, 0))
+
+		const double alpha =
+			m_blinking
+				? static_cast<int>(m_animTimer.Time() * 1000) % 200 > 100
+					  ? 0.1
+					  : 0.9
+				: 1.0;
+
+		(void)TextureAsset(AssetImages::omeme_patchouli_sun_16x16)(spriteRect.movedBy(
+			      m_animTimer.SliceFrames(100, 2) * spriteRect.w, 0))
 		      .rotatedAt(spriteRect.center(), m_rotation)
-		      .draw(getDrawPos());
+		      .draw(getDrawPos(), ColorF{1.0, alpha});
+
 		PlayScene::Instance().GetEnemies().SendDamageCollider(m_attack, GetItemCollider(m_pos, spriteRect.size));
 	}
 
@@ -55,57 +64,55 @@ private:
 
 	void flowchartLoop(YieldExtended& yield, ActorView self)
 	{
-		// 壁にぶつかるまで進む
+		int movedCount{};
+
 		while (true)
 		{
-			yield();
-			if (CanMoveTo(PlayScene::Instance().GetMap(), m_pos.actualPos, m_dir) == false) break;
+			if (CanMoveTo(PlayScene::Instance().GetMap(), m_pos.actualPos, m_dir) == false)
+			{
+				m_dir = m_dir.RotatedR();
+				yield.WaitForDead(AnimateEasing<EaseOutBack>(
+					self,
+					&m_rotation,
+					m_rotation - Math::TwoPi,
+					getToml<double>(U"rotation_speed")));
+				continue;
+			}
 			auto nextPos = m_pos.actualPos + m_dir.ToXY() * CellPx_24;
 			ProcessMoveCharaPos(yield, self, m_pos, nextPos, getToml<double>(U"move_duration"));
-		}
-
-		if (m_attack.AttackedCount() == 0)
-		{
-			// また取れるようにする
-			PlayScene::Instance().GetGimmick()[m_pos.actualPos.MapPoint()] =
-				GimmickKind::Item_Pin;
-		}
-		else
-		{
-			// エフェクト
-			PlayScene::Instance().FgEffect().add(EmitFragmentTextureEffect(
-				getDrawPos().moveBy(spriteRect.size / 2),
-				TextureAsset(AssetImages::pin_16x16)(spriteRect),
-				Palette::Bisque, 64));
+			movedCount++;
+			if (movedCount > getToml<int>(U"movable_count")) break;
+			if (movedCount > getToml<int>(U"blinking_start")) m_blinking = true;
 		}
 
 		// 消滅
 		m_killed = true;
+		yield();
 	}
 };
 
 namespace Play
 {
-	ItemPin::ItemPin() :
+	ItemSun::ItemSun() :
 		p_impl(std::make_shared<Impl>())
 	{
 	}
 
-	void ItemPin::Init(const CharaVec2& pos, Dir4Type dir)
+	void ItemSun::Init(const CharaVec2& pos, Dir4Type dir)
 	{
 		p_impl->m_pos.SetPos(pos.MapPoint() * CellPx_24);
 		p_impl->m_dir = dir;
 		p_impl->StartFlowchart(*this);
 	}
 
-	void ItemPin::Update()
+	void ItemSun::Update()
 	{
 		ActorBase::Update();
 		p_impl->Update();
 		if (p_impl->m_killed) Kill();
 	}
 
-	double ItemPin::OrderPriority() const
+	double ItemSun::OrderPriority() const
 	{
 		return GetItemCharaOrderPriority(p_impl->m_pos, spriteRect.size);
 	}
