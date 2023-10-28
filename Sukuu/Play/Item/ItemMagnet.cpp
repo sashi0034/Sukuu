@@ -61,7 +61,7 @@ private:
 		return TextureAsset(AssetImages::magnet_16x16)(spriteRect.movedBy(
 			       m_animTimer.SliceFrames(getToml<double>(U"anim_interval"), 3) * spriteRect.w, 0))
 		       .scaled(scale)
-		       .rotated(m_animTimer.Time() * getToml<double>(U"rotate_speed"));
+		       .rotated(m_animTimer.Time());
 	}
 };
 

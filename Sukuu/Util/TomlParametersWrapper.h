@@ -21,8 +21,15 @@ namespace Util
 	template <typename T>
 	inline T GetTomlParameter(const String& valuePath)
 	{
-		return GetTomlParameters(valuePath).get<T>();
-
-		// TODO: リリースビルド用の処理を作成
+#if _DEBUG
+		return GetTomlParameters(valuePath).get<T>();;
+#else
+		static HashTable<String, T> s_hash{};
+		auto&& found = s_hash.find(valuePath);
+		if (found != s_hash.end()) return found->second;
+		auto loaded = GetTomlParameters(valuePath).get<T>();
+		s_hash[valuePath] = loaded;
+		return loaded;
+#endif
 	}
 }
