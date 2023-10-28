@@ -104,6 +104,7 @@ private:
 		while (true)
 		{
 			auto&& map = PlayScene::Instance().GetMap();
+			auto&& gimmick = PlayScene::Instance().GetGimmick();
 			const TerrainKind currentTerrain = GetTerrainAt(map, m_pos.actualPos);
 			const auto currentPoint = m_pos.actualPos.MapPoint();
 
@@ -114,11 +115,12 @@ private:
 			checkFollowPlayer(yield, currentPoint);
 
 			// 曲がるかチェック
-			if (not m_playerTracker.IsTracking() && checkTurn(map, currentTerrain, proceededCount, preRandomBool))
+			if (not m_playerTracker.IsTracking()
+				&& checkTurn(map, gimmick, currentTerrain, proceededCount, preRandomBool))
 				break;
 
 			// 進行可能方向に向く
-			if (FaceEnemyMovableDir(m_dir, m_pos, map, preRandomBool) == false) return;
+			if (FaceEnemyMovableDir(m_dir, m_pos, map, gimmick, preRandomBool) == false) return;
 
 			// 進路方向に進む
 			auto nextPos = m_pos.actualPos + m_dir.ToXY() * CellPx_24;
@@ -143,7 +145,8 @@ private:
 		}
 	}
 
-	bool checkTurn(const MapGrid& map, TerrainKind currentTerrain, int proceededCount, bool leftPriority)
+	bool checkTurn(const MapGrid& map, const GimmickGrid& gimmick,
+	               TerrainKind currentTerrain, int proceededCount, bool leftPriority)
 	{
 		if (proceededCount == 0) return false;
 
@@ -158,7 +161,7 @@ private:
 		if (currentTerrain == TerrainKind::Pathway &&
 			RandomBool(GetTomlParameter<double>(U"play.en_slime_cat.pathway_turn_pr")))
 		{
-			return RotateEnemyDirFacingMovable(m_dir, m_pos, map, leftPriority);
+			return RotateEnemyDirFacingMovable(m_dir, m_pos, map, gimmick, leftPriority);
 		}
 		return false;
 	}

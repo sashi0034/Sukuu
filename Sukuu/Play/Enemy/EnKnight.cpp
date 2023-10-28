@@ -98,6 +98,7 @@ private:
 		while (true)
 		{
 			auto&& map = PlayScene::Instance().GetMap();
+			auto&& gimmick = PlayScene::Instance().GetGimmick();
 			const TerrainKind currentTerrain = GetTerrainAt(map, m_pos.actualPos);
 			const auto currentPoint = m_pos.actualPos.MapPoint();
 
@@ -118,11 +119,11 @@ private:
 				});
 
 			// 曲がるかチェック
-			if (not m_playerTracker.IsTracking() && checkTurn(map, currentTerrain, RandomBool(0.5)))
+			if (not m_playerTracker.IsTracking() && checkTurn(map, gimmick, currentTerrain, RandomBool(0.5)))
 				break;
 
 			// 進行可能方向に向く
-			if (FaceEnemyMovableDir(m_dir, m_pos, map, RandomBool(0.5)) == false) break;
+			if (FaceEnemyMovableDir(m_dir, m_pos, map, gimmick, RandomBool(0.5)) == false) break;
 
 			// 移動
 			auto nextPos = m_pos.actualPos + m_dir.ToXY() * CellPx_24;
@@ -134,7 +135,7 @@ private:
 		}
 	}
 
-	bool checkTurn(const MapGrid& map, TerrainKind currentTerrain, bool leftPriority)
+	bool checkTurn(const MapGrid& map, const GimmickGrid& gimmick, TerrainKind currentTerrain, bool leftPriority)
 	{
 		// 部屋から出れるかチェック
 		if (currentTerrain == TerrainKind::Floor &&
@@ -147,7 +148,7 @@ private:
 		if (currentTerrain == TerrainKind::Pathway &&
 			RandomBool(0.5))
 		{
-			return RotateEnemyDirFacingMovable(m_dir, m_pos, map, leftPriority);
+			return RotateEnemyDirFacingMovable(m_dir, m_pos, map, gimmick, leftPriority);
 		}
 		return false;
 	}

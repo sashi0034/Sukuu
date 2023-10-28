@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Play/Player.h"
+#include "Play/Gimmick/GimmickGrid.h"
 
 namespace Play
 {
@@ -17,11 +18,13 @@ namespace Play
 
 	void PerformEnemyDestroyed(const IEnemyInternal& enemy);
 
-	bool FaceEnemyMovableDir(Dir4Type& dir, const CharaPosition& pos, const MapGrid& map, bool leftPriority);
+	bool FaceEnemyMovableDir(
+		Dir4Type& dir, const CharaPosition& pos, const MapGrid& map, const GimmickGrid& gimmick, bool leftPriority);
 
 	bool RotateEnemyDirFacingPathway(Dir4Type& dir, const CharaPosition& pos, const MapGrid& map, bool leftPriority);
 
-	bool RotateEnemyDirFacingMovable(Dir4Type& dir, const CharaPosition& pos, const MapGrid& map, bool leftPriority);
+	bool RotateEnemyDirFacingMovable(
+		Dir4Type& dir, const CharaPosition& pos, const MapGrid& map, const GimmickGrid& gimmick, bool leftPriority);
 
 	class EnemyPlayerTracker
 	{

@@ -23,6 +23,7 @@ namespace Play
 		Item_Solt,
 		Installed_Mine,
 		Installed_Magnet,
+		Installed_Grave,
 
 		Max,
 	};

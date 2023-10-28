@@ -3,6 +3,7 @@
 
 #include "PlayScene.h"
 #include "Chara/CharaUtil.h"
+#include "Item/ItemGrave.h"
 #include "Item/ItemMagnet.h"
 #include "Item/ItemMine.h"
 #include "Item/ItemPin.h"
@@ -170,6 +171,12 @@ struct Play::Player::Impl
 			return PlayScene::Instance().GetMiniMap().SpotStairsAndAllItems();
 		case ConsumableItem::Explorer:
 			return CheckUseItemExplorer(self);
+		case ConsumableItem::Grave: {
+			if (canInstallGimmickNow() == false) return false;
+			auto grave = PlayScene::Instance().AsParent().Birth(ItemGrave());
+			grave.Init(m_pos.actualPos);
+			return true;
+		}
 		case ConsumableItem::Max:
 			break;
 		default: ;

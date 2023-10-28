@@ -150,6 +150,7 @@
     <ClCompile Include="Play\Gimmick\GimmickInstaller.cpp" />
     <ClCompile Include="Play\Item\ConsumableItem.cpp" />
     <ClCompile Include="Play\Item\detail\ItemUtil.cpp" />
+    <ClCompile Include="Play\Item\ItemGrave.cpp" />
     <ClCompile Include="Play\Item\ItemMagnet.cpp" />
     <ClCompile Include="Play\Item\ItemMine.cpp" />
     <ClCompile Include="Play\Item\ItemPin.cpp" />
@@ -396,6 +397,7 @@
     <ClInclude Include="Play\Gimmick\GimmickInstaller.h" />
     <ClInclude Include="Play\Item\ConsumableItem.h" />
     <ClInclude Include="Play\Item\detail\ItemUtil.h" />
+    <ClInclude Include="Play\Item\ItemGrave.h" />
     <ClInclude Include="Play\Item\ItemMagnet.h" />
     <ClInclude Include="Play\Item\ItemMine.h" />
     <ClInclude Include="Play\Item\ItemPin.h" />
