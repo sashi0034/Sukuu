@@ -16,7 +16,7 @@ namespace
 		U"                              -----                   -----      ",
 		U"                            ---------               -------      ",
 		U"                            ---------               -------      ",
-		U"                C---------------I-------3K----------4---S--      ",
+		U"                C---------------I-------3K--------------S--      ",
 		U"                -           ---------               -------      ",
 		U"                -           ---------               -------      ",
 		U"                -             -----                   -----      ",
@@ -111,8 +111,8 @@ namespace
 			case U'3':
 				data.knightBlockPoint = p;
 				break;
-			case U'4':
-				data.finalEventPoint = p;
+			case U'K':
+				data.knightSpawnPoint = p;
 				break;
 			case U'S':
 				data.stairsPoint = p;

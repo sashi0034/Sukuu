@@ -2,6 +2,7 @@
 #include "UiTimeLimiter.h"
 
 #include "AssetKeys.h"
+#include "Play/PlayScene.h"
 #include "Play/Other/TimeLimiter.h"
 #include "Util/EasingAnimation.h"
 #include "Util/TomlParametersWrapper.h"
@@ -26,8 +27,11 @@ struct Play::UiTimeLimiter::Impl
 
 	void Update()
 	{
-		m_data.remainingTime -= GetDeltaTime();
-		if (m_data.remainingTime < 0) m_data.remainingTime = 0;
+		if (isCountEnabled())
+		{
+			m_data.remainingTime -= GetDeltaTime();
+			if (m_data.remainingTime < 0) m_data.remainingTime = 0;
+		}
 
 		if (m_shadowOutsideDelta != 0)
 		{
@@ -52,6 +56,15 @@ struct Play::UiTimeLimiter::Impl
 	}
 
 private:
+	bool isCountEnabled() const
+	{
+		if (const auto tutorial = PlayScene::Instance().Tutorial())
+		{
+			return tutorial->IsTimeEnabled() && m_data.remainingTime > 1;
+		}
+		return true;
+	}
+
 	void drawUi() const
 	{
 		const auto center = Scene::Size().x0() + getToml<Point>(U"circle_center");

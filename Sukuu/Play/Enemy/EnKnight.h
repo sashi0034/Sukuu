@@ -9,6 +9,7 @@ namespace Play
 	public:
 		EnKnight();
 		void Init();
+		void InitTutorial(const CharaVec2& pos, Dir4Type dir);
 		void Update() override;
 		double OrderPriority() const override;
 

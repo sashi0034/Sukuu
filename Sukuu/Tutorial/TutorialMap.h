@@ -15,7 +15,6 @@ namespace Tutorial
 		Point knightBlockPoint;
 		Point knightSpawnPoint;
 		Point stairsPoint;
-		Point finalEventPoint;
 	};
 
 	TutorialMapData GetTutorialMap();

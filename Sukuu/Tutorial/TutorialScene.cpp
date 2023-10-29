@@ -4,6 +4,7 @@
 #include "TutorialMap.h"
 #include "TutorialMessenger.h"
 #include "Play/PlayScene.h"
+#include "Play/Enemy/EnKnight.h"
 #include "Play/Enemy/EnSlimeCat.h"
 #include "Util/TomlParametersWrapper.h"
 
@@ -15,9 +16,9 @@ namespace
 		return Util::GetTomlParameter<T>(U"tutorial.scene." + key);
 	}
 
-	constexpr double messageWaitShort = 4.0;
-	constexpr double messageWaitMedium = 6.0;
-	constexpr double messageWaitLong = 8.0;
+	constexpr double messageWaitShortShort = 2.0;
+	constexpr double messageWaitShort = 3.0;
+	constexpr double messageWaitMedium = 4.0;
 }
 
 struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
@@ -25,6 +26,7 @@ struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
 	Play::PlayScene m_play{};
 	TutorialMapData m_mapData{};
 	bool m_finished{};
+	bool m_timeEnabled{};
 	Play::TutorialPlayerService m_playerService{
 		.canMove = false,
 		.canScoop = false,
@@ -47,6 +49,10 @@ struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
 				.remainingTime = 60
 			}
 		});
+		auto&& gimmick = m_play.GetGimmick();
+		gimmick[m_mapData.itemSpawnPoint] = Play::GimmickKind::Item_Pin;
+		gimmick[m_mapData.stairsPoint] = Play::GimmickKind::Stairs;
+
 		m_messanger = self.AsParent().Birth(TutorialMessenger());
 	}
 
@@ -60,9 +66,14 @@ struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
 		return m_mapData.initialPlayerPoint * Play::CellPx_24;
 	}
 
-	const Play::TutorialPlayerService& PlayerService() const
+	const Play::TutorialPlayerService& PlayerService() const override
 	{
 		return m_playerService;
+	}
+
+	bool IsTimeEnabled() const override
+	{
+		return m_timeEnabled;
 	}
 
 	void StartFlowchart(ActorView self)
@@ -84,18 +95,19 @@ private:
 	void flowchartLoop(YieldExtended& yield, ActorView self)
 	{
 		tutorialHowtoMove(yield);
-		m_playerService.canMove = true;
-
 		tutorialScoop(yield, self);
+		tutorialItem(yield, self);
+		tutorialFinal(yield, self);
 
-		waitMessage(yield, U"Not implemented", messageWaitShort);
+		m_finished = true;
 	}
 
 	void tutorialHowtoMove(YieldExtended& yield)
 	{
+		m_playerService.canMove = false;
 		m_play.GetMap().At(m_mapData.firstBlockPoint).kind = Play::TerrainKind::Wall;
 
-		waitMessage(yield, U"ふむ、目が覚めたようだね", messageWaitShort);
+		waitMessage(yield, U"ふむ、目が覚めたようだね", messageWaitMedium);
 		waitMessage(yield, U"早速だがキミに動いてもらおう", messageWaitShort);
 		m_playerService.canMove = true;
 		int movedCount{};
@@ -105,15 +117,15 @@ private:
 			if (isRunning) runningCount++;
 			movedCount++;
 		};
-		waitMessage(yield, U"まずは'W, A, S, D' で移動の確認をしてみようか", messageWaitMedium);
+		m_messanger.ShowMessageForever(U"まずは'W, A, S, D' で移動の確認をしてみようか");
 		yield.WaitForTrue([&]
 		{
-			return movedCount > 5;
+			return movedCount > 10;
 		});
-		waitMessage(yield, U"次に 'Shift' を押しっぱなしにして走ってもらおう", messageWaitMedium);
+		m_messanger.ShowMessageForever(U"次に 'Shift' を押しっぱなしにして走ってもらおう");
 		yield.WaitForTrue([&]
 		{
-			return runningCount > 5;
+			return runningCount > 10;
 		});
 		waitMessage(yield, U"よし、では奥に進もうか", messageWaitShort);
 
@@ -169,8 +181,8 @@ private:
 			}
 		});
 
-		waitMessage(yield, U"おや、物の怪に挟まれてしまったね", messageWaitShort);
-		waitMessage(yield, U"では、キミに運命を 'スクう' チカラを与えよう", messageWaitShort);
+		waitMessage(yield, U"おや、物の怪に挟まれてしまったね", messageWaitMedium);
+		waitMessage(yield, U"では、キミに運命を 'スクう' チカラを与えよう", messageWaitMedium);
 
 		bool hasScooped{};
 		m_playerService.canScoop = true;
@@ -197,14 +209,78 @@ private:
 		SetTimeScale(1.0);
 		yield.WaitForTime(1.0);
 
-		waitMessage(yield, U"一難が過ぎ去ったみたいだね", messageWaitMedium);
+		waitMessage(yield, U"一難過ぎ去ったみたいだね", messageWaitShort);
 		catNorth.Kill();
 		catSouth.Kill();
 		m_playerService.canMove = true;
 		m_playerService.canScoop = true;
 		m_playerService.onScooped = [](auto) { return; };
 		m_playerService.canScoopTo = [&](auto) { return true; };
-		waitMessage(yield, U"さて、奥へ進もうか", messageWaitMedium);
+		waitMessage(yield, U"さて、奥へ進もうか", messageWaitShort);
+	}
+
+	void tutorialItem(YieldExtended& yield, ActorView self)
+	{
+		auto knight = m_play.GetEnemies().Birth(m_play.AsParent(), Play::EnKnight());
+		knight.InitTutorial(m_mapData.knightSpawnPoint * Play::CellPx_24, Dir4::Left);
+
+		bool nearItem{};
+		m_playerService.onMoved = [&](const Play::CharaVec2& pos, bool isRunning)
+		{
+			if ((pos.MapPoint() - m_mapData.itemSpawnPoint).manhattanLength() <= 5) nearItem = true;
+		};
+		const auto leftRegionLimit = [this](const Play::CharaVec2& pos)
+		{
+			return pos.MapPoint().x < m_mapData.knightBlockPoint.x;
+		};
+		m_playerService.canMoveTo = leftRegionLimit;
+		m_playerService.canScoopTo = leftRegionLimit;
+
+		yield.WaitForTrueVal(nearItem);
+		waitMessage(yield, U"イイものが落ちているね", messageWaitShortShort);
+		waitMessage(yield, U"これを使ってみよう", messageWaitShortShort);
+
+		m_playerService.onMoved = [](auto, auto) { return; };
+		m_playerService.canMoveTo = [](auto) { return true; };
+		m_playerService.canScoopTo = [](auto) { return true; };
+
+		yield.WaitForTrue([&]() { return knight.IsDead(); });
+		waitMessage(yield, U"うん、いいね", messageWaitShortShort);
+	}
+
+	void tutorialFinal(YieldExtended& yield, ActorView self)
+	{
+		bool nearStairs1{};
+		m_playerService.onMoved = [&](const Play::CharaVec2& pos, bool isRunning)
+		{
+			if ((pos.MapPoint() - m_mapData.stairsPoint).manhattanLength() <= 4) nearStairs1 = true;
+		};
+		yield.WaitForTrueVal(nearStairs1);
+		m_playerService.onMoved = [](auto, auto) { return; };
+
+		m_playerService.canMove = false;
+		m_playerService.canScoop = false;
+		waitMessage(yield, U"最後に重要なことを話しておこう", messageWaitShort);
+		waitMessage(yield, U"実はこの迷宮でキミが生きられる\n時間は限られている", messageWaitMedium);
+		waitMessage(yield, U"砂時計を見てもらいたい", messageWaitShort);
+
+		waitMessage(yield, U"これが0になるとキミは死を迎えるだろう", messageWaitShort);
+		waitMessage(yield, U"気を付けておくれ", messageWaitShortShort);
+		m_playerService.canMove = true;
+		m_playerService.canScoop = true;
+
+		bool nearStairs2{};
+		m_playerService.onMoved = [&](const Play::CharaVec2& pos, bool isRunning)
+		{
+			if ((pos.MapPoint() - m_mapData.stairsPoint).manhattanLength() <= 2) nearStairs2 = true;
+		};
+		yield.WaitForTrueVal(nearStairs2);
+		m_playerService.onMoved = [](auto, auto) { return; };
+
+		m_playerService.canMove = false;
+		waitMessage(yield, U"キミに語りかけられるのはここまでだ", messageWaitShort);
+		m_playerService.canMove = true;
+		waitMessage(yield, U"検討を祈っているよ", messageWaitShortShort);
 	}
 };
 

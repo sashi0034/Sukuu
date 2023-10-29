@@ -164,8 +164,14 @@ namespace Play
 	void EnKnight::Init()
 	{
 		p_impl->m_pos.SetPos(GetInitialPos(PlayScene::Instance().GetMap()));
-
 		p_impl->StartFlowchart(*this);
+	}
+
+	void EnKnight::InitTutorial(const CharaVec2& pos, Dir4Type dir)
+	{
+		p_impl->m_pos.SetPos(pos);
+		p_impl->m_sleeping = false;
+		p_impl->m_dir = dir;
 	}
 
 	void EnKnight::Update()

@@ -24,7 +24,7 @@ struct Play::UiItemContainer::Impl
 	CoroActor m_animation{};
 	UiItemLabel m_itemLabel{};
 
-	void Update(ActorBase& self)
+	void Update(ActorView self)
 	{
 		const auto center = Point{Scene::Center().x, getToml<int>(U"base_vertical")};
 		const Transformer2D transform{Mat3x2::Translate(m_offset).scaled(m_scale, center)};
@@ -47,7 +47,7 @@ struct Play::UiItemContainer::Impl
 	}
 
 private:
-	void animUnused(YieldExtended yield, ActorBase& self)
+	void animUnused(YieldExtended yield, ActorView self)
 	{
 		StartCoro(self, [&](YieldExtended yield1)
 		{
