@@ -1,4 +1,5 @@
 ﻿# include "stdafx.h"
+#include <Siv3D/Windows/Windows.hpp>
 
 #include <iso646.h>
 
@@ -19,10 +20,23 @@ namespace
 		if (KeyMinus.pressed()) changeCharBy(cells, p, mirror, U'-');
 		if (KeyA.pressed()) changeCharBy(cells, p, mirror, U'A');
 	}
+
+	LONG_PTR g_baseProc = 0;
+	bool g_receivedMessage{};
+
+	LRESULT CALLBACK CustomWindowProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+	{
+		g_receivedMessage = true;
+		return CallWindowProc(reinterpret_cast<WNDPROC>(g_baseProc), hWnd, message, wParam, lParam);
+	}
 }
 
 void Main()
 {
+	// 自前ウィンドウ処理
+	const auto hWnd = static_cast<HWND>(s3d::Platform::Windows::Window::GetHWND());
+	g_baseProc = ::SetWindowLongPtr(hWnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(::CustomWindowProc));
+
 	Scene::SetBackground(ColorF{0.1});
 
 	Window::SetStyle(WindowStyle::Sizable);
@@ -42,18 +56,32 @@ void Main()
 
 	while (System::Update())
 	{
+		while (true)
+		{
+			if (MouseR.pressed()) break;
+			if (g_receivedMessage) break;
+			System::Sleep(1000 / 60.0); // 60FPS
+		}
+		g_receivedMessage = false;
+
 		[&]
 		{
 			// 内容更新
 			camera2D.update();
 			const Transformer2D t = camera2D.createTransformer();
+			DrawableText posMessage{};
+			Point posPoint{};
+
 			for (auto p : step(cellGrid.size()))
 			{
 				const Rect rect{(p * cellSize), cellSize};
-				(void)rect.stretched(-1).draw(ColorF{0.2});
+				const bool isCenterLine = p.x == cellGrid.size().x / 2 || p.y == cellGrid.size().y / 2;
+				(void)rect.stretched(-1).draw(isCenterLine ? ColorF(0.25, 0.25, 0.2) : ColorF{0.2});
 				(void)font(cellGrid[p]).drawAt(rect.center(), Palette::White);
 
 				if (rect.intersects(Cursor::Pos()) == false) continue;
+				posMessage = font(Format(p));
+				posPoint = rect.pos;
 
 				const auto before = cellGrid[p];
 				for (auto offset : step(Size{1, 1} * static_cast<int>(1 + writeScaleIndex * 2)))
@@ -86,6 +114,8 @@ void Main()
 					}
 				}
 			}
+			// 位置情報
+			(void)posMessage.draw(posPoint, Palette::Yellow);
 		}();
 
 		if (SimpleGUI::Button(U"Copy", Vec2{10, 10}))
