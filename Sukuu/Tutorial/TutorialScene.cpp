@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "TutorialScene.h"
 
+#include "TutorialFocus.h"
 #include "TutorialMap.h"
 #include "TutorialMessenger.h"
 #include "Play/PlayScene.h"
@@ -36,6 +37,7 @@ struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
 		.canScoopTo = [](auto) { return true; },
 	};
 	TutorialMessenger m_messanger{};
+	TutorialFocus m_focus{};
 
 	void Init(ActorView self)
 	{
@@ -54,6 +56,7 @@ struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
 		gimmick[m_mapData.stairsPoint] = Play::GimmickKind::Stairs;
 
 		m_messanger = self.AsParent().Birth(TutorialMessenger());
+		m_focus = self.AsParent().Birth(TutorialFocus());
 	}
 
 	Play::MapGrid GetMap() const override
@@ -97,8 +100,10 @@ private:
 		tutorialHowtoMove(yield);
 		tutorialScoop(yield, self);
 		tutorialItem(yield, self);
+		m_playerService.canMove = true;
 		tutorialFinal(yield, self);
 
+		yield.WaitForTrue([this]() { return m_play.GetPlayer().IsCompletedGoal(); });
 		m_finished = true;
 	}
 
@@ -196,6 +201,7 @@ private:
 			hasScooped = true;
 		};
 
+		m_focus.Show(Scene::Center());
 		auto scoopingMessage = StartCoro(self, [&](YieldExtended y)
 		{
 			waitMessage(y, U"キミ自身をマウスカーソルでスクってみるといい", messageWaitMedium);
@@ -206,6 +212,7 @@ private:
 
 		timescaleController.Kill();
 		scoopingMessage.Kill();
+		m_focus.Hide();
 		SetTimeScale(1.0);
 		yield.WaitForTime(1.0);
 
@@ -262,10 +269,17 @@ private:
 		m_playerService.canScoop = false;
 		waitMessage(yield, U"最後に重要なことを話しておこう", messageWaitShort);
 		waitMessage(yield, U"実はこの迷宮でキミが生きられる\n時間は限られている", messageWaitMedium);
+
+		m_timeEnabled = true;
+		m_focus.Show(Rect(Scene::Size()).tr() + Size{-1, 1} * 144);
+
 		waitMessage(yield, U"砂時計を見てもらいたい", messageWaitShort);
 
 		waitMessage(yield, U"これが0になるとキミは死を迎えるだろう", messageWaitShort);
 		waitMessage(yield, U"気を付けておくれ", messageWaitShortShort);
+
+		m_focus.Hide();
+
 		m_playerService.canMove = true;
 		m_playerService.canScoop = true;
 

@@ -143,3 +143,11 @@ camera_follow_height = 40.0
 bottom = 200
 font_size = 42
 fade_duration = 0.3
+
+[tutorial.focus]
+icon_scale = 1.5
+icon_offset = "(-144, 0)"
+icon_move = "(-120, 0)"
+rect_size = "(240, 240)"
+rect_thickness = 8.0
+dot_speed = 20

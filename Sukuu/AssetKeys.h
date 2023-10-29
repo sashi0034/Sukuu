@@ -19,6 +19,8 @@ namespace AssetKeys
 		FontAsset::Register(RocknRoll24, 24, U"asset/font/RocknRoll/RocknRollOne-Regular.ttf");
 		FontAsset::Register(RocknRoll24Msdf, FontMethod::MSDF, 24, U"asset/font/RocknRoll/RocknRollOne-Regular.ttf");
 
+		TextureAsset::Register(U"👉", U"👉"_emoji);
+
 		TextureAsset::Register(U"⏳", U"⏳"_emoji);
 		TextureAsset::Register(U"😎", U"😎"_emoji);
 		TextureAsset::Register(U"🤔", U"🤔"_emoji);
