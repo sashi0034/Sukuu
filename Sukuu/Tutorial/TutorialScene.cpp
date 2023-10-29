@@ -2,6 +2,7 @@
 #include "TutorialScene.h"
 
 #include "TutorialMap.h"
+#include "TutorialMessenger.h"
 #include "Play/PlayScene.h"
 
 namespace
@@ -21,6 +22,7 @@ struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
 		.canMoveTo = [](auto) { return true; },
 		.canScoopTo = [](auto) { return true; },
 	};
+	TutorialMessenger m_messanger{};
 
 	void Init(ActorView self)
 	{
@@ -34,6 +36,7 @@ struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
 				.remainingTime = 60
 			}
 		});
+		m_messanger = self.AsParent().Birth(TutorialMessenger());
 	}
 
 	Play::MapGrid GetMap() const override
@@ -63,10 +66,16 @@ private:
 	void flowchartLoop(YieldExtended& yield, ActorView self)
 	{
 		m_play.GetMap().At(m_mapData.firstBlockPoint).kind = Play::TerrainKind::Wall;
-
-		yield.WaitForTime(3.0);
-
 		m_playerService.canMove = true;
+
+		while (true)
+		{
+			m_messanger.ShowMessageForever(U"テストメッセージ");
+			yield.WaitForTime(4.0);
+
+			m_messanger.HideMessage();
+			yield.WaitForTime(1.0);
+		}
 	}
 };
 

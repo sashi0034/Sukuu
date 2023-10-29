@@ -136,3 +136,8 @@ camera_target_position = "(0, 1, 0)"
 camera_rotation_speed = 5
 camera_follow_distance = 40.0
 camera_follow_height = 40.0
+
+[tutorial.messenger]
+bottom = 200
+font_size = 42
+fade_duration = 0.3

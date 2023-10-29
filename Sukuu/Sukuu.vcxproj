@@ -179,6 +179,7 @@
     <ClCompile Include="Title\TitleBackground.cpp" />
     <ClCompile Include="Title\TitleScene.cpp" />
     <ClCompile Include="Tutorial\TutorialMap.cpp" />
+    <ClCompile Include="Tutorial\TutorialMessenger.cpp" />
     <ClCompile Include="Tutorial\TutorialScene.cpp" />
     <ClCompile Include="Util\ActorBase.cpp" />
     <ClCompile Include="Util\ActorContainer.cpp" />
@@ -430,6 +431,7 @@
     <ClInclude Include="Title\TitleScene.h" />
     <ClInclude Include="Tutorial\Forward.h" />
     <ClInclude Include="Tutorial\TutorialMap.h" />
+    <ClInclude Include="Tutorial\TutorialMessenger.h" />
     <ClInclude Include="Tutorial\TutorialScene.h" />
     <ClInclude Include="Util\ActorBase.h" />
     <ClInclude Include="Util\ActorContainer.h" />

@@ -16,5 +16,6 @@
 	}
 </s:String>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=hitstopping/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=Msdf/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Rockn/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Sukuu/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>
