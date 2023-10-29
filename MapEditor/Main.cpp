@@ -53,16 +53,23 @@ void Main()
 	char32_t lastChar = U' ';
 	bool dragging{};
 	Point dragStart{};
+	int sleepingCount{};
 
 	while (System::Update())
 	{
 		while (true)
 		{
-			if (MouseR.pressed()) break;
-			if (g_receivedMessage) break;
-			System::Sleep(1000 / 60.0); // 60FPS
+			if (MouseR.pressed() || g_receivedMessage)
+			{
+				sleepingCount = 0;
+				break;
+			}
+			sleepingCount++;
+			if (sleepingCount < 20) break;
+			System::Sleep(1000 / 20.0); // 20FPS
 		}
 		g_receivedMessage = false;
+		// Console.writeln(Scene::Time());
 
 		[&]
 		{
