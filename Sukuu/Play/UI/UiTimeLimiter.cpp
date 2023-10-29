@@ -108,7 +108,7 @@ private:
 		// アイコン描画
 		(void)TextureAsset(U"⏳").resized(getToml<int>(U"icon_size")).drawAt(center);
 
-		FontAsset(AssetKeys::RocknRoll24)(U"のこり {}"_fmt(static_cast<int>(m_data.remainingTime)))
+		FontAsset(AssetKeys::RocknRoll_Bitmap)(U"のこり {}"_fmt(static_cast<int>(m_data.remainingTime)))
 			.draw(Arg::rightCenter = center.movedBy(getToml<Vec2>(U"text_offset")));
 
 		// 長方形部分描画

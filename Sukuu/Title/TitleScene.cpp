@@ -29,7 +29,7 @@ struct Title::TitleScene::Impl
 
 	void Update()
 	{
-		FontAsset(AssetKeys::RocknRoll24)(U"Version git-" + GitRevisionLiteral)
+		FontAsset(AssetKeys::RocknRoll_Bitmap)(U"Version git-" + GitRevisionLiteral)
 			.draw(Arg::bottomLeft = Scene::Size().y0().yx());
 
 		if (MouseL.down()) m_concluded = true;

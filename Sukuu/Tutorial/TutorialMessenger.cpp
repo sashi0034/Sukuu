@@ -26,7 +26,7 @@ struct Tutorial::TutorialMessenger::Impl
 		if (m_message.empty()) return;
 
 		m_time += Scene::DeltaTime();
-		const auto&& font = FontAsset(AssetKeys::RocknRoll24Msdf);
+		const auto&& font = FontAsset(AssetKeys::RocknRoll_Msdf);
 		const double fontSize = getToml<int>(U"font_size");
 		const Vec2 textSize = font(m_message).region().scaled((fontSize / font.fontSize())).size;
 		drawText(font,

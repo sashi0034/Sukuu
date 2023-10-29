@@ -294,7 +294,7 @@ private:
 		waitMessage(yield, U"砂時計を見てもらいたい", messageWaitShort);
 
 		waitMessage(yield, U"これが0になるとキミは死を迎えるだろう", messageWaitShort);
-		waitMessage(yield, U"気を付けておくれ", messageWaitShortShort);
+		waitMessage(yield, U"気を付けるといい", messageWaitShortShort);
 
 		m_focus.Hide();
 
