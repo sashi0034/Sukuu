@@ -18,6 +18,8 @@ namespace Play
 		void SendEnemyCollide(const RectF& rect, EnemyKind enemy);
 		bool RequestUseItem(int itemIndex);
 
+		void PerformTutorialOpening();
+
 		const PlayerPersonalData& PersonalData() const;
 		Mat3x2 CameraTransform() const;
 		const CharaPosition& CurrentPos() const;

@@ -31,6 +31,8 @@ namespace
 	{
 		return Util::GetTomlParameter<T>(U"play.player." + key);
 	}
+
+	constexpr double defaultCameraScale = 4.0;
 }
 
 struct Play::Player::Impl
@@ -41,7 +43,7 @@ struct Play::Player::Impl
 	CharaPosition m_pos;
 	Vec2 m_animOffset{};
 	double m_moveSpeed = 1.0;
-	double m_cameraScale = 4.0;
+	double m_cameraScale = defaultCameraScale;
 	double m_focusCameraRate = 1.0;
 	Vec2 m_cameraOffset{};
 	Vec2 m_cameraOffsetDestination{};
@@ -98,6 +100,23 @@ struct Play::Player::Impl
 			{
 				flowchartLoop(yield, self);
 			}
+		});
+	}
+
+	void PerformTutorialOpening(ActorView self)
+	{
+		StartCoro(self, [this, self](YieldExtended yield) mutable
+		{
+			// チュートリアルの最初
+			m_flowchart.Kill();
+			m_act = PlayerAct::Dead;
+			m_cameraScale = 10.0;
+			m_cameraOffset = {0, 1200};
+			constexpr double duration = 3.5;
+			AnimateEasing<EaseOutCubic>(self, &m_cameraOffset, {0, 0}, duration);
+			yield.WaitForDead(
+				AnimateEasing<EaseInOutBack>(self, &m_cameraScale, defaultCameraScale, duration));
+			StartFlowchart(self);
 		});
 	}
 
@@ -578,6 +597,11 @@ namespace Play
 			p_impl->m_personal.items[itemIndex] = ConsumableItem::None;
 		}
 		return used;
+	}
+
+	void Player::PerformTutorialOpening()
+	{
+		p_impl->PerformTutorialOpening(*this);
 	}
 
 	const PlayerPersonalData& Player::PersonalData() const

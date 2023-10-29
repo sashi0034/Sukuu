@@ -10,6 +10,7 @@ namespace Tutorial
 		TutorialScene();
 		void Init();
 		bool IsFinished() const;
+		void Update() override;
 
 	private:
 		struct Impl;

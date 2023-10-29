@@ -7,6 +7,7 @@
 #include "Play/PlayScene.h"
 #include "Play/Enemy/EnKnight.h"
 #include "Play/Enemy/EnSlimeCat.h"
+#include "Util/EasingAnimation.h"
 #include "Util/TomlParametersWrapper.h"
 
 namespace
@@ -38,6 +39,7 @@ struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
 	};
 	TutorialMessenger m_messanger{};
 	TutorialFocus m_focus{};
+	std::function<void()> m_postDraw{};
 
 	void Init(ActorView self)
 	{
@@ -97,6 +99,7 @@ private:
 
 	void flowchartLoop(YieldExtended& yield, ActorView self)
 	{
+		performOpening(yield, self);
 		tutorialHowtoMove(yield);
 		tutorialScoop(yield, self);
 		tutorialItem(yield, self);
@@ -105,6 +108,20 @@ private:
 
 		yield.WaitForTrue([this]() { return m_play.GetPlayer().IsCompletedGoal(); });
 		m_finished = true;
+	}
+
+	void performOpening(YieldExtended& yield, ActorView self)
+	{
+		// 真っ黒な画面から徐々に明るくしていく
+		m_play.GetPlayer().PerformTutorialOpening();
+		double rate = 1.0;
+		m_postDraw = [&]()
+		{
+			Rect(Scene::Size()).draw(ColorF{Color(U"262932"), rate});
+		};
+		yield.WaitForDead(
+			AnimateEasing<EaseInQuad>(self, &rate, 0.0, 4.5));
+		m_postDraw = {};
 	}
 
 	void tutorialHowtoMove(YieldExtended& yield)
@@ -247,11 +264,12 @@ private:
 		waitMessage(yield, U"イイものが落ちているね", messageWaitShortShort);
 		waitMessage(yield, U"これを使ってみよう", messageWaitShortShort);
 
+		yield.WaitForTrue([&]() { return knight.IsDead(); });
+
 		m_playerService.onMoved = [](auto, auto) { return; };
 		m_playerService.canMoveTo = [](auto) { return true; };
 		m_playerService.canScoopTo = [](auto) { return true; };
 
-		yield.WaitForTrue([&]() { return knight.IsDead(); });
 		waitMessage(yield, U"うん、いいね", messageWaitShortShort);
 	}
 
@@ -314,5 +332,11 @@ namespace Tutorial
 	bool TutorialScene::IsFinished() const
 	{
 		return p_impl->m_finished;
+	}
+
+	void TutorialScene::Update()
+	{
+		ActorBase::Update();
+		if (p_impl->m_postDraw) p_impl->m_postDraw();
 	}
 }
