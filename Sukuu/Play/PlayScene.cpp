@@ -170,7 +170,7 @@ namespace Play
 
 	PlayScene::~PlayScene()
 	{
-		if (s_instance->p_impl == this->p_impl && p_impl.use_count() == 2)
+		if (s_instance != nullptr && s_instance->p_impl == this->p_impl && p_impl.use_count() == 2)
 			s_instance.reset(nullptr);
 	}
 
