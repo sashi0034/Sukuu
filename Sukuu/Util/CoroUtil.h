@@ -17,7 +17,9 @@ namespace Util
 
 		void WaitForTime(double seconds, const std::function<double()>& dt = GetDeltaTime);
 		void WaitForTrue(const std::function<bool()>& discriminant);
+		void WaitForTrueVal(const bool& discriminant);
 		void WaitForFalse(const std::function<bool()>& discriminant);
+		void WaitForFalseVal(const bool& discriminant);
 		void WaitForDead(ActorView coro);
 		void operator()() { yield(); }
 

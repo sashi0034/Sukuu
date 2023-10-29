@@ -14,17 +14,17 @@ namespace
 	{
 		return Util::GetTomlParameter<T>(U"play.enemy." + key);
 	}
+}
 
-	bool canEnemyMoveTo(const MapGrid& map, const GimmickGrid& gimmick, const CharaVec2& currentActualPos, Dir4Type dir)
+namespace Play
+{
+	bool CanEnemyMoveTo(const MapGrid& map, const GimmickGrid& gimmick, const CharaVec2& currentActualPos, Dir4Type dir)
 	{
 		const auto nextPoint = currentActualPos.MapPoint() + dir.ToXY().asPoint();
 		if (gimmick.inBounds(nextPoint) && gimmick[nextPoint] == GimmickKind::Installed_Grave) return false;
 		return CanMovePointAt(map, nextPoint);
 	}
-}
 
-namespace Play
-{
 	void CheckSendEnemyCollide(Player& player, CharaPosition& pos, EnemyKind enemy)
 	{
 		if (player.DistField()[pos.actualPos.MapPoint()].distance != PlayerDistanceInfinity)
@@ -54,18 +54,18 @@ namespace Play
 		performEnemyDestroyed(enemy.GetDrawPos(), enemy.GetTexture());
 	}
 
-	bool FaceEnemyMovableDir(Dir4Type& dir, const CharaPosition& pos, const MapGrid& map, const GimmickGrid& gimmick,
-	                         bool leftPriority)
+	bool FaceEnemyMovableDir(
+		Dir4Type& dir, const CharaPosition& pos, const MapGrid& map, const GimmickGrid& gimmick, bool leftPriority)
 	{
 		// 直線方向に進めるかチェック
-		if (canEnemyMoveTo(map, gimmick, pos.actualPos, dir) == false)
+		if (CanEnemyMoveTo(map, gimmick, pos.actualPos, dir) == false)
 		{
 			// 直進できないなら、曲がれるかチェック
-			if (canEnemyMoveTo(map, gimmick, pos.actualPos, dir.Rotated(leftPriority)))
+			if (CanEnemyMoveTo(map, gimmick, pos.actualPos, dir.Rotated(leftPriority)))
 			{
 				dir = dir.Rotated(leftPriority);
 			}
-			else if (canEnemyMoveTo(map, gimmick, pos.actualPos, dir.Rotated(not leftPriority)))
+			else if (CanEnemyMoveTo(map, gimmick, pos.actualPos, dir.Rotated(not leftPriority)))
 			{
 				dir = dir.Rotated(not leftPriority);
 			}
@@ -96,12 +96,12 @@ namespace Play
 	bool RotateEnemyDirFacingMovable(
 		Dir4Type& dir, const CharaPosition& pos, const MapGrid& map, const GimmickGrid& gimmick, bool leftPriority)
 	{
-		if (canEnemyMoveTo(map, gimmick, pos.actualPos, dir.Rotated(leftPriority)))
+		if (CanEnemyMoveTo(map, gimmick, pos.actualPos, dir.Rotated(leftPriority)))
 		{
 			dir = dir.Rotated(leftPriority);
 			return true;
 		}
-		if (canEnemyMoveTo(map, gimmick, pos.actualPos, dir.Rotated(not leftPriority)))
+		if (CanEnemyMoveTo(map, gimmick, pos.actualPos, dir.Rotated(not leftPriority)))
 		{
 			dir = dir.Rotated(not leftPriority);
 			return true;

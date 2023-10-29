@@ -15,10 +15,10 @@ namespace Play
 	{
 		bool canMove;
 		bool canScoop;
-		std::function<void(const CharaVec2&)> onMove;
-		std::function<void(const CharaVec2&)> onScoop;
-		std::function<bool(const CharaVec2&)> canMoveTo;
-		std::function<bool(const CharaVec2&)> canScoopTo;
+		std::function<void(const CharaVec2& pos, bool isRunning)> onMoved;
+		std::function<void(const CharaVec2& pos)> onScooped;
+		std::function<bool(const CharaVec2& pos)> canMoveTo;
+		std::function<bool(const CharaVec2& pos)> canScoopTo;
 	};
 
 	class ITutorialSetting
@@ -58,7 +58,7 @@ namespace Play
 		Player& GetPlayer();
 		const Player& GetPlayer() const;
 
-		// EnemyContainer& GetEnemies();
+		EnemyContainer& GetEnemies();
 		const EnemyContainer& GetEnemies() const;
 
 		UiTimeLimiter& GetTimeLimiter();

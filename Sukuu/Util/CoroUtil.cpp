@@ -17,7 +17,15 @@ namespace Util
 
 	CoroTask YieldExtended::WaitForTrue(const std::function<bool()>& discriminant)
 	{
-		while (!discriminant())
+		while (not discriminant())
+		{
+			yield();
+		}
+	}
+
+	void YieldExtended::WaitForTrueVal(const bool& discriminant)
+	{
+		while (not discriminant)
 		{
 			yield();
 		}
@@ -26,6 +34,14 @@ namespace Util
 	CoroTask YieldExtended::WaitForFalse(const std::function<bool()>& discriminant)
 	{
 		while (discriminant())
+		{
+			yield();
+		}
+	}
+
+	void YieldExtended::WaitForFalseVal(const bool& discriminant)
+	{
+		while (discriminant)
 		{
 			yield();
 		}

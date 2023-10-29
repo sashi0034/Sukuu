@@ -11,7 +11,6 @@ namespace Tutorial
 		Point catSpawnPoint_North;
 		Point catSpawnPoint_South;
 		Point sukuuEventPoint;
-		Point itemEventPoint;
 		Point itemSpawnPoint;
 		Point knightBlockPoint;
 		Point knightSpawnPoint;

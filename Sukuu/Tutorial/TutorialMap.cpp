@@ -16,7 +16,7 @@ namespace
 		U"                              -----                   -----      ",
 		U"                            ---------               -------      ",
 		U"                            ---------               -------      ",
-		U"                C----------2----I-------3K----------4---S--      ",
+		U"                C---------------I-------3K----------4---S--      ",
 		U"                -           ---------               -------      ",
 		U"                -           ---------               -------      ",
 		U"                -             -----                   -----      ",
@@ -104,9 +104,6 @@ namespace
 				break;
 			case U'1':
 				data.sukuuEventPoint = p;
-				break;
-			case U'2':
-				data.itemEventPoint = p;
 				break;
 			case U'I':
 				data.itemSpawnPoint = p;

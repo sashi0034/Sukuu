@@ -12,6 +12,9 @@ namespace Play
 		virtual TextureRegion GetTexture() const = 0;
 	};
 
+	bool CanEnemyMoveTo(
+		const MapGrid& map, const GimmickGrid& gimmick, const CharaVec2& currentActualPos, Dir4Type dir);
+
 	void CheckSendEnemyCollide(Player& player, CharaPosition& pos, EnemyKind enemy);
 
 	bool IsEnemyCollided(const CharaPosition& pos, const RectF& collider);

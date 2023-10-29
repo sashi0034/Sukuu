@@ -106,6 +106,7 @@ struct Play::Player::Impl
 	{
 		if (m_immortal.IsImmortal()) return;;
 		if (m_act == PlayerAct::Dead) return;
+		if (PlayScene::Instance().Tutorial() != nullptr) return; // チュートリアル中は無敵
 
 		const auto player = RectF{m_pos.actualPos, PlayerCellRect.size}.stretched(
 			getToml<int>(U"collider_padding"));
@@ -312,17 +313,17 @@ private:
 		m_cameraOffsetDestination = -moveDir.ToXY() * getToml<double>(U"camera_offset_amount");
 
 		// 移動
-		const auto nextPos = Vec2(m_pos.actualPos + moveDir.ToXY() * CellPx_24);
-		ProcessMoveCharaPos(yield, self, m_pos, nextPos, moveDuration());
+		const auto newPos = Vec2(m_pos.actualPos + moveDir.ToXY() * CellPx_24);
+		ProcessMoveCharaPos(yield, self, m_pos, newPos, moveDuration());
 		// refreshDistField();
 
 		// ギミックチェック
-		const auto newPoint = CharaVec2(nextPos).MapPoint();
+		const auto newPoint = CharaVec2(newPos).MapPoint();
 		checkGimmickAt(yield, self, newPoint);
 
 		if (const auto tutorial = PlayScene::Instance().Tutorial())
 		{
-			tutorial->PlayerService().onMove(m_pos.actualPos);
+			tutorial->PlayerService().onMoved(newPos, m_act == PlayerAct::Running);
 		}
 	}
 
@@ -420,28 +421,34 @@ private:
 				// 以下、移動させる処理を実行
 				// m_distField.Clear();
 				m_scoopDrawing = {};
-				m_immortal.immortalStock++;
-				const double animDuration = getToml<double>(U"scoop_move_duration");
-				AnimateEasing<BoomerangParabola>(self, &m_animOffset, Vec2{0, -32}, animDuration);
-				ProcessMoveCharaPos(
-					yield, self, m_pos, checkingPos,
-					animDuration);
-				refreshDistField();
-				m_immortal.immortalStock--;
+				succeedScoop(yield, self, checkingPos);
+
 				goto dropped;
 			}
 		}
 
 	dropped:;
 		focusCameraFor(self, 1.0);
-		if (const auto tutorial = PlayScene::Instance().Tutorial())
-		{
-			tutorial->PlayerService().onScoop(m_pos.actualPos);
-		}
 		yield.WaitForTrue([]()
 		{
 			return MouseL.pressed() == false;
 		});
+	}
+
+	void succeedScoop(YieldExtended& yield, ActorView self, const Vector2D<double> checkingPos)
+	{
+		if (const auto tutorial = PlayScene::Instance().Tutorial())
+		{
+			tutorial->PlayerService().onScooped(m_pos.actualPos);
+		}
+
+		// 上手くすくって別の場所に移動するときの処理
+		m_immortal.immortalStock++;
+		const double animDuration = getToml<double>(U"scoop_move_duration");
+		AnimateEasing<BoomerangParabola>(self, &m_animOffset, Vec2{0, -32}, animDuration);
+		ProcessMoveCharaPos(yield, self, m_pos, checkingPos, animDuration);
+		refreshDistField();
+		m_immortal.immortalStock--;
 	}
 
 	void refreshDistField()

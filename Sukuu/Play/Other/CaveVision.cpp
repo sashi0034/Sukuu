@@ -46,7 +46,7 @@ struct Play::CaveVision::Impl
 		};
 		// Transformer2D t{Mat3x2::Scale({static_cast<double>(Scene::Size().x) / Scene::Size().y, 1.0})};
 
-		m_softShapeCb->time += GetDeltaTime() * 2;
+		m_softShapeCb->time += 2 * GetDeltaTime();
 		m_softShapeCb->radius = GetTomlParameter<float>(U"play.cave_vision.default_vision_radius");
 		Graphics2D::SetVSConstantBuffer(1, m_softShapeCb);
 		const ScopedCustomShader2D shader{VertexShaderAsset(AssetKeys::VsCaveVision)};

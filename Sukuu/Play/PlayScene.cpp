@@ -124,11 +124,11 @@ public:
 		m_bgEffect.GetEffect().setSpeed(GetTimeScale());
 		m_fgEffect.GetEffect().setSpeed(GetTimeScale());
 
-		// ヒットストッピング管理
-		SetTimeScale(m_hitStoppingRequested > 0 ? getToml<double>(U"hitstopping_timescale") : 1.0);
-
 		// 視界マスク更新
 		m_caveVision.UpdateMask(m_player.CurrentPos().viewPos + Point(CellPx_24, CellPx_24) / 2);
+
+		// ヒットストッピング管理
+		SetTimeScale(m_hitStoppingRequested > 0 ? getToml<double>(U"hitstopping_timescale") : 1.0);
 	}
 
 private:
@@ -228,10 +228,10 @@ namespace Play
 		return p_impl->m_player;
 	}
 
-	// EnemyContainer& PlayScene::GetEnemies()
-	// {
-	// 	return p_impl->m_enemies;
-	// }
+	EnemyContainer& PlayScene::GetEnemies()
+	{
+		return p_impl->m_enemies;
+	}
 
 	const EnemyContainer& PlayScene::GetEnemies() const
 	{

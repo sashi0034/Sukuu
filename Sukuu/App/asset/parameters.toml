@@ -137,6 +137,8 @@ camera_rotation_speed = 5
 camera_follow_distance = 40.0
 camera_follow_height = 40.0
 
+[tutorial.scene]
+
 [tutorial.messenger]
 bottom = 200
 font_size = 42

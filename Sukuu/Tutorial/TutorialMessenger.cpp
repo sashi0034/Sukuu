@@ -19,7 +19,6 @@ struct Tutorial::TutorialMessenger::Impl
 {
 	double m_time{};
 	String m_message{};
-	ActorWeak m_animAlpha{};
 	double m_alpha{};
 
 	void Update()
@@ -55,8 +54,7 @@ struct Tutorial::TutorialMessenger::Impl
 
 	void HideMessage(ActorView self, double fadeDuration = getToml<double>(U"fade_duration"))
 	{
-		m_animAlpha.Kill();
-		m_animAlpha = AnimateEasing<EaseInQuad, EaseOption::Default | EaseOption::IgnoreTimeScale>(
+		AnimateEasing<EaseInQuad, EaseOption::Default | EaseOption::IgnoreTimeScale>(
 			self, &m_alpha, 0.0, fadeDuration);
 	}
 

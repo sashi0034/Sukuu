@@ -56,6 +56,21 @@ struct Play::EnSlimeCat::Impl : IEnemyInternal
 		});
 	}
 
+	void StartTutorial(ActorBase& self, Dir4Type dir)
+	{
+		StartCoro(self, [this, self, dir](YieldExtended yield) mutable
+		{
+			while (true)
+			{
+				m_dir = dir;
+				const double moveDuration = GetTomlParameter<double>(U"play.en_slime_cat.move_duration");
+				auto&& playScene = PlayScene::Instance();
+				if (not CanEnemyMoveTo(playScene.GetMap(), playScene.GetGimmick(), m_pos.actualPos, dir)) break;
+				ProcessMoveCharaPos(yield, self, m_pos, m_pos.actualPos.moveBy(dir.ToXY() * CellPx_24), moveDuration);
+			}
+		});
+	}
+
 	Vec2 GetDrawPos() const override
 	{
 		return m_pos.viewPos.movedBy(GetCharacterCellPadding(catRect.size));
@@ -177,8 +192,13 @@ namespace Play
 	void EnSlimeCat::Init()
 	{
 		p_impl->m_pos.SetPos(GetInitialPos(PlayScene::Instance().GetMap()));
-
 		p_impl->StartFlowchart(*this);
+	}
+
+	void EnSlimeCat::InitTutorial(const CharaVec2& pos, Dir4Type dir)
+	{
+		p_impl->m_pos.SetPos(pos);
+		p_impl->StartTutorial(*this, dir);
 	}
 
 	void EnSlimeCat::Update()
