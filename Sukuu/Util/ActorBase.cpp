@@ -6,7 +6,6 @@ namespace Util
 {
 	struct ActorBase::Impl
 	{
-		bool m_isActive = true;
 		bool m_isAlive = true;
 		std::unique_ptr<ActorContainer> m_children{};
 
@@ -58,16 +57,6 @@ namespace Util
 	double ActorBase::OrderPriority() const
 	{
 		return 0;
-	}
-
-	void ActorBase::SetActive(bool isActive)
-	{
-		p_impl->m_isActive = isActive;
-	}
-
-	bool ActorBase::IsActive() const
-	{
-		return p_impl->m_isActive;
 	}
 
 	ActorView::ActorView(const ActorBase& actor) :
