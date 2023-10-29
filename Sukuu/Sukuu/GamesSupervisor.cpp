@@ -3,6 +3,7 @@
 
 #include "Play/PlayScene.h"
 #include "Title/TitleScene.h"
+#include "Tutorial/TutorialScene.h"
 #include "Util/CoroUtil.h"
 
 namespace
@@ -37,16 +38,14 @@ private:
 	void flowchartLoop(YieldExtended& yield, ActorBase& self)
 	{
 		const auto entryPoint = getToml<String>(U"entry_point");
+		if (entryPoint == U"tutorial") goto tutorial;
 		if (entryPoint == U"title") goto title;
 		if (entryPoint == U"play") goto play;
 
+	tutorial:
+		tutorialLoop(yield, self);
 	title:
-		{
-			auto title = self.AsParent().Birth(Title::TitleScene());
-			title.Init();
-			yield.WaitForTrue([&]() { return title.IsConcluded(); });
-			title.Kill();
-		}
+		titleLoop(yield, self);
 	play:
 		while (true)
 		{
@@ -59,6 +58,22 @@ private:
 			play.Kill();
 			m_playData = play.CopyData();
 		}
+	}
+
+	void tutorialLoop(YieldExtended& yield, ActorBase& self)
+	{
+		auto tutorial = self.AsParent().Birth(Tutorial::TutorialScene());
+		tutorial.Init();
+		yield.WaitForTrue([&]() { return tutorial.IsFinished(); });
+		tutorial.Kill();
+	}
+
+	void titleLoop(YieldExtended& yield, ActorBase& self)
+	{
+		auto title = self.AsParent().Birth(Title::TitleScene());
+		title.Init();
+		yield.WaitForTrue([&]() { return title.IsConcluded(); });
+		title.Kill();
 	}
 };
 

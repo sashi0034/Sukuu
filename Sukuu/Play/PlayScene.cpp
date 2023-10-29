@@ -56,35 +56,22 @@ public:
 
 	void Init(ActorBase& self, const PlaySingletonData& data)
 	{
-		m_map = GenerateFreshDungeon(DungGenProps{
-			.size = {81, 81},
-			.areaDivision = 8,
-		});
-		// m_map = GenerateFreshMaze(MazeGenProps{
-		// 	.size = {81, 81},
-		// });
+		if (data.IsTutorial())
+		{
+			m_map = data.tutorial->GetMap();
+		}
+		else
+		{
+			m_map = generateMap();
+		}
 
 		m_gimmick.resize(m_map.Data().size(), GimmickKind::None);
-		InstallGimmicks(m_gimmick, m_map);
 
 		// 生成
 		m_fgEffect = self.AsParent().Birth(EffectWrapper(32767));
 		m_bgEffect = self.AsParent().Birth(EffectWrapper(-32768));
 
 		m_player = self.AsParent().Birth(Player());
-
-		// TODO: EnemyManager
-		for (int i = 0; i < 10; ++i)
-		{
-			auto enemy = m_enemies.Birth(self.AsParent(), EnSlimeCat());
-			enemy.Init();
-		}
-
-		for (int i = 0; i < 5; ++i)
-		{
-			auto enemy = m_enemies.Birth(self.AsParent(), EnKnight());
-			enemy.Init();
-		}
 
 		m_uiItemContainer = m_ui.Birth(UiItemContainer());
 
@@ -93,7 +80,16 @@ public:
 		m_uiTimeLimiter = m_ui.Birth(UiTimeLimiter());
 
 		// 初期化
-		m_player.Init(data.playerPersonal);
+		if (data.IsTutorial())
+		{
+			m_player.Init(data.playerPersonal, data.tutorial->InitialPlayerPos());
+		}
+		else
+		{
+			InstallGimmicks(m_gimmick, m_map);
+			installEnemies(self);
+			m_player.Init(data.playerPersonal, GetInitialPos(m_map));
+		}
 
 		m_uiMiniMap.Init(m_map.Data().size());
 
@@ -130,6 +126,33 @@ public:
 
 		// 視界マスク更新
 		m_caveVision.UpdateMask(m_player.CurrentPos().viewPos + Point(CellPx_24, CellPx_24) / 2);
+	}
+
+private:
+	static MapGrid generateMap()
+	{
+		// GenerateFreshMaze(MazeGenProps{
+		// 	.size = {81, 81},
+		// });
+		return GenerateFreshDungeon(DungGenProps{
+			.size = {81, 81},
+			.areaDivision = 8,
+		});
+	}
+
+	void installEnemies(ActorBase& self)
+	{
+		for (int i = 0; i < 10; ++i)
+		{
+			auto enemy = m_enemies.Birth(self.AsParent(), EnSlimeCat());
+			enemy.Init();
+		}
+
+		for (int i = 0; i < 5; ++i)
+		{
+			auto enemy = m_enemies.Birth(self.AsParent(), EnKnight());
+			enemy.Init();
+		}
 	}
 };
 

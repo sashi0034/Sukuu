@@ -11,7 +11,7 @@ namespace Play
 	{
 	public:
 		Player();
-		void Init(const PlayerPersonalData& data);
+		void Init(const PlayerPersonalData& data, const Vec2& initialPos);
 		void Update() override;
 		double OrderPriority() const override;
 

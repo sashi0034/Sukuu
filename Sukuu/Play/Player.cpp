@@ -497,11 +497,11 @@ namespace Play
 	{
 	}
 
-	void Player::Init(const PlayerPersonalData& data)
+	void Player::Init(const PlayerPersonalData& data, const Vec2& initialPos)
 	{
 		p_impl->m_personal = data;
 
-		p_impl->m_pos.SetPos(GetInitialPos(PlayScene::Instance().GetMap()));
+		p_impl->m_pos.SetPos(initialPos);
 
 		p_impl->m_distField.Resize(PlayScene::Instance().GetMap().Data().size());
 
@@ -510,8 +510,8 @@ namespace Play
 		p_impl->StartFlowchart(*this);
 
 #ifdef _DEBUG
-		p_impl->m_personal.items[0] = ConsumableItem::LightBulb;
-		p_impl->m_personal.items[1] = ConsumableItem::Wing;
+		p_impl->m_personal.items[0] = ConsumableItem::Solt;
+		p_impl->m_personal.items[1] = ConsumableItem::Solt;
 #endif
 	}
 

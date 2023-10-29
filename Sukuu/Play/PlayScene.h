@@ -11,10 +11,21 @@
 
 namespace Play
 {
+	class ITutorialSetting
+	{
+	public:
+		virtual ~ITutorialSetting() = default;
+		virtual MapGrid GetMap() const = 0;
+		virtual Vec2 InitialPlayerPos() const = 0;
+	};
+
 	struct PlaySingletonData
 	{
+		ITutorialSetting* tutorial{};
 		PlayerPersonalData playerPersonal;
 		TimeLimiterData timeLimiter;
+
+		bool IsTutorial() const { return tutorial != nullptr; }
 	};
 
 	class PlayScene : public ActorBase

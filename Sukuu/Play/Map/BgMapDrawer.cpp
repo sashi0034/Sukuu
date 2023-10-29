@@ -178,7 +178,7 @@ namespace Play
 		{
 			for (int x = mapTl.x - 1; x < mapBr.x + 1; ++x)
 			{
-				if (map.Data().inBounds(x, y) == false)
+				if (map.Data().inBounds(y, x) == false)
 				{
 					// マップ範囲外
 					TextureAsset(AssetImages::brick_stylish_24x24)(Point{2, 1} * 24, {24, 24})
