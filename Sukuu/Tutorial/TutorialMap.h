@@ -7,6 +7,16 @@ namespace Tutorial
 	{
 		Play::MapGrid map;
 		Point initialPlayerPoint;
+		Point firstBlockPoint;
+		Point catSpawnPoint_North;
+		Point catSpawnPoint_South;
+		Point sukuuEventPoint;
+		Point itemEventPoint;
+		Point itemSpawnPoint;
+		Point knightBlockPoint;
+		Point knightSpawnPoint;
+		Point stairsPoint;
+		Point finalEventPoint;
 	};
 
 	TutorialMapData GetTutorialMap();

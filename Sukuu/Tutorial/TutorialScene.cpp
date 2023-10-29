@@ -13,6 +13,14 @@ struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
 	Play::PlayScene m_play{};
 	TutorialMapData m_mapData{};
 	bool m_finished{};
+	Play::TutorialPlayerService m_playerService{
+		.canMove = false,
+		.canScoop = false,
+		.onMove = [](auto) { return; },
+		.onScoop = [](auto) { return; },
+		.canMoveTo = [](auto) { return true; },
+		.canScoopTo = [](auto) { return true; },
+	};
 
 	void Init(ActorView self)
 	{
@@ -38,6 +46,11 @@ struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
 		return m_mapData.initialPlayerPoint * Play::CellPx_24;
 	}
 
+	const Play::TutorialPlayerService& PlayerService() const
+	{
+		return m_playerService;
+	}
+
 	void StartFlowchart(ActorView self)
 	{
 		StartCoro(self, [self, this](YieldExtended yield)
@@ -49,10 +62,11 @@ struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
 private:
 	void flowchartLoop(YieldExtended& yield, ActorView self)
 	{
-		while (true)
-		{
-			yield();
-		}
+		m_play.GetMap().At(m_mapData.firstBlockPoint).kind = Play::TerrainKind::Wall;
+
+		yield.WaitForTime(3.0);
+
+		m_playerService.canMove = true;
 	}
 };
 

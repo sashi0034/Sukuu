@@ -286,9 +286,11 @@ private:
 			checkScoopFromMouse(yield, self);
 
 			moveDir = checkMoveInput();
-			if (moveDir != Dir4::Invalid &&
-				CanMoveTo(PlayScene::Instance().GetMap(), m_pos.actualPos, moveDir))
+			if (moveDir != Dir4::Invalid && canMoveTo(moveDir))
+			{
+				// 移動方向決定
 				break;
+			}
 
 			if (m_act != PlayerAct::Idle)
 			{
@@ -317,6 +319,22 @@ private:
 		// ギミックチェック
 		const auto newPoint = CharaVec2(nextPos).MapPoint();
 		checkGimmickAt(yield, self, newPoint);
+
+		if (const auto tutorial = PlayScene::Instance().Tutorial())
+		{
+			tutorial->PlayerService().onMove(m_pos.actualPos);
+		}
+	}
+
+	bool canMoveTo(Dir4Type dir) const
+	{
+		if (not CanMoveTo(PlayScene::Instance().GetMap(), m_pos.actualPos, dir)) return false;
+		if (const auto tutorial = PlayScene::Instance().Tutorial())
+		{
+			return tutorial->PlayerService().canMove &&
+				tutorial->PlayerService().canMoveTo((m_pos.actualPos + dir.ToXY() * CellPx_24));
+		}
+		return true;
 	}
 
 	static Dir4Type checkMoveInput()
@@ -338,6 +356,12 @@ private:
 	{
 		if (RectF(m_pos.actualPos, {CellPx_24, CellPx_24}).intersects(Cursor::PosF()) == false)
 			return;
+
+		if (const auto tutorial = PlayScene::Instance().Tutorial())
+		{
+			if (not tutorial->PlayerService().canScoop) return;
+		}
+
 		// 以下、マウスカーソルが当たった状態
 
 		// マウスクリックまで待機
@@ -388,8 +412,12 @@ private:
 				const auto checkingPos = m_pos.actualPos.movedBy(Dir4Type(i).ToXY() * CellPx_24);
 				auto r = RectF(checkingPos, {CellPx_24, CellPx_24});
 				if (r.intersects(Cursor::PosF()) == false) continue;
+				if (const auto tutorial = PlayScene::Instance().Tutorial())
+				{
+					if (not tutorial->PlayerService().canScoopTo(checkingPos)) continue;
+				}
 
-				// 移動させる
+				// 以下、移動させる処理を実行
 				// m_distField.Clear();
 				m_scoopDrawing = {};
 				m_immortal.immortalStock++;
@@ -406,6 +434,10 @@ private:
 
 	dropped:;
 		focusCameraFor(self, 1.0);
+		if (const auto tutorial = PlayScene::Instance().Tutorial())
+		{
+			tutorial->PlayerService().onScoop(m_pos.actualPos);
+		}
 		yield.WaitForTrue([]()
 		{
 			return MouseL.pressed() == false;

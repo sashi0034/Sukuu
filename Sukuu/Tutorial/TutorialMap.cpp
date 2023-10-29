@@ -16,7 +16,7 @@ namespace
 		U"                              -----                   -----      ",
 		U"                            ---------               -------      ",
 		U"                            ---------               -------      ",
-		U"                -------------------------------------------      ",
+		U"                C----------2----I-------3K----------4---S--      ",
 		U"                -           ---------               -------      ",
 		U"                -           ---------               -------      ",
 		U"                -             -----                   -----      ",
@@ -28,6 +28,7 @@ namespace
 		U"                -                                                ",
 		U"                -                                                ",
 		U"                -                                                ",
+		U"                1                                                ",
 		U"                -                                                ",
 		U"                -                                                ",
 		U"                -                                                ",
@@ -39,8 +40,7 @@ namespace
 		U"                -                                                ",
 		U"                -                                                ",
 		U"                -                                                ",
-		U"                -                                                ",
-		U"                -                                                ",
+		U"                c                                                ",
 		U"                -                                                ",
 		U"                -                                                ",
 		U"                -                                                ",
@@ -55,7 +55,7 @@ namespace
 		U"                                -                                ",
 		U"                                -                                ",
 		U"                                -                                ",
-		U"                                -                                ",
+		U"                                0                                ",
 		U"                          -------------                          ",
 		U"                          -------------                          ",
 		U"                        -----------------                        ",
@@ -92,6 +92,33 @@ namespace
 			{
 			case U'P':
 				data.initialPlayerPoint = p;
+				break;
+			case U'0':
+				data.firstBlockPoint = p;
+				break;
+			case U'c':
+				data.catSpawnPoint_South = p;
+				break;
+			case U'C':
+				data.catSpawnPoint_North = p;
+				break;
+			case U'1':
+				data.sukuuEventPoint = p;
+				break;
+			case U'2':
+				data.itemEventPoint = p;
+				break;
+			case U'I':
+				data.itemSpawnPoint = p;
+				break;
+			case U'3':
+				data.knightBlockPoint = p;
+				break;
+			case U'4':
+				data.finalEventPoint = p;
+				break;
+			case U'S':
+				data.stairsPoint = p;
 				break;
 			case ' ':
 				mapGrid.At(p).kind = Play::TerrainKind::Wall;

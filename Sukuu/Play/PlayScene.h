@@ -11,12 +11,23 @@
 
 namespace Play
 {
+	struct TutorialPlayerService
+	{
+		bool canMove;
+		bool canScoop;
+		std::function<void(const CharaVec2&)> onMove;
+		std::function<void(const CharaVec2&)> onScoop;
+		std::function<bool(const CharaVec2&)> canMoveTo;
+		std::function<bool(const CharaVec2&)> canScoopTo;
+	};
+
 	class ITutorialSetting
 	{
 	public:
 		virtual ~ITutorialSetting() = default;
 		virtual MapGrid GetMap() const = 0;
 		virtual Vec2 InitialPlayerPos() const = 0;
+		virtual const TutorialPlayerService& PlayerService() const = 0;
 	};
 
 	struct PlaySingletonData
@@ -61,6 +72,9 @@ namespace Play
 
 		EffectWrapper& BgEffect();
 		const EffectWrapper& BgEffect() const;
+
+		ITutorialSetting* Tutorial();
+		const ITutorialSetting* Tutorial() const;
 
 		void RequestHitstopping(double time);
 

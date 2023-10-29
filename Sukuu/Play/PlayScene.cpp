@@ -53,12 +53,15 @@ public:
 	int m_hitStoppingRequested{};
 	EffectWrapper m_fgEffect{};
 	EffectWrapper m_bgEffect{};
+	ITutorialSetting* m_tutorial;
 
 	void Init(ActorBase& self, const PlaySingletonData& data)
 	{
-		if (data.IsTutorial())
+		m_tutorial = data.tutorial;
+
+		if (const auto tutorial = data.tutorial)
 		{
-			m_map = data.tutorial->GetMap();
+			m_map = tutorial->GetMap();
 		}
 		else
 		{
@@ -80,9 +83,9 @@ public:
 		m_uiTimeLimiter = m_ui.Birth(UiTimeLimiter());
 
 		// 初期化
-		if (data.IsTutorial())
+		if (const auto tutorial = data.tutorial)
 		{
-			m_player.Init(data.playerPersonal, data.tutorial->InitialPlayerPos());
+			m_player.Init(data.playerPersonal, tutorial->InitialPlayerPos());
 		}
 		else
 		{
@@ -273,6 +276,16 @@ namespace Play
 	const EffectWrapper& PlayScene::BgEffect() const
 	{
 		return p_impl->m_bgEffect;
+	}
+
+	ITutorialSetting* PlayScene::Tutorial()
+	{
+		return p_impl->m_tutorial;
+	}
+
+	const ITutorialSetting* PlayScene::Tutorial() const
+	{
+		return p_impl->m_tutorial;
 	}
 
 	void PlayScene::RequestHitstopping(double time)
