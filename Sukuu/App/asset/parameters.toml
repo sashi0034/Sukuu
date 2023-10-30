@@ -1,5 +1,5 @@
 [sukuu]
-entry_point = "tutorial"
+entry_point = "play"
 
 [play.scene]
 hitstopping_timescale = 0.1
@@ -125,6 +125,14 @@ label_center = "(0, 80)"
 
 [play.ui_floor_transition]
 radial_duration = 2.0
+line_duration = 0.7
+line_thickness = 20.0
+glyph_start = 0.3
+glyph_appear = 1.2
+glyph_y = -96
+subtitle_y = 144
+subtitle_color = "#9c9da0"
+idle_duration = 0.5
 
 [play.debug]
 visualize_player_distance = false

@@ -103,6 +103,12 @@ struct Play::Player::Impl
 		});
 	}
 
+	void PerformInitialCamera(ActorView self)
+	{
+		m_cameraScale = 10.0;
+		AnimateEasing<EaseOutBack>(self, &m_cameraScale, defaultCameraScale, 0.5);
+	}
+
 	void PerformTutorialOpening(ActorView self)
 	{
 		StartCoro(self, [this, self](YieldExtended yield) mutable
@@ -562,6 +568,8 @@ namespace Play
 		p_impl->m_pos.SetPos(initialPos);
 
 		p_impl->m_distField.Resize(PlayScene::Instance().GetMap().Data().size());
+
+		if (not PlayScene::Instance().Tutorial()) p_impl->PerformInitialCamera(*this);
 
 		p_impl->m_immortal.immortalTime = getToml<double>(U"initial_immortal");
 
