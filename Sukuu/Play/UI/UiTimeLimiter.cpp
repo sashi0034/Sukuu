@@ -57,6 +57,15 @@ struct Play::UiTimeLimiter::Impl
 		if (isEnemyDamage.has_value()) m_fromEnemyDamage = isEnemyDamage.value();
 	}
 
+	void ExtendMax(ActorView self, double time)
+	{
+		m_data.maxTime += time;
+		m_outsideDelta = -m_data.maxTime;
+		m_shadowOutsideDelta = m_outsideDelta;
+		m_outsider.Kill();
+		m_outsider = AnimateEasing<EaseInQuint>(self, &m_outsideDelta, 0.0, 1.0);
+	}
+
 private:
 	bool isCountEnabled() const
 	{
@@ -176,6 +185,11 @@ namespace Play
 	void UiTimeLimiter::Heal(double time)
 	{
 		p_impl->GiveDelta(*this, -time, none);
+	}
+
+	void UiTimeLimiter::ExtendMax(double time)
+	{
+		p_impl->ExtendMax(*this, time);
 	}
 
 	const TimeLimiterData& UiTimeLimiter::GetData() const

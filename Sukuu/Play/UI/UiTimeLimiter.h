@@ -18,6 +18,7 @@ namespace Play
 
 		void Damage(double time, bool isEnemyDamage);
 		void Heal(double time);
+		void ExtendMax(double time);
 
 		const TimeLimiterData& GetData() const;
 

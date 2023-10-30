@@ -528,6 +528,16 @@ private:
 		case GimmickKind::Item_Solt:
 			obtainItemAt(newPoint, gimmickGrid);
 			break;
+		case GimmickKind::SemiItem_Hourglass: {
+			RelayTimeHealAmount(m_pos, 15);
+			gimmickGrid[newPoint] = GimmickKind::None;
+			break;
+		}
+		case GimmickKind::SemiItem_Vessel: {
+			PlayScene::Instance().GetTimeLimiter().ExtendMax(30.0);
+			gimmickGrid[newPoint] = GimmickKind::None;
+			break;
+		}
 		case GimmickKind::Arrow_right: [[fallthrough]];
 		case GimmickKind::Arrow_up: [[fallthrough]];
 		case GimmickKind::Arrow_left: [[fallthrough]];

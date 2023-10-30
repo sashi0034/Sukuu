@@ -112,5 +112,13 @@ namespace Play
 		{
 			installGimmickRandomly(gimmick, map, GimmickKind::Item_Solt);
 		}
+		for (auto i : step(2))
+		{
+			installGimmickRandomly(gimmick, map, GimmickKind::SemiItem_Hourglass);
+		}
+		for (auto i : step(2))
+		{
+			installGimmickRandomly(gimmick, map, GimmickKind::SemiItem_Vessel);
+		}
 	}
 }
