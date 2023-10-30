@@ -13,7 +13,7 @@ namespace Play
 		Knight,
 	};
 
-	double GetEnemyAttackDamage(EnemyKind kind);
+	int GetEnemyAttackDamage(EnemyKind kind);
 
 	class EnemyBase : public ActorBase
 	{

@@ -143,6 +143,7 @@
     <ClCompile Include="GitRevision.generated.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Play\Chara\CharaUtil.cpp" />
+    <ClCompile Include="Play\Effect\DamageCounterEffect.cpp" />
     <ClCompile Include="Play\Effect\FragmentTextureEffect.cpp" />
     <ClCompile Include="Play\Enemy\EnemyDefinition.cpp" />
     <ClCompile Include="Play\Enemy\EnemyUtil.cpp" />
@@ -396,6 +397,7 @@
     <ClInclude Include="AssetKeys.h" />
     <ClInclude Include="Assets.generated.h" />
     <ClInclude Include="Play\Chara\CharaUtil.h" />
+    <ClInclude Include="Play\Effect\DamageCounterEffect.h" />
     <ClInclude Include="Play\Effect\FragmentTextureEffect.h" />
     <ClInclude Include="Play\Enemy\EnemyDefinition.h" />
     <ClInclude Include="Play\Enemy\EnemyUtil.h" />

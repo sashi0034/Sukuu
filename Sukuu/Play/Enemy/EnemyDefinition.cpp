@@ -14,16 +14,16 @@ namespace
 
 namespace Play
 {
-	double GetEnemyAttackDamage(EnemyKind kind)
+	int GetEnemyAttackDamage(EnemyKind kind)
 	{
 		switch (kind)
 		{
 		case EnemyKind::SlimeCat:
-			return getToml<double>(U"attacker_slime_cat");
+			return getToml<int>(U"attacker_slime_cat");
 		case EnemyKind::Knight:
-			return getToml<double>(U"attacker_knight");
+			return getToml<int>(U"attacker_knight");
 		default: ;
-			return 1.0;
+			return 1;
 		}
 	}
 

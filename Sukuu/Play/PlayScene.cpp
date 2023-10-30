@@ -152,8 +152,8 @@ public:
 private:
 	static MapGrid generateMap()
 	{
-		// GenerateFreshMaze(MazeGenProps{
-		// 	.size = {81, 81},
+		// return GenerateFreshMaze(MazeGenProps{
+		// 	.size = {65, 65},
 		// });
 		return GenerateFreshDungeon(DungGenProps{
 			.size = {81, 81},

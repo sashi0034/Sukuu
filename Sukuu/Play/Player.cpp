@@ -153,7 +153,7 @@ struct Play::Player::Impl
 		focusCameraFor<EaseOutBack>(self, getToml<double>(U"focus_scale_large"));
 
 		// ペナルティとして時間減らす
-		PlayScene::Instance().GetTimeLimiter().Damage(GetEnemyAttackDamage(enemy));
+		RelayTimeDamageAmount(m_pos, GetEnemyAttackDamage(enemy), true);
 
 		// やられた演出
 		StartCoro(self, [this, self](YieldExtended yield) mutable
@@ -218,7 +218,7 @@ struct Play::Player::Impl
 		}
 		case ConsumableItem::Tube: {
 			if (m_act == PlayerAct::Dead) return false;
-			PlayScene::Instance().GetTimeLimiter().Heal(getToml<int>(U"tube_heal_amount"));
+			RelayTimeHealAmount(m_pos, getToml<int>(U"tube_heal_amount"));
 			return true;
 		}
 		case ConsumableItem::Solt: {

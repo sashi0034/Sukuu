@@ -36,8 +36,8 @@ solt_faint = 15.0
 baloon_offset_y = -32
 
 [play.enemy]
-attacker_slime_cat = 30.0
-attacker_knight = 45.0
+attacker_slime_cat = 30
+attacker_knight = 45
 magnet_penalty = 0.2
 
 [play.en_slime_cat]
@@ -91,6 +91,13 @@ blinking_start = 32
 [play.cave_vision]
 default_vision_radius = 160
 dark_color = "#3D30A2"
+
+[play.damage_counter_effect]
+appear_time = 0.1
+outline = 0.4
+font_size = 12
+offset = -20
+fade_offset = -12
 
 [play.ui_minimap]
 screen_point = "(100, 200)"

@@ -2,9 +2,10 @@
 
 namespace AssetKeys
 {
-	constexpr AssetNameView RocknRoll_24_Bitmap = U"RocknRoll_Bitmap";
-	constexpr AssetNameView RocknRoll_72_Bitmap = U"RocknRoll_48_Bitmap";
-	constexpr AssetNameView RocknRoll_Sdf = U"RocknRoll_MSDF";
+	constexpr AssetNameView RocknRoll_24_Bitmap = U"RocknRoll_24_Bitmap";
+	constexpr AssetNameView RocknRoll_72_Bitmap = U"RocknRoll_72_Bitmap";
+	constexpr AssetNameView RocknRoll_Sdf = U"RocknRoll_Sdf";
+	constexpr AssetNameView RocknRoll_Sdf_Bold = U"RocknRoll_Sdf_Bold";
 
 	constexpr AssetNameView PsCaveVision = U"asset/shader/cave_vision";
 	constexpr AssetNameView PsMultiTextureMask = U"asset/shader/multi_texture_mask";
@@ -22,6 +23,8 @@ namespace AssetKeys
 		FontAsset::Register(RocknRoll_24_Bitmap, 24, U"asset/font/RocknRoll/RocknRollOne-Regular.ttf");
 		FontAsset::Register(RocknRoll_72_Bitmap, 72, U"asset/font/RocknRoll/RocknRollOne-Regular.ttf");
 		FontAsset::Register(RocknRoll_Sdf, FontMethod::SDF, 24, U"asset/font/RocknRoll/RocknRollOne-Regular.ttf");
+		FontAsset::Register(
+			RocknRoll_Sdf_Bold, FontMethod::SDF, 24, U"asset/font/RocknRoll/RocknRollOne-Regular.ttf", FontStyle::Bold);
 
 		TextureAsset::Register(U"👉", U"👉"_emoji);
 
