@@ -265,7 +265,7 @@ namespace Play
 	static MapGrid generateInternal(const DungGenProps& props)
 	{
 		const DungGenInternal internal{props};
-		MapGrid dung{props.size};
+		MapGrid dung{props.size, MapCategory::Dungeon};
 
 		Array<SeparatedArea> separatedAreas{Arg::reserve(props.areaDivision)};
 		separatedAreas.push_back(SeparatedArea({{0, 0}, props.size}));

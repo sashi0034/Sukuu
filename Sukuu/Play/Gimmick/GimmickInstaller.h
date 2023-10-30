@@ -4,5 +4,5 @@
 
 namespace Play
 {
-	void InstallGimmicks(GimmickGrid& gimmick, MapGrid& map);
+	void InstallGimmicks(GimmickGrid& gimmick, const MapGrid& map);
 }

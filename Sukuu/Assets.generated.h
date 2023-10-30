@@ -5,6 +5,7 @@
 
 namespace AssetImages
 {
+	constexpr StringView arrow_24x24 = U"asset/image/arrow_24x24.png";
 	constexpr StringView beatrice_32x32 = U"asset/image/beatrice_32x32.png";
 	constexpr StringView bookmark_16x16 = U"asset/image/bookmark_16x16.png";
 	constexpr StringView brick_stylish_24x24 = U"asset/image/brick_stylish_24x24.png";
@@ -43,6 +44,7 @@ namespace AssetImages
 	inline Array<StringView> GetKeys()
 	{
 		return {
+			arrow_24x24,
 			beatrice_32x32,
 			bookmark_16x16,
 			brick_stylish_24x24,

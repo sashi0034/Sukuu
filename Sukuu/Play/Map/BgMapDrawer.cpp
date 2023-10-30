@@ -130,6 +130,18 @@ struct Play::BgMapDrawer::Impl
 		case GimmickKind::Item_Solt:
 			drawGimmickAt(point, AssetImages::solt_16x16, 16, 3);
 			break;
+		case GimmickKind::Arrow_right:
+			(void)TextureAsset(AssetImages::arrow_24x24)(Point{1, 0} * 24, 24, 24).draw(point * CellPx_24);
+			break;
+		case GimmickKind::Arrow_up:
+			(void)TextureAsset(AssetImages::arrow_24x24)(Point{0, 0} * 24, 24, 24).draw(point * CellPx_24);
+			break;
+		case GimmickKind::Arrow_left:
+			(void)TextureAsset(AssetImages::arrow_24x24)(Point{3, 0} * 24, 24, 24).draw(point * CellPx_24);
+			break;
+		case GimmickKind::Arrow_down:
+			(void)TextureAsset(AssetImages::arrow_24x24)(Point{2, 0} * 24, 24, 24).draw(point * CellPx_24);
+			break;
 		default: ;
 		}
 	}

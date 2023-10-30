@@ -186,7 +186,7 @@ namespace Play
 		internal.createRooms(state);
 		internal.digPassageCompletely(state);
 
-		MapGrid grid{props.size};
+		MapGrid grid{props.size, MapCategory::Maze};
 		for (auto p : step({0, 0}, props.size))
 		{
 			if (state.dugFlag[p]) grid.At(p).kind = TerrainKind::Pathway;
