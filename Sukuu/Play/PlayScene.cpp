@@ -103,6 +103,7 @@ public:
 		m_uiTimeLimiter.Init(data.timeLimiter);
 
 		m_floorTransition.Init();
+		m_floorTransition.PerformOpen(1);
 	}
 
 	void UpdateScene(PlayScene& self)
