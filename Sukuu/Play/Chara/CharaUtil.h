@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "Play/Forward.h"
+#include "Play/Gimmick/GimmickGrid.h"
 #include "Play/Map/MapGrid.h"
 #include "Util/CoroUtil.h"
 #include "Util/Dir4.h"
@@ -51,6 +52,8 @@ namespace Play
 	bool CanMoveTo(const MapGrid& map, const CharaVec2& currentActualPos, Dir4Type dir);
 	bool CanMovePointTo(const MapGrid& map, const Point& point, Dir4Type dir);
 	bool CanMovePointAt(const MapGrid& map, const Point& point);
+
+	Point GetArrowWarpPoint(const MapGrid& map, const GimmickGrid& gimmickGrid, const Point& point);
 
 	template <double easing(double) = EaseInLinear>
 	void ProcessMoveCharaPos(

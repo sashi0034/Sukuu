@@ -56,6 +56,23 @@ namespace Play
 		return canMoveAtInternal(map, point);
 	}
 
+	Point GetArrowWarpPoint(const MapGrid& map, const GimmickGrid& gimmickGrid, const Point& point)
+	{
+		const auto dir = GimmickArrowToDir(gimmickGrid[point]).ToXY().asPoint();
+		if (dir == Point{0, 0}) return point;
+		auto checking = point + dir;
+		while (true)
+		{
+			checking += dir;
+			if (checking.x < 0) checking.x = gimmickGrid.size().x - 1;
+			if (checking.y < 0) checking.y = gimmickGrid.size().y - 1;
+			if (checking.x >= gimmickGrid.size().x) checking.x = 0;
+			if (checking.y >= gimmickGrid.size().y) checking.y = 0;
+			if (map.At(checking).kind == TerrainKind::Wall) continue;
+			return checking;
+		}
+	}
+
 	template <double easing(double)>
 	void ProcessMoveCharaPos(
 		YieldExtended& yield, ActorView self, CharaPosition& pos, const Vec2& nextPos, double moveDuration)

@@ -514,8 +514,16 @@ private:
 		case GimmickKind::Item_Grave: [[fallthrough]];
 		case GimmickKind::Item_Sun: [[fallthrough]];
 		case GimmickKind::Item_Tube: [[fallthrough]];
-		case GimmickKind::Item_Solt: [[fallthrough]];
+		case GimmickKind::Item_Solt:
 			obtainItemAt(newPoint, gimmickGrid);
+			break;
+		case GimmickKind::Arrow_right: [[fallthrough]];
+		case GimmickKind::Arrow_up: [[fallthrough]];
+		case GimmickKind::Arrow_left: [[fallthrough]];
+		case GimmickKind::Arrow_down:
+			m_immortal.immortalStock++;
+			moveArrowWarp(yield, self, newPoint);
+			m_immortal.immortalStock--;
 			break;
 		default: ;
 			m_act = storedAct;
@@ -535,6 +543,16 @@ private:
 			gimmickGrid[point] = GimmickKind::None;
 			break;
 		}
+	}
+
+	void moveArrowWarp(YieldExtended& yield, ActorView self, const Point point)
+	{
+		const auto nextPoint =
+			GetArrowWarpPoint(PlayScene::Instance().GetMap(), PlayScene::Instance().GetGimmick(), point);
+		const double duration = getToml<double>(U"arrow_warp_duration");
+		AnimateEasing<BoomerangParabola>(
+			self, &m_animOffset, Vec2{0, -getToml<double>(U"arrow_warp_jump")}, duration);
+		ProcessMoveCharaPos(yield, self, m_pos, nextPoint * CellPx_24, duration);
 	}
 
 	bool canInstallGimmickNow() const

@@ -31,6 +31,8 @@ light_bulb_duration = 12.0
 explorer_enemies_duration = 6.0
 tube_heal_amount = 90
 solt_faint = 15.0
+arrow_warp_duration = 0.5
+arrow_warp_jump = 48.0
 
 [play.chara]
 baloon_offset_y = -32
