@@ -17,6 +17,7 @@ namespace AssetImages
 	constexpr StringView dark_tree_48x48 = U"asset/image/dark_tree_48x48.png";
 	constexpr StringView folder_16x16 = U"asset/image/folder_16x16.png";
 	constexpr StringView grave_16x16 = U"asset/image/grave_16x16.png";
+	constexpr StringView heart_vessel_24x24 = U"asset/image/heart_vessel_24x24.png";
 	constexpr StringView helmet_16x16 = U"asset/image/helmet_16x16.png";
 	constexpr StringView hourglass_16x16 = U"asset/image/hourglass_16x16.png";
 	constexpr StringView light_bulb_16x16 = U"asset/image/light_bulb_16x16.png";
@@ -56,6 +57,7 @@ namespace AssetImages
 			dark_tree_48x48,
 			folder_16x16,
 			grave_16x16,
+			heart_vessel_24x24,
 			helmet_16x16,
 			hourglass_16x16,
 			light_bulb_16x16,

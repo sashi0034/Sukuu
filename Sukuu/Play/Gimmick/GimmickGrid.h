@@ -22,6 +22,8 @@ namespace Play
 		Item_Sun,
 		Item_Tube,
 		Item_Solt,
+		SemiItem_Hourglass,
+		SemiItem_Vessel,
 		Installed_Mine,
 		Installed_Magnet,
 		Installed_Grave,
