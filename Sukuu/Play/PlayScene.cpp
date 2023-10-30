@@ -56,10 +56,12 @@ public:
 	EffectWrapper m_bgEffect{};
 	ITutorialSetting* m_tutorial;
 	UiFloorTransition m_floorTransition{};
+	int m_floorIndex{};
 
 	void Init(ActorView self, const PlaySingletonData& data)
 	{
 		m_tutorial = data.tutorial;
+		m_floorIndex = data.floorIndex;
 
 		if (const auto tutorial = data.tutorial)
 		{
@@ -328,6 +330,7 @@ namespace Play
 	PlaySingletonData PlayScene::CopyData() const
 	{
 		return PlaySingletonData{
+			.floorIndex = p_impl->m_floorIndex,
 			.playerPersonal = p_impl->m_player.PersonalData(),
 			.timeLimiter = p_impl->m_uiTimeLimiter.GetData()
 		};

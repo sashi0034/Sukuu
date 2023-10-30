@@ -34,6 +34,7 @@ namespace Play
 	struct PlaySingletonData
 	{
 		ITutorialSetting* tutorial{};
+		int floorIndex{};
 		PlayerPersonalData playerPersonal;
 		TimeLimiterData timeLimiter;
 

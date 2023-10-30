@@ -23,11 +23,6 @@ struct Sukuu::GamesSupervisor::Impl
 
 	void FlowchartAsync(YieldExtended& yield, ActorBase& self)
 	{
-		m_playData.timeLimiter = {
-			.maxTime = 120,
-			.remainingTime = 120,
-		};
-
 		while (true)
 		{
 			flowchartLoop(yield, self);
@@ -35,7 +30,7 @@ struct Sukuu::GamesSupervisor::Impl
 	}
 
 private:
-	void flowchartLoop(YieldExtended& yield, ActorBase& self)
+	void flowchartLoop(YieldExtended& yield, ActorView self)
 	{
 		const auto entryPoint = getToml<String>(U"entry_point");
 		if (entryPoint == U"tutorial") goto tutorial;
@@ -47,21 +42,10 @@ private:
 	title:
 		titleLoop(yield, self);
 	play:
-		while (true)
-		{
-			auto play = self.AsParent().Birth(Play::PlayScene());
-			yield.WaitForExpire(play.StartTransition(1));
-			play.Init(m_playData);
-			yield.WaitForTrue([&]()
-			{
-				return play.GetPlayer().IsCompletedGoal();
-			});
-			play.Kill();
-			m_playData = play.CopyData();
-		}
+		playLoop(yield, self);
 	}
 
-	void tutorialLoop(YieldExtended& yield, ActorBase& self)
+	void tutorialLoop(YieldExtended& yield, ActorView self)
 	{
 		auto tutorial = self.AsParent().Birth(Tutorial::TutorialScene());
 		tutorial.Init();
@@ -69,12 +53,35 @@ private:
 		tutorial.Kill();
 	}
 
-	void titleLoop(YieldExtended& yield, ActorBase& self)
+	void titleLoop(YieldExtended& yield, ActorView self)
 	{
 		auto title = self.AsParent().Birth(Title::TitleScene());
 		title.Init();
 		yield.WaitForTrue([&]() { return title.IsConcluded(); });
 		title.Kill();
+	}
+
+	void playLoop(YieldExtended& yield, ActorView self)
+	{
+		m_playData.floorIndex = 1;
+		m_playData.timeLimiter = {
+			.maxTime = 120,
+			.remainingTime = 120,
+		};
+
+		while (true)
+		{
+			auto play = self.AsParent().Birth(Play::PlayScene());
+			yield.WaitForExpire(play.StartTransition(m_playData.floorIndex));
+			play.Init(m_playData);
+			yield.WaitForTrue([&]()
+			{
+				return play.GetPlayer().IsCompletedGoal();
+			});
+			play.Kill();
+			m_playData = play.CopyData();
+			m_playData.floorIndex++;
+		}
 	}
 };
 
