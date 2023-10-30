@@ -185,8 +185,14 @@ namespace Play
 		MapGrid grid{props.size};
 		for (auto p : step({0, 0}, props.size))
 		{
-			if (state.roomEntryFlag[p]) grid.At(p).kind = TerrainKind::Floor;
-			else if (state.dugFlag[p]) grid.At(p).kind = TerrainKind::Pathway;
+			if (state.dugFlag[p]) grid.At(p).kind = TerrainKind::Pathway;
+		}
+		for (auto&& room : state.createdRooms)
+		{
+			for (auto p : step(room.pos, room.size))
+			{
+				grid.At(p).kind = TerrainKind::Floor;
+			}
 		}
 		grid.Rooms().swap(state.createdRooms);
 		return grid;
