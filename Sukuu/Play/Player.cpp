@@ -55,6 +55,7 @@ struct Play::Player::Impl
 	PlayerImmortality m_immortal{};
 	bool m_guardHelmet{};
 	std::function<void()> m_scoopDrawing = {};
+	int m_scoopContinuous{};
 	PlayerVisionState m_vision{};
 	double m_faintStealthTime{};
 
@@ -335,6 +336,7 @@ private:
 		}
 		m_act = KeyShift.pressed() ? PlayerAct::Running : PlayerAct::Walk;
 		m_direction = moveDir;
+		m_scoopContinuous = 0;
 		m_cameraOffsetDestination = -moveDir.ToXY() * getToml<double>(U"camera_offset_amount");
 
 		// 移動
@@ -474,6 +476,15 @@ private:
 		ProcessMoveCharaPos(yield, self, m_pos, checkingPos, animDuration);
 		refreshDistField();
 		m_immortal.immortalStock--;
+
+		static constexpr std::array scoopPenalty = {5, 10, 15, 20, 25};
+		if (PlayScene::Instance().GetMap().At(m_pos.actualPos.MapPoint()).kind == TerrainKind::Wall)
+		{
+			// ペナルティ発生
+			RelayTimeDamageAmount(
+				m_pos, scoopPenalty[std::min(m_scoopContinuous, static_cast<int>(scoopPenalty.size()) - 1)], false);
+			m_scoopContinuous++;
+		}
 	}
 
 	void refreshDistField()

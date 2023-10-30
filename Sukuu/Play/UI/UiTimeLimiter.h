@@ -16,7 +16,7 @@ namespace Play
 		void Update() override;
 		double OrderPriority() const override { return -1000; };
 
-		void Damage(double time);
+		void Damage(double time, bool isEnemyDamage);
 		void Heal(double time);
 
 		const TimeLimiterData& GetData() const;

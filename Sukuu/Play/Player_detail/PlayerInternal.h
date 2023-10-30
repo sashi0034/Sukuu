@@ -25,7 +25,4 @@ namespace Play
 	bool CheckUseItemLightBulb(ActorView self, PlayerVisionState& vision);
 
 	bool CheckUseItemExplorer(ActorView self);
-
-	void RelayTimeDamageAmount(const CharaPosition& pos, int amount, bool isEnemyDamage);
-	void RelayTimeHealAmount(const CharaPosition& pos, int amount);
 }

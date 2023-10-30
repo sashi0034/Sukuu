@@ -73,4 +73,7 @@ namespace Play
 	double CharaOrderPriority(const CharaPosition& pos);
 
 	void DrawCharaEmotion(const Vec2& drawingPos, AssetNameView emoji);
+
+	void RelayTimeDamageAmount(const CharaPosition& pos, int amount, bool isEnemyDamage);
+	void RelayTimeHealAmount(const CharaPosition& pos, int amount);
 }

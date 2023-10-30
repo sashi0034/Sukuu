@@ -24,6 +24,7 @@ struct Play::UiTimeLimiter::Impl
 	double m_outsideDelta{};
 	double m_shadowOutsideDelta{};
 	ActorWeak m_outsider{};
+	bool m_fromEnemyDamage{};
 
 	void Update()
 	{
@@ -47,12 +48,13 @@ struct Play::UiTimeLimiter::Impl
 		drawUi();
 	}
 
-	void GiveDelta(ActorView self, double time)
+	void GiveDelta(ActorView self, double time, const Optional<bool>& isEnemyDamage)
 	{
 		m_outsideDelta += time;
 		m_shadowOutsideDelta = m_outsideDelta;
 		m_outsider.Kill();
 		m_outsider = AnimateEasing<EaseInQuint>(self, &m_outsideDelta, 0.0, 1.0);
+		if (isEnemyDamage.has_value()) m_fromEnemyDamage = isEnemyDamage.value();
 	}
 
 private:
@@ -70,7 +72,9 @@ private:
 		const auto center = Scene::Size().x0() + getToml<Point>(U"circle_center");
 		const auto mainColor = getToml<Color>(U"main_color");
 		const auto emptyColor = getToml<Color>(U"empty_color");
-		const auto damageColor = getToml<Color>(U"damage_color");
+		const auto damageColor = m_fromEnemyDamage
+			                         ? getToml<Color>(U"enemy_damage_color")
+			                         : getToml<Color>(U"penalty_damage_color");
 		const auto healColor = getToml<Color>(U"heal_color");
 		const double emptyThickness = getToml<double>(U"empty_thickness");
 		const int circleRadius = getToml<int>(U"circle_radius");
@@ -164,14 +168,14 @@ namespace Play
 		p_impl->Update();
 	}
 
-	void UiTimeLimiter::Damage(double time)
+	void UiTimeLimiter::Damage(double time, bool isEnemyDamage)
 	{
-		p_impl->GiveDelta(*this, time);
+		p_impl->GiveDelta(*this, time, isEnemyDamage);
 	}
 
 	void UiTimeLimiter::Heal(double time)
 	{
-		p_impl->GiveDelta(*this, -time);
+		p_impl->GiveDelta(*this, -time, none);
 	}
 
 	const TimeLimiterData& UiTimeLimiter::GetData() const

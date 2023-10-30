@@ -1,6 +1,8 @@
 ﻿#include "stdafx.h"
 #include "CharaUtil.h"
 
+#include "Play/PlayScene.h"
+#include "Play/Effect/DamageCounterEffect.h"
 #include "Util/EasingAnimation.h"
 #include "Util/TomlParametersWrapper.h"
 
@@ -131,5 +133,36 @@ namespace Play
 		(void)tri.draw(Palette::White);
 
 		(void)TextureAsset(emoji).resized(drawingRect.stretched(-2).size).drawAt(drawingRect.center());
+	}
+
+	static void relayTimeDamage(const CharaPosition& pos, int amount, const Color& c, bool isEnemyDamage = false)
+	{
+		if (const auto tutorial = PlayScene::Instance().Tutorial())
+		{
+			if (not tutorial->IsTimeEnabled()) return;
+		}
+		if (amount > 0)
+		{
+			PlayScene::Instance().GetTimeLimiter().Heal(amount);
+		}
+		else
+		{
+			PlayScene::Instance().GetTimeLimiter().Damage(-amount, isEnemyDamage);
+		}
+		PlayScene::Instance().FgEffect().add(EmitDamageCounterEffect({
+			.center = (pos.viewPos + Vec2(1, 1) * CellPx_24 / 2),
+			.amount = amount,
+			.color = c,
+		}));
+	}
+
+	void RelayTimeDamageAmount(const CharaPosition& pos, int amount, bool isEnemyDamage)
+	{
+		relayTimeDamage(pos, -amount, isEnemyDamage ? Palette::Orangered : Palette::Lightgray, isEnemyDamage);
+	}
+
+	void RelayTimeHealAmount(const CharaPosition& pos, int amount)
+	{
+		relayTimeDamage(pos, amount, Palette::Gold);
 	}
 }
