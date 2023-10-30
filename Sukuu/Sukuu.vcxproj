@@ -136,7 +136,9 @@
     <None Include="App\asset\font\RocknRoll\README-JP.md" />
     <None Include="App\asset\font\RocknRoll\README.md" />
     <None Include="App\asset\shader\cave_vision.hlsl" />
+    <None Include="App\asset\shader\multi_texture_mask.hlsl" />
     <None Include="App\asset\shader\soft_shape.hlsl" />
+    <ClInclude Include="Constants.h" />
     <ClInclude Include="GitRevision.h" />
     <ClCompile Include="GitRevision.generated.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -166,6 +168,7 @@
     <ClCompile Include="Play\Player_detail\PlayerDistField.cpp" />
     <ClCompile Include="Play\Player_detail\PlayerInternal.cpp" />
     <ClCompile Include="Play\PlayScene.cpp" />
+    <ClCompile Include="Play\UI\UiFloorTransition.cpp" />
     <ClCompile Include="Play\UI\UiItemButton.cpp" />
     <ClCompile Include="Play\UI\UiItemContainer.cpp" />
     <ClCompile Include="Play\UI\UiMiniMap.cpp" />
@@ -420,6 +423,7 @@
     <ClInclude Include="Play\Player_detail\PlayerDefinition.h" />
     <ClInclude Include="Play\Player_detail\PlayerInternal.h" />
     <ClInclude Include="Play\PlayScene.h" />
+    <ClInclude Include="Play\UI\UiFloorTransition.h" />
     <ClInclude Include="Play\UI\UiItemButton.h" />
     <ClInclude Include="Play\UI\UiItemContainer.h" />
     <ClInclude Include="Play\UI\UiMiniMap.h" />

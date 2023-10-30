@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "TutorialScene.h"
 
+#include "Constants.h"
 #include "TutorialFocus.h"
 #include "TutorialMap.h"
 #include "TutorialMessenger.h"
@@ -117,7 +118,7 @@ private:
 		double rate = 1.0;
 		m_postDraw = [&]()
 		{
-			Rect(Scene::Size()).draw(ColorF{Color(U"262932"), rate});
+			Rect(Scene::Size()).draw(ColorF{Constants::HardDarkblue, rate});
 		};
 		yield.WaitForDead(
 			AnimateEasing<EaseInQuad>(self, &rate, 0.0, 4.5));

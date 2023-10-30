@@ -6,11 +6,13 @@ namespace AssetKeys
 	constexpr AssetNameView RocknRoll_Msdf = U"RocknRoll_MSDF";
 
 	constexpr AssetNameView PsCaveVision = U"asset/shader/cave_vision";
+	constexpr AssetNameView PsMultiTextureMask = U"asset/shader/multi_texture_mask";
 	constexpr AssetNameView VsCaveVision = U"asset/shader/soft_shape";
 
 	inline void RegisterShader()
 	{
 		PixelShaderAsset::Register(PsCaveVision, HLSL(PsCaveVision + U".hlsl"));
+		PixelShaderAsset::Register(PsMultiTextureMask, HLSL(PsMultiTextureMask + U".hlsl"));
 		VertexShaderAsset::Register(VsCaveVision, HLSL(VsCaveVision + U".hlsl"));
 	}
 

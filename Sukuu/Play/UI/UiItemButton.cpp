@@ -12,7 +12,7 @@ public:
 	bool m_enteredBefore{};
 	double m_scale{1};
 
-	void Tick(ActorBase& self, const ItemButtonParam& param)
+	void Tick(ActorView self, const ItemButtonParam& param)
 	{
 		const int w = 80 * m_scale;
 		constexpr int r = 10;

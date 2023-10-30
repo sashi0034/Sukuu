@@ -10,6 +10,7 @@
 #include "Map/MapGrid.h"
 #include "Map/MazeGenerator.h"
 #include "Other/CaveVision.h"
+#include "UI/UiFloorTransition.h"
 #include "UI/UiItemContainer.h"
 #include "UI/UiMiniMap.h"
 #include "UI/UiTimeLimiter.h"
@@ -54,6 +55,7 @@ public:
 	EffectWrapper m_fgEffect{};
 	EffectWrapper m_bgEffect{};
 	ITutorialSetting* m_tutorial;
+	UiFloorTransition m_floorTransition{};
 
 	void Init(ActorBase& self, const PlaySingletonData& data)
 	{
@@ -82,6 +84,8 @@ public:
 
 		m_uiTimeLimiter = m_ui.Birth(UiTimeLimiter());
 
+		m_floorTransition = m_ui.Birth(UiFloorTransition());
+
 		// 初期化
 		if (const auto tutorial = data.tutorial)
 		{
@@ -97,6 +101,8 @@ public:
 		m_uiMiniMap.Init(m_map.Data().size());
 
 		m_uiTimeLimiter.Init(data.timeLimiter);
+
+		m_floorTransition.Init();
 	}
 
 	void UpdateScene(PlayScene& self)

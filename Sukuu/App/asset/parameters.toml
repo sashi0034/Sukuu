@@ -123,6 +123,9 @@ rect_unit_width = 280
 base_vertical = 80
 label_center = "(0, 80)"
 
+[play.ui_floor_transition]
+radial_duration = 2.0
+
 [play.debug]
 visualize_player_distance = false
 
