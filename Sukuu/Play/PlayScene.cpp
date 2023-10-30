@@ -103,7 +103,7 @@ public:
 		m_uiTimeLimiter.Init(data.timeLimiter);
 	}
 
-	ActorView StartTransition(int floorIndex)
+	ActorWeak StartTransition(int floorIndex)
 	{
 		ensureInitializedTransition();
 		return m_floorTransition.PerformOpen(floorIndex);
@@ -209,7 +209,7 @@ namespace Play
 		p_impl->m_ui.Kill();
 	}
 
-	ActorView PlayScene::StartTransition(int floorIndex)
+	ActorWeak PlayScene::StartTransition(int floorIndex)
 	{
 		return p_impl->StartTransition(floorIndex);
 	}

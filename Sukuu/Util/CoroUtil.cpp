@@ -51,4 +51,9 @@ namespace Util
 	{
 		WaitForTrue([coro]() { return coro.IsDead(); });
 	}
+
+	void YieldExtended::WaitForExpire(const ActorWeak& coro)
+	{
+		WaitForTrue([coro]() { return coro.IsDead(); });
+	}
 }

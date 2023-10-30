@@ -50,7 +50,7 @@ private:
 		while (true)
 		{
 			auto play = self.AsParent().Birth(Play::PlayScene());
-			yield.WaitForDead(play.StartTransition(1));
+			yield.WaitForExpire(play.StartTransition(1));
 			play.Init(m_playData);
 			yield.WaitForTrue([&]()
 			{

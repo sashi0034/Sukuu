@@ -13,8 +13,8 @@ namespace Play
 		void Update() override;
 		double OrderPriority() const override;
 
-		ActorView PerformOpen(int floorIndex);
-		ActorView PerformClose();
+		ActorWeak PerformOpen(int floorIndex);
+		ActorWeak PerformClose();
 
 	private:
 		struct Impl;

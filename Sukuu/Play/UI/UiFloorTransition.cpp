@@ -65,7 +65,7 @@ struct Play::UiFloorTransition::Impl
 			drawDirect();
 	}
 
-	ActorView PerformOpen(ActorView self, int floorIndex)
+	ActorWeak PerformOpen(ActorView self, int floorIndex)
 	{
 		return StartCoro(self, [self, this, floorIndex](YieldExtended yield)
 		{
@@ -73,7 +73,7 @@ struct Play::UiFloorTransition::Impl
 		});
 	}
 
-	ActorView PerformClose(ActorView self)
+	ActorWeak PerformClose(ActorView self)
 	{
 		m_radialRadius = (Scene::Size() / 2).length();
 		return AnimateEasing<EaseInQuint>(self, &m_radialRadius, 0.0, getToml<double>(U"radial_duration"));
@@ -200,12 +200,12 @@ namespace Play
 		return 10000.0;
 	}
 
-	ActorView UiFloorTransition::PerformOpen(int floorIndex)
+	ActorWeak UiFloorTransition::PerformOpen(int floorIndex)
 	{
 		return p_impl->PerformOpen(*this, floorIndex);
 	}
 
-	ActorView UiFloorTransition::PerformClose()
+	ActorWeak UiFloorTransition::PerformClose()
 	{
 		return p_impl->PerformClose(*this);
 	}

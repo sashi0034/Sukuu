@@ -21,6 +21,7 @@ namespace Util
 		void WaitForFalse(const std::function<bool()>& discriminant);
 		void WaitForFalseVal(const bool& discriminant);
 		void WaitForDead(ActorView coro);
+		void WaitForExpire(const ActorWeak& coro);
 		void operator()() { yield(); }
 
 	private:
