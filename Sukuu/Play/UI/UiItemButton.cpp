@@ -29,7 +29,7 @@ public:
 		Circle(textPos, w / 4)
 			.drawShadow(Vec2{2, 2}, 8, 2)
 			.draw(Color{U"#404040"});
-		(void)FontAsset(AssetKeys::RocknRoll_Bitmap)(U"{}"_fmt(param.index)).drawAt(textPos);
+		(void)FontAsset(AssetKeys::RocknRoll_24_Bitmap)(U"{}"_fmt(param.index)).drawAt(textPos);
 
 		if (isItemContaining)
 			(void)TextureAsset(itemProps.emoji).resized(Vec2{w, w} * 0.8f).drawAt(
@@ -43,7 +43,7 @@ public:
 		{
 			m_scale = 1;
 			AnimateEasing<BoomerangParabola>(self, &m_scale, 1.1, 0.2);
-			if (isItemContaining) param.label.ShowMessage(FontAsset(AssetKeys::RocknRoll_Bitmap)(itemProps.desc));
+			if (isItemContaining) param.label.ShowMessage(FontAsset(AssetKeys::RocknRoll_24_Bitmap)(itemProps.desc));
 		}
 		else if ((not entered && m_enteredBefore) || justUsed)
 		{

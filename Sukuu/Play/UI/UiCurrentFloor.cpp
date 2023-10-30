@@ -20,7 +20,7 @@ struct Play::UiCurrentFloor::Impl
 	void Update()
 	{
 		if (m_text.empty()) return;
-		FontAsset(AssetKeys::RocknRoll_Bitmap)(m_text)
+		FontAsset(AssetKeys::RocknRoll_24_Bitmap)(m_text)
 			.draw(Arg::bottomLeft = Rect(Scene::Size()).bl() + getToml<Point>(U"padding"), Palette::Lavender);
 	}
 };
