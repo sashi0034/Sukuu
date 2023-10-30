@@ -78,6 +78,7 @@ struct Play::UiFloorTransition::Impl
 
 	ActorWeak PerformClose(ActorView self)
 	{
+		m_maxRadialRadius = (Scene::Size() / 2).length();
 		m_radialRadius = m_maxRadialRadius;
 		return AnimateEasing<EaseInCirc>(self, &m_radialRadius, 0.0, getToml<double>(U"radial_duration"));
 	}

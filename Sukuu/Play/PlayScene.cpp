@@ -10,6 +10,7 @@
 #include "Map/MapGrid.h"
 #include "Map/MazeGenerator.h"
 #include "Other/CaveVision.h"
+#include "UI/UiCurrentFloor.h"
 #include "UI/UiFloorTransition.h"
 #include "UI/UiItemContainer.h"
 #include "UI/UiMiniMap.h"
@@ -56,6 +57,7 @@ public:
 	EffectWrapper m_bgEffect{};
 	ITutorialSetting* m_tutorial;
 	UiFloorTransition m_floorTransition{};
+	UiCurrentFloor m_currentFloor{};
 	int m_floorIndex{};
 
 	void Init(ActorView self, const PlaySingletonData& data)
@@ -86,6 +88,8 @@ public:
 
 		m_uiTimeLimiter = m_ui.Birth(UiTimeLimiter());
 
+		m_currentFloor = m_ui.Birth(UiCurrentFloor());
+
 		ensureInitializedTransition();
 
 		// 初期化
@@ -98,6 +102,8 @@ public:
 			InstallGimmicks(m_gimmick, m_map);
 			installEnemies(self);
 			m_player.Init(data.playerPersonal, GetInitialPos(m_map));
+
+			m_currentFloor.Init(data.floorIndex);
 		}
 
 		m_uiMiniMap.Init(m_map.Data().size());
