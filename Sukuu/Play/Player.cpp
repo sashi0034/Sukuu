@@ -550,6 +550,7 @@ private:
 		const auto nextPoint =
 			GetArrowWarpPoint(PlayScene::Instance().GetMap(), PlayScene::Instance().GetGimmick(), point);
 		ProcessArrowWarpCharaPos(yield, self, m_pos, m_animOffset, nextPoint * CellPx_24);
+		refreshDistField();
 	}
 
 	bool canInstallGimmickNow() const

@@ -48,7 +48,7 @@ struct Play::EnKnight::Impl : EnemyTransform
 
 	Vec2 GetDrawPos() const
 	{
-		return m_pos.viewPos.movedBy(GetCharacterCellPadding(knightRect.size));
+		return m_pos.viewPos.movedBy(m_animOffset + GetCharacterCellPadding(knightRect.size));
 	}
 
 	void StartFlowchart(ActorBase& self)
@@ -97,7 +97,7 @@ private:
 			const auto currentPoint = m_pos.actualPos.MapPoint();
 
 			// ギミック確認
-			CheckEnemyTrappingGimmick(yield, currentPoint, *this);
+			CheckEnemyTrappingGimmick(yield, self, currentPoint, *this);
 
 			// プレイヤー追跡チェック
 			m_playerTracker.Track(

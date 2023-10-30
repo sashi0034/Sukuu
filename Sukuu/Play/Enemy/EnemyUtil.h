@@ -56,7 +56,7 @@ namespace Play
 	{
 		CharaPosition m_pos{};
 		Vec2 m_animOffset{};
-		bool m_collideEnabled{};
+		bool m_collideEnabled{true};
 		Dir4Type m_dir{Dir4::Down};
 		AnimTimer m_animTimer{};
 		EnemyTrappedState m_trapped{};
@@ -65,6 +65,6 @@ namespace Play
 
 	bool CheckEnemyTrappingGimmick(
 		YieldExtended& yield,
-		const Point& currentPoint,
-		EnemyTransform& transform);
+		ActorView self,
+		const Point& currentPoint, EnemyTransform& transform);
 }

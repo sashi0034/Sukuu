@@ -68,7 +68,7 @@ struct Play::EnSlimeCat::Impl : EnemyTransform
 
 	Vec2 GetDrawPos() const override
 	{
-		return m_pos.viewPos.movedBy(GetCharacterCellPadding(catRect.size));
+		return m_pos.viewPos.movedBy(m_animOffset + GetCharacterCellPadding(catRect.size));
 	}
 
 	TextureRegion GetTexture() const override
@@ -119,7 +119,7 @@ private:
 			const auto currentPoint = m_pos.actualPos.MapPoint();
 
 			// ギミック確認
-			CheckEnemyTrappingGimmick(yield, currentPoint, *this);
+			CheckEnemyTrappingGimmick(yield, self, currentPoint, *this);
 
 			// プレイヤー追跡チェック
 			checkFollowPlayer(yield, currentPoint);

@@ -186,7 +186,7 @@ namespace Play
 	}
 
 	bool CheckEnemyTrappingGimmick(
-		YieldExtended& yield, const Point& currentPoint, EnemyTransform& transform)
+		YieldExtended& yield, ActorView self, const Point& currentPoint, EnemyTransform& transform)
 	{
 		auto&& gimmick = PlayScene::Instance().GetGimmick();
 		switch (gimmick[currentPoint])
@@ -210,6 +210,20 @@ namespace Play
 			}
 			transform.m_trapped = EnemyTrappedState::Normal;
 			return true;
+		case GimmickKind::Arrow_right: [[fallthrough]];
+		case GimmickKind::Arrow_up: [[fallthrough]];
+		case GimmickKind::Arrow_left: [[fallthrough]];
+		case GimmickKind::Arrow_down: {
+			// 矢印
+			transform.m_collideEnabled = false;
+			const Vec2 nextPos = GetArrowWarpPoint(
+				PlayScene::Instance().GetMap(),
+				PlayScene::Instance().GetGimmick(),
+				transform.m_pos.actualPos.MapPoint()) * CellPx_24;
+			ProcessArrowWarpCharaPos(yield, self, transform.m_pos, transform.m_animOffset, nextPos);
+			transform.m_collideEnabled = true;
+			break;
+		}
 		default:
 			break;
 		}
