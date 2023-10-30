@@ -55,17 +55,16 @@ public:
 			}
 			state.createdRooms.push_back({{x, y}, {props.roomSize, props.roomSize}});
 
-			if (Random(0, 1) == 0)
+			// 入り口フラグを設定
+			while (true)
 			{
-				state.roomEntryFlag[{
-					x + Random(0, props.roomSize / 2) * 2, y + (props.roomSize / 2) * 2 * Random(0, 1)
-				}] = true;
-			}
-			else
-			{
-				state.roomEntryFlag[{
-					x + (props.roomSize / 2) * 2 * Random(0, 1), y + Random(0, props.roomSize / 2) * 2
-				}] = true;
+				const auto e =
+					RandomBool(0.5)
+						? Point(x + Random(0, props.roomSize / 2) * 2, y + (props.roomSize / 2) * 2 * Random(0, 1))
+						: Point(x + (props.roomSize / 2) * 2 * Random(0, 1), y + Random(0, props.roomSize / 2) * 2);
+				if (isExtremeFloorPoint(e)) continue;
+				state.roomEntryFlag[e] = true;
+				break;
 			}
 		}
 	}
@@ -93,6 +92,12 @@ public:
 
 private:
 	const MazeGenProps& props;
+
+	bool isExtremeFloorPoint(const Point& p) const
+	{
+		return p.x == 1 || p.y == 1 ||
+			p.x == props.size.x - 2 || props.size.y == props.size.y - 2;
+	}
 
 	bool canDigRoom(const MazeGenState& state, const Rect& rect) const
 	{
@@ -128,7 +133,6 @@ private:
 			digAt(state, p1 + d * 2);
 			return p1 + d * 2;
 		};
-		Point p2 = p1;
 		Array<int> dirs{0, 1, 2, 3};
 		dirs.shuffle();
 
