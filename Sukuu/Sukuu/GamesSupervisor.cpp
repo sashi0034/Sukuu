@@ -72,7 +72,9 @@ private:
 		while (true)
 		{
 			auto play = self.AsParent().Birth(Play::PlayScene());
-			yield.WaitForExpire(play.StartTransition(m_playData.floorIndex));
+			if (getToml<bool>(U"show_transition"))
+				yield.WaitForExpire(
+					play.StartTransition(m_playData.floorIndex));
 			play.Init(m_playData);
 			yield.WaitForTrue([&]()
 			{
