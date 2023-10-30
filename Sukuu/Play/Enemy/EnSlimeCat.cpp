@@ -208,11 +208,10 @@ namespace Play
 		return CharaOrderPriority(p_impl->m_pos);
 	}
 
-	bool EnSlimeCat::SendDamageCollider(ItemAttackerAffair& attacker, const RectF& collider)
+	bool EnSlimeCat::SendDamageCollider(const ItemAttackerAffair& attacker, const RectF& collider)
 	{
 		if (not IsEnemyCollided(*p_impl, collider)) return false;
-		attacker.IncAttacked();
-		PerformEnemyDestroyed(*p_impl);
+		PerformEnemyDestroyed(attacker, *p_impl);
 		Kill();
 		return true;
 	}

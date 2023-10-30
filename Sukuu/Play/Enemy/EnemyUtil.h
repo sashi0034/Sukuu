@@ -21,7 +21,7 @@ namespace Play
 
 	bool IsEnemyCollided(const EnemyTransform& transform, const RectF& collider);
 
-	void PerformEnemyDestroyed(const IEnemyInternal& enemy);
+	void PerformEnemyDestroyed(const ItemAttackerAffair& attacker, const EnemyTransform& enemy);
 
 	bool FaceEnemyMovableDir(
 		Dir4Type& dir, const CharaPosition& pos, const MapGrid& map, const GimmickGrid& gimmick, bool leftPriority);

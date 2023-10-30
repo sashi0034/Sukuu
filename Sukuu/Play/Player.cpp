@@ -8,6 +8,7 @@
 #include "Item/ItemMine.h"
 #include "Item/ItemPin.h"
 #include "Item/ItemSun.h"
+#include "Other/PlayPenaltyBonus.h"
 #include "Player_detail/PlayerAnimation.h"
 #include "Player_detail/PlayerDistField.h"
 #include "Player_detail/PlayerInternal.h"
@@ -481,8 +482,7 @@ private:
 		if (PlayScene::Instance().GetMap().At(m_pos.actualPos.MapPoint()).kind == TerrainKind::Wall)
 		{
 			// ペナルティ発生
-			RelayTimeDamageAmount(
-				m_pos, scoopPenalty[std::min(m_scoopContinuous, static_cast<int>(scoopPenalty.size()) - 1)], false);
+			RelayTimeDamageAmount(m_pos, GetPlayerScoopedPenaltyDamage(m_scoopContinuous), false);
 			m_scoopContinuous++;
 		}
 	}
@@ -604,8 +604,9 @@ namespace Play
 		p_impl->StartFlowchart(*this);
 
 #ifdef _DEBUG
-		p_impl->m_personal.items[0] = ConsumableItem::Wing;
-		p_impl->m_personal.items[1] = ConsumableItem::Solt;
+		p_impl->m_personal.items[0] = ConsumableItem::Pin;
+		p_impl->m_personal.items[1] = ConsumableItem::Sun;
+		p_impl->m_personal.items[2] = ConsumableItem::Mine;
 #endif
 	}
 

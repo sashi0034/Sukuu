@@ -3,6 +3,7 @@
 
 #include "Play/PlayScene.h"
 #include "Play/Effect/FragmentTextureEffect.h"
+#include "Play/Other/PlayPenaltyBonus.h"
 #include "Util/TomlParametersWrapper.h"
 
 namespace
@@ -42,8 +43,10 @@ namespace Play
 		return RectF{pos.actualPos, Vec2{CellPx_24, CellPx_24}}.intersects(collider);
 	}
 
-	static void performEnemyDestroyed(const Vec2& drawingPos, const TextureRegion& texture)
+	void PerformEnemyDestroyed(const ItemAttackerAffair& attacker, const EnemyTransform& enemy)
 	{
+		const auto drawingPos = enemy.GetDrawPos();
+		const auto texture = enemy.GetTexture();
 		auto&& playScene = PlayScene::Instance();
 		playScene.RequestHitstopping(0.5);
 		playScene.FgEffect().add(EmitFragmentTextureEffect(
@@ -51,11 +54,7 @@ namespace Play
 			texture,
 			Palette::Crimson,
 			96));
-	}
-
-	void PerformEnemyDestroyed(const IEnemyInternal& enemy)
-	{
-		performEnemyDestroyed(enemy.GetDrawPos(), enemy.GetTexture());
+		RelayTimeHealAmount(enemy.m_pos, GetEnemyKilledBonusHeal(attacker.AttackedCount()));
 	}
 
 	bool FaceEnemyMovableDir(
@@ -196,7 +195,7 @@ namespace Play
 			// 地雷を踏んだ
 			gimmick[currentPoint] = GimmickKind::None;
 			// TODO: 爆発エフェクト
-			PerformEnemyDestroyed(transform);
+			PerformEnemyDestroyed(ItemAttackerAffair{ConsumableItem::Mine}, transform);
 			transform.m_trapped = EnemyTrappedState::Killed;
 			yield();
 			return true;

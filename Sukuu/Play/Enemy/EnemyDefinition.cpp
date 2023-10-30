@@ -42,7 +42,11 @@ namespace Play
 		for (auto&& enemy : *this)
 		{
 			if (enemy->IsDead()) continue;
-			if (enemy->SendDamageCollider(attacker, collider)) count++;
+			if (enemy->SendDamageCollider(attacker, collider))
+			{
+				attacker.IncAttacked();
+				count++;
+			}
 		}
 		return count;
 	}

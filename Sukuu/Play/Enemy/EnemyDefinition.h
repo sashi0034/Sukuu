@@ -20,7 +20,7 @@ namespace Play
 	public:
 		EnemyBase() = default;
 		~EnemyBase() override = default;
-		virtual bool SendDamageCollider(ItemAttackerAffair& attacker, const RectF& collider) = 0;
+		virtual bool SendDamageCollider(const ItemAttackerAffair& attacker, const RectF& collider) = 0;
 		virtual const CharaPosition& Pos() const = 0;
 	};
 

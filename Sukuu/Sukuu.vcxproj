@@ -164,6 +164,7 @@
     <ClCompile Include="Play\Map\MapGrid.cpp" />
     <ClCompile Include="Play\Map\MazeGenerator.cpp" />
     <ClCompile Include="Play\Other\CaveVision.cpp" />
+    <ClCompile Include="Play\Other\PlayPenaltyBonus.cpp" />
     <ClCompile Include="Play\Player.cpp" />
     <ClCompile Include="Play\Player_detail\PlayerAnimation.cpp" />
     <ClCompile Include="Play\Player_detail\PlayerDistField.cpp" />
@@ -419,6 +420,7 @@
     <ClInclude Include="Play\Map\MapGrid.h" />
     <ClInclude Include="Play\Map\MazeGenerator.h" />
     <ClInclude Include="Play\Other\CaveVision.h" />
+    <ClInclude Include="Play\Other\PlayPenaltyBonus.h" />
     <ClInclude Include="Play\Other\TimeLimiter.h" />
     <ClInclude Include="Play\Player.h" />
     <ClInclude Include="Play\Player_detail\PlayerAnimation.h" />
