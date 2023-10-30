@@ -124,7 +124,7 @@ base_vertical = 80
 label_center = "(0, 80)"
 
 [play.ui_floor_transition]
-radial_duration = 2.0
+radial_duration = 1.0
 line_duration = 0.7
 line_thickness = 20.0
 glyph_start = 0.3

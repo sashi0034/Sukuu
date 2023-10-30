@@ -214,6 +214,11 @@ namespace Play
 		return p_impl->StartTransition(floorIndex);
 	}
 
+	ActorWeak PlayScene::EndTransition()
+	{
+		return p_impl->m_floorTransition.PerformClose();
+	}
+
 	PlayScene& PlayScene::Instance()
 	{
 		assert(s_instance != nullptr);

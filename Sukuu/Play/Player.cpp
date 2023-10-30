@@ -495,6 +495,7 @@ private:
 			m_cameraOffsetDestination = {0, 0};
 			m_immortal.immortalStock++;
 			// ゴール到達
+			PlayScene::Instance().EndTransition();
 			yield.WaitForDead(
 				AnimateEasing<EaseInBack>(self, &m_cameraScale, 8.0, 0.5));
 			yield.WaitForDead(
@@ -576,7 +577,7 @@ namespace Play
 		p_impl->StartFlowchart(*this);
 
 #ifdef _DEBUG
-		p_impl->m_personal.items[0] = ConsumableItem::Solt;
+		p_impl->m_personal.items[0] = ConsumableItem::Wing;
 		p_impl->m_personal.items[1] = ConsumableItem::Solt;
 #endif
 	}

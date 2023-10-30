@@ -42,6 +42,7 @@ struct Play::UiFloorTransition::Impl
 	RenderTexture m_maskTexture{};
 	bool m_isMasking = true;
 	double m_radialRadius{};
+	double m_maxRadialRadius{};
 	Array<OutlineGlyph> m_glyphs{};
 	double m_glyphWidth{};
 	double m_glyphLength{};
@@ -59,6 +60,8 @@ struct Play::UiFloorTransition::Impl
 
 	void Update()
 	{
+		if (m_radialRadius == m_maxRadialRadius) return;
+
 		if (m_isMasking)
 			drawMasked();
 		else
@@ -75,15 +78,17 @@ struct Play::UiFloorTransition::Impl
 
 	ActorWeak PerformClose(ActorView self)
 	{
-		m_radialRadius = (Scene::Size() / 2).length();
-		return AnimateEasing<EaseInQuint>(self, &m_radialRadius, 0.0, getToml<double>(U"radial_duration"));
+		m_radialRadius = m_maxRadialRadius;
+		return AnimateEasing<EaseInCirc>(self, &m_radialRadius, 0.0, getToml<double>(U"radial_duration"));
 	}
 
 private:
 	void processPerformOpen(YieldExtended& yield, ActorView self, int floorIndex)
 	{
+		m_maxRadialRadius = (Scene::Size() / 2).length();
 		m_isMasking = false;
 
+		yield.WaitForTime(0.5);
 		m_centerLineRange.first = Scene::Size().x;
 		m_centerLineRange.second = Scene::Size().x;
 		AnimateEasing<EaseOutCubic>(self, &m_centerLineRange.first, 0.0, getToml<double>(U"line_duration"));
@@ -117,7 +122,7 @@ private:
 		m_isMasking = true;
 		m_radialRadius = 0;
 		AnimateEasing<EaseOutQuint>(
-			self, &m_radialRadius, (Scene::Size() / 2).length(), getToml<double>(U"radial_duration"));
+			self, &m_radialRadius, m_maxRadialRadius, getToml<double>(U"radial_duration"));
 	}
 
 	void drawDirect() const

@@ -51,6 +51,7 @@ namespace Play
 		void Kill() override;
 
 		ActorWeak StartTransition(int floorIndex);
+		ActorWeak EndTransition();
 
 		MapGrid& GetMap();
 		const MapGrid& GetMap() const;
