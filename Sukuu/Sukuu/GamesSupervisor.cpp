@@ -83,6 +83,8 @@ private:
 			play.Kill();
 			m_playData = play.CopyData();
 			m_playData.floorIndex++;
+			m_playData.timeLimiter.maxTime += 3;
+			m_playData.timeLimiter.remainingTime += 3;
 		}
 	}
 };
