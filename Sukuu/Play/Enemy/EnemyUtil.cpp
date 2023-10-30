@@ -143,25 +143,26 @@ namespace Play
 		// プレイヤーが無敵のときは、追跡しない
 		if (isPlayerImmortal) return;
 
+		auto&& scene = PlayScene::Instance();
+		bool isMazeMap = scene.GetMap().Category() == MapCategory::Maze;
 		const auto resetTracking = [&]()
 		{
-			m_concern = maxConcern;
+			m_concern = isMazeMap ? maxConcern * 5 : maxConcern;
 		};
-		const auto playerPoint = PlayScene::Instance().GetPlayer().CurrentPoint();
+		const auto playerPoint = scene.GetPlayer().CurrentPoint();
 		const bool isInPathway =
-			PlayScene::Instance().GetMap().Data()[currentPoint].kind == TerrainKind::Pathway
-			|| PlayScene::Instance().GetMap().Data()[playerPoint].kind == TerrainKind::Pathway;
-		if (isInPathway)
+			scene.GetMap().Data()[currentPoint].kind == TerrainKind::Pathway
+			|| scene.GetMap().Data()[playerPoint].kind == TerrainKind::Pathway;
+		if ((not isInPathway) || isMazeMap)
 		{
-			// 通路の中
-			if ((playerDf[currentPoint].directStraight || playerDf[nextPoint].directStraight) && nextDist <
-				currentDist)
-				resetTracking();
+			// 部屋の中 (迷路は常に部屋扱い)
+			if (nextDist < currentDist) resetTracking();
 		}
 		else
 		{
-			// 部屋の中
-			if (nextDist < currentDist) resetTracking();
+			// 通路の中
+			if ((playerDf[currentPoint].directStraight || playerDf[nextPoint].directStraight) && nextDist < currentDist)
+				resetTracking();
 		}
 
 		if (m_concern == 0) return;

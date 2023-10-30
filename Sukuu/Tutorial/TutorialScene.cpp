@@ -204,7 +204,7 @@ private:
 			}
 		});
 
-		waitMessage(yield, U"おや、物の怪に挟まれてしまったね", messageWaitMedium);
+		waitMessage(yield, U"おや、怪物に囲まれてしまったね", messageWaitMedium);
 		waitMessage(yield, U"では、キミに運命を 'スクう' チカラを与えよう", messageWaitMedium);
 
 		bool hasScooped{};
