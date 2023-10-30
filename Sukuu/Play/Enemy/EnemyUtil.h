@@ -12,12 +12,14 @@ namespace Play
 		virtual TextureRegion GetTexture() const = 0;
 	};
 
+	struct EnemyTransform;
+
 	bool CanEnemyMoveTo(
 		const MapGrid& map, const GimmickGrid& gimmick, const CharaVec2& currentActualPos, Dir4Type dir);
 
-	void CheckSendEnemyCollide(Player& player, CharaPosition& pos, EnemyKind enemy);
+	void CheckSendEnemyCollide(Player& player, const EnemyTransform& transform, EnemyKind enemy);
 
-	bool IsEnemyCollided(const CharaPosition& pos, const RectF& collider);
+	bool IsEnemyCollided(const EnemyTransform& transform, const RectF& collider);
 
 	void PerformEnemyDestroyed(const IEnemyInternal& enemy);
 
@@ -50,10 +52,19 @@ namespace Play
 		Captured,
 	};
 
+	struct EnemyTransform : IEnemyInternal
+	{
+		CharaPosition m_pos{};
+		Vec2 m_animOffset{};
+		bool m_collideEnabled{};
+		Dir4Type m_dir{Dir4::Down};
+		AnimTimer m_animTimer{};
+		EnemyTrappedState m_trapped{};
+		EnemyPlayerTracker m_playerTracker{};
+	};
+
 	bool CheckEnemyTrappingGimmick(
 		YieldExtended& yield,
 		const Point& currentPoint,
-		const IEnemyInternal& enemy,
-		Dir4Type& dir,
-		EnemyTrappedState& trappedState);
+		EnemyTransform& transform);
 }

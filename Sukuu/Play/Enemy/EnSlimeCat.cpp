@@ -12,13 +12,8 @@ namespace
 	constexpr Rect catRect{0, 0, 24, 24};
 }
 
-struct Play::EnSlimeCat::Impl : IEnemyInternal
+struct Play::EnSlimeCat::Impl : EnemyTransform
 {
-	CharaPosition m_pos{};
-	Dir4Type m_dir{Dir4::Down};
-	AnimTimer m_animTimer{};
-	EnemyTrappedState m_trapped{};
-	EnemyPlayerTracker m_playerTracker{};
 	bool m_doingLostPenalty{};
 	int m_tireCount{};
 	int m_tirePenalty{};
@@ -26,7 +21,7 @@ struct Play::EnSlimeCat::Impl : IEnemyInternal
 	void Update()
 	{
 		// プレイヤーとの当たり判定
-		CheckSendEnemyCollide(PlayScene::Instance().GetPlayer(), m_pos, EnemyKind::SlimeCat);
+		CheckSendEnemyCollide(PlayScene::Instance().GetPlayer(), *this, EnemyKind::SlimeCat);
 
 		// アニメーション更新
 		m_animTimer.Tick();
@@ -124,7 +119,7 @@ private:
 			const auto currentPoint = m_pos.actualPos.MapPoint();
 
 			// ギミック確認
-			CheckEnemyTrappingGimmick(yield, currentPoint, *this, m_dir, m_trapped);
+			CheckEnemyTrappingGimmick(yield, currentPoint, *this);
 
 			// プレイヤー追跡チェック
 			checkFollowPlayer(yield, currentPoint);
@@ -215,7 +210,7 @@ namespace Play
 
 	bool EnSlimeCat::SendDamageCollider(ItemAttackerAffair& attacker, const RectF& collider)
 	{
-		if (not IsEnemyCollided(p_impl->m_pos, collider)) return false;
+		if (not IsEnemyCollided(*p_impl, collider)) return false;
 		attacker.IncAttacked();
 		PerformEnemyDestroyed(*p_impl);
 		Kill();

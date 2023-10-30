@@ -18,21 +18,15 @@ namespace
 	constexpr Rect knightRect{0, 0, 32, 32};
 }
 
-struct Play::EnKnight::Impl : IEnemyInternal
+struct Play::EnKnight::Impl : EnemyTransform
 {
-	EnemyTrappedState m_trapped{};
-	CharaPosition m_pos{};
-	Dir4Type m_dir{Dir4::Down};
-	AnimTimer m_animTimer{};
-	EnemyPlayerTracker m_playerTracker{};
-
 	bool m_sleeping = true;
 	bool m_doingLostPenalty = false;
 
 	void Update()
 	{
 		// プレイヤーとの当たり判定
-		CheckSendEnemyCollide(PlayScene::Instance().GetPlayer(), m_pos, EnemyKind::Knight);
+		CheckSendEnemyCollide(PlayScene::Instance().GetPlayer(), *this, EnemyKind::Knight);
 
 		// アニメーション更新
 		m_animTimer.Tick();
@@ -103,7 +97,7 @@ private:
 			const auto currentPoint = m_pos.actualPos.MapPoint();
 
 			// ギミック確認
-			CheckEnemyTrappingGimmick(yield, currentPoint, *this, m_dir, m_trapped);
+			CheckEnemyTrappingGimmick(yield, currentPoint, *this);
 
 			// プレイヤー追跡チェック
 			m_playerTracker.Track(
@@ -188,7 +182,7 @@ namespace Play
 
 	bool EnKnight::SendDamageCollider(ItemAttackerAffair& attacker, const RectF& collider)
 	{
-		if (not IsEnemyCollided(p_impl->m_pos, collider)) return false;
+		if (not IsEnemyCollided(*p_impl, collider)) return false;
 		attacker.IncAttacked();
 		PerformEnemyDestroyed(*p_impl);
 		Kill();

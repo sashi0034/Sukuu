@@ -25,16 +25,20 @@ namespace Play
 		return CanMovePointAt(map, nextPoint);
 	}
 
-	void CheckSendEnemyCollide(Player& player, CharaPosition& pos, EnemyKind enemy)
+	void CheckSendEnemyCollide(Player& player, const EnemyTransform& transform, EnemyKind enemy)
 	{
+		if (not transform.m_collideEnabled) return;
+		auto&& pos = transform.m_pos;
 		if (player.DistField()[pos.actualPos.MapPoint()].distance != PlayerDistanceInfinity)
 		{
 			player.SendEnemyCollide({pos.actualPos, {CellPx_24, CellPx_24}}, enemy);
 		}
 	}
 
-	bool IsEnemyCollided(const CharaPosition& pos, const RectF& collider)
+	bool IsEnemyCollided(const EnemyTransform& transform, const RectF& collider)
 	{
+		if (not transform.m_collideEnabled) return false;
+		auto&& pos = transform.m_pos;
 		return RectF{pos.actualPos, Vec2{CellPx_24, CellPx_24}}.intersects(collider);
 	}
 
@@ -181,28 +185,8 @@ namespace Play
 		}
 	}
 
-	bool CheckEnemyTrappingGimmick(const Point& currentPoint, const std::function<void()>& onKilled)
-	{
-		auto&& gimmick = PlayScene::Instance().GetGimmick();
-		switch (gimmick[currentPoint])
-		{
-		case GimmickKind::Installed_Mine:
-			// 地雷を踏んだ
-			onKilled();
-			gimmick[currentPoint] = GimmickKind::None;
-			return true;
-		default:
-			break;
-		}
-		return false;
-	}
-
 	bool CheckEnemyTrappingGimmick(
-		YieldExtended& yield,
-		const Point& currentPoint,
-		const IEnemyInternal& enemy,
-		Dir4Type& dir,
-		EnemyTrappedState& trappedState)
+		YieldExtended& yield, const Point& currentPoint, EnemyTransform& transform)
 	{
 		auto&& gimmick = PlayScene::Instance().GetGimmick();
 		switch (gimmick[currentPoint])
@@ -211,20 +195,20 @@ namespace Play
 			// 地雷を踏んだ
 			gimmick[currentPoint] = GimmickKind::None;
 			// TODO: 爆発エフェクト
-			PerformEnemyDestroyed(enemy);
-			trappedState = EnemyTrappedState::Killed;
+			PerformEnemyDestroyed(transform);
+			transform.m_trapped = EnemyTrappedState::Killed;
 			yield();
 			return true;
 		}
 		case GimmickKind::Installed_Magnet:
 			// マグネットに引っかかった
-			trappedState = EnemyTrappedState::Captured;
+			transform.m_trapped = EnemyTrappedState::Captured;
 			while (gimmick[currentPoint] == GimmickKind::Installed_Magnet)
 			{
 				yield.WaitForTime(getToml<double>(U"magnet_penalty"));
-				dir = dir.Rotated(RandomBool(0.5));
+				transform.m_dir = transform.m_dir.Rotated(RandomBool(0.5));
 			}
-			trappedState = EnemyTrappedState::Normal;
+			transform.m_trapped = EnemyTrappedState::Normal;
 			return true;
 		default:
 			break;
