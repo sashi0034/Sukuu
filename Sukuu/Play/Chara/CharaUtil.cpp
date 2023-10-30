@@ -64,10 +64,10 @@ namespace Play
 		while (true)
 		{
 			checking += dir;
-			if (checking.x < 0) checking.x = gimmickGrid.size().x - 1;
-			if (checking.y < 0) checking.y = gimmickGrid.size().y - 1;
-			if (checking.x >= gimmickGrid.size().x) checking.x = 0;
-			if (checking.y >= gimmickGrid.size().y) checking.y = 0;
+			if (checking.x < 0) checking.x = gimmickGrid.size().x - 2;
+			if (checking.y < 0) checking.y = gimmickGrid.size().y - 2;
+			if (checking.x >= gimmickGrid.size().x) checking.x = 1;
+			if (checking.y >= gimmickGrid.size().y) checking.y = 1;
 			if (map.At(checking).kind == TerrainKind::Wall) continue;
 			return checking;
 		}
@@ -86,6 +86,22 @@ namespace Play
 			Util::AnimateEasing<easing, EaseOption::None>(
 				self, &pos.viewPos, nextPos,
 				moveDuration)
+		);
+	}
+
+	void ProcessArrowWarpCharaPos(
+		YieldExtended& yield, ActorView self, CharaPosition& pos, Vec2& jumpOffset, const Vec2& nextPos)
+	{
+		constexpr double moveDuration = 0.5;
+
+		// ジャンプ表現
+		Util::AnimateEasing<BoomerangParabola>(self, &jumpOffset, Vec2{0, -48.0}, moveDuration);
+
+		Util::AnimateEasing<EaseInLinear>(
+			self, &pos.actualPos, CharaVec2(nextPos), moveDuration);
+		// 通常移動とは違い、微小時間の慣性を無視
+		yield.WaitForDead(
+			Util::AnimateEasing<EaseInLinear>(self, &pos.viewPos, nextPos, moveDuration)
 		);
 	}
 

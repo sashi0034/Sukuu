@@ -549,10 +549,7 @@ private:
 	{
 		const auto nextPoint =
 			GetArrowWarpPoint(PlayScene::Instance().GetMap(), PlayScene::Instance().GetGimmick(), point);
-		const double duration = getToml<double>(U"arrow_warp_duration");
-		AnimateEasing<BoomerangParabola>(
-			self, &m_animOffset, Vec2{0, -getToml<double>(U"arrow_warp_jump")}, duration);
-		ProcessMoveCharaPos(yield, self, m_pos, nextPoint * CellPx_24, duration);
+		ProcessArrowWarpCharaPos(yield, self, m_pos, m_animOffset, nextPoint * CellPx_24);
 	}
 
 	bool canInstallGimmickNow() const

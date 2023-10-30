@@ -65,6 +65,9 @@ namespace Play
 	template void ProcessMoveCharaPos<EaseInOutBack>(
 		YieldExtended& yield, ActorView self, CharaPosition& pos, const Vec2& nextPos, double moveDuration);
 
+	void ProcessArrowWarpCharaPos(
+		YieldExtended& yield, ActorView self, CharaPosition& pos, Vec2& jumpOffset, const Vec2& nextPos);
+
 	Vec2 GetInitialPos(const MapGrid& map);
 
 	double CharaOrderPriority(const CharaPosition& pos);
