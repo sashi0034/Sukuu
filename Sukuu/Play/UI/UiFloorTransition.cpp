@@ -37,6 +37,7 @@ namespace
 
 struct Play::UiFloorTransition::Impl
 {
+	bool m_initialized{};
 	RenderTexture m_renderTexture{};
 	RenderTexture m_maskTexture{};
 	bool m_isMasking = true;
@@ -51,6 +52,7 @@ struct Play::UiFloorTransition::Impl
 
 	void Init()
 	{
+		m_initialized = true;
 		m_renderTexture = RenderTexture(Scene::Size());
 		m_maskTexture = RenderTexture(Scene::Size());
 	}
@@ -63,7 +65,7 @@ struct Play::UiFloorTransition::Impl
 			drawDirect();
 	}
 
-	ActorWeak PerformOpen(ActorView self, int floorIndex)
+	ActorView PerformOpen(ActorView self, int floorIndex)
 	{
 		return StartCoro(self, [self, this, floorIndex](YieldExtended yield)
 		{
@@ -71,7 +73,7 @@ struct Play::UiFloorTransition::Impl
 		});
 	}
 
-	ActorWeak PerformClose(ActorView self)
+	ActorView PerformClose(ActorView self)
 	{
 		m_radialRadius = (Scene::Size() / 2).length();
 		return AnimateEasing<EaseInQuint>(self, &m_radialRadius, 0.0, getToml<double>(U"radial_duration"));
@@ -182,6 +184,11 @@ namespace Play
 		p_impl->Init();
 	}
 
+	bool UiFloorTransition::IsInitialized() const
+	{
+		return p_impl->m_initialized;
+	}
+
 	void UiFloorTransition::Update()
 	{
 		ActorBase::Update();
@@ -193,12 +200,12 @@ namespace Play
 		return 10000.0;
 	}
 
-	ActorWeak UiFloorTransition::PerformOpen(int floorIndex)
+	ActorView UiFloorTransition::PerformOpen(int floorIndex)
 	{
 		return p_impl->PerformOpen(*this, floorIndex);
 	}
 
-	ActorWeak UiFloorTransition::PerformClose()
+	ActorView UiFloorTransition::PerformClose()
 	{
 		return p_impl->PerformClose(*this);
 	}

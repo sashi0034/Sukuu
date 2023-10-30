@@ -57,7 +57,7 @@ public:
 	ITutorialSetting* m_tutorial;
 	UiFloorTransition m_floorTransition{};
 
-	void Init(ActorBase& self, const PlaySingletonData& data)
+	void Init(ActorView self, const PlaySingletonData& data)
 	{
 		m_tutorial = data.tutorial;
 
@@ -84,7 +84,7 @@ public:
 
 		m_uiTimeLimiter = m_ui.Birth(UiTimeLimiter());
 
-		m_floorTransition = m_ui.Birth(UiFloorTransition());
+		ensureInitializedTransition();
 
 		// 初期化
 		if (const auto tutorial = data.tutorial)
@@ -101,9 +101,12 @@ public:
 		m_uiMiniMap.Init(m_map.Data().size());
 
 		m_uiTimeLimiter.Init(data.timeLimiter);
+	}
 
-		m_floorTransition.Init();
-		m_floorTransition.PerformOpen(1);
+	ActorView StartTransition(int floorIndex)
+	{
+		ensureInitializedTransition();
+		return m_floorTransition.PerformOpen(floorIndex);
 	}
 
 	void UpdateScene(PlayScene& self)
@@ -150,7 +153,14 @@ private:
 		});
 	}
 
-	void installEnemies(ActorBase& self)
+	void ensureInitializedTransition()
+	{
+		if (m_floorTransition.IsInitialized()) return;
+		m_floorTransition = m_ui.Birth(UiFloorTransition());
+		m_floorTransition.Init();
+	}
+
+	void installEnemies(ActorView self)
 	{
 		for (int i = 0; i < 10; ++i)
 		{
@@ -197,6 +207,11 @@ namespace Play
 	{
 		ActorBase::Kill();
 		p_impl->m_ui.Kill();
+	}
+
+	ActorView PlayScene::StartTransition(int floorIndex)
+	{
+		return p_impl->StartTransition(floorIndex);
 	}
 
 	PlayScene& PlayScene::Instance()

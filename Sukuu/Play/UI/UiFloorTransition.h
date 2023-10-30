@@ -9,11 +9,12 @@ namespace Play
 	public:
 		UiFloorTransition();
 		void Init();
+		bool IsInitialized() const;
 		void Update() override;
 		double OrderPriority() const override;
 
-		ActorWeak PerformOpen(int floorIndex);
-		ActorWeak PerformClose();
+		ActorView PerformOpen(int floorIndex);
+		ActorView PerformClose();
 
 	private:
 		struct Impl;

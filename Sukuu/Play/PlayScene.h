@@ -50,6 +50,8 @@ namespace Play
 		void Update() override;
 		void Kill() override;
 
+		ActorView StartTransition(int floorIndex);
+
 		MapGrid& GetMap();
 		const MapGrid& GetMap() const;
 
