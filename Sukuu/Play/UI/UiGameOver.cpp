@@ -4,6 +4,7 @@
 #include "AssetKeys.h"
 #include "Constants.h"
 #include "Play/PlayScene.h"
+#include "Play/Other/PlayingTips.h"
 #include "Util/CoroUtil.h"
 #include "Util/EasingAnimation.h"
 #include "Util/TomlParametersWrapper.h"
@@ -32,10 +33,17 @@ struct UiGameOver::Impl
 
 	double m_lineWidth{};
 
+	String m_tipsMessage{};
+	double m_tipsScale{};
+
+	double m_wholeScale = 1.0;
+
 	void Update()
 	{
 		if (m_bgAlpha == 0) return;
 		(void)Rect(Scene::Size()).draw(ColorF(Constants::HardDarkblue, m_bgAlpha));
+
+		const Transformer2D transform0{Mat3x2::Scale(m_wholeScale, Scene::Center())};
 
 		auto&& font = FontAsset(AssetKeys::RocknRoll_Sdf);
 		const Color borderColor = getToml<Color>(U"border_color");
@@ -63,6 +71,14 @@ struct UiGameOver::Impl
 				10,
 				getToml<Color>(U"line_color"));
 		}
+		if (m_tipsScale > 0)
+		{
+			const auto tipsCenter = Rect(Scene::Size()).bottomCenter().moveBy(0, getToml<int>(U"tips_y"));
+			const Transformer2D t1{Mat3x2::Scale({m_tipsScale, 1}, tipsCenter)};
+			font(m_tipsMessage).drawAt(getToml<double>(U"tips_size"),
+			                           tipsCenter,
+			                           getToml<Color>(U"tips_color"));
+		}
 	}
 
 	ActorWeak StartPerform(ActorView self)
@@ -77,28 +93,46 @@ private:
 	void perform(YieldExtended& yield, ActorView self)
 	{
 		yield.WaitForDead(
-			AnimateEasing<EaseInSine>(self, &m_bgAlpha, 1.0, 1.0));
+			AnimateEasing<EaseInSine>(self, &m_bgAlpha, 1.0, 1.5));
 		PlayScene::Instance().GetEnemies().KillAll();
 
 		constexpr double appearDuration = 1.0;
 
+		// ゲームオーバー表示
 		m_mainTextPos = Scene::Center();
 		AnimateEasing<EaseOutBack>(
 			self, &m_mainTextPos, m_mainTextPos.movedBy(0, getToml<double>(U"main_offset")), appearDuration);
 		AnimateEasing<EaseOutCubic>(self, &m_mainTextAlpha, 1.0, appearDuration);
 		yield.WaitForTime(0.5);
 
+		// 死んでしまった表示
 		m_subTextPos = Scene::Center();
 		AnimateEasing<EaseOutBack>(
 			self, &m_subTextPos, m_subTextPos.movedBy(0, getToml<double>(U"sub_offset")), appearDuration);
 		AnimateEasing<EaseOutCubic>(self, &m_subTextAlpha, 1.0, appearDuration);
 		yield.WaitForTime(0.5);
 
+		// 中央点線
 		const double lineWidth = getToml<int>(U"line_width");
 		AnimateEasing<EaseOutCubic>(self, &m_lineWidth, lineWidth, appearDuration);
+		yield.WaitForTime(1.0);
 
-		yield.WaitForTime(5.0);
-		// TODO
+		// ヒント
+		m_tipsMessage = U"[TIPS] " + GetPlayingTips(m_floorIndex);
+		AnimateEasing<EaseOutBack>(self, &m_tipsScale, 1.0, appearDuration);
+
+		double waitTime{};
+		while (true)
+		{
+			waitTime += Scene::DeltaTime();
+			if (waitTime > 5.0) break;
+			if (IsSceneLeftClicked()) break;
+			yield();
+		}
+
+		yield.WaitForDead(AnimateEasing<EaseInBack>(self, &m_wholeScale, 0.0, 0.3));
+
+		yield.WaitForTime(0.5);
 	}
 };
 

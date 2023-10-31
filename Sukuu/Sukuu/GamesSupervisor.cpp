@@ -45,6 +45,7 @@ private:
 		titleLoop(yield, self);
 	play:
 		playLoop(yield, self);
+		goto title;
 	}
 
 	void tutorialLoop(YieldExtended& yield, ActorView self)
@@ -94,6 +95,11 @@ private:
 			});
 			play.Kill();
 			m_playData = play.CopyData();
+			if (m_playData.timeLimiter.remainingTime == 0)
+			{
+				// ゲームオーバー
+				break;
+			}
 			m_playData.floorIndex++;
 			m_playData.timeLimiter.maxTime += 3;
 			m_playData.timeLimiter.remainingTime += 3;

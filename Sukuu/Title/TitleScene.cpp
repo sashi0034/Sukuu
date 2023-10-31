@@ -94,11 +94,7 @@ private:
 		yield.WaitForTime(0.3);
 
 		m_hud.SetShowPrompt(true);
-		yield.WaitForTrue([]()
-		{
-			return
-				MouseL.down() && Rect(Scene::Size()).stretched(-32).intersects(Cursor::Pos());
-		});
+		yield.WaitForTrue([]() { return IsSceneLeftClicked(); });
 		m_hud.SetShowPrompt(false);
 
 		closeTransition(yield, self);

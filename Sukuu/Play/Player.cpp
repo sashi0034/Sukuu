@@ -108,7 +108,7 @@ struct Play::Player::Impl
 		m_immortal.immortalStock++;
 		StartCoro(self, [this](YieldExtended yield)
 		{
-			yield.WaitForTime(0.5);
+			yield.WaitForTime(1.0);
 			yield.WaitForExpire(PlayScene::Instance().PerformGameOver());
 			m_terminated = true;
 		});

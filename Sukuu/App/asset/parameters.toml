@@ -185,6 +185,9 @@ sub_offset = 128
 line_width = 1280
 line_color = "#3b3b3b"
 line_offset_speed = 80.0
+tips_size = 32
+tips_color = "#878787"
+tips_y = -160
 
 [title.hud]
 logo_scale = 2.8

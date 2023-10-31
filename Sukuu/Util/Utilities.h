@@ -33,4 +33,9 @@ namespace Util
 			}
 		};
 	}
+
+	inline bool IsSceneLeftClicked(int padding = -32)
+	{
+		return MouseL.down() && Rect(Scene::Size()).stretched(padding).intersects(Cursor::Pos());
+	}
 }
