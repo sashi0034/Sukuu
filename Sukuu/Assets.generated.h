@@ -10,12 +10,14 @@ namespace AssetImages
 	constexpr StringView bookmark_16x16 = U"asset/image/bookmark_16x16.png";
 	constexpr StringView brick_stylish_24x24 = U"asset/image/brick_stylish_24x24.png";
 	constexpr StringView brick_stylish_light_24x24 = U"asset/image/brick_stylish_light_24x24 .png";
+	constexpr StringView bush_16x16 = U"asset/image/bush_16x16.png";
 	constexpr StringView catfish_24x24 = U"asset/image/catfish_24x24.png";
 	constexpr StringView clock_16x16 = U"asset/image/clock_16x16.png";
 	constexpr StringView dango_wolf_24x24 = U"asset/image/dango_wolf_24x24.png";
 	constexpr StringView dark_tree_16x16 = U"asset/image/dark_tree_16x16.png";
 	constexpr StringView dark_tree_48x48 = U"asset/image/dark_tree_48x48.png";
 	constexpr StringView folder_16x16 = U"asset/image/folder_16x16.png";
+	constexpr StringView grass_tile_64x64 = U"asset/image/grass_tile_64x64.png";
 	constexpr StringView grave_16x16 = U"asset/image/grave_16x16.png";
 	constexpr StringView heart_vessel_24x24 = U"asset/image/heart_vessel_24x24.png";
 	constexpr StringView helmet_16x16 = U"asset/image/helmet_16x16.png";
@@ -25,6 +27,7 @@ namespace AssetImages
 	constexpr StringView magma_tile_24x24 = U"asset/image/magma_tile_24x24.png";
 	constexpr StringView magnet_16x16 = U"asset/image/magnet_16x16.png";
 	constexpr StringView mine_flower_16x16 = U"asset/image/mine_flower_16x16.png";
+	constexpr StringView mixed_nature_16x16 = U"asset/image/mixed_nature_16x16.png";
 	constexpr StringView omeme_patchouli_sun_16x16 = U"asset/image/omeme_patchouli_sun_16x16.png";
 	constexpr StringView phine_32x32 = U"asset/image/phine_32x32.png";
 	constexpr StringView pin_16x16 = U"asset/image/pin_16x16.png";
@@ -50,12 +53,14 @@ namespace AssetImages
 			bookmark_16x16,
 			brick_stylish_24x24,
 			brick_stylish_light_24x24,
+			bush_16x16,
 			catfish_24x24,
 			clock_16x16,
 			dango_wolf_24x24,
 			dark_tree_16x16,
 			dark_tree_48x48,
 			folder_16x16,
+			grass_tile_64x64,
 			grave_16x16,
 			heart_vessel_24x24,
 			helmet_16x16,
@@ -65,6 +70,7 @@ namespace AssetImages
 			magma_tile_24x24,
 			magnet_16x16,
 			mine_flower_16x16,
+			mixed_nature_16x16,
 			omeme_patchouli_sun_16x16,
 			phine_32x32,
 			pin_16x16,

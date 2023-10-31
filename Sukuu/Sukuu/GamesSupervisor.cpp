@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "GamesSupervisor.h"
 
+#include "Ending/EndingScene.h"
 #include "Play/PlayScene.h"
 #include "Title/TitleScene.h"
 #include "Tutorial/TutorialScene.h"
@@ -37,6 +38,7 @@ private:
 		if (entryPoint == U"tutorial") goto tutorial;
 		if (entryPoint == U"title") goto title;
 		if (entryPoint == U"play") goto play;
+		if (entryPoint == U"ending") goto ending;
 #endif
 
 	tutorial:
@@ -45,6 +47,9 @@ private:
 		titleLoop(yield, self);
 	play:
 		playLoop(yield, self);
+		goto title;
+	ending:
+		endingLoop(yield, self);
 		goto title;
 	}
 
@@ -104,6 +109,14 @@ private:
 			m_playData.timeLimiter.maxTime += 3;
 			m_playData.timeLimiter.remainingTime += 3;
 		}
+	}
+
+	void endingLoop(YieldExtended& yield, ActorView self)
+	{
+		auto ending = self.AsParent().Birth(Ending::EndingScene());
+		ending.Init();
+		yield.WaitForTrue([&]() { return ending.IsFinished(); });
+		ending.Kill();
 	}
 };
 

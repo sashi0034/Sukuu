@@ -1,0 +1,8 @@
+#pragma once
+
+#include "Util/ActorBase.h"
+
+namespace Ending
+{
+	using namespace Util;
+}
