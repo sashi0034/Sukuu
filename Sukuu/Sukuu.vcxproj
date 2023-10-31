@@ -146,6 +146,7 @@
     <ClCompile Include="Play\Effect\DamageCounterEffect.cpp" />
     <ClCompile Include="Play\Effect\FragmentTextureEffect.cpp" />
     <ClCompile Include="Play\Enemy\EnCatfish.cpp" />
+    <ClCompile Include="Play\Enemy\EnCrab.cpp" />
     <ClCompile Include="Play\Enemy\EnemyDefinition.cpp" />
     <ClCompile Include="Play\Enemy\EnemyUtil.cpp" />
     <ClCompile Include="Play\Enemy\EnKnight.cpp" />
@@ -402,6 +403,7 @@
     <ClInclude Include="Play\Effect\DamageCounterEffect.h" />
     <ClInclude Include="Play\Effect\FragmentTextureEffect.h" />
     <ClInclude Include="Play\Enemy\EnCatfish.h" />
+    <ClInclude Include="Play\Enemy\EnCrab.h" />
     <ClInclude Include="Play\Enemy\EnemyDefinition.h" />
     <ClInclude Include="Play\Enemy\EnemyUtil.h" />
     <ClInclude Include="Play\Enemy\EnKnight.h" />

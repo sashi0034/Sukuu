@@ -37,8 +37,9 @@ baloon_offset_y = -32
 
 [play.enemy]
 attacker_slime_cat = 30
-attacker_knight = 45
+attacker_knight = 40
 attacker_catfish = 20
+attacker_crab = 35
 magnet_penalty = 0.2
 
 [play.en_slime_cat]
@@ -65,6 +66,14 @@ max_player_concern = 2
 lost_player_penalty = 0.5
 random_corner = 0.2
 corner_pr = 0.8
+meander_amount = 4
+
+[play.en_crab]
+move_duration_x = 0.15
+move_duration_y = 0.35
+max_player_concern = 4
+lost_player_penalty = 1.5
+corner_pr = 0.6
 meander_amount = 4
 
 [play.item_pin]

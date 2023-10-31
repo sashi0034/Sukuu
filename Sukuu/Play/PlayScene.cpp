@@ -3,6 +3,7 @@
 
 #include "Player.h"
 #include "Enemy/EnCatfish.h"
+#include "Enemy/EnCrab.h"
 #include "Enemy/EnKnight.h"
 #include "Enemy/EnSlimeCat.h"
 #include "Gimmick/GimmickInstaller.h"
@@ -184,6 +185,11 @@ private:
 		for (int i = 0; i < 5; ++i)
 		{
 			auto enemy = m_enemies.Birth(self.AsParent(), EnCatfish());
+			enemy.Init();
+		}
+		for (int i = 0; i < 5; ++i)
+		{
+			auto enemy = m_enemies.Birth(self.AsParent(), EnCrab());
 			enemy.Init();
 		}
 	}
