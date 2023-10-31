@@ -4,10 +4,10 @@
 
 namespace Title
 {
-	class TitleLogo : public ActorBase
+	class TitleHud : public ActorBase
 	{
 	public:
-		TitleLogo();
+		TitleHud();
 		void Update() override;
 		double OrderPriority() const override;
 

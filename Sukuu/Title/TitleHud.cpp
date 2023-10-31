@@ -1,5 +1,5 @@
 ﻿#include "stdafx.h"
-#include "TitleLogo.h"
+#include "TitleHud.h"
 
 #include "AssetKeys.h"
 
@@ -7,7 +7,7 @@ namespace
 {
 }
 
-struct Title::TitleLogo::Impl
+struct Title::TitleHud::Impl
 {
 	void Update()
 	{
@@ -17,18 +17,18 @@ struct Title::TitleLogo::Impl
 
 namespace Title
 {
-	TitleLogo::TitleLogo() :
+	TitleHud::TitleHud() :
 		p_impl(std::make_shared<Impl>())
 	{
 	}
 
-	void TitleLogo::Update()
+	void TitleHud::Update()
 	{
 		ActorBase::Update();
 		p_impl->Update();
 	}
 
-	double TitleLogo::OrderPriority() const
+	double TitleHud::OrderPriority() const
 	{
 		return 1000.0;
 	}

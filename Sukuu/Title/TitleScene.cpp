@@ -4,7 +4,7 @@
 #include "AssetKeys.h"
 #include "GitRevision.h"
 #include "TitleBackground.h"
-#include "TitleLogo.h"
+#include "TitleHud.h"
 #include "Util/ActorContainer.h"
 
 
@@ -21,14 +21,14 @@ struct Title::TitleScene::Impl
 {
 	bool m_concluded{};
 	TitleBackground m_bg{};
-	TitleLogo m_logo{};
+	TitleHud m_logo{};
 
 	void Init(ActorBase& self)
 	{
 		m_bg = self.AsParent().Birth(TitleBackground());
 		m_bg.Init();
 
-		m_logo = self.AsParent().Birth(TitleLogo());
+		m_logo = self.AsParent().Birth(TitleHud());
 	}
 
 	void Update()
