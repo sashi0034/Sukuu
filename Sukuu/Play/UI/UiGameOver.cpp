@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "UiGameOver.h"
 
+#include "AssetKeys.h"
 #include "Constants.h"
 #include "Play/PlayScene.h"
 #include "Util/CoroUtil.h"
@@ -23,10 +24,45 @@ struct UiGameOver::Impl
 	int m_floorIndex{};
 	double m_bgAlpha{};
 
+	Vec2 m_mainTextPos{};
+	double m_mainTextAlpha{};
+
+	Vec2 m_subTextPos{};
+	double m_subTextAlpha{};
+
+	double m_lineWidth{};
+
 	void Update()
 	{
 		if (m_bgAlpha == 0) return;
 		(void)Rect(Scene::Size()).draw(ColorF(Constants::HardDarkblue, m_bgAlpha));
+
+		auto&& font = FontAsset(AssetKeys::RocknRoll_Sdf);
+		const Color borderColor = getToml<Color>(U"border_color");
+		const Color redColor = getToml<Color>(U"red_color");
+		if (m_mainTextAlpha > 0)
+		{
+			font(U"ゲームオーバー").drawAt(
+				TextStyle::Outline(0.2, borderColor),
+				getToml<double>(U"main_size"),
+				m_mainTextPos,
+				ColorF(redColor, m_mainTextAlpha));
+		}
+		if (m_subTextAlpha > 0)
+		{
+			font(U"第 {} 層で死んでしまった"_fmt(m_floorIndex))
+				.drawAt(TextStyle::Outline(0.1, borderColor),
+				        getToml<double>(U"sub_size"),
+				        m_subTextPos,
+				        redColor);
+		}
+		if (m_lineWidth != 0)
+		{
+			Line(Scene::Center().movedBy(-m_lineWidth / 2, 0), Scene::Center().movedBy(m_lineWidth / 2, 0)).draw(
+				LineStyle::SquareDot.offset(getToml<double>(U"line_offset_speed") * Scene::Time()),
+				10,
+				getToml<Color>(U"line_color"));
+		}
 	}
 
 	ActorWeak StartPerform(ActorView self)
@@ -41,9 +77,27 @@ private:
 	void perform(YieldExtended& yield, ActorView self)
 	{
 		yield.WaitForDead(
-			AnimateEasing<EaseInSine>(self, &m_bgAlpha, 1.0, 1.5));
+			AnimateEasing<EaseInSine>(self, &m_bgAlpha, 1.0, 1.0));
 		PlayScene::Instance().GetEnemies().KillAll();
-		yield.WaitForTime(2.0);
+
+		constexpr double appearDuration = 1.0;
+
+		m_mainTextPos = Scene::Center();
+		AnimateEasing<EaseOutBack>(
+			self, &m_mainTextPos, m_mainTextPos.movedBy(0, getToml<double>(U"main_offset")), appearDuration);
+		AnimateEasing<EaseOutCubic>(self, &m_mainTextAlpha, 1.0, appearDuration);
+		yield.WaitForTime(0.5);
+
+		m_subTextPos = Scene::Center();
+		AnimateEasing<EaseOutBack>(
+			self, &m_subTextPos, m_subTextPos.movedBy(0, getToml<double>(U"sub_offset")), appearDuration);
+		AnimateEasing<EaseOutCubic>(self, &m_subTextAlpha, 1.0, appearDuration);
+		yield.WaitForTime(0.5);
+
+		const double lineWidth = getToml<int>(U"line_width");
+		AnimateEasing<EaseOutCubic>(self, &m_lineWidth, lineWidth, appearDuration);
+
+		yield.WaitForTime(5.0);
 		// TODO
 	}
 };

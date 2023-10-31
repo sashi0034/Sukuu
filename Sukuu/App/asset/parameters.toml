@@ -2,7 +2,7 @@
 entry_point = "play"
 skip_transition = true
 visualize_player_distance = false
-initial_timelimit = 10
+initial_timelimit = 1
 
 [play.scene]
 hitstopping_timescale = 0.1
@@ -176,6 +176,15 @@ idle_duration = 0.5
 padding = "(40, -20)"
 
 [play.ui_game_over]
+border_color = "#2c2727"
+red_color = "#e84b3b"
+main_size = 144
+main_offset = -160
+sub_size = 64
+sub_offset = 128
+line_width = 1280
+line_color = "#3b3b3b"
+line_offset_speed = 80.0
 
 [title.hud]
 logo_scale = 2.8
