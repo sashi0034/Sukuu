@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "TutorialScene.h"
 
+#include "AssetKeys.h"
 #include "Constants.h"
 #include "TutorialFocus.h"
 #include "TutorialMap.h"
@@ -110,6 +111,18 @@ private:
 
 	void performOpening(YieldExtended& yield, ActorView self)
 	{
+		double prologueAlpha{};
+		auto&& prologueFont = FontAsset(AssetKeys::RocknRoll_Sdf);
+		m_postDraw = [&]()
+		{
+			Rect(Scene::Size()).draw(ColorF{Constants::HardDarkblue});
+			prologueFont(U"ダンジョン50層先のいにしえの安息の地を求めて...").drawAt(
+				40.0, Scene::Center(), ColorF(1.0, prologueAlpha));
+		};
+		yield.WaitForDead(AnimateEasing<EaseInOutSine>(self, &prologueAlpha, 1.0, 1.0));
+		yield.WaitForTime(1.5);
+		yield.WaitForDead(AnimateEasing<EaseInOutSine>(self, &prologueAlpha, 0.0, 1.0));
+
 		// 真っ黒な画面から徐々に明るくしていく
 		m_play.GetPlayer().PerformTutorialOpening();
 		double rate = 1.0;
