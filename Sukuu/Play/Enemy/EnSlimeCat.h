@@ -10,6 +10,7 @@ namespace Play
 		EnSlimeCat();
 		void Init();
 		void InitTutorial(const CharaVec2& pos, Dir4Type dir);
+		void BecomePrime();
 		void Update() override;
 		double OrderPriority() const override;
 

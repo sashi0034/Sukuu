@@ -20,7 +20,9 @@ namespace
 
 struct Play::EnKnight::Impl : EnemyTransform
 {
+	bool m_prime{};
 	bool m_sleeping = true;
+	int m_awakeCount{};
 	bool m_doingLostPenalty = false;
 
 	void Update()
@@ -60,26 +62,41 @@ struct Play::EnKnight::Impl : EnemyTransform
 	TextureRegion GetTexture() const override
 	{
 		auto&& sheet = TextureAsset(AssetImages::temple_knight_side_32x32);
-		if (m_sleeping) return sheet(knightRect.movedBy(knightRect.x * 4, 0));
+		const int primeOffset = m_prime ? knightRect.h : 0;
+		if (m_sleeping) return sheet(knightRect.movedBy(knightRect.w * 4, primeOffset));
 		auto&& t =
-			sheet(knightRect.movedBy(m_animTimer.SliceFrames(250, 4) * knightRect.w, 0));
+			sheet(knightRect.movedBy(m_animTimer.SliceFrames(250, 4) * knightRect.w, primeOffset));
 		return m_dir == Dir4::Left || m_dir == Dir4::Up ? t.mirrored() : t;
 	}
 
 private:
 	void flowchartLoop(YieldExtended& yield, ActorView self)
 	{
+		if (m_prime &&
+			m_awakeCount >= 4 && not m_playerTracker.IsTracking())
+		{
+			// プライムは途中でスリープする可能性あり
+			m_awakeCount = 0;
+			m_sleeping = true;
+		}
+
 		// スリープ中
+		double sleepingTime{};
 		while (m_sleeping)
 		{
 			yield();
 			auto&& playerDf = PlayScene::Instance().GetPlayer().DistField();
-			if (playerDf[m_pos.actualPos.MapPoint()].distance < getToml<int>(U"sleeping_sensing"))
+			// プレイヤーが近くに来たら起動
+			const bool nearPlayer = playerDf[m_pos.actualPos.MapPoint()].distance < getToml<int>(U"sleeping_sensing");
+			// プライムは時間経過でも起動
+			sleepingTime += GetDeltaTime();
+			const bool primeAwake = m_prime ? sleepingTime > 5.0 : false;
+			if (nearPlayer || primeAwake)
 			{
-				// プレイヤーが近くに来たので起動
 				m_sleeping = false;
 			}
 		}
+		m_awakeCount++;
 
 		// 移動中
 		int proceededCount{};
@@ -118,7 +135,8 @@ private:
 			const double moveDuration = std::max(
 				getToml<double>(U"move_duration") - proceededCount * proceededCount * getToml<double>(U"speedup"),
 				getToml<double>(U"min_move_duration"));
-			ProcessMoveCharaPos(yield, self, m_pos, nextPos, moveDuration);
+			const double primeSpeed = m_prime ? 1.1 : 1.0;
+			ProcessMoveCharaPos(yield, self, m_pos, nextPos, moveDuration / primeSpeed);
 			proceededCount++;
 		}
 	}
@@ -160,6 +178,11 @@ namespace Play
 		p_impl->m_pos.SetPos(pos);
 		p_impl->m_sleeping = false;
 		p_impl->m_dir = dir;
+	}
+
+	void EnKnight::BecomePrime()
+	{
+		p_impl->m_prime = true;
 	}
 
 	void EnKnight::Update()

@@ -14,6 +14,7 @@ namespace
 
 struct Play::EnSlimeCat::Impl : EnemyTransform
 {
+	bool m_prime{};
 	bool m_doingLostPenalty{};
 	int m_tireCount{};
 	int m_tirePenalty{};
@@ -23,7 +24,8 @@ struct Play::EnSlimeCat::Impl : EnemyTransform
 		m_animTimer.Tick();
 
 		// プレイヤーとの当たり判定
-		CheckSendEnemyCollide(PlayScene::Instance().GetPlayer(), *this, EnemyKind::SlimeCat);
+		CheckSendEnemyCollide(
+			PlayScene::Instance().GetPlayer(), *this, m_prime ? EnemyKind::SlimeCat_prime : EnemyKind::SlimeCat);
 
 		// 吹き出し描画
 		const AssetNameView emotion = [&]()
@@ -71,17 +73,18 @@ struct Play::EnSlimeCat::Impl : EnemyTransform
 	{
 		auto&& sheet = TextureAsset(AssetImages::punicat_24x24);
 		const int interval = GetTomlParameter<int>(U"play.en_slime_cat.anim_interval");
+		const int primeOffset = m_prime ? 4 : 0;
 
 		switch (m_dir.GetIndex())
 		{
 		case Dir4Type::Right:
-			return sheet(catRect.movedBy(catRect.size * Point{m_animTimer.SliceFrames(interval, 4), 3}));
+			return sheet(catRect.movedBy(catRect.size * Point{primeOffset + m_animTimer.SliceFrames(interval, 4), 3}));
 		case Dir4Type::Up:
-			return sheet(catRect.movedBy(catRect.size * Point{m_animTimer.SliceFrames(interval, 4), 2}));
+			return sheet(catRect.movedBy(catRect.size * Point{primeOffset + m_animTimer.SliceFrames(interval, 4), 2}));
 		case Dir4Type::Left:
-			return sheet(catRect.movedBy(catRect.size * Point{m_animTimer.SliceFrames(interval, 4), 1}));
+			return sheet(catRect.movedBy(catRect.size * Point{primeOffset + m_animTimer.SliceFrames(interval, 4), 1}));
 		case Dir4Type::Down:
-			return sheet(catRect.movedBy(catRect.size * Point{m_animTimer.SliceFrames(interval, 4), 0}));
+			return sheet(catRect.movedBy(catRect.size * Point{primeOffset + m_animTimer.SliceFrames(interval, 4), 0}));
 		default: ;
 			return {};
 		}
@@ -131,7 +134,11 @@ private:
 			// 進路方向に進む
 			auto nextPos = m_pos.actualPos + m_dir.ToXY() * CellPx_24;
 			const double moveDuration = GetTomlParameter<double>(U"play.en_slime_cat.move_duration");
-			ProcessMoveCharaPos(yield, self, m_pos, nextPos, moveDuration * (m_tirePenalty > 0 ? 2.0 : 1.0));
+			const double primeSpeed = m_prime
+				                          ? (proceededCount % 4 == 0 ? 0.7 : 1.3)
+				                          : 1.0;
+			const double tireRate = (m_tirePenalty > 0 ? 2.0 : 1.0);
+			ProcessMoveCharaPos(yield, self, m_pos, nextPos, moveDuration * tireRate / primeSpeed);
 			proceededCount++;
 
 			// 疲れを表現
@@ -141,7 +148,7 @@ private:
 			}
 			else
 			{
-				m_tireCount--;
+				if (not m_prime) m_tireCount--;
 			}
 			if (m_tireCount < 0)
 			{
@@ -190,6 +197,11 @@ namespace Play
 	{
 		p_impl->m_pos.SetPos(pos);
 		p_impl->StartTutorial(*this, dir);
+	}
+
+	void EnSlimeCat::BecomePrime()
+	{
+		p_impl->m_prime = true;
 	}
 
 	void EnSlimeCat::Update()

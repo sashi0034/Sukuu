@@ -14,6 +14,8 @@ namespace Play
 		Catfish,
 		Crab,
 		Lion,
+		SlimeCat_prime,
+		Knight_prime,
 	};
 
 	int GetEnemyAttackDamage(EnemyKind kind);

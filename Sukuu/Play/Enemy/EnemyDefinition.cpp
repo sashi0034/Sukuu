@@ -18,9 +18,11 @@ namespace Play
 	{
 		switch (kind)
 		{
-		case EnemyKind::SlimeCat:
+		case EnemyKind::SlimeCat: [[ fallthrough]];
+		case EnemyKind::SlimeCat_prime:
 			return getToml<int>(U"attacker_slime_cat");
-		case EnemyKind::Knight:
+		case EnemyKind::Knight: [[fallthrough]];
+		case EnemyKind::Knight_prime:
 			return getToml<int>(U"attacker_knight");
 		case EnemyKind::Catfish:
 			return getToml<int>(U"attacker_catfish");

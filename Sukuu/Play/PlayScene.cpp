@@ -177,11 +177,13 @@ private:
 		{
 			auto enemy = m_enemies.Birth(self.AsParent(), EnSlimeCat());
 			enemy.Init();
+			if (i > 2) enemy.BecomePrime();
 		}
-		for (int i = 0; i < 2; ++i)
+		for (int i = 0; i < 10; ++i)
 		{
 			auto enemy = m_enemies.Birth(self.AsParent(), EnKnight());
 			enemy.Init();
+			if (i > 2) enemy.BecomePrime();
 		}
 		for (int i = 0; i < 2; ++i)
 		{
