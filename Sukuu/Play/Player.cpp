@@ -25,7 +25,6 @@ namespace
 		Walk,
 		Running,
 		Dead,
-		GameOver,
 	};
 
 	template <typename T>
@@ -60,6 +59,7 @@ struct Play::Player::Impl
 	int m_scoopContinuous{};
 	PlayerVisionState m_vision{};
 	double m_faintStealthTime{};
+	bool m_isGameOver{};
 
 	void Update()
 	{
@@ -97,15 +97,16 @@ struct Play::Player::Impl
 
 	void CheckGameOver(ActorView self)
 	{
-		if (m_act == PlayerAct::GameOver) return;
+		if (m_isGameOver) return;
 		if (PlayScene::Instance().GetTimeLimiter().GetData().remainingTime > 0) return;
 
 		// 以下、ゲームオーバー処理開始
-		m_act = PlayerAct::GameOver;
+		m_isGameOver = true;
 		m_flowchart.Kill();
 		m_distField.Clear();
 		m_scoopDrawing = {};
 		m_immortal.immortalStock++;
+		AnimateEasing<EaseOutCirc>(self, &m_cameraScale, 8.0, 0.5);
 		StartCoro(self, [this](YieldExtended yield)
 		{
 			yield.WaitForTime(1.0);
@@ -284,7 +285,7 @@ private:
 
 	TextureRegion getPlayerTexture() const
 	{
-		if (m_act == PlayerAct::Dead || m_act == PlayerAct::GameOver) return GetDeadPlayerTexture();
+		if (m_act == PlayerAct::Dead || m_isGameOver) return GetDeadPlayerTexture();
 		return GetUsualPlayerTexture(m_direction, m_animTimer, isWalking());
 	}
 

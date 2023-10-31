@@ -2,7 +2,7 @@
 entry_point = "play"
 skip_transition = true
 visualize_player_distance = false
-initial_timelimit = 1
+initial_timelimit = 90
 
 [play.scene]
 hitstopping_timescale = 0.1
