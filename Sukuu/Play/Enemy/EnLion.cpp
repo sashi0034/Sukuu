@@ -22,6 +22,7 @@ namespace
 struct Play::EnLion::Impl : EnemyTransform
 {
 	bool m_doingLostPenalty = false;
+	bool m_jumpAttacking{};
 
 	void Update()
 	{
@@ -32,6 +33,7 @@ struct Play::EnLion::Impl : EnemyTransform
 
 		const AssetNameView emotion = [&]()
 		{
+			if (m_jumpAttacking) return U"🤗";
 			if (m_trapped == EnemyTrappedState::Captured) return U"😬";
 			if (m_playerTracker.IsTracking()) return U"😎";
 			if (m_doingLostPenalty) return U"🤔";
@@ -124,6 +126,7 @@ private:
 		{
 			// 壁に向かって攻撃
 			m_collideEnabled = false;
+			m_jumpAttacking = true;
 			const auto beforePos = m_pos.actualPos;
 			const double attackDuration = getToml<double>(U"attack_duration");
 			AnimateEasing<BoomerangParabola>(self, &m_animOffset, Vec2{0, -32}, attackDuration);
@@ -131,6 +134,7 @@ private:
 			// 攻撃チェック
 			player.SendEnemyCollide({m_pos.actualPos, {CellPx_24, CellPx_24}}, EnemyKind::Lion);
 			ProcessMoveCharaPos(yield, self, m_pos, beforePos, attackDuration);
+			m_jumpAttacking = false;
 			m_collideEnabled = true;
 		}
 	}
