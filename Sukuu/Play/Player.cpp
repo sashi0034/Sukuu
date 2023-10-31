@@ -617,7 +617,7 @@ namespace Play
 
 		p_impl->StartFlowchart(*this);
 
-#ifdef _DEBUG
+#if _DEBUG
 		p_impl->m_personal.items[0] = ConsumableItem::Pin;
 		p_impl->m_personal.items[1] = ConsumableItem::Sun;
 		p_impl->m_personal.items[2] = ConsumableItem::Mine;

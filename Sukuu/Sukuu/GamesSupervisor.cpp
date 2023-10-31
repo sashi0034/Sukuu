@@ -11,9 +11,9 @@ namespace
 	using namespace Util;
 
 	template <typename T>
-	inline T getToml(const String& key)
+	inline T debugToml(const String& key)
 	{
-		return Util::GetTomlParameter<T>(U"sukuu." + key);
+		return Util::GetTomlParameter<T>(U"debug." + key);
 	}
 }
 
@@ -32,10 +32,12 @@ struct Sukuu::GamesSupervisor::Impl
 private:
 	void flowchartLoop(YieldExtended& yield, ActorView self)
 	{
-		const auto entryPoint = getToml<String>(U"entry_point");
+#if _DEBUG
+		const auto entryPoint = debugToml<String>(U"entry_point");
 		if (entryPoint == U"tutorial") goto tutorial;
 		if (entryPoint == U"title") goto title;
 		if (entryPoint == U"play") goto play;
+#endif
 
 	tutorial:
 		tutorialLoop(yield, self);
@@ -72,9 +74,13 @@ private:
 		while (true)
 		{
 			auto play = self.AsParent().Birth(Play::PlayScene());
-			if (getToml<bool>(U"show_transition"))
+#if _DEBUG
+			if (not debugToml<bool>(U"skip_transition"))
+#endif
+			{
 				yield.WaitForExpire(
 					play.StartTransition(m_playData.floorIndex));
+			}
 			play.Init(m_playData);
 			yield.WaitForTrue([&]()
 			{

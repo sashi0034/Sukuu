@@ -234,7 +234,7 @@ private:
 		SetTimeScale(1.0);
 		yield.WaitForTime(1.0);
 
-		waitMessage(yield, U"一難過ぎ去ったみたいだね", messageWaitShort);
+		waitMessage(yield, U"間一髪、一難過ぎ去ったね", messageWaitShort);
 		catNorth.Kill();
 		catSouth.Kill();
 		m_playerService.canMove = true;

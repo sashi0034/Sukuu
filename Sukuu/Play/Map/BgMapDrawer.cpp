@@ -212,10 +212,10 @@ namespace Play
 				// ギミック描画
 				p_impl->DrawGimmickAt(gimmick, {x, y});
 
-#ifdef _DEBUG
+#if _DEBUG
 				const int player = scene.GetPlayer().DistField()[Point{x, y}].distance;
 				if (player < PlayerDistanceInfinity &&
-					GetTomlParameter<bool>(U"play.debug.visualize_player_distance"))
+					GetTomlParameter<bool>(U"debug.visualize_player_distance"))
 					(void)FontAsset(AssetKeys::RocknRoll_24_Bitmap)(U"{}"_fmt(player))
 						.drawAt(drawingPoint + Point{CellPx_24, CellPx_24} / 2);
 #endif

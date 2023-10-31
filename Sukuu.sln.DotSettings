@@ -1,4 +1,20 @@
 ﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03203DA94A7D5D4A87EC2CE7EEDE7567/@KeyIndexDefined">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03203DA94A7D5D4A87EC2CE7EEDE7567/Applicability/=Live/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03203DA94A7D5D4A87EC2CE7EEDE7567/Applicability/=Surround/@EntryIndexedValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03203DA94A7D5D4A87EC2CE7EEDE7567/Description/@EntryValue">if else statement</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03203DA94A7D5D4A87EC2CE7EEDE7567/IsBlessed/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03203DA94A7D5D4A87EC2CE7EEDE7567/Mnemonic/@EntryValue">5</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03203DA94A7D5D4A87EC2CE7EEDE7567/Reformat/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03203DA94A7D5D4A87EC2CE7EEDE7567/Scope/=F6696F8185506F41B9C4252540BE9C18/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03203DA94A7D5D4A87EC2CE7EEDE7567/Scope/=F6696F8185506F41B9C4252540BE9C18/Type/@EntryValue">InCppFile</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03203DA94A7D5D4A87EC2CE7EEDE7567/Scope/=FB2B1B3627C3074699DE05129AC80274/@KeyIndexDefined">False</s:Boolean>
+	
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03203DA94A7D5D4A87EC2CE7EEDE7567/Shortcut/@EntryValue">ifdebug</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03203DA94A7D5D4A87EC2CE7EEDE7567/ShortenQualifiedReferences/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03203DA94A7D5D4A87EC2CE7EEDE7567/Text/@EntryValue">#if _DEBUG
+  $SELECTION$ $END$
+#endif</s:String>
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=F1AF3F0CA5E68F42B405AEBD180BBF33/@KeyIndexDefined">True</s:Boolean>
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=F1AF3F0CA5E68F42B405AEBD180BBF33/Applicability/=Live/@EntryIndexedValue">True</s:Boolean>
 	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=F1AF3F0CA5E68F42B405AEBD180BBF33/Description/@EntryValue">Get toml params for source file</s:String>

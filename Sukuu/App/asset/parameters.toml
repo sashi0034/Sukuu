@@ -1,6 +1,7 @@
-[sukuu]
+[debug]
 entry_point = "title"
-show_transition = false
+skip_transition = true
+visualize_player_distance = false
 
 [play.scene]
 hitstopping_timescale = 0.1
@@ -171,9 +172,6 @@ idle_duration = 0.5
 
 [play.ui_current_floor]
 padding = "(40, -20)"
-
-[play.debug]
-visualize_player_distance = false
 
 [title.scene]
 
