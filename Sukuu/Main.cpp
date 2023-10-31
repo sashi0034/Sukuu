@@ -18,6 +18,7 @@ void Main()
 	Scene::SetResizeMode(ResizeMode::Keep);
 	Scene::Resize(1920, 1080);
 	Window::Resize(Size{1280, 720});
+	System::SetTerminationTriggers(UserAction::CloseButtonClicked);
 
 	for (auto&& path : AssetImages::GetKeys()) TextureAsset::Register(path, path);
 	AssetKeys::RegisterAll();

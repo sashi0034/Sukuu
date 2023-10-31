@@ -1,5 +1,5 @@
 [sukuu]
-entry_point = "play"
+entry_point = "title"
 show_transition = false
 
 [play.scene]
