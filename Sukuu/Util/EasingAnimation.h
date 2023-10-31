@@ -72,4 +72,10 @@ namespace Util
 	{
 		return 1 - 4 * (value - 0.5) * (value - 0.5);
 	}
+
+	template <int wave = 1>
+	constexpr double BoomerangSin(double value)
+	{
+		return Math::Sin(wave * Math::Pi * value);
+	}
 }

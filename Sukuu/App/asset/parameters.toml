@@ -65,6 +65,7 @@ max_player_concern = 2
 lost_player_penalty = 0.5
 random_corner = 0.2
 corner_pr = 0.8
+meander_amount = 4
 
 [play.item_pin]
 move_duration = 0.05

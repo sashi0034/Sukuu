@@ -5,6 +5,7 @@
 #include "EnemyUtil.h"
 #include "Play/PlayScene.h"
 #include "Play/Chara/CharaUtil.h"
+#include "Util/EasingAnimation.h"
 #include "Util/TomlParametersWrapper.h"
 
 namespace
@@ -20,6 +21,7 @@ namespace
 
 struct Play::EnCatfish::Impl : EnemyTransform
 {
+	Vec2 m_meanderOffset{};
 	bool m_doingLostPenalty = false;
 
 	void Update()
@@ -46,7 +48,7 @@ struct Play::EnCatfish::Impl : EnemyTransform
 
 	Vec2 GetDrawPos() const
 	{
-		return m_pos.viewPos.movedBy(m_animOffset + GetCharacterCellPadding(spriteRect.size));
+		return m_pos.viewPos.movedBy(m_meanderOffset + m_animOffset + GetCharacterCellPadding(spriteRect.size));
 	}
 
 	void StartFlowchart(ActorBase& self)
@@ -105,9 +107,16 @@ private:
 			// 進行可能方向に向く
 			if (FaceEnemyMovableDir(m_dir, m_pos, map, gimmick, RandomBool(0.5)) == false) break;
 
-			// 移動
+			// 移動開始
 			auto nextPos = m_pos.actualPos + m_dir.ToXY() * CellPx_24;
 			const double moveDuration = getToml<double>(U"move_duration");
+
+			// 蛇行
+			m_meanderOffset = {};
+			AnimateEasing<BoomerangSin<2>>(
+				self, &m_meanderOffset, m_dir.RotatedL().ToXY() * getToml<int>(U"meander_amount"), moveDuration);
+
+			// 実際に移動処理
 			ProcessMoveCharaPos(yield, self, m_pos, nextPos, moveDuration);
 			proceededCount++;
 		}

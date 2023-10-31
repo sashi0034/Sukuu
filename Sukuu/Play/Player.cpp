@@ -534,6 +534,10 @@ private:
 			break;
 		}
 		case GimmickKind::SemiItem_Vessel: {
+			focusCameraFor<EaseOutBack>(self, getToml<double>(U"focus_scale_large"));
+			PlayScene::Instance().RequestHitstopping(0.3);
+			yield.WaitForTime(0.3);
+			focusCameraFor<EaseOutBack>(self, 1.0);
 			PlayScene::Instance().GetTimeLimiter().ExtendMax(30.0);
 			gimmickGrid[newPoint] = GimmickKind::None;
 			break;
