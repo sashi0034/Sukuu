@@ -5,6 +5,7 @@
 #include "Enemy/EnemyDefinition.h"
 #include "Map/MapGrid.h"
 #include "Other/TimeLimiter.h"
+#include "UI/UiGameOver.h"
 #include "UI/UiMiniMap.h"
 #include "UI/UiTimeLimiter.h"
 #include "Util/EffectWrapper.h"
@@ -52,6 +53,7 @@ namespace Play
 
 		ActorWeak StartTransition(int floorIndex);
 		ActorWeak EndTransition();
+		ActorWeak PerformGameOver();
 
 		MapGrid& GetMap();
 		const MapGrid& GetMap() const;

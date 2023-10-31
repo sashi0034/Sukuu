@@ -61,6 +61,7 @@ public:
 	ITutorialSetting* m_tutorial;
 	UiFloorTransition m_floorTransition{};
 	UiCurrentFloor m_currentFloor{};
+	UiGameOver m_gameOver{};
 	int m_floorIndex{};
 
 	void Init(ActorView self, const PlaySingletonData& data)
@@ -93,6 +94,8 @@ public:
 
 		m_currentFloor = m_ui.Birth(UiCurrentFloor());
 
+		m_gameOver = m_ui.Birth(UiGameOver());
+
 		ensureInitializedTransition();
 
 		// 初期化
@@ -107,6 +110,7 @@ public:
 			m_player.Init(data.playerPersonal, GetInitialPos(m_map));
 
 			m_currentFloor.Init(data.floorIndex);
+			m_gameOver.Init(data.floorIndex);
 		}
 
 		m_uiMiniMap.Init(m_map.Data().size());
@@ -244,6 +248,11 @@ namespace Play
 	ActorWeak PlayScene::EndTransition()
 	{
 		return p_impl->m_floorTransition.PerformClose();
+	}
+
+	ActorWeak PlayScene::PerformGameOver()
+	{
+		return p_impl->m_gameOver.StartPerform();
 	}
 
 	PlayScene& PlayScene::Instance()

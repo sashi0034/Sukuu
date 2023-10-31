@@ -25,6 +25,7 @@ namespace
 		Walk,
 		Running,
 		Dead,
+		GameOver,
 	};
 
 	template <typename T>
@@ -92,6 +93,24 @@ struct Play::Player::Impl
 		{
 			TextureAsset(AssetImages::helmet_16x16)(0, 0, 16, 16).drawAt(drawingPos + getHelmetOffset());
 		}
+	}
+
+	void CheckGameOver(ActorView self)
+	{
+		if (m_act == PlayerAct::GameOver) return;
+		if (PlayScene::Instance().GetTimeLimiter().GetData().remainingTime > 0) return;
+
+		// 以下、ゲームオーバー処理開始
+		m_act = PlayerAct::GameOver;
+		m_flowchart.Kill();
+		m_distField.Clear();
+		m_scoopDrawing = {};
+		m_immortal.immortalStock++;
+		StartCoro(self, [this](YieldExtended yield)
+		{
+			yield.WaitForExpire(PlayScene::Instance().PerformGameOver());
+			m_terminated = true;
+		});
 	}
 
 	void StartFlowchart(ActorView self)
@@ -264,7 +283,7 @@ private:
 
 	TextureRegion getPlayerTexture() const
 	{
-		if (m_act == PlayerAct::Dead) return GetDeadPlayerTexture();
+		if (m_act == PlayerAct::Dead || m_act == PlayerAct::GameOver) return GetDeadPlayerTexture();
 		return GetUsualPlayerTexture(m_direction, m_animTimer, isWalking());
 	}
 
@@ -626,6 +645,7 @@ namespace Play
 
 	void Player::Update()
 	{
+		p_impl->CheckGameOver(*this);
 		ActorBase::Update();
 		p_impl->Update();
 	}

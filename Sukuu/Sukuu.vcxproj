@@ -176,6 +176,7 @@
         <ClCompile Include="Play\PlayScene.cpp"/>
         <ClCompile Include="Play\UI\UiCurrentFloor.cpp"/>
         <ClCompile Include="Play\UI\UiFloorTransition.cpp"/>
+        <ClCompile Include="Play\UI\UiGameOver.cpp" />
         <ClCompile Include="Play\UI\UiItemButton.cpp"/>
         <ClCompile Include="Play\UI\UiItemContainer.cpp"/>
         <ClCompile Include="Play\UI\UiMiniMap.cpp"/>
@@ -438,6 +439,7 @@
         <ClInclude Include="Play\PlayScene.h"/>
         <ClInclude Include="Play\UI\UiCurrentFloor.h"/>
         <ClInclude Include="Play\UI\UiFloorTransition.h"/>
+        <ClInclude Include="Play\UI\UiGameOver.h" />
         <ClInclude Include="Play\UI\UiItemButton.h"/>
         <ClInclude Include="Play\UI\UiItemContainer.h"/>
         <ClInclude Include="Play\UI\UiMiniMap.h"/>

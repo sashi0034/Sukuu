@@ -41,6 +41,7 @@ namespace Play
 		}
 
 		void Refresh();
+		void KillAll();
 
 		int SendDamageCollider(ItemAttackerAffair& attacker, const RectF& collider) const;
 

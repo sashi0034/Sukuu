@@ -44,6 +44,15 @@ namespace Play
 		}
 	}
 
+	void EnemyContainer::KillAll()
+	{
+		for (auto&& enemy : *this)
+		{
+			enemy->Kill();
+		}
+		this->clear();
+	}
+
 	int EnemyContainer::SendDamageCollider(ItemAttackerAffair& attacker, const RectF& collider) const
 	{
 		int count{};
