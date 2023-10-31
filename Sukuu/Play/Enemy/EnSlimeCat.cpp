@@ -20,13 +20,10 @@ struct Play::EnSlimeCat::Impl : EnemyTransform
 
 	void Update()
 	{
+		m_animTimer.Tick();
+
 		// プレイヤーとの当たり判定
 		CheckSendEnemyCollide(PlayScene::Instance().GetPlayer(), *this, EnemyKind::SlimeCat);
-
-		// アニメーション更新
-		m_animTimer.Tick();
-		const auto drawingPos = GetDrawPos();
-		(void)GetTexture().draw(drawingPos);
 
 		// 吹き出し描画
 		const AssetNameView emotion = [&]()
@@ -36,8 +33,7 @@ struct Play::EnSlimeCat::Impl : EnemyTransform
 			if (m_doingLostPenalty) return U"🤔";
 			return U"";
 		}();
-
-		if (not emotion.empty()) DrawCharaEmotion(drawingPos, emotion);
+		DrawEnemyBasically(*this, emotion);
 	}
 
 	void StartFlowchart(ActorBase& self)

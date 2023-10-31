@@ -19,6 +19,8 @@ namespace Play
 
 	void CheckSendEnemyCollide(Player& player, const EnemyTransform& transform, EnemyKind enemy);
 
+	void DrawEnemyBasically(const IEnemyInternal& enemy, AssetNameView emotion);
+
 	bool IsEnemyCollided(const EnemyTransform& transform, const RectF& collider);
 
 	void PerformEnemyDestroyed(const ItemAttackerAffair& attacker, const EnemyTransform& enemy);

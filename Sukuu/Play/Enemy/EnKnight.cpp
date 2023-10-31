@@ -25,15 +25,11 @@ struct Play::EnKnight::Impl : EnemyTransform
 
 	void Update()
 	{
+		m_animTimer.Tick();
+
 		// プレイヤーとの当たり判定
 		CheckSendEnemyCollide(PlayScene::Instance().GetPlayer(), *this, EnemyKind::Knight);
 
-		// アニメーション更新
-		m_animTimer.Tick();
-		const auto drawingPos = GetDrawPos();
-		(void)GetTexture().draw(drawingPos);
-
-		// 吹き出し描画
 		const AssetNameView emotion = [&]()
 		{
 			if (m_trapped == EnemyTrappedState::Captured) return U"😬";
@@ -42,11 +38,10 @@ struct Play::EnKnight::Impl : EnemyTransform
 			if (m_doingLostPenalty) return U"🤔";
 			return U"";
 		}();
-
-		if (not emotion.empty()) DrawCharaEmotion(drawingPos, emotion);
+		DrawEnemyBasically(*this, emotion);
 	}
 
-	Vec2 GetDrawPos() const
+	Vec2 GetDrawPos() const override
 	{
 		return m_pos.viewPos.movedBy(m_animOffset + GetCharacterCellPadding(knightRect.size));
 	}
