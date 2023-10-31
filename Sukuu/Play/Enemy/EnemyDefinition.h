@@ -12,7 +12,8 @@ namespace Play
 		SlimeCat,
 		Knight,
 		Catfish,
-		Crab
+		Crab,
+		Lion,
 	};
 
 	int GetEnemyAttackDamage(EnemyKind kind);

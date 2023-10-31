@@ -24,6 +24,10 @@ namespace Play
 			return getToml<int>(U"attacker_knight");
 		case EnemyKind::Catfish:
 			return getToml<int>(U"attacker_catfish");
+		case EnemyKind::Crab:
+			return getToml<int>(U"attacker_crab");
+		case EnemyKind::Lion:
+			return getToml<int>(U"attacker_lion");
 		default: ;
 			return 1;
 		}

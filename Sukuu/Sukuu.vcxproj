@@ -150,6 +150,7 @@
     <ClCompile Include="Play\Enemy\EnemyDefinition.cpp" />
     <ClCompile Include="Play\Enemy\EnemyUtil.cpp" />
     <ClCompile Include="Play\Enemy\EnKnight.cpp" />
+    <ClCompile Include="Play\Enemy\EnLion.cpp" />
     <ClCompile Include="Play\Enemy\EnSlimeCat.cpp" />
     <ClCompile Include="Play\Gimmick\GimmickGrid.cpp" />
     <ClCompile Include="Play\Gimmick\GimmickInstaller.cpp" />
@@ -407,6 +408,7 @@
     <ClInclude Include="Play\Enemy\EnemyDefinition.h" />
     <ClInclude Include="Play\Enemy\EnemyUtil.h" />
     <ClInclude Include="Play\Enemy\EnKnight.h" />
+    <ClInclude Include="Play\Enemy\EnLion.h" />
     <ClInclude Include="Play\Enemy\EnSlimeCat.h" />
     <ClInclude Include="Play\Forward.h" />
     <ClInclude Include="Play\Gimmick\GimmickGrid.h" />

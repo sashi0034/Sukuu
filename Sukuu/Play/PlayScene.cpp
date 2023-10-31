@@ -5,6 +5,7 @@
 #include "Enemy/EnCatfish.h"
 #include "Enemy/EnCrab.h"
 #include "Enemy/EnKnight.h"
+#include "Enemy/EnLion.h"
 #include "Enemy/EnSlimeCat.h"
 #include "Gimmick/GimmickInstaller.h"
 #include "Map/BgMapDrawer.h"
@@ -177,19 +178,24 @@ private:
 			auto enemy = m_enemies.Birth(self.AsParent(), EnSlimeCat());
 			enemy.Init();
 		}
-		for (int i = 0; i < 5; ++i)
+		for (int i = 0; i < 2; ++i)
 		{
 			auto enemy = m_enemies.Birth(self.AsParent(), EnKnight());
 			enemy.Init();
 		}
-		for (int i = 0; i < 5; ++i)
+		for (int i = 0; i < 2; ++i)
 		{
 			auto enemy = m_enemies.Birth(self.AsParent(), EnCatfish());
 			enemy.Init();
 		}
-		for (int i = 0; i < 5; ++i)
+		for (int i = 0; i < 2; ++i)
 		{
 			auto enemy = m_enemies.Birth(self.AsParent(), EnCrab());
+			enemy.Init();
+		}
+		for (int i = 0; i < 5; ++i)
+		{
+			auto enemy = m_enemies.Birth(self.AsParent(), EnLion());
 			enemy.Init();
 		}
 	}

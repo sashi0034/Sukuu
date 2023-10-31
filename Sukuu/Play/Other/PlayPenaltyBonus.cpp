@@ -11,7 +11,7 @@ namespace Play
 
 	double GetPlayerScoopedPenaltyDamage(int count)
 	{
-		static constexpr std::array penalty = {5, 10, 15, 20, 25};
+		static constexpr std::array penalty = {3, 7, 13, 19, 29};
 		return penalty[std::min(count, static_cast<int>(penalty.size()) - 1)];
 	}
 }

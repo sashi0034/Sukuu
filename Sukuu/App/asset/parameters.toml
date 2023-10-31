@@ -40,6 +40,7 @@ attacker_slime_cat = 30
 attacker_knight = 40
 attacker_catfish = 20
 attacker_crab = 35
+attacker_lion = 45
 magnet_penalty = 0.2
 
 [play.en_slime_cat]
@@ -71,10 +72,17 @@ meander_amount = 4
 [play.en_crab]
 move_duration_x = 0.15
 move_duration_y = 0.35
-max_player_concern = 4
+max_player_concern = 5
 lost_player_penalty = 1.5
 corner_pr = 0.6
-meander_amount = 4
+
+[play.en_lion]
+move_duration = 0.5
+tracking_duration = 0.25
+max_player_concern = 7
+lost_player_penalty = 1.5
+corner_pr = 0.6
+attack_duration = 0.3
 
 [play.item_pin]
 move_duration = 0.05

@@ -19,7 +19,6 @@ namespace
 	constexpr Rect spriteRect{0, 0, 24, 24};
 }
 
-
 struct Play::EnCrab::Impl : EnemyTransform
 {
 	bool m_doingLostPenalty = false;
