@@ -8,8 +8,11 @@ namespace Title
 	{
 	public:
 		TitleHud();
+		void Init();
 		void Update() override;
 		double OrderPriority() const override;
+
+		void SetShowPrompt(bool show);
 
 	private:
 		struct Impl;

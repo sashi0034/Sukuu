@@ -30,7 +30,7 @@ struct Title::TitleScene::Impl
 {
 	bool m_concluded{};
 	TitleBackground m_bg{};
-	TitleHud m_logo{};
+	TitleHud m_hud{};
 	RenderTexture m_renderTexture{};
 	ConstantBuffer<RasterScrollCb> m_rasterScrollCb{};
 	double m_transitionAlpha{};
@@ -40,7 +40,8 @@ struct Title::TitleScene::Impl
 		m_bg = self.AsParent().Birth(TitleBackground());
 		m_bg.Init();
 
-		m_logo = self.AsParent().Birth(TitleHud());
+		m_hud = self.AsParent().Birth(TitleHud());
+		m_hud.Init();
 
 		m_renderTexture = RenderTexture(Scene::Size());
 
@@ -92,7 +93,13 @@ private:
 
 		yield.WaitForTime(0.3);
 
-		yield.WaitForTrue([]() { return MouseL.down(); });
+		m_hud.SetShowPrompt(true);
+		yield.WaitForTrue([]()
+		{
+			return
+				MouseL.down() && Rect(Scene::Size()).stretched(-32).intersects(Cursor::Pos());
+		});
+		m_hud.SetShowPrompt(false);
 
 		closeTransition(yield, self);
 
