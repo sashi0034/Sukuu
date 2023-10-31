@@ -9,7 +9,9 @@ namespace Ending
 	public:
 		EndingBackground();
 		void Init();
-		void Update();
+		void Update() override;
+
+		Vec2 PlainSize() const;
 
 	private:
 		struct Impl;

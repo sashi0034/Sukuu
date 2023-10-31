@@ -6,20 +6,18 @@
 
 namespace
 {
-	constexpr Size mapSize{128, 128};
-
-	constexpr int px_16 = 16;
+	constexpr Size mapSize{48, 24};
 }
 
 struct Ending::EndingBackground::Impl
 {
 	void Update()
 	{
-		const ScopedRenderStates3D state{SamplerState::BorderNearest};
+		const ScopedRenderStates2D state{SamplerState::BorderNearest};
 
-		for (const auto p : step({}, mapSize, {4, 4}))
+		for (const auto p : step({}, mapSize / 4, {4, 4}))
 		{
-			(void)TextureAsset(AssetImages::grass_tile_64x64).draw(p * px_16);
+			(void)TextureAsset(AssetImages::grass_tile_64x64).draw(p * Px_16);
 		}
 	}
 };
@@ -39,5 +37,10 @@ namespace Ending
 	{
 		ActorBase::Update();
 		p_impl->Update();
+	}
+
+	Vec2 EndingBackground::PlainSize() const
+	{
+		return mapSize * Px_16;
 	}
 }
