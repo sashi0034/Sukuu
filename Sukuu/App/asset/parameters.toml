@@ -1,7 +1,8 @@
 [debug]
-entry_point = "title"
+entry_point = "play"
 skip_transition = true
 visualize_player_distance = false
+initial_timelimit = 10
 
 [play.scene]
 hitstopping_timescale = 0.1
@@ -154,6 +155,7 @@ empty_color = "#070707"
 icon_size = 64
 text_offset = "(-96, -12)"
 rect_unit_width = 280
+pos_speed = 10.0
 
 [play.ui_item_container]
 base_vertical = 80

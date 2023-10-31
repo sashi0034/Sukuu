@@ -26,7 +26,7 @@ namespace Play
 		Point CurrentPoint() const;
 		const PlayerDistField& DistField() const;
 		bool IsImmortal() const;
-		bool IsCompletedGoal() const;
+		bool IsTerminated() const;
 		const PlayerVisionState& Vision() const;
 
 	private:

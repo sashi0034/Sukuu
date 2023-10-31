@@ -29,7 +29,6 @@ struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
 	Play::PlayScene m_play{};
 	TutorialMapData m_mapData{};
 	bool m_finished{};
-	bool m_timeEnabled{};
 	Play::TutorialPlayerService m_playerService{
 		.canMove = false,
 		.canScoop = false,
@@ -54,6 +53,9 @@ struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
 				.remainingTime = 60
 			}
 		});
+		auto&& timeLimiter = m_play.GetTimeLimiter();
+		timeLimiter.SetCountEnabled(false);
+		timeLimiter.SetImmortal(true);
 		auto&& gimmick = m_play.GetGimmick();
 		gimmick[m_mapData.itemSpawnPoint] = Play::GimmickKind::Item_Pin;
 		gimmick[m_mapData.stairsPoint] = Play::GimmickKind::Stairs;
@@ -75,11 +77,6 @@ struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
 	const Play::TutorialPlayerService& PlayerService() const override
 	{
 		return m_playerService;
-	}
-
-	bool IsTimeEnabled() const override
-	{
-		return m_timeEnabled;
 	}
 
 	void StartFlowchart(ActorView self)
@@ -107,7 +104,7 @@ private:
 		m_playerService.canMove = true;
 		tutorialFinal(yield, self);
 
-		yield.WaitForTrue([this]() { return m_play.GetPlayer().IsCompletedGoal(); });
+		yield.WaitForTrue([this]() { return m_play.GetPlayer().IsTerminated(); });
 		m_finished = true;
 	}
 
@@ -289,7 +286,7 @@ private:
 		waitMessage(yield, U"最後に重要なことを話しておこう", messageWaitShort);
 		waitMessage(yield, U"実はこの迷宮でキミが生きられる\n時間は限られている", messageWaitMedium);
 
-		m_timeEnabled = true;
+		m_play.GetTimeLimiter().SetCountEnabled(true);
 		m_focus.Show(Rect(Scene::Size()).tr() + Size{-1, 1} * 144);
 
 		waitMessage(yield, U"砂時計を見てもらいたい", messageWaitShort);

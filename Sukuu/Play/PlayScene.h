@@ -28,7 +28,6 @@ namespace Play
 		virtual MapGrid GetMap() const = 0;
 		virtual Vec2 InitialPlayerPos() const = 0;
 		virtual const TutorialPlayerService& PlayerService() const = 0;
-		virtual bool IsTimeEnabled() const = 0;
 	};
 
 	struct PlaySingletonData

@@ -137,17 +137,15 @@ namespace Play
 
 	static void relayTimeDamage(const CharaPosition& pos, int amount, const Color& c, bool isEnemyDamage = false)
 	{
-		if (const auto tutorial = PlayScene::Instance().Tutorial())
-		{
-			if (not tutorial->IsTimeEnabled()) return;
-		}
+		auto&& timeLimiter = PlayScene::Instance().GetTimeLimiter();
+		if (timeLimiter.IsCountEnabled() == false) return;
 		if (amount > 0)
 		{
-			PlayScene::Instance().GetTimeLimiter().Heal(amount);
+			timeLimiter.Heal(amount);
 		}
 		else
 		{
-			PlayScene::Instance().GetTimeLimiter().Damage(-amount, isEnemyDamage);
+			timeLimiter.Damage(-amount, isEnemyDamage);
 		}
 		PlayScene::Instance().FgEffect().add(EmitDamageCounterEffect({
 			.center = (pos.viewPos + Vec2(1, 1) * CellPx_24 / 2),

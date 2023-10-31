@@ -52,7 +52,7 @@ struct Play::Player::Impl
 	AnimTimer m_animTimer{};
 	Dir4Type m_direction{Dir4::Down};
 	PlayerDistFieldInternal m_distField{};
-	bool m_completedGoal{};
+	bool m_terminated{};
 	PlayerImmortality m_immortal{};
 	bool m_guardHelmet{};
 	std::function<void()> m_scoopDrawing = {};
@@ -511,7 +511,7 @@ private:
 				AnimateEasing<EaseInBack>(self, &m_cameraScale, 8.0, 0.5));
 			yield.WaitForDead(
 				AnimateEasing<EaseOutCirc>(self, &m_cameraScale, 10.0, 0.5));
-			m_completedGoal = true;
+			m_terminated = true;
 			break;
 		}
 		case GimmickKind::Item_Wing: [[fallthrough]];
@@ -685,9 +685,9 @@ namespace Play
 		return p_impl->m_immortal.IsImmortal();
 	}
 
-	bool Player::IsCompletedGoal() const
+	bool Player::IsTerminated() const
 	{
-		return p_impl->m_completedGoal;
+		return p_impl->m_terminated;
 	}
 
 	const PlayerVisionState& Player::Vision() const

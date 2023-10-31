@@ -20,6 +20,10 @@ namespace Play
 		void Heal(double time);
 		void ExtendMax(double time);
 
+		void SetCountEnabled(bool enabled);
+		bool IsCountEnabled() const;
+		void SetImmortal(bool immortal);
+
 		const TimeLimiterData& GetData() const;
 
 	private:

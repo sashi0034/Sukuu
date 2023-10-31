@@ -2,7 +2,6 @@
 #include "UiTimeLimiter.h"
 
 #include "AssetKeys.h"
-#include "Play/PlayScene.h"
 #include "Play/Other/TimeLimiter.h"
 #include "Util/EasingAnimation.h"
 #include "Util/TomlParametersWrapper.h"
@@ -15,20 +14,30 @@ namespace
 		return Util::GetTomlParameter<T>(U"play.ui_time_limiter." + key);
 	}
 
+	Vec2 getDefaultPos()
+	{
+		return Scene::Size().x0() + getToml<Point>(U"circle_center");
+	}
+
 	constexpr int arcAreaSeconds = 60;
 }
 
 struct Play::UiTimeLimiter::Impl
 {
+	bool m_countEnabled{true};
+	bool m_immortal{};
 	TimeLimiterData m_data{};
 	double m_outsideDelta{};
 	double m_shadowOutsideDelta{};
 	ActorWeak m_outsider{};
 	bool m_fromEnemyDamage{};
 
+	Vec2 m_pos{};
+	Vec2 m_targetPos{};
+
 	void Update()
 	{
-		if (isCountEnabled())
+		if (m_countEnabled)
 		{
 			m_data.remainingTime -= GetDeltaTime();
 			if (m_data.remainingTime < 0) m_data.remainingTime = 0;
@@ -44,6 +53,14 @@ struct Play::UiTimeLimiter::Impl
 			else
 				m_data.remainingTime = std::min(m_data.remainingTime - delta, m_data.maxTime);
 		}
+
+		if (m_immortal && m_data.remainingTime < 1)
+		{
+			// チュートリアルなどでは1より小さくならない
+			m_data.remainingTime = 1;
+		}
+
+		updatePos();
 
 		drawUi();
 	}
@@ -67,18 +84,25 @@ struct Play::UiTimeLimiter::Impl
 	}
 
 private:
-	bool isCountEnabled() const
+	void updatePos()
 	{
-		if (const auto tutorial = PlayScene::Instance().Tutorial())
+		if (not m_immortal && (m_data.remainingTime - m_outsideDelta <= 0))
 		{
-			return tutorial->IsTimeEnabled() && m_data.remainingTime > 1;
+			m_targetPos = Scene::Center().movedBy(0, Scene::Center().y / 2);
 		}
-		return true;
+		else
+		{
+			m_targetPos = getDefaultPos();
+		}
+
+		if ((m_pos - m_targetPos).manhattanLength() < 1) return;
+
+		m_pos = Math::Lerp(m_pos, m_targetPos, getToml<double>(U"pos_speed") * Scene::DeltaTime());
 	}
 
 	void drawUi() const
 	{
-		const auto center = Scene::Size().x0() + getToml<Point>(U"circle_center");
+		const auto center = m_pos.asPoint();
 		const auto mainColor = getToml<Color>(U"main_color");
 		const auto emptyColor = getToml<Color>(U"empty_color");
 		const auto damageColor = m_fromEnemyDamage
@@ -169,6 +193,8 @@ namespace Play
 	void UiTimeLimiter::Init(const TimeLimiterData& data)
 	{
 		p_impl->m_data = data;
+		p_impl->m_targetPos = getDefaultPos();
+		p_impl->m_pos = p_impl->m_targetPos;
 	}
 
 	void UiTimeLimiter::Update()
@@ -190,6 +216,21 @@ namespace Play
 	void UiTimeLimiter::ExtendMax(double time)
 	{
 		p_impl->ExtendMax(*this, time);
+	}
+
+	void UiTimeLimiter::SetCountEnabled(bool enabled)
+	{
+		p_impl->m_countEnabled = enabled;
+	}
+
+	bool UiTimeLimiter::IsCountEnabled() const
+	{
+		return p_impl->m_countEnabled;
+	}
+
+	void UiTimeLimiter::SetImmortal(bool immortal)
+	{
+		p_impl->m_immortal = immortal;
 	}
 
 	const TimeLimiterData& UiTimeLimiter::GetData() const

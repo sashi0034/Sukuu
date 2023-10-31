@@ -66,9 +66,15 @@ private:
 	void playLoop(YieldExtended& yield, ActorView self)
 	{
 		m_playData.floorIndex = 1;
+		const double initialTimelimit =
+#if _DEBUG
+			debugToml<int>(U"initial_timelimit");
+#else
+			90.0;
+#endif
 		m_playData.timeLimiter = {
-			.maxTime = 120,
-			.remainingTime = 120,
+			.maxTime = initialTimelimit,
+			.remainingTime = initialTimelimit,
 		};
 
 		while (true)
@@ -84,7 +90,7 @@ private:
 			play.Init(m_playData);
 			yield.WaitForTrue([&]()
 			{
-				return play.GetPlayer().IsCompletedGoal();
+				return play.GetPlayer().IsTerminated();
 			});
 			play.Kill();
 			m_playData = play.CopyData();
