@@ -18,9 +18,10 @@ Siv3Dゲームジャム2023
 
 - Windows 11 Pro 10.0.22621
 
-- Intel Core i9-12900
-
 - MSBuild version 17.7.2.37605
 
 - Rider 2023.2.2
 
+- Intel Core i9-12900
+
+- NVIDIA GeForce RTX 3080
