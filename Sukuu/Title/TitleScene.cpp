@@ -2,10 +2,12 @@
 #include "TitleScene.h"
 
 #include "AssetKeys.h"
-#include "GitRevision.h"
+#include "Constants.h"
 #include "TitleBackground.h"
 #include "TitleHud.h"
 #include "Util/ActorContainer.h"
+#include "Util/CoroUtil.h"
+#include "Util/EasingAnimation.h"
 
 
 namespace
@@ -15,6 +17,13 @@ namespace
 	{
 		return Util::GetTomlParameter<T>(U"title.scene." + key);
 	}
+
+	struct RasterScrollCb
+	{
+		float phase;
+		float amplitude;
+		float freq;
+	};
 }
 
 struct Title::TitleScene::Impl
@@ -22,6 +31,9 @@ struct Title::TitleScene::Impl
 	bool m_concluded{};
 	TitleBackground m_bg{};
 	TitleHud m_logo{};
+	RenderTexture m_renderTexture{};
+	ConstantBuffer<RasterScrollCb> m_rasterScrollCb{};
+	double m_transitionAlpha{};
 
 	void Init(ActorBase& self)
 	{
@@ -29,14 +41,87 @@ struct Title::TitleScene::Impl
 		m_bg.Init();
 
 		m_logo = self.AsParent().Birth(TitleHud());
+
+		m_renderTexture = RenderTexture(Scene::Size());
+
+		StartCoro(self, [this, self](YieldExtended yield)
+		{
+			startProcess(yield, self);
+		});
 	}
 
-	void Update()
+	void Update(ActorBase& self)
 	{
-		FontAsset(AssetKeys::RocknRoll_24_Bitmap)(U"Version git-" + GitRevisionLiteral)
-			.draw(Arg::bottomLeft = Scene::Size().y0().yx());
+		if (m_transitionAlpha > 0)
+		{
+			updateWhileTransition(self);
+		}
+		else
+		{
+			self.ActorBase::Update();
+		}
 
-		if (MouseL.down()) m_concluded = true;
+		// if (MouseL.down()) m_concluded = true;
+	}
+
+private:
+	void updateWhileTransition(ActorBase& self)
+	{
+		[&]
+		{
+			const ScopedRenderTarget2D rs{m_renderTexture.clear(Palette::Black)};
+			self.ActorBase::Update();
+		}();
+
+		[&]
+		{
+			m_rasterScrollCb->phase += GetDeltaTime();
+
+			const ScopedCustomShader2D shader{PixelShaderAsset(AssetKeys::PsRasterScroll)};
+			Graphics2D::SetPSConstantBuffer(1, m_rasterScrollCb);
+
+			(void)m_renderTexture.draw();
+		}();
+
+		(void)Rect(Scene::Size()).draw(ColorF{Constants::HardDarkblue, m_transitionAlpha});
+	}
+
+	void startProcess(YieldExtended& yield, ActorView self)
+	{
+		openTransition(yield, self);
+
+		yield.WaitForTime(0.3);
+
+		yield.WaitForTrue([]() { return MouseL.down(); });
+
+		closeTransition(yield, self);
+
+		yield.WaitForTime(0.3);
+
+		m_concluded = true;
+	}
+
+	void openTransition(YieldExtended& yield, ActorView self)
+	{
+		constexpr double alphaDuration = 2.0;
+		m_rasterScrollCb->freq = 10;
+		m_rasterScrollCb->amplitude = 1.0;
+		m_transitionAlpha = 1.0;
+		m_bg.SetCameraTimescale(0.5);
+
+		AnimateEasing<EaseOutCirc>(self, &m_rasterScrollCb->amplitude, 0.0f, alphaDuration);
+		AnimateEasing<EaseOutCirc>(self, &m_rasterScrollCb->freq, 2.0f, alphaDuration);
+		yield.WaitForDead(AnimateEasing<EaseOutSine>(self, &m_transitionAlpha, 0.0, alphaDuration));
+
+		m_bg.SetCameraTimescale(1.0);
+	}
+
+	void closeTransition(YieldExtended& yield, ActorView self)
+	{
+		constexpr double alphaDuration = 1.5;
+		AnimateEasing<EaseOutCirc>(self, &m_rasterScrollCb->amplitude, 1.0f, alphaDuration);
+		AnimateEasing<EaseOutCirc>(self, &m_rasterScrollCb->freq, 10.0f, alphaDuration);
+		yield.WaitForDead(AnimateEasing<EaseOutSine>(self, &m_transitionAlpha, 1.0, alphaDuration));
 	}
 };
 
@@ -54,8 +139,7 @@ namespace Title
 
 	void TitleScene::Update()
 	{
-		ActorBase::Update();
-		p_impl->Update();
+		p_impl->Update(*this);
 	}
 
 	bool TitleScene::IsConcluded() const

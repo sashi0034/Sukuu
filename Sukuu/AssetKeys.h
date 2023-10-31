@@ -9,6 +9,7 @@ namespace AssetKeys
 
 	constexpr AssetNameView PsCaveVision = U"asset/shader/cave_vision";
 	constexpr AssetNameView PsMultiTextureMask = U"asset/shader/multi_texture_mask";
+	constexpr AssetNameView PsRasterScroll = U"asset/shader/raster_scroll";
 	constexpr AssetNameView VsCaveVision = U"asset/shader/soft_shape";
 
 	constexpr AssetNameView title_logo = U"asset/other/title_logo.png";
@@ -17,6 +18,7 @@ namespace AssetKeys
 	{
 		PixelShaderAsset::Register(PsCaveVision, HLSL(PsCaveVision + U".hlsl"));
 		PixelShaderAsset::Register(PsMultiTextureMask, HLSL(PsMultiTextureMask + U".hlsl"));
+		PixelShaderAsset::Register(PsRasterScroll, HLSL(PsRasterScroll + U".hlsl"));
 		VertexShaderAsset::Register(VsCaveVision, HLSL(VsCaveVision + U".hlsl"));
 	}
 

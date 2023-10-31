@@ -10,6 +10,7 @@ namespace Title
 		TitleBackground();
 		void Init();
 		void Update() override;
+		void SetCameraTimescale(double ts);
 
 	private:
 		struct Impl;

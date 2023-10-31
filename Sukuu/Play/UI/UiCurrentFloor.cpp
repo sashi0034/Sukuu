@@ -34,7 +34,7 @@ namespace Play
 
 	void UiCurrentFloor::Init(int floorIndex)
 	{
-		p_impl->m_text = U"階層 B{}"_fmt(floorIndex);
+		p_impl->m_text = U"第 {} 層"_fmt(floorIndex);
 	}
 
 	void UiCurrentFloor::Update()

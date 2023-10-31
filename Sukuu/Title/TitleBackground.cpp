@@ -47,6 +47,7 @@ struct Title::TitleBackground::Impl
 	Play::AnimTimer m_animTimer{};
 	Array<Vec2> m_treePoss{};
 	Array<Vec2> m_hourglassPoss{};
+	double m_cameraTimescale = 1.0;
 
 	void Init()
 	{
@@ -114,7 +115,7 @@ struct Title::TitleBackground::Impl
 		m_cameraFollowDeg += GetDeltaTime() * getToml<double>(U"camera_rotation_speed");
 		m_camera.setTarget(getToml<Vec3>(U"camera_target_position"), ToRadians(m_cameraFollowDeg));
 		m_camera.setFollowOffset(getToml<double>(U"camera_follow_distance"), getToml<double>(U"camera_follow_height"));
-		m_camera.update(2.0, GetDeltaTime());
+		m_camera.update(2.0, GetDeltaTime() * m_cameraTimescale);
 
 		m_animTimer.Tick();
 
@@ -195,5 +196,10 @@ namespace Title
 	{
 		ActorBase::Update();
 		p_impl->Update();
+	}
+
+	void TitleBackground::SetCameraTimescale(double ts)
+	{
+		p_impl->m_cameraTimescale = ts;
 	}
 }
