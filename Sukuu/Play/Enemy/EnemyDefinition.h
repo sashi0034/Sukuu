@@ -11,6 +11,7 @@ namespace Play
 	{
 		SlimeCat,
 		Knight,
+		Catfish,
 	};
 
 	int GetEnemyAttackDamage(EnemyKind kind);

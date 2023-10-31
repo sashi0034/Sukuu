@@ -59,7 +59,7 @@ namespace Play
 		data[static_cast<int>(c::Grave)] = ItemProps{
 			.item = c::Grave,
 			.emoji = U"🪦",
-			.desc = U"道をふさぐ"
+			.desc = U"敵の進路をふさぐ"
 		};
 		data[static_cast<int>(c::Sun)] = ItemProps{
 			.item = c::Sun,
