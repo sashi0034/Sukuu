@@ -45,13 +45,20 @@ namespace
 
 struct Ending::EndingBackground::Impl
 {
+	RenderTexture m_rt{};
+	PixelShader m_colorAberration{};
+
 	Play::AnimTimer m_animTimer{};
 	Vec2 m_playerPos{};
+	double m_cameraX{};
 
 	Grid<BgPlant> m_plants{};
 
 	void Init()
 	{
+		m_colorAberration = HLSL{U"example/shader/hlsl/rgb_shift.hlsl", U"PS"};
+		m_rt = RenderTexture(Scene::Size());
+
 		m_playerPos = {-32.0, mapSize.y * Px_16 / 2 - Play::CellPx_24};
 		m_plants.resize(mapSize);
 
@@ -61,23 +68,18 @@ struct Ending::EndingBackground::Impl
 		addPlant(PlantKind::TreeS, 64);
 		addPlant(PlantKind::Stone1, 64);
 		addPlant(PlantKind::Stone2, 64);
-		addPlant(PlantKind::Moss1, 64);
-		addPlant(PlantKind::Moss2, 64);
+		addPlant(PlantKind::Moss1, 96);
+		addPlant(PlantKind::Moss2, 96);
 	}
 
 	void Update()
 	{
 		m_animTimer.Tick();
-		const ScopedRenderStates2D state{SamplerState::BorderNearest};
 
-		for (const auto p : step({}, mapSize / 4, {4, 4}))
-		{
-			(void)TextureAsset(AssetImages::grass_tile_64x64).draw(Vec2{p * Px_16});
-		}
+		updateBg();
 
-		m_playerPos.x += 6.0 * Scene::DeltaTime();
-
-		drawPlants();
+		const ScopedCustomShader2D shader{m_colorAberration};
+		(void)m_rt.draw();
 	}
 
 private:
@@ -85,9 +87,17 @@ private:
 	{
 		const auto pd = PoissonDisk2D(mapSize, 3.0);
 		auto&& points = pd.getPoints().shuffled();
+		size_t pointIndex{};
 		for (size_t i = 0; i < n; ++i)
 		{
-			Point pos = points[std::min(i, points.size() - 1)].asPoint();
+			Point pos{};
+			while (true)
+			{
+				pos = points[pointIndex % points.size()].asPoint();
+				if (m_plants.inBounds(pos)) break;
+				pointIndex++;
+			}
+			pointIndex++;
 			while (true)
 			{
 				if (pos.x < 0) pos.x = mapSize.x - 1;
@@ -102,6 +112,31 @@ private:
 				.kind = kind,
 			};
 		}
+	}
+
+	void updateBg()
+	{
+		m_cameraX += Scene::DeltaTime() * 4.0;
+
+		m_playerPos.x += 6.0 * Scene::DeltaTime();
+
+		constexpr int mapCenterY = (mapSize.y * Px_16 / 2) - Px_16 / 2;
+		const auto cameraPos = Vec2{m_cameraX, mapCenterY};
+		const double cameraScale = 4.5 + 0.5 * Periodic::Sine1_1(12.0s);
+		const auto center = Vec2{0, Scene::Center().y};
+		const Transformer2D transformer0{
+			Mat3x2::Translate(center).translated(-cameraPos).scaled(cameraScale, center)
+		};
+
+		const ScopedRenderStates2D state{SamplerState::BorderNearest};
+		const ScopedRenderTarget2D target{m_rt};
+
+		for (const auto p : step({}, mapSize / 4, {4, 4}))
+		{
+			(void)TextureAsset(AssetImages::grass_tile_64x64).draw(Vec2{p * Px_16});
+		}
+
+		drawPlants();
 	}
 
 	void drawPlants()

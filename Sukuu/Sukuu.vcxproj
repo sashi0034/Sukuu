@@ -138,6 +138,7 @@
         <None Include="App\asset\shader\cave_vision.hlsl"/>
         <None Include="App\asset\shader\multi_texture_mask.hlsl"/>
         <None Include="App\asset\shader\raster_scroll.hlsl"/>
+        <None Include="App\asset\shader\rgb_shift.hlsl" />
         <None Include="App\asset\shader\soft_shape.hlsl"/>
         <ClInclude Include="Constants.h"/>
         <ClInclude Include="Ending\EndingBackground.h" />
