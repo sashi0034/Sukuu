@@ -33,6 +33,7 @@ namespace AssetKeys
 		TextureAsset::Register(title_logo, title_logo, TextureDesc::Mipped);
 
 		TextureAsset::Register(U"👉", U"👉"_emoji);
+		TextureAsset::Register(U"💛", U"💛"_emoji);
 
 		TextureAsset::Register(U"⏳", U"⏳"_emoji);
 		TextureAsset::Register(U"😎", U"😎"_emoji);

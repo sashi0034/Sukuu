@@ -3,6 +3,7 @@
 
 #include "AssetKeys.h"
 #include "Constants.h"
+#include "Play/Other/FloorMapGenerator.h"
 #include "Util/CoroUtil.h"
 #include "Util/EasingAnimation.h"
 #include "Util/TomlParametersWrapper.h"
@@ -50,6 +51,7 @@ struct Play::UiFloorTransition::Impl
 	double m_textHeightScale{};
 	String m_subheading{};
 	std::pair<double, double> m_centerLineRange{};
+	bool m_vesselMark{};
 
 	void Init()
 	{
@@ -86,6 +88,8 @@ struct Play::UiFloorTransition::Impl
 private:
 	void processPerformOpen(YieldExtended& yield, ActorView self, int floorIndex)
 	{
+		m_vesselMark = IsExistVesselFloor(floorIndex);
+
 		m_maxRadialRadius = (Scene::Size() / 2).length();
 		m_isMasking = false;
 
@@ -142,6 +146,11 @@ private:
 			const auto glyphPos =
 				Scene::Center().movedBy(Vec2{-m_glyphWidth, -72.0} / 2).movedBy(0, getToml<double>(U"glyph_y"));
 			drawGlyphs(m_glyphs, glyphPos, m_glyphLength, m_glyphPeriod);
+
+			if (m_vesselMark)
+			{
+				TextureAsset(U"💛").resized(48).drawAt(Scene::Center());
+			}
 		}();
 
 		[this]

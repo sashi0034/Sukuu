@@ -6,6 +6,8 @@ namespace Play
 {
 	MapGrid GenerateFloorMap(int floorIndex);
 
+	bool IsExistVesselFloor(int floorIndex);
+
 	void GenerateEnemiesAndGimmicks(
 		int floor, const MapGrid& map, ActorView enemyParent, EnemyContainer& enemyContainer, GimmickGrid& gimmick);
 }

@@ -222,17 +222,6 @@ namespace
 		return Random(3, 7);
 	}
 
-	bool isExistVessel(int floorIndex)
-	{
-		return
-			floorIndex == 7 ||
-			floorIndex == 13 ||
-			floorIndex == 17 ||
-			floorIndex == 29 ||
-			floorIndex == 31 ||
-			floorIndex == 37;
-	}
-
 	GimmickKind getRandomItemGimmick()
 	{
 		while (true)
@@ -302,7 +291,7 @@ namespace
 
 	void installGimmicks(const MapGrid& map, GimmickGrid& gimmick, int floorIndex)
 	{
-		if (isExistVessel(floorIndex))
+		if (IsExistVesselFloor(floorIndex))
 		{
 			InstallGimmickRandomly(gimmick, map, GimmickKind::SemiItem_Vessel);
 		}
@@ -328,6 +317,17 @@ namespace
 
 namespace Play
 {
+	bool IsExistVesselFloor(int floorIndex)
+	{
+		return
+			floorIndex == 7 ||
+			floorIndex == 13 ||
+			floorIndex == 17 ||
+			floorIndex == 29 ||
+			floorIndex == 31 ||
+			floorIndex == 37;
+	}
+
 	void GenerateEnemiesAndGimmicks(
 		int floor, const MapGrid& map, ActorView enemyParent, EnemyContainer& enemyContainer, GimmickGrid& gimmick)
 	{
