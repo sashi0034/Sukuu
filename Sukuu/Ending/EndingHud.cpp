@@ -134,10 +134,10 @@ private:
 
 		yield.WaitForTrue([]() { return IsSceneLeftClicked(); });
 
-		yield.WaitForDead(AnimateEasing<EaseOutSine>(self, &m_closeCloseAlpha, 0.0, 1.0));
+		yield.WaitForDead(AnimateEasing<EaseOutSine>(self, &m_closeCloseAlpha, 0.0, 3.0));
 
 		yield.WaitForDead(AnimateEasing<EaseOutSine>(self, &m_sashiAlpha, 1.0, 1.0));
-		yield.WaitForTime(2.0);
+		yield.WaitForTime(3.0);
 		yield.WaitForDead(AnimateEasing<EaseOutSine>(self, &m_sashiAlpha, 0.0, 1.0));
 
 		m_finished = true;
