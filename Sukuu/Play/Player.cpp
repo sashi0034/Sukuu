@@ -528,9 +528,10 @@ private:
 		switch (gimmickGrid[newPoint])
 		{
 		case GimmickKind::Stairs: {
+			// ゴール到達
 			m_cameraOffsetDestination = {0, 0};
 			m_immortal.immortalStock++;
-			// ゴール到達
+			PlayScene::Instance().GetTimeLimiter().SetImmortal(true);
 			PlayScene::Instance().EndTransition();
 			yield.WaitForDead(
 				AnimateEasing<EaseInBack>(self, &m_cameraScale, 8.0, 0.5));
