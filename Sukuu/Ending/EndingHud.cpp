@@ -49,22 +49,23 @@ struct EndingHud::Impl
 			auto&& text = m_slideTexts[i];
 			if (text.text.isEmpty()) continue;
 			auto&& font = FontAsset(AssetKeys::RocknRoll_Sdf);
-			font(text.text).drawAt(TextStyle::Outline(0.1, ColorF(0.3)),
+			font(text.text).drawAt(TextStyle::Outline(0.3, ColorF(0.4)),
 			                       textSize,
 			                       Vec2{text.x, marginY + i * availableY / m_slideTexts.size()},
-			                       getToml<Color>(U"text_color"));
+			                       Palette::White);
 		}
 
 		if (m_finalAlpha > 0)
 		{
 			const int finalY = getToml<int>(U"final_y");
-			auto&& font = FontAsset(AssetKeys::RocknRoll_Sdf);
+			auto&& font = FontAsset(AssetKeys::RocknRoll_Sdf_Bold);
 			const int finalSize = getToml<int>(U"final_size");
-			font(U"ここまでお疲れさまでした").drawAt(TextStyle::Outline(0.1, ColorF(0.3)),
-			                             textSize,
-			                             Scene::Center().movedBy(0, -finalY),
-			                             ColorF(Palette::White, m_finalAlpha));
-			font(m_finalInfo).drawAt(TextStyle::Outline(0.1, ColorF(0.3)),
+			font(U"よくぞここまでたどり着きましたね\nお疲れ様でした")
+				.drawAt(TextStyle::Outline(0.3, ColorF(0.4)),
+				        textSize,
+				        Scene::Center().movedBy(0, -finalY),
+				        ColorF(Palette::White, m_finalAlpha));
+			font(m_finalInfo).drawAt(TextStyle::Outline(0.3, ColorF(0.4)),
 			                         finalSize,
 			                         Scene::Center().movedBy(0, finalY),
 			                         ColorF(Palette::White, m_finalAlpha));

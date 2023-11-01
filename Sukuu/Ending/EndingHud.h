@@ -9,7 +9,7 @@ namespace Ending
 	public:
 		EndingHud();
 		void Init();
-		void Update();
+		void Update() override;
 
 	private:
 		struct Impl;

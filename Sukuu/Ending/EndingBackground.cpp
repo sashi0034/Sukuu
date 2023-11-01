@@ -57,7 +57,7 @@ namespace
 struct Ending::EndingBackground::Impl
 {
 	RenderTexture m_rt{};
-	PixelShader m_rgbShifter{};
+	// PixelShader m_rgbShifter{};
 	ConstantBuffer<RgbShiftCb> m_cb{};
 
 	Play::AnimTimer m_animTimer{};
@@ -68,7 +68,7 @@ struct Ending::EndingBackground::Impl
 
 	void Init()
 	{
-		m_rgbShifter = HLSL{U"asset/shader/rgb_shift.hlsl", U"PS"};
+		// m_rgbShifter = HLSL{U"asset/shader/rgb_shift.hlsl", U"PS"};
 		m_rt = RenderTexture(Scene::Size());
 
 		m_playerPos = {-32.0, mapSize.y * Px_16 / 2 - Play::CellPx_24};
@@ -88,7 +88,13 @@ struct Ending::EndingBackground::Impl
 	{
 		m_animTimer.Tick();
 
-		updateBg();
+#if 0
+		// 色収差なんか微妙なので没
+		[&]
+		{
+			const ScopedRenderTarget2D target{m_rt};
+			updateBg();
+		};
 
 		[&]
 		{
@@ -97,6 +103,8 @@ struct Ending::EndingBackground::Impl
 			Graphics2D::SetPSConstantBuffer(1, m_cb);
 			(void)m_rt.draw();
 		}();
+#endif
+		updateBg();
 
 		[&]
 		{
@@ -156,7 +164,6 @@ private:
 		};
 
 		const ScopedRenderStates2D state{SamplerState::BorderNearest};
-		const ScopedRenderTarget2D target{m_rt};
 
 		for (const auto p : step({}, mapSize / 4, {4, 4}))
 		{

@@ -214,8 +214,7 @@ grad_color = "#d9ff3d"
 
 [ending.hud]
 margin_y = 120
-text_size = 4
-text_color = "#ffe492"
+text_size = 40
 final_y = 120
 final_size = 80
 
