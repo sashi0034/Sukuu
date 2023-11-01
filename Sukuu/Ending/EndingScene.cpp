@@ -3,6 +3,7 @@
 
 #include "Assets.generated.h"
 #include "EndingBackground.h"
+#include "EndingHud.h"
 #include "Play/Chara/CharaUtil.h"
 #include "Play/Player_detail/PlayerAnimation.h"
 #include "Util/ActorContainer.h"
@@ -15,12 +16,15 @@ struct Ending::EndingScene::Impl
 {
 	bool m_finished{};
 	EndingBackground m_bg{};
-
+	EndingHud m_hud{};
 
 	void Init(ActorView self)
 	{
 		m_bg = self.AsParent().Birth(EndingBackground());
 		m_bg.Init();
+
+		m_hud = self.AsParent().Birth(EndingHud());
+		m_hud.Init();
 	}
 
 	void Update(ActorBase& self)

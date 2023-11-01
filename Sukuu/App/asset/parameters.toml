@@ -212,7 +212,12 @@ camera_follow_height = 40.0
 grad_height = 200
 grad_color = "#d9ff3d"
 
-[tutorial.scene]
+[ending.hud]
+margin_y = 120
+text_size = 4
+text_color = "#ffe492"
+final_y = 120
+final_size = 80
 
 [tutorial.messenger]
 bottom = 200
@@ -226,5 +231,3 @@ icon_move = "(-120, 0)"
 rect_size = "(240, 240)"
 rect_thickness = 8.0
 dot_speed = 20
-
-[ending]

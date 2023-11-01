@@ -142,10 +142,12 @@
         <None Include="App\asset\shader\soft_shape.hlsl"/>
         <ClInclude Include="Constants.h"/>
         <ClInclude Include="Ending\EndingBackground.h" />
+        <ClInclude Include="Ending\EndingHud.h" />
         <ClInclude Include="Ending\EndingScene.h" />
         <ClInclude Include="Ending\Forward.h" />
         <ClInclude Include="GitRevision.h" />
         <ClCompile Include="Ending\EndingBackground.cpp" />
+        <ClCompile Include="Ending\EndingHud.cpp" />
         <ClCompile Include="Ending\EndingScene.cpp" />
         <ClCompile Include="GitRevision.generated.cpp" />
         <ClCompile Include="Main.cpp" />

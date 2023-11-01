@@ -15,6 +15,27 @@
 	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=03203DA94A7D5D4A87EC2CE7EEDE7567/Text/@EntryValue">#if _DEBUG
   $SELECTION$ $END$
 #endif</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=12261C19444E1944B207EA8146F3AC06/@KeyIndexDefined">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=12261C19444E1944B207EA8146F3AC06/Applicability/=Surround/@EntryIndexedValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=12261C19444E1944B207EA8146F3AC06/Description/@EntryValue">namespace declaration</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=12261C19444E1944B207EA8146F3AC06/Field/=NAME/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=12261C19444E1944B207EA8146F3AC06/Field/=NAME/Expression/@EntryValue">constant("myNamespace")</s:String>
+	<s:Int64 x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=12261C19444E1944B207EA8146F3AC06/Field/=NAME/Order/@EntryValue">0</s:Int64>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=12261C19444E1944B207EA8146F3AC06/IsBlessed/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=12261C19444E1944B207EA8146F3AC06/Reformat/@EntryValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=12261C19444E1944B207EA8146F3AC06/Scope/=49623BCB5944234AAD0552A2908C3C83/@KeyIndexDefined">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=12261C19444E1944B207EA8146F3AC06/Scope/=49623BCB5944234AAD0552A2908C3C83/Type/@EntryValue">InCppNamespace</s:String>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=12261C19444E1944B207EA8146F3AC06/Shortcut/@EntryValue">namespacecpp</s:String>
+	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=12261C19444E1944B207EA8146F3AC06/ShortenQualifiedReferences/@EntryValue">True</s:Boolean>
+	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=12261C19444E1944B207EA8146F3AC06/Text/@EntryValue">namespace
+{
+  using namespace $NAME$; 
+}
+
+namespace $NAME$
+{
+  $SELECTION$$END$
+}</s:String>
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=F1AF3F0CA5E68F42B405AEBD180BBF33/@KeyIndexDefined">True</s:Boolean>
 	<s:Boolean x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=F1AF3F0CA5E68F42B405AEBD180BBF33/Applicability/=Live/@EntryIndexedValue">True</s:Boolean>
 	<s:String x:Key="/Default/PatternsAndTemplates/LiveTemplates/Template/=F1AF3F0CA5E68F42B405AEBD180BBF33/Description/@EntryValue">Get toml params for source file</s:String>

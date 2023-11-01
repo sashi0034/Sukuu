@@ -100,7 +100,7 @@ struct Ending::EndingBackground::Impl
 
 		[&]
 		{
-			const int h = getToml<int>(U"grad_height");
+			const int h = getToml<int>(U"grad_height") + Periodic::Sine1_1(4.0) * 20.0;
 			const Color c = getToml<Color>(U"grad_color");
 			Rect(0, 0, Scene::Size().x, h)
 				.draw(Arg::top = ColorF{c, 0.7}, Arg::bottom = ColorF{c, 0.0});
