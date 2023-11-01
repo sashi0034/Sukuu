@@ -33,6 +33,7 @@ struct EndingHud::Impl
 	String m_finalInfo{};
 	double m_closeAlpha{};
 	double m_closeCloseAlpha{1.0};
+	double m_sashiAlpha{};
 
 	void Init(ActorView self)
 	{
@@ -84,6 +85,12 @@ struct EndingHud::Impl
 			                         Scene::Center().movedBy(0, finalY),
 			                         ColorF(Palette::White, m_finalAlpha * m_closeCloseAlpha));
 		}
+
+		if (m_sashiAlpha > 0)
+		{
+			auto&& font = FontAsset(AssetKeys::RocknRoll_Sdf_Bold);
+			font(U"Presented by sashi").drawAt(textSize, Scene::Center(), ColorF(1.0, m_sashiAlpha));
+		}
 	}
 
 private:
@@ -128,6 +135,10 @@ private:
 		yield.WaitForTrue([]() { return IsSceneLeftClicked(); });
 
 		yield.WaitForDead(AnimateEasing<EaseOutSine>(self, &m_closeCloseAlpha, 0.0, 1.0));
+
+		yield.WaitForDead(AnimateEasing<EaseOutSine>(self, &m_sashiAlpha, 1.0, 1.0));
+		yield.WaitForTime(2.0);
+		yield.WaitForDead(AnimateEasing<EaseOutSine>(self, &m_sashiAlpha, 0.0, 1.0));
 
 		m_finished = true;
 	}
