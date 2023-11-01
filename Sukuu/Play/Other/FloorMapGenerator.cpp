@@ -205,7 +205,7 @@ namespace
 		}
 	}
 
-	int getRoomPopItemCount(int floorIndex)
+	int getRoomItemCount(int floorIndex)
 	{
 		if (floorIndex == 1) return 3;
 		if (floorIndex <= 3) return Random(3, 5);
@@ -258,34 +258,91 @@ namespace
 		}
 	}
 
-	void installEnemies(ActorView enemyParent, EnemyContainer& enemyContainer)
+	int getRoomEnemyCount(int floorIndex)
 	{
-		for (int i = 0; i < 10; ++i)
+		if (floorIndex == 1) return 2;
+		if (floorIndex <= 3) return Random(4, 8);
+		if (floorIndex <= 6) return Random(4, 12);
+		if (floorIndex == 7) return 18;
+		if (floorIndex <= 12) return Random(8, 16);
+		if (floorIndex == 13) return 20;
+		if (floorIndex <= 22) return Random(12, 20);
+		if (floorIndex == 23) return 24;
+		if (floorIndex <= 30) return Random(16, 28);
+		if (floorIndex == 31) return 28;
+		if (floorIndex <= 40) return Random(16, 32);
+		if (floorIndex == 41) return 32;
+		return Random(24, 36);
+	}
+
+	bool tryRandomBirthEnemy(ActorView enemyParent, EnemyContainer& enemyContainer, int floorIndex)
+	{
+		switch (static_cast<EnemyKind>(Random(0, static_cast<int>(EnemyKind::Max) - 1)))
 		{
+		case EnemyKind::SlimeCat: {
 			auto enemy = enemyContainer.Birth(enemyParent.AsParent(), EnSlimeCat());
 			enemy.Init();
-			if (i > 2) enemy.BecomePrime();
+			return true;
 		}
-		for (int i = 0; i < 10; ++i)
-		{
+		case EnemyKind::Knight: {
+			if (floorIndex <= 1) return false;
+			if (RandomBool(0.4)) return false;
 			auto enemy = enemyContainer.Birth(enemyParent.AsParent(), EnKnight());
 			enemy.Init();
-			if (i > 2) enemy.BecomePrime();
+			return true;
 		}
-		for (int i = 0; i < 2; ++i)
-		{
+		case EnemyKind::Catfish: {
+			if (floorIndex <= 5) return false;
+			if (RandomBool(0.8)) return false;
 			auto enemy = enemyContainer.Birth(enemyParent.AsParent(), EnCatfish());
 			enemy.Init();
+			return true;
 		}
-		for (int i = 0; i < 2; ++i)
-		{
+		case EnemyKind::Crab: {
+			if (floorIndex <= 15) return false;
+			if (RandomBool(0.6)) return false;
 			auto enemy = enemyContainer.Birth(enemyParent.AsParent(), EnCrab());
 			enemy.Init();
+			return true;
 		}
-		for (int i = 0; i < 5; ++i)
-		{
+		case EnemyKind::Lion: {
+			if (floorIndex <= 25) return false;
+			if (RandomBool(0.4)) return false;
 			auto enemy = enemyContainer.Birth(enemyParent.AsParent(), EnLion());
 			enemy.Init();
+			return true;
+		}
+		case EnemyKind::SlimeCat_prime: {
+			if (floorIndex <= 35) return false;
+			auto enemy = enemyContainer.Birth(enemyParent.AsParent(), EnSlimeCat());
+			enemy.Init();
+			enemy.BecomePrime();
+			return true;
+		}
+		case EnemyKind::Knight_prime: {
+			if (floorIndex <= 40) return false;
+			if (RandomBool(0.4)) return false;
+			auto enemy = enemyContainer.Birth(enemyParent.AsParent(), EnKnight());
+			enemy.Init();
+			enemy.BecomePrime();
+			return true;
+		}
+		default: ;
+			return false;
+		};
+	}
+
+
+	void installEnemies(ActorView enemyParent, EnemyContainer& enemyContainer, int floorIndex)
+	{
+		const int enemyCount = getRoomEnemyCount(floorIndex);
+
+		for (const auto i : step(enemyCount))
+		{
+			while (true)
+			{
+				if (tryRandomBirthEnemy(enemyParent, enemyContainer, floorIndex)) break;
+			}
 		}
 	}
 
@@ -296,7 +353,7 @@ namespace
 			InstallGimmickRandomly(gimmick, map, GimmickKind::SemiItem_Vessel);
 		}
 
-		const int numPops = getRoomPopItemCount(floorIndex);
+		const int numPops = getRoomItemCount(floorIndex);
 		for (const auto i : step(numPops))
 		{
 			if (RandomBool(0.4))
@@ -340,6 +397,6 @@ namespace Play
 
 		installGimmicks(map, gimmick, floor);
 
-		installEnemies(enemyParent, enemyContainer);
+		installEnemies(enemyParent, enemyContainer, floor);
 	}
 }

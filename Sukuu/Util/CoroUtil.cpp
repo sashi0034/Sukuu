@@ -56,4 +56,12 @@ namespace Util
 	{
 		WaitForTrue([coro]() { return coro.IsDead(); });
 	}
+
+	void YieldExtended::operator()(int frame)
+	{
+		for (const auto i : step(frame))
+		{
+			yield();
+		}
+	}
 }

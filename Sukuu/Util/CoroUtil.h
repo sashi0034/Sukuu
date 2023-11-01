@@ -23,6 +23,7 @@ namespace Util
 		void WaitForDead(ActorView coro);
 		void WaitForExpire(const ActorWeak& coro);
 		void operator()() { yield(); }
+		void operator()(int frame);
 
 	private:
 		CoroTaskYield& yield;

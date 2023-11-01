@@ -16,6 +16,7 @@ namespace Play
 		Lion,
 		SlimeCat_prime,
 		Knight_prime,
+		Max,
 	};
 
 	int GetEnemyAttackDamage(EnemyKind kind);
