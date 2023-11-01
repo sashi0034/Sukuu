@@ -21,8 +21,6 @@ namespace
 
 struct Sukuu::GamesSupervisor::Impl
 {
-	Play::PlaySingletonData m_playData{};
-
 	void FlowchartAsync(YieldExtended& yield, ActorBase& self)
 	{
 		while (true)
@@ -73,8 +71,9 @@ private:
 	bool playLoop(YieldExtended& yield, ActorView self)
 	{
 #if _DEBUG
-		m_playData.floorIndex = debugToml<int>(U"initial_floor");
-		m_playData.timeLimiter = Play::TimeLimiterData{
+		Play::PlaySingletonData playData{};
+		playData.floorIndex = debugToml<int>(U"initial_floor");
+		playData.timeLimiter = Play::TimeLimiterData{
 			.maxTime = debugToml<double>(U"initial_timelimit"),
 			.remainingTime = debugToml<double>(U"initial_timelimit"),
 		};
@@ -94,9 +93,9 @@ private:
 #endif
 			{
 				yield.WaitForExpire(
-					play.StartTransition(m_playData.floorIndex));
+					play.StartTransition(playData.floorIndex));
 			}
-			play.Init(m_playData);
+			play.Init(playData);
 			yield.WaitForTrue([&]()
 			{
 #if _DEBUG
@@ -106,24 +105,24 @@ private:
 			});
 			if (not play.GetPlayer().IsTerminated()) yield();
 			play.Kill();
-			m_playData = play.CopyData();
-			if (m_playData.timeLimiter.remainingTime == 0)
+			playData = play.CopyData();
+			if (playData.timeLimiter.remainingTime == 0)
 			{
 				// ゲームオーバー
 				return false;
 			}
-			if (m_playData.floorIndex == Constants::MaxFloorIndex)
+			if (playData.floorIndex == Constants::MaxFloorIndex)
 			{
 				// エンディング
 				return true;
 			}
 #if _DEBUG
-			if (not debugToml<bool>(U"constant_floor")) m_playData.floorIndex++;
+			if (not debugToml<bool>(U"constant_floor")) playData.floorIndex++;
 #else
 			m_playData.floorIndex++;
 #endif
-			m_playData.timeLimiter.maxTime += 3;
-			m_playData.timeLimiter.remainingTime += 3;
+			playData.timeLimiter.maxTime += 3;
+			playData.timeLimiter.remainingTime += 3;
 		}
 	}
 
