@@ -19,14 +19,6 @@
 
 namespace
 {
-	enum class PlayerAct
-	{
-		Idle,
-		Walk,
-		Running,
-		Dead,
-	};
-
 	template <typename T>
 	T getToml(const String& key)
 	{
@@ -66,6 +58,7 @@ struct Play::Player::Impl
 #if _DEBUG
 		if (KeyNum1.down()) m_vision.mistRemoval = not m_vision.mistRemoval;
 #endif
+		updateVision(m_vision, m_act);
 
 		m_immortal.immortalTime = std::max(m_immortal.immortalTime - GetDeltaTime(), 0.0);
 
@@ -503,7 +496,6 @@ private:
 		refreshDistField();
 		m_immortal.immortalStock--;
 
-		static constexpr std::array scoopPenalty = {5, 10, 15, 20, 25};
 		if (PlayScene::Instance().GetMap().At(m_pos.actualPos.MapPoint()).kind == TerrainKind::Wall)
 		{
 			// ペナルティ発生

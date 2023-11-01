@@ -44,4 +44,23 @@ namespace Play
 		});
 		return true;
 	}
+
+	void updateVision(PlayerVisionState& vision, PlayerAct act)
+	{
+		const double d = Scene::DeltaTime() * 5.0;
+		double radius{1.0};
+		double heartbeat{1.0};
+		if (act == PlayerAct::Running)
+		{
+			radius = 0.9;
+			heartbeat = 2.1;
+		}
+		else if (act == PlayerAct::Walk)
+		{
+			heartbeat = 1.5;
+		}
+
+		vision.radiusRate = Math::Lerp(vision.radiusRate, radius, d);
+		vision.heartbeatRate = Math::Lerp(vision.heartbeatRate, heartbeat, d);
+	}
 }

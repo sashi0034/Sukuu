@@ -5,6 +5,14 @@
 
 namespace Play
 {
+	enum class PlayerAct
+	{
+		Idle,
+		Walk,
+		Running,
+		Dead,
+	};
+
 	struct PlayerImmortality
 	{
 		double immortalTime{};
@@ -25,4 +33,6 @@ namespace Play
 	bool CheckUseItemLightBulb(ActorView self, PlayerVisionState& vision);
 
 	bool CheckUseItemExplorer(ActorView self);
+
+	void updateVision(PlayerVisionState& vision, PlayerAct act);
 }

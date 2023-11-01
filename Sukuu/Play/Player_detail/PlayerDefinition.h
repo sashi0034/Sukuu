@@ -28,6 +28,8 @@ namespace Play
 
 	struct PlayerVisionState
 	{
+		double radiusRate{1.0};
+		double heartbeatRate{1.0};
 		bool mistRemoval{};
 	};
 }
