@@ -19,6 +19,8 @@ namespace Play
 {
 	MapGrid GenerateFloorMap(int floorIndex)
 	{
+		// 迷路: 7、13, 23, 31, 41
+
 		if (floorIndex == 1)
 		{
 			return GenerateFreshDungeon(DungGenProps{
@@ -170,6 +172,103 @@ namespace Play
 
 namespace
 {
+	bool canExistItem(ConsumableItem item, int floor)
+	{
+		switch (item)
+		{
+		case ConsumableItem::Wing:
+			return floor >= 5;
+		case ConsumableItem::Helmet:
+			return true;
+		case ConsumableItem::Pin:
+			return true;
+		case ConsumableItem::Mine:
+			return floor >= 5;
+		case ConsumableItem::LightBulb:
+			return floor >= 10;
+		case ConsumableItem::Magnet:
+			return true;
+		case ConsumableItem::Bookmark:
+			return floor >= 10;
+		case ConsumableItem::Explorer:
+			return floor >= 15;
+		case ConsumableItem::Grave:
+			return floor >= 5;
+		case ConsumableItem::Sun:
+			return floor >= 10;
+		case ConsumableItem::Tube:
+			return floor >= 15;
+		case ConsumableItem::Solt:
+			return floor >= 5;
+		default: ;
+			return false;
+		}
+	}
+
+	int getRoomPopItemCount(int floorIndex)
+	{
+		if (floorIndex == 1) return 3;
+		if (floorIndex <= 3) return Random(3, 5);
+		if (floorIndex <= 6) return Random(3, 7);
+		if (floorIndex == 7) return 18;
+		if (floorIndex <= 12) return Random(5, 11);
+		if (floorIndex == 13) return 24;
+		if (floorIndex <= 22) return Random(3, 17);
+		if (floorIndex == 23) return 24;
+		if (floorIndex <= 30) return Random(5, 13);
+		if (floorIndex == 31) return 24;
+		if (floorIndex <= 40) return Random(3, 13);
+		if (floorIndex == 41) return 18;
+		return Random(3, 7);
+	}
+
+	bool isExistVessel(int floorIndex)
+	{
+		return
+			floorIndex == 7 ||
+			floorIndex == 13 ||
+			floorIndex == 17 ||
+			floorIndex == 29 ||
+			floorIndex == 31 ||
+			floorIndex == 37;
+	}
+
+	GimmickKind getRandomItemGimmick()
+	{
+		while (true)
+		{
+			switch (static_cast<ConsumableItem>(Random(1, static_cast<int>(ConsumableItem::Max) - 1)))
+			{
+			case ConsumableItem::Wing:
+				if (RandomBool(0.5)) return GimmickKind::Item_Wing;
+			case ConsumableItem::Helmet:
+				return GimmickKind::Item_Helmet;
+			case ConsumableItem::Pin:
+				return GimmickKind::Item_Pin;
+			case ConsumableItem::Mine:
+				return GimmickKind::Item_Mine;
+			case ConsumableItem::LightBulb:
+				return GimmickKind::Item_LightBulb;
+			case ConsumableItem::Magnet:
+				return GimmickKind::Item_Magnet;
+			case ConsumableItem::Bookmark:
+				if (RandomBool(0.7)) return GimmickKind::Item_Bookmark;
+			case ConsumableItem::Explorer:
+				if (RandomBool(0.7)) return GimmickKind::Item_Explorer;
+			case ConsumableItem::Grave:
+				return GimmickKind::Item_Grave;
+			case ConsumableItem::Sun:
+				return GimmickKind::Item_Sun;
+			case ConsumableItem::Tube:
+				if (RandomBool(0.5)) return GimmickKind::Item_Tube;
+			case ConsumableItem::Solt:
+				if (RandomBool(0.9)) return GimmickKind::Item_Solt;
+			default: ;
+				break;
+			}
+		}
+	}
+
 	void installEnemies(ActorView enemyParent, EnemyContainer& enemyContainer)
 	{
 		for (int i = 0; i < 10; ++i)
@@ -201,63 +300,28 @@ namespace
 		}
 	}
 
-	void installGimmicks(const MapGrid& map, GimmickGrid& gimmick)
+	void installGimmicks(const MapGrid& map, GimmickGrid& gimmick, int floorIndex)
 	{
-		for (auto i : step(2))
-		{
-			InstallGimmickRandomly(gimmick, map, GimmickKind::Item_Helmet);
-		}
-		for (auto i : step(2))
-		{
-			InstallGimmickRandomly(gimmick, map, GimmickKind::Item_Pin);
-		}
-		for (auto i : step(2))
-		{
-			InstallGimmickRandomly(gimmick, map, GimmickKind::Item_Wing);
-		}
-		for (auto i : step(2))
-		{
-			InstallGimmickRandomly(gimmick, map, GimmickKind::Item_Mine);
-		}
-		for (auto i : step(2))
-		{
-			InstallGimmickRandomly(gimmick, map, GimmickKind::Item_LightBulb);
-		}
-		for (auto i : step(2))
-		{
-			InstallGimmickRandomly(gimmick, map, GimmickKind::Item_Magnet);
-		}
-		for (auto i : step(2))
-		{
-			InstallGimmickRandomly(gimmick, map, GimmickKind::Item_Bookmark);
-		}
-		for (auto i : step(2))
-		{
-			InstallGimmickRandomly(gimmick, map, GimmickKind::Item_Explorer);
-		}
-		for (auto i : step(2))
-		{
-			InstallGimmickRandomly(gimmick, map, GimmickKind::Item_Grave);
-		}
-		for (auto i : step(2))
-		{
-			InstallGimmickRandomly(gimmick, map, GimmickKind::Item_Sun);
-		}
-		for (auto i : step(2))
-		{
-			InstallGimmickRandomly(gimmick, map, GimmickKind::Item_Tube);
-		}
-		for (auto i : step(2))
-		{
-			InstallGimmickRandomly(gimmick, map, GimmickKind::Item_Solt);
-		}
-		for (auto i : step(2))
-		{
-			InstallGimmickRandomly(gimmick, map, GimmickKind::SemiItem_Hourglass);
-		}
-		for (auto i : step(2))
+		if (isExistVessel(floorIndex))
 		{
 			InstallGimmickRandomly(gimmick, map, GimmickKind::SemiItem_Vessel);
+		}
+
+		const int numPops = getRoomPopItemCount(floorIndex);
+		for (const auto i : step(numPops))
+		{
+			if (RandomBool(0.4))
+			{
+				InstallGimmickRandomly(gimmick, map, GimmickKind::SemiItem_Hourglass);
+				continue;
+			}
+			GimmickKind item{};
+			while (true)
+			{
+				item = getRandomItemGimmick();
+				if (canExistItem(GimmickToItem(item), floorIndex)) break;
+			}
+			InstallGimmickRandomly(gimmick, map, item);
 		}
 	}
 }
@@ -274,7 +338,7 @@ namespace Play
 
 		gimmick[map.Rooms().RandomRoomPoint(true)] = GimmickKind::Stairs;
 
-		installGimmicks(map, gimmick);
+		installGimmicks(map, gimmick, floor);
 
 		installEnemies(enemyParent, enemyContainer);
 	}

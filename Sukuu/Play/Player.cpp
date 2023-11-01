@@ -554,7 +554,7 @@ private:
 			obtainItemAt(newPoint, gimmickGrid);
 			break;
 		case GimmickKind::SemiItem_Hourglass: {
-			RelayTimeHealAmount(m_pos, 15);
+			RelayTimeHealAmount(m_pos, 10);
 			gimmickGrid[newPoint] = GimmickKind::None;
 			break;
 		}
@@ -643,9 +643,9 @@ namespace Play
 		p_impl->StartFlowchart(*this);
 
 #if _DEBUG
-		p_impl->m_personal.items[0] = ConsumableItem::Pin;
-		p_impl->m_personal.items[1] = ConsumableItem::Sun;
-		p_impl->m_personal.items[2] = ConsumableItem::Mine;
+		// p_impl->m_personal.items[0] = ConsumableItem::Pin;
+		// p_impl->m_personal.items[1] = ConsumableItem::Sun;
+		// p_impl->m_personal.items[2] = ConsumableItem::Mine;
 #endif
 	}
 

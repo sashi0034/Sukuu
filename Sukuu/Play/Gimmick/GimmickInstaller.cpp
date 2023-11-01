@@ -44,14 +44,19 @@ namespace Play
 		}
 	}
 
-	void InstallGimmickRandomly(GimmickGrid& gimmick, const MapGrid& map, GimmickKind kind)
+	bool InstallGimmickRandomly(GimmickGrid& gimmick, const MapGrid& map, GimmickKind kind)
 	{
+		int failedCount{};
 		while (true)
 		{
 			const auto p = map.Rooms().RandomRoomPoint(true);
-			if (gimmick[p] != GimmickKind::None) continue;
-			gimmick[p] = kind;
-			break;
+			if (gimmick[p] == GimmickKind::None)
+			{
+				gimmick[p] = kind;
+				return true;
+			}
+			failedCount++;
+			if (failedCount >= 1000) return false;
 		}
 	}
 }
