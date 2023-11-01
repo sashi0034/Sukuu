@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "GamesSupervisor.h"
 
+#include "Constants.h"
 #include "Ending/EndingScene.h"
 #include "Play/PlayScene.h"
 #include "Title/TitleScene.h"
@@ -46,7 +47,7 @@ private:
 	title:
 		titleLoop(yield, self);
 	play:
-		playLoop(yield, self);
+		if (const bool cleared = playLoop(yield, self)) goto ending;
 		goto title;
 	ending:
 		endingLoop(yield, self);
@@ -69,7 +70,7 @@ private:
 		title.Kill();
 	}
 
-	void playLoop(YieldExtended& yield, ActorView self)
+	bool playLoop(YieldExtended& yield, ActorView self)
 	{
 		m_playData.floorIndex = 1;
 		const double initialTimelimit =
@@ -103,7 +104,12 @@ private:
 			if (m_playData.timeLimiter.remainingTime == 0)
 			{
 				// ゲームオーバー
-				break;
+				return false;
+			}
+			if (m_playData.floorIndex == Constants::MaxFloorIndex)
+			{
+				// エンディング
+				return true;
 			}
 			m_playData.floorIndex++;
 			m_playData.timeLimiter.maxTime += 3;
