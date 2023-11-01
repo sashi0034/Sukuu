@@ -11,7 +11,7 @@ namespace
 {
 	using namespace Ending;
 
-	constexpr Size mapSize{48, 20};
+	constexpr Size mapSize{64, 20};
 	constexpr int maxPlantSize = 48;
 
 	enum class PlantKind
@@ -55,14 +55,14 @@ struct Ending::EndingBackground::Impl
 		m_playerPos = {-32.0, mapSize.y * Px_16 / 2 - Play::CellPx_24};
 		m_plants.resize(mapSize);
 
-		addPlant(PlantKind::Bush1, 32);
-		addPlant(PlantKind::Bush2, 32);
-		addPlant(PlantKind::TreeL, 24);
-		addPlant(PlantKind::TreeS, 24);
-		addPlant(PlantKind::Stone1, 24);
-		addPlant(PlantKind::Stone2, 24);
-		addPlant(PlantKind::Moss1, 24);
-		addPlant(PlantKind::Moss2, 24);
+		addPlant(PlantKind::Bush1, 96);
+		addPlant(PlantKind::Bush2, 96);
+		addPlant(PlantKind::TreeL, 64);
+		addPlant(PlantKind::TreeS, 64);
+		addPlant(PlantKind::Stone1, 64);
+		addPlant(PlantKind::Stone2, 64);
+		addPlant(PlantKind::Moss1, 64);
+		addPlant(PlantKind::Moss2, 64);
 	}
 
 	void Update()
@@ -75,23 +75,28 @@ struct Ending::EndingBackground::Impl
 			(void)TextureAsset(AssetImages::grass_tile_64x64).draw(Vec2{p * Px_16});
 		}
 
-		drawPlants();
-
 		m_playerPos.x += 6.0 * Scene::DeltaTime();
-		(void)Play::GetUsualPlayerTexture(Dir4::Right, m_animTimer, true).draw(m_playerPos);
+
+		drawPlants();
 	}
 
 private:
 	void addPlant(PlantKind kind, int n)
 	{
-		for (int i = 0; i < n; ++i)
+		const auto pd = PoissonDisk2D(mapSize, 3.0);
+		auto&& points = pd.getPoints().shuffled();
+		for (size_t i = 0; i < n; ++i)
 		{
-			Point pos{};
+			Point pos = points[std::min(i, points.size() - 1)].asPoint();
 			while (true)
 			{
-				pos = RandomPoint(Rect(mapSize));
-				if (m_plants[pos].kind != PlantKind::NoPlant) continue;;
-				break;
+				if (pos.x < 0) pos.x = mapSize.x - 1;
+				if (pos.y < 0) pos.y = mapSize.y - 1;
+				if (pos.x >= mapSize.x) pos.x = 0;
+				if (pos.y >= mapSize.y) pos.y = 0;
+				if (m_plants[pos].kind == PlantKind::NoPlant) break;
+				pos.x += RandomBool() ? 1 : -1;
+				pos.y += RandomBool() ? 1 : -1;
 			}
 			m_plants[pos] = {
 				.kind = kind,
@@ -106,12 +111,22 @@ private:
 		const auto mapBr = inversed.transformPoint(Scene::Size()).asPoint() / Px_16;
 		constexpr int subSpace = (maxPlantSize / Px_16) - 1;
 
+		bool renderedPlayer{};
 		for (int y = mapTl.y - 1; y < mapBr.y + 1 + subSpace; ++y)
 		{
+			bool playerLine{};
+			if (not renderedPlayer && (y - 1) * Px_16 > m_playerPos.y)
+			{
+				// プレイヤー描画
+				(void)Play::GetUsualPlayerTexture(Dir4::Right, m_animTimer, true).draw(m_playerPos);
+				renderedPlayer = true;
+				playerLine = true;
+			}
 			for (int x = mapTl.x - 1; x < mapBr.x + subSpace; ++x)
 			{
 				auto point = Point{x, y};
 				if (m_plants.inBounds(point) == false) continue;
+				if (playerLine && m_plants[point].kind == PlantKind::Moss2) continue;
 				drawPlantOf(m_plants[point], point * Px_16);
 			}
 		}
