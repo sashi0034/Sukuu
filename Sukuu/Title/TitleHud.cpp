@@ -18,6 +18,7 @@ struct Title::TitleHud::Impl
 	String m_record{};
 	bool m_showPrompt{};
 	double m_promptAnim{};
+	bool m_creditHovered{};
 
 	void Init()
 	{
@@ -55,6 +56,18 @@ struct Title::TitleHud::Impl
 				        Scene::Center().movedBy(0, getToml<double>(U"prompt_y")),
 				        ColorF(1.0, Math::Abs(Math::Sin(m_promptAnim))));
 		}
+
+		auto&& creditSize = getToml<Size>(U"credit_size");
+		const auto creditRect = Rect(Scene::Size().moveBy(getToml<Point>(U"credit_padding") - creditSize), creditSize);
+		m_creditHovered = creditRect.intersects(Cursor::PosF());
+		(void)creditRect
+		      .drawShadow({6, 6}, 24, 3)
+		      .rounded(20).draw(getToml<ColorF>(U"credit_color") * (m_creditHovered ? 1.3 : 1.0));
+		(void)FontAsset(AssetKeys::RocknRoll_24_Bitmap)(U"クレジット").drawAt(creditRect.center());
+		if (m_creditHovered && MouseL.down())
+		{
+			System::LaunchFile(U"./credit.html");
+		}
 	}
 };
 
@@ -84,5 +97,10 @@ namespace Title
 	void TitleHud::SetShowPrompt(bool show)
 	{
 		p_impl->m_showPrompt = show;
+	}
+
+	bool TitleHud::IsCreditHovered() const
+	{
+		return p_impl->m_creditHovered;
 	}
 }

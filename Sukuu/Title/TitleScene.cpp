@@ -94,7 +94,12 @@ private:
 		yield.WaitForTime(0.3);
 
 		m_hud.SetShowPrompt(true);
-		yield.WaitForTrue([]() { return IsSceneLeftClicked(); });
+		yield.WaitForTrue([this]()
+		{
+			return
+				not m_hud.IsCreditHovered() &&
+				IsSceneLeftClicked();
+		});
 		m_hud.SetShowPrompt(false);
 
 		closeTransition(yield, self);

@@ -598,6 +598,7 @@
         <Content Include="App\asset\image\tree_48x48.png" />
         <Content Include="App\asset\image\wing_16x16.png" />
         <Content Include="App\asset\parameters.toml" />
+        <Content Include="App\credit.html" />
     </ItemGroup>
     <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets"/>
     <ImportGroup Label="ExtensionTargets">
