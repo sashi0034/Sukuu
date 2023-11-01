@@ -20,7 +20,7 @@ Siv3Dゲームジャム2023
 
 - MSBuild version 17.7.2.37605
 
-- Rider 2023.2.2
+- JetBrains Rider 2023.2.2
 
 - Intel Core i9-12900
 
