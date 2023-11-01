@@ -13,6 +13,7 @@
 #include "Map/MapGrid.h"
 #include "Map/MazeGenerator.h"
 #include "Other/CaveVision.h"
+#include "Other/FloorMapGenerator.h"
 #include "UI/UiCurrentFloor.h"
 #include "UI/UiFloorTransition.h"
 #include "UI/UiItemContainer.h"
@@ -29,7 +30,6 @@ namespace
 		{
 			Player,
 			Debug,
-			Max,
 		};
 	}
 
@@ -75,7 +75,7 @@ public:
 		}
 		else
 		{
-			m_map = generateMap();
+			m_map = GenerateFloorMap(data.floorIndex);
 		}
 
 		m_gimmick.resize(m_map.Data().size(), GimmickKind::None);
@@ -105,8 +105,7 @@ public:
 		}
 		else
 		{
-			InstallGimmicks(m_gimmick, m_map);
-			installEnemies(self);
+			GenerateEnemiesAndGimmicks(data.floorIndex, m_map, self, m_enemies, m_gimmick);
 			m_player.Init(data.playerPersonal, GetInitialPos(m_map));
 
 			m_currentFloor.Init(data.floorIndex);
@@ -129,8 +128,9 @@ public:
 #ifdef  _DEBUG
 		// デバッグ用にカメラ変更
 		if (KeyNum0.down())
-			m_camera =
-				static_cast<CameraKind::Value>((m_camera + 1) % CameraKind::Max);
+		{
+			m_camera = m_camera != CameraKind::Debug ? CameraKind::Debug : CameraKind::Player;
+		}
 #endif
 		if (m_camera == CameraKind::Debug) m_debugCamera.update();
 
@@ -157,53 +157,11 @@ public:
 	}
 
 private:
-	static MapGrid generateMap()
-	{
-		// return GenerateFreshMaze(MazeGenProps{
-		// 	.size = {65, 65},
-		// });
-		return GenerateFreshDungeon(DungGenProps{
-			.size = {81, 81},
-			.areaDivision = 8,
-		});
-	}
-
 	void ensureInitializedTransition()
 	{
 		if (m_floorTransition.IsInitialized()) return;
 		m_floorTransition = m_ui.Birth(UiFloorTransition());
 		m_floorTransition.Init();
-	}
-
-	void installEnemies(ActorView self)
-	{
-		for (int i = 0; i < 10; ++i)
-		{
-			auto enemy = m_enemies.Birth(self.AsParent(), EnSlimeCat());
-			enemy.Init();
-			if (i > 2) enemy.BecomePrime();
-		}
-		for (int i = 0; i < 10; ++i)
-		{
-			auto enemy = m_enemies.Birth(self.AsParent(), EnKnight());
-			enemy.Init();
-			if (i > 2) enemy.BecomePrime();
-		}
-		for (int i = 0; i < 2; ++i)
-		{
-			auto enemy = m_enemies.Birth(self.AsParent(), EnCatfish());
-			enemy.Init();
-		}
-		for (int i = 0; i < 2; ++i)
-		{
-			auto enemy = m_enemies.Birth(self.AsParent(), EnCrab());
-			enemy.Init();
-		}
-		for (int i = 0; i < 5; ++i)
-		{
-			auto enemy = m_enemies.Birth(self.AsParent(), EnLion());
-			enemy.Init();
-		}
 	}
 };
 

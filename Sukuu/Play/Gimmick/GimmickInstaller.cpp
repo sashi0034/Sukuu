@@ -6,19 +6,11 @@
 namespace
 {
 	using namespace Play;
+}
 
-	void installGimmickRandomly(GimmickGrid& gimmick, const MapGrid& map, GimmickKind kind)
-	{
-		while (true)
-		{
-			const auto p = map.Rooms().RandomRoomPoint(true);
-			if (gimmick[p] != GimmickKind::None) continue;
-			gimmick[p] = kind;
-			break;
-		}
-	}
-
-	void installArrowsInMaze(GimmickGrid& gimmick, const MapGrid& map)
+namespace Play
+{
+	void InstallArrowsInMaze(GimmickGrid& gimmick, const MapGrid& map)
 	{
 		for (const auto p : step({1, 1}, gimmick.size().moveBy(-2, -2)))
 		{
@@ -51,74 +43,15 @@ namespace
 			}
 		}
 	}
-}
 
-namespace Play
-{
-	void InstallGimmicks(GimmickGrid& gimmick, const MapGrid& map)
+	void InstallGimmickRandomly(GimmickGrid& gimmick, const MapGrid& map, GimmickKind kind)
 	{
-		if (map.Category() == MapCategory::Maze)
+		while (true)
 		{
-			installArrowsInMaze(gimmick, map);
-		}
-
-		gimmick[map.Rooms().RandomRoomPoint(true)] = GimmickKind::Stairs;
-
-		for (auto i : step(2))
-		{
-			installGimmickRandomly(gimmick, map, GimmickKind::Item_Helmet);
-		}
-		for (auto i : step(2))
-		{
-			installGimmickRandomly(gimmick, map, GimmickKind::Item_Pin);
-		}
-		for (auto i : step(2))
-		{
-			installGimmickRandomly(gimmick, map, GimmickKind::Item_Wing);
-		}
-		for (auto i : step(2))
-		{
-			installGimmickRandomly(gimmick, map, GimmickKind::Item_Mine);
-		}
-		for (auto i : step(2))
-		{
-			installGimmickRandomly(gimmick, map, GimmickKind::Item_LightBulb);
-		}
-		for (auto i : step(2))
-		{
-			installGimmickRandomly(gimmick, map, GimmickKind::Item_Magnet);
-		}
-		for (auto i : step(2))
-		{
-			installGimmickRandomly(gimmick, map, GimmickKind::Item_Bookmark);
-		}
-		for (auto i : step(2))
-		{
-			installGimmickRandomly(gimmick, map, GimmickKind::Item_Explorer);
-		}
-		for (auto i : step(2))
-		{
-			installGimmickRandomly(gimmick, map, GimmickKind::Item_Grave);
-		}
-		for (auto i : step(2))
-		{
-			installGimmickRandomly(gimmick, map, GimmickKind::Item_Sun);
-		}
-		for (auto i : step(2))
-		{
-			installGimmickRandomly(gimmick, map, GimmickKind::Item_Tube);
-		}
-		for (auto i : step(2))
-		{
-			installGimmickRandomly(gimmick, map, GimmickKind::Item_Solt);
-		}
-		for (auto i : step(2))
-		{
-			installGimmickRandomly(gimmick, map, GimmickKind::SemiItem_Hourglass);
-		}
-		for (auto i : step(2))
-		{
-			installGimmickRandomly(gimmick, map, GimmickKind::SemiItem_Vessel);
+			const auto p = map.Rooms().RandomRoomPoint(true);
+			if (gimmick[p] != GimmickKind::None) continue;
+			gimmick[p] = kind;
+			break;
 		}
 	}
 }

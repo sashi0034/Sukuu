@@ -4,5 +4,6 @@
 
 namespace Play
 {
-	void InstallGimmicks(GimmickGrid& gimmick, const MapGrid& map);
+	void InstallArrowsInMaze(GimmickGrid& gimmick, const MapGrid& map);
+	void InstallGimmickRandomly(GimmickGrid& gimmick, const MapGrid& map, GimmickKind kind);
 }

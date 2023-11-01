@@ -99,8 +99,12 @@ private:
 			play.Init(m_playData);
 			yield.WaitForTrue([&]()
 			{
+#if _DEBUG
+				if (KeyNum9.down()) return true;
+#endif
 				return play.GetPlayer().IsTerminated();
 			});
+			if (not play.GetPlayer().IsTerminated()) yield();
 			play.Kill();
 			m_playData = play.CopyData();
 			if (m_playData.timeLimiter.remainingTime == 0)
@@ -113,7 +117,11 @@ private:
 				// エンディング
 				return true;
 			}
+#if _DEBUG
+			if (not debugToml<bool>(U"constant_floor")) m_playData.floorIndex++;
+#else
 			m_playData.floorIndex++;
+#endif
 			m_playData.timeLimiter.maxTime += 3;
 			m_playData.timeLimiter.remainingTime += 3;
 		}

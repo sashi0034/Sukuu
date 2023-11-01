@@ -63,6 +63,10 @@ struct Play::Player::Impl
 
 	void Update()
 	{
+#if _DEBUG
+		if (KeyNum1.down()) m_vision.mistRemoval = not m_vision.mistRemoval;
+#endif
+
 		m_immortal.immortalTime = std::max(m_immortal.immortalTime - GetDeltaTime(), 0.0);
 
 		m_animTimer.Tick(GetDeltaTime() * (m_act == PlayerAct::Running ? 2 : 1));
