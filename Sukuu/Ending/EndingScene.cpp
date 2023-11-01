@@ -14,7 +14,6 @@ namespace
 
 struct Ending::EndingScene::Impl
 {
-	bool m_finished{};
 	EndingBackground m_bg{};
 	EndingHud m_hud{};
 
@@ -52,6 +51,6 @@ namespace Ending
 
 	bool EndingScene::IsFinished() const
 	{
-		return p_impl->m_finished;
+		return p_impl->m_hud.IsFinished();
 	}
 }

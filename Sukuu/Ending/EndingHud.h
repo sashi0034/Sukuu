@@ -10,6 +10,9 @@ namespace Ending
 		EndingHud();
 		void Init();
 		void Update() override;
+		bool IsFinished() const;
+
+		double OrderPriority() const override;
 
 	private:
 		struct Impl;
