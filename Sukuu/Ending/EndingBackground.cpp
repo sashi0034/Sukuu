@@ -14,6 +14,11 @@ namespace
 	constexpr Size mapSize{64, 20};
 	constexpr int maxPlantSize = 48;
 
+	struct RgbShiftCb
+	{
+		float amount{};
+	};
+
 	enum class PlantKind
 	{
 		NoPlant,
@@ -41,12 +46,19 @@ namespace
 	{
 		return getPlantPadding(Size{size, size});
 	}
+
+	template <typename T>
+	inline T getToml(const String& key)
+	{
+		return Util::GetTomlParameter<T>(U"ending.background." + key);
+	}
 }
 
 struct Ending::EndingBackground::Impl
 {
 	RenderTexture m_rt{};
-	PixelShader m_colorAberration{};
+	PixelShader m_rgbShifter{};
+	ConstantBuffer<RgbShiftCb> m_cb{};
 
 	Play::AnimTimer m_animTimer{};
 	Vec2 m_playerPos{};
@@ -56,7 +68,7 @@ struct Ending::EndingBackground::Impl
 
 	void Init()
 	{
-		m_colorAberration = HLSL{U"example/shader/hlsl/rgb_shift.hlsl", U"PS"};
+		m_rgbShifter = HLSL{U"asset/shader/rgb_shift.hlsl", U"PS"};
 		m_rt = RenderTexture(Scene::Size());
 
 		m_playerPos = {-32.0, mapSize.y * Px_16 / 2 - Play::CellPx_24};
@@ -78,8 +90,23 @@ struct Ending::EndingBackground::Impl
 
 		updateBg();
 
-		const ScopedCustomShader2D shader{m_colorAberration};
-		(void)m_rt.draw();
+		[&]
+		{
+			m_cb->amount = 0.005 * Periodic::Sine0_1(12.0s);
+			const ScopedCustomShader2D shader{m_rgbShifter};
+			Graphics2D::SetPSConstantBuffer(1, m_cb);
+			(void)m_rt.draw();
+		}();
+
+		[&]
+		{
+			const int h = getToml<int>(U"grad_height");
+			const Color c = getToml<Color>(U"grad_color");
+			Rect(0, 0, Scene::Size().x, h)
+				.draw(Arg::top = ColorF{c, 0.7}, Arg::bottom = ColorF{c, 0.0});
+			Rect(0, Scene::Size().y - h, Scene::Size().x, h)
+				.draw(Arg::top = ColorF{c, 0.0}, Arg::bottom = ColorF{c, 0.7});
+		}();
 	}
 
 private:

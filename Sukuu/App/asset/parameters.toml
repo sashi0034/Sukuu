@@ -208,6 +208,10 @@ camera_rotation_speed = 5
 camera_follow_distance = 40.0
 camera_follow_height = 40.0
 
+[ending.background]
+grad_height = 200
+grad_color = "#d9ff3d"
+
 [tutorial.scene]
 
 [tutorial.messenger]
