@@ -196,9 +196,10 @@
             <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
         </ClCompile>
         <ClCompile Include="Sukuu\AssetReloader.cpp" />
+        <ClCompile Include="Sukuu\GameSavedata.cpp" />
         <ClCompile Include="Sukuu\GamesSupervisor.cpp" />
         <ClCompile Include="Title\TitleBackground.cpp" />
-        <ClCompile Include="Title\TitleHud.cpp" />
+        <ClCompile Include="Title-\TitleHud.cpp" />
         <ClCompile Include="Title\TitleScene.cpp" />
         <ClCompile Include="Tutorial\TutorialFocus.cpp" />
         <ClCompile Include="Tutorial\TutorialMap.cpp" />
@@ -458,6 +459,7 @@
         <ClInclude Include="Play\UI\UiTimeLimiter.h" />
         <ClInclude Include="stdafx.h" />
         <ClInclude Include="Sukuu\AssetReloader.h" />
+        <ClInclude Include="Sukuu\GameSavedata.h" />
         <ClInclude Include="Sukuu\GamesSupervisor.h" />
         <ClInclude Include="Title\Forward.h" />
         <ClInclude Include="Title\TitleBackground.h" />
