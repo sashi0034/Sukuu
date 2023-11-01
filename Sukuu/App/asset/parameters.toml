@@ -1,8 +1,9 @@
 [debug]
-entry_point = "ending"
-skip_transition = true
+entry_point = "play"
+skip_transition = false
 visualize_player_distance = false
-initial_timelimit = 90
+initial_timelimit = 90.0
+initial_floor = 10
 
 [play.scene]
 hitstopping_timescale = 0.1

@@ -72,17 +72,19 @@ private:
 
 	bool playLoop(YieldExtended& yield, ActorView self)
 	{
-		m_playData.floorIndex = 1;
-		const double initialTimelimit =
 #if _DEBUG
-			debugToml<int>(U"initial_timelimit");
-#else
-			90.0;
-#endif
-		m_playData.timeLimiter = {
-			.maxTime = initialTimelimit,
-			.remainingTime = initialTimelimit,
+		m_playData.floorIndex = debugToml<int>(U"initial_floor");
+		m_playData.timeLimiter = Play::TimeLimiterData{
+			.maxTime = debugToml<double>(U"initial_timelimit"),
+			.remainingTime = debugToml<double>(U"initial_timelimit"),
 		};
+#else
+		m_playData.floorIndex = 1;
+		m_playData.timeLimiter = {
+			.maxTime = 90.0,
+			.remainingTime = 90.0,
+		};
+#endif
 
 		while (true)
 		{
