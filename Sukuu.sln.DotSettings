@@ -56,4 +56,5 @@ namespace $NAME$
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Msdf/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Rockn/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=sashi/@EntryIndexedValue">True</s:Boolean>
+	<s:Boolean x:Key="/Default/UserDictionary/Words/=savedata/@EntryIndexedValue">True</s:Boolean>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=Sukuu/@EntryIndexedValue">True</s:Boolean></wpf:ResourceDictionary>
