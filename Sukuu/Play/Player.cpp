@@ -603,7 +603,10 @@ private:
 	bool canInstallGimmickNow() const
 	{
 		if (m_act != PlayerAct::Idle) return false;
-		if (PlayScene::Instance().GetGimmick()[m_pos.actualPos.MapPoint()] != GimmickKind::None) return false;
+		const auto p = m_pos.actualPos.MapPoint();
+		auto&& gimmick = PlayScene::Instance().GetGimmick();
+		if (gimmick.inBounds(p) == false) return false;
+		if (gimmick[p] != GimmickKind::None) return false;
 		return true;
 	}
 
