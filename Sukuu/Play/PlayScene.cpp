@@ -87,6 +87,13 @@ public:
 		m_fgEffect = self.AsParent().Birth(EffectWrapper(32767));
 		m_bgEffect = self.AsParent().Birth(EffectWrapper(-32768));
 
+		m_fgEffect.GetEffect().setMaxLifeTime(std::numeric_limits<double>::max());
+		m_fgEffect.GetEffect().add([this](auto)
+		{
+			m_bgMapDrawer.PostDraw();
+			return true;
+		});
+
 		m_player = self.AsParent().Birth(Player());
 
 		m_uiItemContainer = m_ui.Birth(UiItemContainer());
@@ -148,7 +155,6 @@ public:
 
 		// キャラクターなどの通常更新
 		self.ActorBase::Update();
-		m_bgMapDrawer.PostDraw();
 		m_enemies.Refresh();
 		m_bgEffect.GetEffect().setSpeed(GetTimeScale());
 		m_fgEffect.GetEffect().setSpeed(GetTimeScale());
