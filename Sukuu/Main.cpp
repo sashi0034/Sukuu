@@ -2,6 +2,7 @@
 
 #include "AssetKeys.h"
 #include "Assets.generated.h"
+#include "Constants.h"
 #include "Sukuu/AssetReloader.h"
 #include "Sukuu/GamesSupervisor.h"
 #include "Util/ActorContainer.h"
@@ -12,7 +13,7 @@ using namespace Sukuu;
 
 void Main()
 {
-	Scene::SetBackground(ColorF{0.3, 0.3, 0.3});
+	Scene::SetBackground(Constants::HardDarkblue);
 
 	Window::SetStyle(WindowStyle::Sizable);
 	Scene::SetResizeMode(ResizeMode::Keep);

@@ -138,7 +138,7 @@ struct Play::Player::Impl
 			m_act = PlayerAct::Dead;
 			m_cameraScale = 10.0;
 			m_cameraOffset = {0, 1200};
-			constexpr double duration = 3.5;
+			constexpr double duration = 8.0;
 			AnimateEasing<EaseOutCubic>(self, &m_cameraOffset, {0, 0}, duration);
 			yield.WaitForDead(
 				AnimateEasing<EaseInOutBack>(self, &m_cameraScale, defaultCameraScale, duration));

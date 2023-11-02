@@ -2,6 +2,7 @@
 #include "TutorialScene.h"
 
 #include "AssetKeys.h"
+#include "Assets.generated.h"
 #include "Constants.h"
 #include "TutorialFocus.h"
 #include "TutorialMap.h"
@@ -41,6 +42,7 @@ struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
 	TutorialMessenger m_messanger{};
 	TutorialFocus m_focus{};
 	std::function<void()> m_postDraw{};
+	AudioAsset m_bgm = AudioAsset(AssetBgms::obake_dance);
 
 	void Init(ActorView self)
 	{
@@ -106,11 +108,17 @@ private:
 		tutorialFinal(yield, self);
 
 		yield.WaitForTrue([this]() { return m_play.GetPlayer().IsTerminated(); });
+		m_bgm.pause(2.0s);
+		yield.WaitForTime(2.0);
 		m_finished = true;
 	}
 
 	void performOpening(YieldExtended& yield, ActorView self)
 	{
+		yield();
+		m_bgm.setLoop(true);
+		m_bgm.play();
+
 		double prologueAlpha{};
 		auto&& prologueFont = FontAsset(AssetKeys::RocknRoll_Sdf);
 		m_postDraw = [&]()
@@ -119,9 +127,9 @@ private:
 			prologueFont(U"ダンジョン50層先のいにしえの安息の地を求めて...").drawAt(
 				40.0, Scene::Center(), ColorF(1.0, prologueAlpha));
 		};
-		yield.WaitForDead(AnimateEasing<EaseInOutSine>(self, &prologueAlpha, 1.0, 1.0));
-		yield.WaitForTime(1.5);
-		yield.WaitForDead(AnimateEasing<EaseInOutSine>(self, &prologueAlpha, 0.0, 1.0));
+		yield.WaitForDead(AnimateEasing<EaseInOutSine>(self, &prologueAlpha, 1.0, 2.0));
+		yield.WaitForTime(3.0);
+		yield.WaitForDead(AnimateEasing<EaseInOutSine>(self, &prologueAlpha, 0.0, 2.0));
 
 		// 真っ黒な画面から徐々に明るくしていく
 		m_play.GetPlayer().PerformTutorialOpening();
@@ -131,7 +139,7 @@ private:
 			Rect(Scene::Size()).draw(ColorF{Constants::HardDarkblue, rate});
 		};
 		yield.WaitForDead(
-			AnimateEasing<EaseInQuad>(self, &rate, 0.0, 4.5));
+			AnimateEasing<EaseInQuad>(self, &rate, 0.0, 8.0));
 		m_postDraw = {};
 	}
 
@@ -140,8 +148,9 @@ private:
 		m_playerService.canMove = false;
 		m_play.GetMap().At(m_mapData.firstBlockPoint).kind = Play::TerrainKind::Wall;
 
+		yield.WaitForTime(2.0);
 		waitMessage(yield, U"ふむ、目が覚めたようだね", messageWaitMedium);
-		waitMessage(yield, U"早速だがキミに動いてもらおう", messageWaitShort);
+		waitMessage(yield, U"早速だがキミに動いてもらおう", messageWaitMedium);
 		m_playerService.canMove = true;
 		int movedCount{};
 		int runningCount{};
@@ -160,7 +169,7 @@ private:
 		{
 			return runningCount > 10;
 		});
-		waitMessage(yield, U"よし、では奥に進もうか", messageWaitShort);
+		waitMessage(yield, U"よし、では奥に進もうか", messageWaitMedium);
 
 		// とうせんぼうしてたブロックを除去
 		m_play.GetMap().At(m_mapData.firstBlockPoint).kind = Play::TerrainKind::Floor;

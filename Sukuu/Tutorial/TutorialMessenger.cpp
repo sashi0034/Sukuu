@@ -20,6 +20,7 @@ struct Tutorial::TutorialMessenger::Impl
 	double m_time{};
 	String m_message{};
 	double m_alpha{};
+	ActorWeak m_startedCoro{};
 
 	void Update()
 	{
@@ -44,7 +45,8 @@ struct Tutorial::TutorialMessenger::Impl
 		m_alpha = 1.0;
 		if (duration < 0) return;
 
-		StartCoro(self, [this, self, duration](YieldExtended yield)
+		m_startedCoro.Kill();
+		m_startedCoro = StartCoro(self, [this, self, duration](YieldExtended yield)
 		{
 			const double fadeDuration = getToml<double>(U"fade_duration");
 			yield.WaitForTime(duration - fadeDuration, Scene::DeltaTime);
