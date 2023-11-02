@@ -70,7 +70,7 @@ namespace Play
 	void ProcessArrowWarpCharaPos(
 		YieldExtended& yield, ActorView self, CharaPosition& pos, Vec2& jumpOffset, const Vec2& nextPos);
 
-	Vec2 GetInitialPos(const MapGrid& map);
+	Vec2 GetInitialPos(const MapGrid& map, bool allowPathway = false);
 
 	double CharaOrderPriority(const CharaPosition& pos);
 

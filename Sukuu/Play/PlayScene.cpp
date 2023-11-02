@@ -106,7 +106,7 @@ public:
 		else
 		{
 			GenerateEnemiesAndGimmicks(data.floorIndex, m_map, self, m_enemies, m_gimmick);
-			m_player.Init(data.playerPersonal, GetInitialPos(m_map));
+			m_player.Init(data.playerPersonal, GetInitialPos(m_map, m_map.Category() == MapCategory::Maze));
 
 			m_currentFloor.Init(data.floorIndex);
 			m_gameOver.Init(data.floorIndex);

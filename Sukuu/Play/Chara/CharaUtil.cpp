@@ -107,9 +107,20 @@ namespace Play
 		);
 	}
 
-	Vec2 GetInitialPos(const MapGrid& map)
+	Vec2 GetInitialPos(const MapGrid& map, bool allowPathway)
 	{
-		return map.Rooms().RandomRoomPoint(false) * CellPx_24;
+		if (not allowPathway)
+		{
+			return map.Rooms().RandomRoomPoint(false) * CellPx_24;
+		}
+		else
+		{
+			while (true)
+			{
+				const auto p = RandomPoint(Rect(map.Data().size())) / 2 * 2 + Point(1, 1);
+				if (map.Data().inBounds(p) && map.At(p).kind != TerrainKind::Wall) return p * CellPx_24;
+			}
+		}
 	}
 
 	double CharaOrderPriority(const CharaPosition& pos)
