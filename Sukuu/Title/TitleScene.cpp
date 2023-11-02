@@ -2,6 +2,7 @@
 #include "TitleScene.h"
 
 #include "AssetKeys.h"
+#include "Assets.generated.h"
 #include "Constants.h"
 #include "TitleBackground.h"
 #include "TitleHud.h"
@@ -101,6 +102,7 @@ private:
 				IsSceneLeftClicked();
 		});
 		m_hud.SetShowPrompt(false);
+		AudioAsset(AssetSes::title_start).playOneShot();
 
 		closeTransition(yield, self);
 

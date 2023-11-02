@@ -21,7 +21,7 @@ void Main()
 	System::SetTerminationTriggers(UserAction::CloseButtonClicked);
 
 	for (auto&& path : AssetImages::GetKeys()) TextureAsset::Register(path, path);
-	for (auto&& path : AssetSes::GetKeys()) TextureAsset::Register(path, path);
+	for (auto&& path : AssetSes::GetKeys()) AudioAsset::Register(path, path);
 	AssetKeys::RegisterAll();
 
 	ActorContainer actorRoot{};
