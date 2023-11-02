@@ -318,6 +318,10 @@ private:
 
 	void flowchartLoop(YieldExtended& yield, ActorView self)
 	{
+		while (m_isGameOver)
+		{
+			yield();
+		}
 		if (m_act == PlayerAct::Dead)
 		{
 			m_act = PlayerAct::Idle;
