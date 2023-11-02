@@ -35,13 +35,13 @@ struct Title::TitleScene::Impl
 	ConstantBuffer<RasterScrollCb> m_rasterScrollCb{};
 	double m_transitionAlpha{};
 
-	void Init(ActorBase& self)
+	void Init(ActorBase& self, const Sukuu::GameSavedata& savedata)
 	{
 		m_bg = self.AsParent().Birth(TitleBackground());
 		m_bg.Init();
 
 		m_hud = self.AsParent().Birth(TitleHud());
-		m_hud.Init();
+		m_hud.Init(savedata);
 
 		m_renderTexture = RenderTexture(Scene::Size());
 
@@ -140,9 +140,9 @@ namespace Title
 	{
 	}
 
-	void TitleScene::Init()
+	void TitleScene::Init(const Sukuu::GameSavedata& savedata)
 	{
-		p_impl->Init(*this);
+		p_impl->Init(*this, savedata);
 	}
 
 	void TitleScene::Update()

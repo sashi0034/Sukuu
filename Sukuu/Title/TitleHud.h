@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "Forward.h"
+#include "Sukuu/GameSavedata.h"
 
 namespace Title
 {
@@ -8,7 +9,7 @@ namespace Title
 	{
 	public:
 		TitleHud();
-		void Init();
+		void Init(const Sukuu::GameSavedata& savedata);
 		void Update() override;
 		double OrderPriority() const override;
 

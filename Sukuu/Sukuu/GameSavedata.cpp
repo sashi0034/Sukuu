@@ -17,7 +17,7 @@ namespace Sukuu
 		return d;
 	}
 
-	void SaveSaveData(const GameSavedata& data)
+	void SaveSavedata(const GameSavedata& data)
 	{
 		BinaryWriter writer{dataPath};
 		if (not writer) return;

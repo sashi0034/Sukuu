@@ -38,4 +38,12 @@ namespace Util
 	{
 		return MouseL.down() && Rect(Scene::Size()).stretched(padding).intersects(Cursor::Pos());
 	}
+
+	inline String FormatTimeSeconds(double t)
+	{
+		return U"{:02d}:{:02d}.{:02d}"_fmt(
+			static_cast<int>(t / 60),
+			static_cast<int>(t) % 60,
+			(static_cast<int>(t * 1000) % 1000) / 10);
+	}
 }

@@ -2,7 +2,9 @@
 #include "TitleHud.h"
 
 #include "AssetKeys.h"
+#include "Constants.h"
 #include "GitRevision.h"
+#include "Util/Utilities.h"
 
 namespace
 {
@@ -20,9 +22,17 @@ struct Title::TitleHud::Impl
 	double m_promptAnim{};
 	bool m_creditHovered{};
 
-	void Init()
+	void Init(const Sukuu::GameSavedata& savedata)
 	{
-		m_record = U"到達 12 層";
+		m_record = [&]() -> String
+		{
+			if (savedata.bestReached == 0) return U"";
+			if (savedata.bestReached == Constants::MaxFloorIndex)
+			{
+				return U"踏破 {}"_fmt(FormatTimeSeconds(savedata.completedTime));
+			}
+			return U"到達 {} 層"_fmt(savedata.bestReached);
+		}();
 	}
 
 	void Update()
@@ -42,11 +52,14 @@ struct Title::TitleHud::Impl
 			        Scene::Center().movedBy(0, getToml<double>(U"prompt_y")),
 			        ColorF(1.0, Math::Abs(Math::Sin(m_promptAnim))));
 
-		(void)FontAsset(AssetKeys::RocknRoll_Sdf_Bold)(m_record)
-			.drawAt(TextStyle::Outline(getToml<double>(U"record_outline"), ColorF{0.3}),
-			        getToml<double>(U"record_font"),
-			        Scene::Center().movedBy(0, getToml<double>(U"record_y")),
-			        Palette::Goldenrod);
+		if (not m_record.empty())
+		{
+			(void)FontAsset(AssetKeys::RocknRoll_Sdf_Bold)(m_record)
+				.drawAt(TextStyle::Outline(getToml<double>(U"record_outline"), ColorF{0.3}),
+				        getToml<double>(U"record_font"),
+				        Scene::Center().movedBy(0, getToml<double>(U"record_y")),
+				        Palette::Goldenrod);
+		}
 
 		if (m_showPrompt)
 		{
@@ -84,9 +97,9 @@ namespace Title
 		p_impl->Update();
 	}
 
-	void TitleHud::Init()
+	void TitleHud::Init(const Sukuu::GameSavedata& savedata)
 	{
-		p_impl->Init();
+		p_impl->Init(savedata);
 	}
 
 	double TitleHud::OrderPriority() const

@@ -2,6 +2,7 @@
 #include "GamesSupervisor.h"
 
 #include "Constants.h"
+#include "GameSavedata.h"
 #include "Ending/EndingScene.h"
 #include "Play/PlayScene.h"
 #include "Title/TitleScene.h"
@@ -30,6 +31,8 @@ struct Sukuu::GamesSupervisor::Impl
 	}
 
 private:
+	GameSavedata m_savedata{};
+
 	void flowchartLoop(YieldExtended& yield, ActorView self)
 	{
 #if _DEBUG
@@ -39,6 +42,8 @@ private:
 		if (entryPoint == U"play") goto play;
 		if (entryPoint == U"ending") goto ending;
 #endif
+
+		if (tryLoadSavedata()) goto title;
 
 	tutorial:
 		tutorialLoop(yield, self);
@@ -52,18 +57,30 @@ private:
 		goto title;
 	}
 
-	void tutorialLoop(YieldExtended& yield, ActorView self)
+	bool tryLoadSavedata()
+	{
+		if (const auto d = LoadSavedata())
+		{
+			m_savedata = d.value();
+			return true;
+		}
+		return false;
+	}
+
+	void tutorialLoop(YieldExtended& yield, ActorView self) const
 	{
 		auto tutorial = self.AsParent().Birth(Tutorial::TutorialScene());
 		tutorial.Init();
 		yield.WaitForTrue([&]() { return tutorial.IsFinished(); });
 		tutorial.Kill();
+
+		SaveSavedata(m_savedata);
 	}
 
-	void titleLoop(YieldExtended& yield, ActorView self)
+	void titleLoop(YieldExtended& yield, ActorView self) const
 	{
 		auto title = self.AsParent().Birth(Title::TitleScene());
-		title.Init();
+		title.Init(m_savedata);
 		yield.WaitForTrue([&]() { return title.IsConcluded(); });
 		title.Kill();
 	}
@@ -106,6 +123,7 @@ private:
 			if (not play.GetPlayer().IsTerminated()) yield();
 			play.Kill();
 			playData = play.CopyData();
+			checkSave(playData);
 			if (playData.timeLimiter.remainingTime == 0)
 			{
 				// ゲームオーバー
@@ -123,6 +141,20 @@ private:
 #endif
 			playData.timeLimiter.maxTime += 3;
 			playData.timeLimiter.remainingTime += 3;
+		}
+	}
+
+	void checkSave(const Play::PlaySingletonData& data)
+	{
+		const auto newData = GameSavedata{
+			.bestReached = data.floorIndex,
+			.completedTime = 0 // TODO
+		};
+		if (newData.bestReached > m_savedata.bestReached ||
+			(newData.bestReached == 50 && newData.completedTime < m_savedata.completedTime))
+		{
+			SaveSavedata(newData);
+			m_savedata = newData;
 		}
 	}
 
