@@ -22,6 +22,7 @@ void Main()
 
 	for (auto&& path : AssetImages::GetKeys()) TextureAsset::Register(path, path);
 	for (auto&& path : AssetSes::GetKeys()) AudioAsset::Register(path, path);
+	for (auto&& path : AssetBgms::GetKeys()) AudioAsset::Register(path, path);
 	AssetKeys::RegisterAll();
 
 	ActorContainer actorRoot{};

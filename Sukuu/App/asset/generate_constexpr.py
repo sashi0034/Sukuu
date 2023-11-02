@@ -37,5 +37,9 @@ if __name__ == "__main__":
     output_content += generate_constexpr("se", ".mp3")
     output_content += "}\n"
 
+    output_content += "namespace AssetBgms{\n"
+    output_content += generate_constexpr("bgm", ".mp3")
+    output_content += "}\n"
+
     with open("../../Assets.generated.h", "w", encoding="utf-8") as file:
         file.write(output_content)
