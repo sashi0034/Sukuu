@@ -27,7 +27,7 @@ struct Title::TitleHud::Impl
 		m_record = [&]() -> String
 		{
 			if (savedata.bestReached == 0) return U"";
-			if (savedata.bestReached == Constants::MaxFloorIndex)
+			if (savedata.bestReached == Constants::MaxFloorIndex && savedata.completedTime > 0)
 			{
 				return U"踏破 {}"_fmt(FormatTimeSeconds(savedata.completedTime));
 			}

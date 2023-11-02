@@ -129,7 +129,6 @@ private:
 			if (not play.GetPlayer().IsTerminated()) yield();
 			play.Kill();
 			m_playData = play.CopyData();
-			checkSave(m_playData);
 			if (m_playData.timeLimiter.remainingTime == 0)
 			{
 				// ゲームオーバー
@@ -138,6 +137,7 @@ private:
 			if (m_playData.floorIndex == Constants::MaxFloorIndex)
 			{
 				// エンディング
+				checkSave(m_playData, true);
 				return true;
 			}
 #if _DEBUG
@@ -145,19 +145,22 @@ private:
 #else
 			m_playData.floorIndex++;
 #endif
+			checkSave(m_playData, false);
 			m_playData.timeLimiter.maxTime += 3;
 			m_playData.timeLimiter.remainingTime += 3;
 		}
 	}
 
-	void checkSave(const Play::PlaySingletonData& data)
+	void checkSave(const Play::PlaySingletonData& data, bool isCleared)
 	{
 		const auto newData = GameSavedata{
 			.bestReached = data.floorIndex,
-			.completedTime = data.measuredSeconds.Sum()
+			.completedTime = isCleared ? data.measuredSeconds.Sum() : 0
 		};
-		if (newData.bestReached > m_savedata.bestReached ||
-			(newData.bestReached == 50 && newData.completedTime < m_savedata.completedTime))
+		const bool updatedReached = newData.bestReached > m_savedata.bestReached;
+		const bool updatedCleared = newData.bestReached == 50 &&
+			0 < newData.completedTime && newData.completedTime < m_savedata.completedTime;
+		if (updatedReached || updatedCleared)
 		{
 			SaveSavedata(newData);
 			m_savedata = newData;
