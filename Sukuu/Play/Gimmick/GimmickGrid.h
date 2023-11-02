@@ -31,6 +31,8 @@ namespace Play
 		Arrow_up,
 		Arrow_left,
 		Arrow_down,
+		Tree_small,
+		Tree_large,
 
 		Max,
 	};

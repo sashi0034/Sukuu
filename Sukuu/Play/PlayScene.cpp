@@ -144,10 +144,11 @@ public:
 		const ScopedRenderStates2D sampler{SamplerState::BorderNearest};
 
 		// 背景描画
-		m_bgMapDrawer.Tick(self);
+		m_bgMapDrawer.UpdateDraw(self);
 
 		// キャラクターなどの通常更新
 		self.ActorBase::Update();
+		m_bgMapDrawer.PostDraw();
 		m_enemies.Refresh();
 		m_bgEffect.GetEffect().setSpeed(GetTimeScale());
 		m_fgEffect.GetEffect().setSpeed(GetTimeScale());

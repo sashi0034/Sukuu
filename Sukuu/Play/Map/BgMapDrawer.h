@@ -9,7 +9,8 @@ namespace Play
 	{
 	public:
 		BgMapDrawer();
-		void Tick(const PlayScene& scene);
+		void UpdateDraw(const PlayScene& scene);
+		void PostDraw();
 
 	private:
 		struct Impl;

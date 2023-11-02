@@ -44,6 +44,27 @@ namespace Play
 		}
 	}
 
+	void InstallTreesInDungeon(GimmickGrid& gimmick, const MapGrid& map)
+	{
+		for (int x = 1; x < gimmick.size().x; x += 2)
+		{
+			for (int y = 1; y < gimmick.size().y; y += 2)
+			{
+				if (map.At({x, y}).kind != TerrainKind::Wall) continue;
+
+				const int c = (x % 4) + (y % 4);
+				if (c == 2 || c == 6)
+				{
+					gimmick[y][x] = GimmickKind::Tree_large;
+				}
+				else
+				{
+					gimmick[y][x] = GimmickKind::Tree_small;
+				}
+			}
+		}
+	}
+
 	bool InstallGimmickRandomly(GimmickGrid& gimmick, const MapGrid& map, GimmickKind kind)
 	{
 		int failedCount{};

@@ -9,5 +9,5 @@ namespace Play
 	bool IsExistVesselFloor(int floorIndex);
 
 	void GenerateEnemiesAndGimmicks(
-		int floor, const MapGrid& map, ActorView enemyParent, EnemyContainer& enemyContainer, GimmickGrid& gimmick);
+		int floor, const MapGrid& map, ActorView scene, EnemyContainer& enemyContainer, GimmickGrid& gimmick);
 }

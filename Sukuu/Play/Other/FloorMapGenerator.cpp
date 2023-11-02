@@ -346,6 +346,22 @@ namespace
 		}
 	}
 
+	bool isExistTreeFloor(const MapGrid& map, int floorIndex)
+	{
+		if (map.Category() != MapCategory::Dungeon) return false;
+		return
+			InRange(floorIndex, 16, 20) ||
+			InRange(floorIndex, 26, 30);
+	}
+
+	void installTrees(const MapGrid& map, GimmickGrid& gimmick, int floorIndex)
+	{
+		if (isExistTreeFloor(map, floorIndex))
+		{
+			InstallTreesInDungeon(gimmick, map);
+		}
+	}
+
 	void installGimmicks(const MapGrid& map, GimmickGrid& gimmick, int floorIndex)
 	{
 		if (IsExistVesselFloor(floorIndex))
@@ -386,7 +402,7 @@ namespace Play
 	}
 
 	void GenerateEnemiesAndGimmicks(
-		int floor, const MapGrid& map, ActorView enemyParent, EnemyContainer& enemyContainer, GimmickGrid& gimmick)
+		int floor, const MapGrid& map, ActorView scene, EnemyContainer& enemyContainer, GimmickGrid& gimmick)
 	{
 		if (map.Category() == MapCategory::Maze)
 		{
@@ -397,6 +413,8 @@ namespace Play
 
 		installGimmicks(map, gimmick, floor);
 
-		installEnemies(enemyParent, enemyContainer, floor);
+		installEnemies(scene, enemyContainer, floor);
+
+		installTrees(map, gimmick, floor);
 	}
 }

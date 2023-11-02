@@ -82,10 +82,12 @@ namespace Play
 struct Play::BgMapDrawer::Impl
 {
 	AnimTimer m_animTimer{};
+	Array<std::function<void()>> m_postDraws{};
 
 	void DrawGimmickAt(
 		const GimmickGrid& gimmickGrid,
-		const Point& point) const
+		const Point& point,
+		Array<std::function<void()>>& postDraws) const
 	{
 		switch (gimmickGrid[point])
 		{
@@ -148,6 +150,18 @@ struct Play::BgMapDrawer::Impl
 		case GimmickKind::Arrow_down:
 			(void)TextureAsset(AssetImages::arrow_24x24)(Point{2, 0} * 24, 24, 24).draw(point * CellPx_24);
 			break;
+		case GimmickKind::Tree_small:
+			(void)TextureAsset(AssetImages::dark_tree_16x16)(Point{m_animTimer.SliceFrames(250, 4), 0} * 16, {16, 16})
+				.draw(point * CellPx_24 + GetCharacterCellPadding({16, 16}));
+			break;
+		case GimmickKind::Tree_large:
+			postDraws.emplace_back([this, point]()
+			{
+				(void)TextureAsset(AssetImages::dark_tree_48x48)(
+						Point{m_animTimer.SliceFrames(200, 6), 0} * 48, {48, 48})
+					.draw(point * CellPx_24 + GetCharacterCellPadding({48, 48}));
+			});
+			break;
 		default: ;
 		}
 	}
@@ -183,7 +197,7 @@ namespace Play
 		           TerrainKind::Wall, {TerrainKind::Wall});
 	}
 
-	void BgMapDrawer::Tick(const PlayScene& scene)
+	void BgMapDrawer::UpdateDraw(const PlayScene& scene)
 	{
 		p_impl->m_animTimer.Tick();
 
@@ -192,7 +206,8 @@ namespace Play
 		const auto mapBr = inversed.transformPoint(Scene::Size()).asPoint() / CellPx_24;
 		auto&& map = scene.GetMap();
 		auto&& gimmick = scene.GetGimmick();
-		for (int y = mapTl.y - 1; y < mapBr.y + 1; ++y)
+		// 木の描画のためyは若干余裕がある
+		for (int y = mapTl.y - 1; y < mapBr.y + 2; ++y)
 		{
 			for (int x = mapTl.x - 1; x < mapBr.x + 1; ++x)
 			{
@@ -210,7 +225,7 @@ namespace Play
 				DrawBgMapTileAt(map, x, y);
 
 				// ギミック描画
-				p_impl->DrawGimmickAt(gimmick, {x, y});
+				p_impl->DrawGimmickAt(gimmick, {x, y}, p_impl->m_postDraws);
 
 #if _DEBUG
 				const int player = scene.GetPlayer().DistField()[Point{x, y}].distance;
@@ -221,5 +236,14 @@ namespace Play
 #endif
 			}
 		}
+	}
+
+	void BgMapDrawer::PostDraw()
+	{
+		for (auto&& d : p_impl->m_postDraws)
+		{
+			d();
+		}
+		p_impl->m_postDraws.clear();
 	}
 }
