@@ -11,6 +11,7 @@ namespace Play
 		BgMapDrawer();
 		void UpdateDraw(const PlayScene& scene);
 		void PostDraw();
+		void SetBgShader(const std::function<ScopedCustomShader2D(double t)>& shader);
 
 	private:
 		struct Impl;

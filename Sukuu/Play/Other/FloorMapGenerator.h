@@ -10,4 +10,6 @@ namespace Play
 
 	void GenerateEnemiesAndGimmicks(
 		int floor, const MapGrid& map, ActorView scene, EnemyContainer& enemyContainer, GimmickGrid& gimmick);
+
+	std::function<ScopedCustomShader2D(double t)> GetFloorBgShader(int floor);
 }

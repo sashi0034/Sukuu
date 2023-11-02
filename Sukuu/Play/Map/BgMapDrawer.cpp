@@ -9,9 +9,11 @@
 #include "Play/Chara/CharaUtil.h"
 #include "Util/TomlParametersWrapper.h"
 
-namespace Play
+namespace
 {
-	static void drawTileAt(
+	using namespace Play;
+
+	void drawTileAt(
 		const MapGrid& mapGrid,
 		int x,
 		int y,
@@ -83,6 +85,7 @@ struct Play::BgMapDrawer::Impl
 {
 	AnimTimer m_animTimer{};
 	Array<std::function<void()>> m_postDraws{};
+	std::function<ScopedCustomShader2D(double t)> m_bgShader{};
 
 	void DrawGimmickAt(
 		const GimmickGrid& gimmickGrid,
@@ -205,24 +208,35 @@ namespace Play
 		const auto mapTl = inversed.transformPoint(Vec2{0, 0}).asPoint() / CellPx_24;
 		const auto mapBr = inversed.transformPoint(Scene::Size()).asPoint() / CellPx_24;
 		auto&& map = scene.GetMap();
-		auto&& gimmick = scene.GetGimmick();
-		// 木の描画のためyは若干余裕がある
+
+		[&]()
+		{
+			// BG描画
+			const ScopedCustomShader2D shader{p_impl->m_bgShader(p_impl->m_animTimer.Time())};
+			const auto outTexture = TextureAsset((AssetImages::brick_stylish_24x24))(Point{2, 1} * 24, {24, 24});
+			for (int y = mapTl.y - 1; y < mapBr.y + 1; ++y)
+			{
+				for (int x = mapTl.x - 1; x < mapBr.x + 1; ++x)
+				{
+					if (map.Data().inBounds(y, x) == false)
+					{
+						// マップ範囲外
+						outTexture.draw(Point{x, y} * CellPx_24, Palette::Lightblue);
+						continue;
+					}
+
+					DrawBgMapTileAt(map, x, y);
+				}
+			}
+		}();
+
+		auto&& gimmick = scene.GetGimmick();;
+		// 木の描画のため縦方向は若干余裕がある
 		for (int y = mapTl.y - 1; y < mapBr.y + 2; ++y)
 		{
 			for (int x = mapTl.x - 1; x < mapBr.x + 1; ++x)
 			{
-				if (map.Data().inBounds(y, x) == false)
-				{
-					// マップ範囲外
-					TextureAsset(AssetImages::brick_stylish_24x24)(Point{2, 1} * 24, {24, 24})
-						.draw(Point{x, y} * CellPx_24, Palette::Lightblue);
-					continue;
-				}
-
-				// BG描画
-				const auto drawingPoint = Point{x, y} * CellPx_24;
-
-				DrawBgMapTileAt(map, x, y);
+				if (map.Data().inBounds(y, x) == false) continue;
 
 				// ギミック描画
 				p_impl->DrawGimmickAt(gimmick, {x, y}, p_impl->m_postDraws);
@@ -232,7 +246,7 @@ namespace Play
 				if (player < PlayerDistanceInfinity &&
 					GetTomlParameter<bool>(U"debug.visualize_player_distance"))
 					(void)FontAsset(AssetKeys::RocknRoll_24_Bitmap)(U"{}"_fmt(player))
-						.drawAt(drawingPoint + Point{CellPx_24, CellPx_24} / 2);
+						.drawAt(Point{x, y} * CellPx_24 + Point{CellPx_24, CellPx_24} / 2);
 #endif
 			}
 		}
@@ -245,5 +259,10 @@ namespace Play
 			d();
 		}
 		p_impl->m_postDraws.clear();
+	}
+
+	void BgMapDrawer::SetBgShader(const std::function<ScopedCustomShader2D(double t)>& shader)
+	{
+		p_impl->m_bgShader = shader;
 	}
 }

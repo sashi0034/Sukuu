@@ -1,6 +1,9 @@
 ﻿#include "stdafx.h"
 #include "FloorMapGenerator.h"
 
+#include <Siv3D/ScriptFunction.hpp>
+
+#include "AssetKeys.h"
 #include "Play/Enemy/EnSlimeCat.h"
 #include "Play/Enemy/EnCatfish.h"
 #include "Play/Enemy/EnCrab.h"
@@ -386,6 +389,16 @@ namespace
 			InstallGimmickRandomly(gimmick, map, item);
 		}
 	}
+
+	struct RgbToBgrCb
+	{
+		float rate;
+	};
+
+	struct GrayscaleCb
+	{
+		float rate;
+	};
 }
 
 namespace Play
@@ -416,5 +429,40 @@ namespace Play
 		installEnemies(scene, enemyContainer, floor);
 
 		installTrees(map, gimmick, floor);
+	}
+
+	std::function<ScopedCustomShader2D(double t)> GetFloorBgShader(int floor)
+	{
+		if (InRange(floor, 24, 28))
+		{
+			return [&](double t)
+			{
+				ConstantBuffer<RgbToBgrCb> cb{};
+				cb->rate = 0.9 + 0.1 * static_cast<float>(Periodic::Sine1_1(20.0s, t));
+				Graphics2D::SetPSConstantBuffer(1, cb);
+				return ScopedCustomShader2D(PixelShaderAsset(AssetKeys::PsRgbToBgr));
+			};
+		}
+		if (floor == 41)
+		{
+			return [&](double t)
+			{
+				ConstantBuffer<RgbToBgrCb> cb{};
+				cb->rate = 0.5 + 0.1 * static_cast<float>(Periodic::Sine1_1(20.0s, t));
+				Graphics2D::SetPSConstantBuffer(1, cb);
+				return ScopedCustomShader2D(PixelShaderAsset(AssetKeys::PsRgbToBgr));
+			};
+		}
+		if (InRange(floor, 44, 48))
+		{
+			return [&](double t)
+			{
+				ConstantBuffer<GrayscaleCb> cb{};
+				cb->rate = 0.7 + 0.3 * static_cast<float>(Periodic::Sine0_1(10.0s, t));
+				Graphics2D::SetPSConstantBuffer(1, cb);
+				return ScopedCustomShader2D(PixelShaderAsset(AssetKeys::PsGrayscale));
+			};
+		}
+		return [](double t) { return ScopedCustomShader2D{}; };
 	}
 }

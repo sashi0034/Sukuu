@@ -93,6 +93,7 @@ public:
 			m_bgMapDrawer.PostDraw();
 			return true;
 		});
+		m_bgMapDrawer.SetBgShader(GetFloorBgShader(data.floorIndex));
 
 		m_player = self.AsParent().Birth(Player());
 
