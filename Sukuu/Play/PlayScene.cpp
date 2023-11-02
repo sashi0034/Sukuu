@@ -16,6 +16,7 @@
 #include "Other/FloorMapGenerator.h"
 #include "UI/UiCurrentFloor.h"
 #include "UI/UiFloorTransition.h"
+#include "UI/UiGameOver.h"
 #include "UI/UiItemContainer.h"
 #include "UI/UiMiniMap.h"
 #include "UI/UiTimeLimiter.h"
@@ -63,11 +64,13 @@ public:
 	UiCurrentFloor m_currentFloor{};
 	UiGameOver m_gameOver{};
 	int m_floorIndex{};
+	MeasuredSecondsArray m_measuredSeconds{};
 
 	void Init(ActorView self, const PlaySingletonData& data)
 	{
 		m_tutorial = data.tutorial;
 		m_floorIndex = data.floorIndex;
+		m_measuredSeconds = data.measuredSeconds;
 
 		if (const auto tutorial = data.tutorial)
 		{
@@ -151,6 +154,8 @@ public:
 
 		// 視界マスク更新
 		m_caveVision.UpdateMask(m_player.CurrentPos().viewPos + Point(CellPx_24, CellPx_24) / 2);
+
+		m_measuredSeconds[m_floorIndex] += GetDeltaTime();
 
 		// ヒットストッピング管理
 		SetTimeScale(m_hitStoppingRequested > 0 ? getToml<double>(U"hitstopping_timescale") : 1.0);
@@ -323,6 +328,7 @@ namespace Play
 	{
 		return PlaySingletonData{
 			.floorIndex = p_impl->m_floorIndex,
+			.measuredSeconds = p_impl->m_measuredSeconds,
 			.playerPersonal = p_impl->m_player.PersonalData(),
 			.timeLimiter = p_impl->m_uiTimeLimiter.GetData()
 		};

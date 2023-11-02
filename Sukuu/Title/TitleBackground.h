@@ -11,6 +11,7 @@ namespace Title
 		void Init();
 		void Update() override;
 		void SetCameraTimescale(double ts);
+		void ReincarnatePlayer();
 
 	private:
 		struct Impl;

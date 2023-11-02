@@ -17,13 +17,13 @@ struct Ending::EndingScene::Impl
 	EndingBackground m_bg{};
 	EndingHud m_hud{};
 
-	void Init(ActorView self)
+	void Init(ActorView self, const Play::MeasuredSecondsArray& measured)
 	{
 		m_bg = self.AsParent().Birth(EndingBackground());
 		m_bg.Init();
 
 		m_hud = self.AsParent().Birth(EndingHud());
-		m_hud.Init();
+		m_hud.Init(measured);
 	}
 
 	void Update(ActorBase& self)
@@ -39,9 +39,9 @@ namespace Ending
 	{
 	}
 
-	void EndingScene::Init()
+	void EndingScene::Init(const Play::MeasuredSecondsArray& measured)
 	{
-		p_impl->Init(*this);
+		p_impl->Init(*this, measured);
 	}
 
 	void EndingScene::Update()

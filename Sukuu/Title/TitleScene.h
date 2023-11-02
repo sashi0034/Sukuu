@@ -11,6 +11,7 @@ namespace Title
 		TitleScene();
 		void Init(const Sukuu::GameSavedata& savedata);
 		void Update() override;
+		void PerformReincarnate();
 
 		bool IsConcluded() const;
 

@@ -32,6 +32,7 @@ struct Sukuu::GamesSupervisor::Impl
 
 private:
 	GameSavedata m_savedata{};
+	Play::PlaySingletonData m_playData{};
 
 	void flowchartLoop(YieldExtended& yield, ActorView self)
 	{
@@ -81,6 +82,11 @@ private:
 	{
 		auto title = self.AsParent().Birth(Title::TitleScene());
 		title.Init(m_savedata);
+		if (0 < m_playData.floorIndex && m_playData.timeLimiter.remainingTime == 0)
+		{
+			// 遊んだ後なら死に戻り演出
+			title.PerformReincarnate();
+		}
 		yield.WaitForTrue([&]() { return title.IsConcluded(); });
 		title.Kill();
 	}
@@ -88,9 +94,9 @@ private:
 	bool playLoop(YieldExtended& yield, ActorView self)
 	{
 #if _DEBUG
-		Play::PlaySingletonData playData{};
-		playData.floorIndex = debugToml<int>(U"initial_floor");
-		playData.timeLimiter = Play::TimeLimiterData{
+		m_playData = {};
+		m_playData.floorIndex = debugToml<int>(U"initial_floor");
+		m_playData.timeLimiter = Play::TimeLimiterData{
 			.maxTime = debugToml<double>(U"initial_timelimit"),
 			.remainingTime = debugToml<double>(U"initial_timelimit"),
 		};
@@ -110,9 +116,9 @@ private:
 #endif
 			{
 				yield.WaitForExpire(
-					play.StartTransition(playData.floorIndex));
+					play.StartTransition(m_playData.floorIndex));
 			}
-			play.Init(playData);
+			play.Init(m_playData);
 			yield.WaitForTrue([&]()
 			{
 #if _DEBUG
@@ -122,25 +128,25 @@ private:
 			});
 			if (not play.GetPlayer().IsTerminated()) yield();
 			play.Kill();
-			playData = play.CopyData();
-			checkSave(playData);
-			if (playData.timeLimiter.remainingTime == 0)
+			m_playData = play.CopyData();
+			checkSave(m_playData);
+			if (m_playData.timeLimiter.remainingTime == 0)
 			{
 				// ゲームオーバー
 				return false;
 			}
-			if (playData.floorIndex == Constants::MaxFloorIndex)
+			if (m_playData.floorIndex == Constants::MaxFloorIndex)
 			{
 				// エンディング
 				return true;
 			}
 #if _DEBUG
-			if (not debugToml<bool>(U"constant_floor")) playData.floorIndex++;
+			if (not debugToml<bool>(U"constant_floor")) m_playData.floorIndex++;
 #else
 			m_playData.floorIndex++;
 #endif
-			playData.timeLimiter.maxTime += 3;
-			playData.timeLimiter.remainingTime += 3;
+			m_playData.timeLimiter.maxTime += 3;
+			m_playData.timeLimiter.remainingTime += 3;
 		}
 	}
 
@@ -148,7 +154,7 @@ private:
 	{
 		const auto newData = GameSavedata{
 			.bestReached = data.floorIndex,
-			.completedTime = 0 // TODO
+			.completedTime = data.measuredSeconds.Sum()
 		};
 		if (newData.bestReached > m_savedata.bestReached ||
 			(newData.bestReached == 50 && newData.completedTime < m_savedata.completedTime))
@@ -161,7 +167,7 @@ private:
 	void endingLoop(YieldExtended& yield, ActorView self)
 	{
 		auto ending = self.AsParent().Birth(Ending::EndingScene());
-		ending.Init();
+		ending.Init(m_playData.measuredSeconds);
 		yield.WaitForTrue([&]() { return ending.IsFinished(); });
 		ending.Kill();
 	}

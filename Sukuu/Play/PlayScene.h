@@ -1,11 +1,11 @@
 ﻿#pragma once
+#include "Constants.h"
 #include "Forward.h"
 #include "Gimmick/GimmickGrid.h"
 #include "Player.h"
 #include "Enemy/EnemyDefinition.h"
 #include "Map/MapGrid.h"
 #include "Other/TimeLimiter.h"
-#include "UI/UiGameOver.h"
 #include "UI/UiMiniMap.h"
 #include "UI/UiTimeLimiter.h"
 #include "Util/EffectWrapper.h"
@@ -31,10 +31,17 @@ namespace Play
 		virtual const TutorialPlayerService& PlayerService() const = 0;
 	};
 
+	class MeasuredSecondsArray : public std::array<double, Constants::MaxFloorIndex + 1>
+	{
+	public:
+		double Sum() const { return SumArrayValues<double>(*this); }
+	};
+
 	struct PlaySingletonData
 	{
 		ITutorialSetting* tutorial{};
 		int floorIndex{};
+		MeasuredSecondsArray measuredSeconds{};
 		PlayerPersonalData playerPersonal;
 		TimeLimiterData timeLimiter;
 

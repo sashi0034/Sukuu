@@ -46,4 +46,10 @@ namespace Util
 			static_cast<int>(t) % 60,
 			(static_cast<int>(t * 1000) % 1000) / 10);
 	}
+
+	template <typename T>
+	T SumArrayValues(std::span<T const> s)
+	{
+		return std::accumulate(s.begin(), s.end(), T{});
+	}
 }

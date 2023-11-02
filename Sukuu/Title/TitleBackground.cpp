@@ -48,6 +48,7 @@ struct Title::TitleBackground::Impl
 	Array<Vec2> m_treePoss{};
 	Array<Vec2> m_hourglassPoss{};
 	double m_cameraTimescale = 1.0;
+	double m_playerFallingDown{};
 
 	void Init()
 	{
@@ -119,6 +120,8 @@ struct Title::TitleBackground::Impl
 
 		m_animTimer.Tick();
 
+		if (m_playerFallingDown > 0) m_playerFallingDown -= GetDeltaTime();
+
 		// 3D描画
 		draw3D();
 
@@ -152,9 +155,13 @@ private:
 
 		const ScopedRenderStates3D states{BlendState::Default2D, DepthStencilState::DepthTest};
 
+		const auto playerTexture =
+			m_playerFallingDown > 0
+				? Play::GetDeadPlayerTexture()
+				: Play::GetUsualPlayerTexture(Dir4::FromXY({-m_camera.getEyePosition().xz()}), m_animTimer, false);
 		m_billboard.draw(
 			m_camera.billboard(Vec3{0, billboardPixelartScale(32) / dotScale, 0}, billboardPixelartScale(32)),
-			Play::GetUsualPlayerTexture(Dir4::FromXY({-m_camera.getEyePosition().xz()}), m_animTimer, false),
+			playerTexture,
 			Palette::Thistle);
 		for (const auto& p : m_hourglassPoss)
 		{
@@ -201,5 +208,10 @@ namespace Title
 	void TitleBackground::SetCameraTimescale(double ts)
 	{
 		p_impl->m_cameraTimescale = ts;
+	}
+
+	void TitleBackground::ReincarnatePlayer()
+	{
+		p_impl->m_playerFallingDown = 4.0;
 	}
 }

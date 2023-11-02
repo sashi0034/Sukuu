@@ -3,6 +3,7 @@
 
 #include "AssetKeys.h"
 #include "Constants.h"
+#include "Play/PlayScene.h"
 #include "Util/CoroUtil.h"
 #include "Util/EasingAnimation.h"
 #include "Util/TomlParametersWrapper.h"
@@ -35,11 +36,11 @@ struct EndingHud::Impl
 	double m_closeCloseAlpha{1.0};
 	double m_sashiAlpha{};
 
-	void Init(ActorView self)
+	void Init(ActorView self, const Play::MeasuredSecondsArray& measured)
 	{
-		StartCoro(self, [this, self](YieldExtended yield)
+		StartCoro(self, [this, self, &measured](YieldExtended yield)
 		{
-			flowchart(yield, self);
+			flowchart(yield, self, measured);
 		});
 	}
 
@@ -94,7 +95,7 @@ struct EndingHud::Impl
 	}
 
 private:
-	void flowchart(YieldExtended& yield, ActorView self)
+	void flowchart(YieldExtended& yield, ActorView self, const Play::MeasuredSecondsArray& measured)
 	{
 		m_openW = Scene::Size().x;
 		yield.WaitForDead(AnimateEasing<EaseOutCirc>(self, &m_openW, 0.0, 2.0));
@@ -111,7 +112,7 @@ private:
 			for (int i = 0; i < numLines; ++i)
 			{
 				const int floorIndex = i + 1 + d * 10;
-				m_slideTexts[i].text = U"第 {} 層    - 12:34.00 -"_fmt(floorIndex);
+				m_slideTexts[i].text = U"第 {} 層    - {} -"_fmt(floorIndex, FormatTimeSeconds(measured[floorIndex]));
 				m_slideTexts[i].x = Scene::Center().x * 3;
 				AnimateEasing<EaseOutCubic>(self, &m_slideTexts[i].x, static_cast<double>(Scene::Center().x), 0.5);
 				yield.WaitForTime(0.15);
@@ -126,7 +127,7 @@ private:
 
 		yield.WaitForTime(1.0);
 		AnimateEasing<EaseOutCirc>(self, &m_finalAlpha, 1.0, 0.5);
-		m_finalInfo = U"迷宮踏破記録 12:34.56";
+		m_finalInfo = U"迷宮踏破記録 {}"_fmt(FormatTimeSeconds(measured.Sum()));
 
 		yield.WaitForTime(3.0);
 
@@ -151,9 +152,9 @@ namespace Ending
 	{
 	}
 
-	void EndingHud::Init()
+	void EndingHud::Init(const Play::MeasuredSecondsArray& measured)
 	{
-		p_impl->Init(*this);
+		p_impl->Init(*this, measured);
 	}
 
 	void EndingHud::Update()

@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "Forward.h"
+#include "Play/PlayScene.h"
 
 namespace Ending
 {
@@ -8,7 +9,7 @@ namespace Ending
 	{
 	public:
 		EndingHud();
-		void Init();
+		void Init(const Play::MeasuredSecondsArray& measured);
 		void Update() override;
 		bool IsFinished() const;
 

@@ -150,6 +150,11 @@ namespace Title
 		p_impl->Update(*this);
 	}
 
+	void TitleScene::PerformReincarnate()
+	{
+		p_impl->m_bg.ReincarnatePlayer();
+	}
+
 	bool TitleScene::IsConcluded() const
 	{
 		return p_impl->m_concluded;
