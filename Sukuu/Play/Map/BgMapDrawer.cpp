@@ -85,7 +85,7 @@ struct Play::BgMapDrawer::Impl
 {
 	AnimTimer m_animTimer{};
 	Array<std::function<void()>> m_postDraws{};
-	std::function<ScopedCustomShader2D(double t)> m_bgShader{};
+	std::function<ScopedCustomShader2D(double t)> m_bgShader = [](auto) { return ScopedCustomShader2D{}; };
 
 	void DrawGimmickAt(
 		const GimmickGrid& gimmickGrid,

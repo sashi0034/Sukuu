@@ -93,8 +93,8 @@ private:
 
 	bool playLoop(YieldExtended& yield, ActorView self)
 	{
-#if _DEBUG
 		m_playData = {};
+#if _DEBUG
 		m_playData.floorIndex = debugToml<int>(U"initial_floor");
 		m_playData.timeLimiter = Play::TimeLimiterData{
 			.maxTime = debugToml<double>(U"initial_timelimit"),
