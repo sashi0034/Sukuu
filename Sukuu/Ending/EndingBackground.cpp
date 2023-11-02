@@ -3,6 +3,7 @@
 
 #include "AssetKeys.h"
 #include "Assets.generated.h"
+#include "Constants.h"
 #include "Play/Forward.h"
 #include "Play/Chara/CharaUtil.h"
 #include "Play/Player_detail/PlayerAnimation.h"
@@ -74,14 +75,54 @@ struct Ending::EndingBackground::Impl
 		m_playerPos = {-32.0, mapSize.y * Px_16 / 2 - Play::CellPx_24};
 		m_plants.resize(mapSize);
 
-		addPlant(PlantKind::Bush1, 96);
-		addPlant(PlantKind::Bush2, 96);
-		addPlant(PlantKind::TreeL, 64);
-		addPlant(PlantKind::TreeS, 64);
-		addPlant(PlantKind::Stone1, 64);
-		addPlant(PlantKind::Stone2, 64);
-		addPlant(PlantKind::Moss1, 96);
-		addPlant(PlantKind::Moss2, 96);
+		addPlant(PlantKind::Bush1, 96, 1, {
+			         {1, 0, 1, 0},
+			         {0, 1, 0, 0},
+			         {1, 0, 1, 0},
+			         {0, 0, 0, 0}
+		         });
+		addPlant(PlantKind::Bush2, 96, 1, {
+			         {0, 1, 0, 0},
+			         {1, 0, 1, 0},
+			         {0, 1, 0, 0},
+			         {0, 0, 0, 0}
+		         });
+		addPlant(PlantKind::TreeL, 64, 1, {
+			         {0, 0, 0, 0},
+			         {0, 1, 0, 0},
+			         {0, 0, 0, 1},
+			         {0, 1, 0, 0}
+		         });
+		addPlant(PlantKind::TreeS, 64, 2, {
+			         {0, 0, 0, 1},
+			         {0, 0, 1, 0},
+			         {0, 1, 0, 1},
+			         {1, 0, 1, 0}
+		         });
+		addPlant(PlantKind::Stone1, 64, 0, {
+			         {1, 0, 1, 0},
+			         {0, 1, 0, 1},
+			         {1, 0, 1, 0},
+			         {0, 1, 0, 1},
+		         });
+		addPlant(PlantKind::Stone2, 64, 0, {
+			         {0, 1, 0, 1},
+			         {1, 0, 1, 0},
+			         {0, 1, 0, 1},
+			         {1, 0, 1, 0},
+		         });
+		addPlant(PlantKind::Moss1, 96, 0, {
+			         {1, 0, 1, 0},
+			         {0, 1, 0, 1},
+			         {1, 0, 1, 0},
+			         {0, 1, 0, 1},
+		         });
+		addPlant(PlantKind::Moss2, 96, 0, {
+			         {0, 1, 0, 1},
+			         {1, 0, 1, 0},
+			         {0, 1, 0, 1},
+			         {1, 0, 1, 0},
+		         });
 	}
 
 	void Update()
@@ -118,34 +159,29 @@ struct Ending::EndingBackground::Impl
 	}
 
 private:
-	void addPlant(PlantKind kind, int n)
+	void addPlant(PlantKind kind, int n, int duDy, const Grid<uint8>& pattern)
 	{
-		const auto pd = PoissonDisk2D(mapSize, 3.0);
-		auto&& points = pd.getPoints().shuffled();
-		size_t pointIndex{};
+		const int pw = (m_plants.size().x / pattern.size().x) * pattern.size().x;
+		const auto patternOk = [&](const Point& p) -> bool
+		{
+			const int y1 = p.y / pattern.size().y;
+			const int u = y1 * duDy;
+			const auto p1 = Point((p.x - u + pw) % pattern.size().x, (p.y) % pattern.size().y);
+			return pattern[p1] != 0;
+		};
+
 		for (size_t i = 0; i < n; ++i)
 		{
-			Point pos{};
-			while (true)
+			for (const auto s : step(Constants::BigValue_100000))
 			{
-				pos = points[pointIndex % points.size()].asPoint();
-				if (m_plants.inBounds(pos)) break;
-				pointIndex++;
+				Point pos = RandomPoint(Rect(m_plants.size()));
+				if (m_plants[pos].kind != PlantKind::NoPlant) continue;
+				if (not patternOk(pos)) continue;
+				m_plants[pos] = {
+					.kind = kind,
+				};
+				break;
 			}
-			pointIndex++;
-			while (true)
-			{
-				if (pos.x < 0) pos.x = mapSize.x - 1;
-				if (pos.y < 0) pos.y = mapSize.y - 1;
-				if (pos.x >= mapSize.x) pos.x = 0;
-				if (pos.y >= mapSize.y) pos.y = 0;
-				if (m_plants[pos].kind == PlantKind::NoPlant) break;
-				pos.x += RandomBool() ? 1 : -1;
-				pos.y += RandomBool() ? 1 : -1;
-			}
-			m_plants[pos] = {
-				.kind = kind,
-			};
 		}
 	}
 

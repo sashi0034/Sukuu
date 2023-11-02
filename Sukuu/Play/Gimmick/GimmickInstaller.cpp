@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "GimmickInstaller.h"
 
+#include "Constants.h"
 #include "Util/Dir4.h"
 
 namespace
@@ -77,7 +78,7 @@ namespace Play
 				return true;
 			}
 			failedCount++;
-			if (failedCount >= 1000) return false;
+			if (failedCount >= Constants::BigValue_1000) return false;
 		}
 	}
 }
