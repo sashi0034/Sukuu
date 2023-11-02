@@ -90,3 +90,51 @@ namespace AssetImages
 		};
 	}
 }
+
+namespace AssetSes
+{
+	constexpr StringView arrow_step = U"asset/se/arrow_step.mp3";
+	constexpr StringView attack1 = U"asset/se/attack1.mp3";
+	constexpr StringView attack2 = U"asset/se/attack2.mp3";
+	constexpr StringView damaged = U"asset/se/damaged.mp3";
+	constexpr StringView enemy_find = U"asset/se/enemy_find.mp3";
+	constexpr StringView explode = U"asset/se/explode.mp3";
+	constexpr StringView fall_down = U"asset/se/fall_down.mp3";
+	constexpr StringView floor_transition = U"asset/se/floor_transition.mp3";
+	constexpr StringView item_enter = U"asset/se/item_enter.mp3";
+	constexpr StringView item_use = U"asset/se/item_use.mp3";
+	constexpr StringView recover_large = U"asset/se/recover_large.mp3";
+	constexpr StringView recover_small = U"asset/se/recover_small.mp3";
+	constexpr StringView scoop_move = U"asset/se/scoop_move.mp3";
+	constexpr StringView scoop_start = U"asset/se/scoop_start.mp3";
+	constexpr StringView stairs_close = U"asset/se/stairs_close.mp3";
+	constexpr StringView stairs_step = U"asset/se/stairs_step.mp3";
+	constexpr StringView take_item = U"asset/se/take_item.mp3";
+	constexpr StringView title_environment = U"asset/se/title_environment.mp3";
+	constexpr StringView title_start = U"asset/se/title_start.mp3";
+
+	inline Array<StringView> GetKeys()
+	{
+		return {
+			arrow_step,
+			attack1,
+			attack2,
+			damaged,
+			enemy_find,
+			explode,
+			fall_down,
+			floor_transition,
+			item_enter,
+			item_use,
+			recover_large,
+			recover_small,
+			scoop_move,
+			scoop_start,
+			stairs_close,
+			stairs_step,
+			take_item,
+			title_environment,
+			title_start,
+		};
+	}
+}
