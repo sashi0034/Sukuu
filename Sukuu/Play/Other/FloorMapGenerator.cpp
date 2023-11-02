@@ -269,13 +269,13 @@ namespace
 		if (floorIndex == 7) return 18;
 		if (floorIndex <= 12) return Random(8, 16);
 		if (floorIndex == 13) return 20;
-		if (floorIndex <= 22) return Random(12, 20);
+		if (floorIndex <= 22) return Random(10, 16);
 		if (floorIndex == 23) return 24;
-		if (floorIndex <= 30) return Random(16, 28);
+		if (floorIndex <= 30) return Random(12, 18);
 		if (floorIndex == 31) return 28;
-		if (floorIndex <= 40) return Random(16, 32);
+		if (floorIndex <= 40) return Random(12, 20);
 		if (floorIndex == 41) return 32;
-		return Random(24, 36);
+		return Random(12, 24);
 	}
 
 	bool tryRandomBirthEnemy(ActorView enemyParent, EnemyContainer& enemyContainer, int floorIndex)
