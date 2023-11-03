@@ -23,10 +23,13 @@ struct PlayBgm::Impl
 	bool m_playing{};
 	int m_bgmIndex{};
 	double m_volumeRate{1.0};
+	double m_targetVolumeRate{1.0};
 
-	void Tick()
+	void Refresh()
 	{
 		if (not m_playing) return;
+
+		m_volumeRate = Math::Lerp(m_volumeRate, m_targetVolumeRate, Scene::DeltaTime() * 5.0);
 
 		const auto current = AudioAsset(bgmList[m_bgmIndex]);
 		(void)current.setVolume(m_volumeRate * baseVolume);
@@ -49,7 +52,7 @@ namespace Play
 
 	void PlayBgm::Refresh()
 	{
-		p_impl->Tick();
+		p_impl->Refresh();
 	}
 
 	bool PlayBgm::IsPlaying() const
@@ -65,6 +68,7 @@ namespace Play
 	void PlayBgm::StartPlay()
 	{
 		p_impl->m_volumeRate = 1.0;
+		p_impl->m_targetVolumeRate = 1.0;
 		p_impl->m_playing = true;
 		AudioAsset(bgmList[p_impl->m_bgmIndex]).play();
 	}
@@ -77,6 +81,6 @@ namespace Play
 
 	void PlayBgm::SetVolumeRate(double rate)
 	{
-		p_impl->m_volumeRate = rate;
+		p_impl->m_targetVolumeRate = rate;
 	}
 }
