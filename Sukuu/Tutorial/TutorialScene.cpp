@@ -172,9 +172,10 @@ private:
 		waitMessage(yield, U"よし、では奥に進もうか", messageWaitMedium);
 
 		// とうせんぼうしてたブロックを除去
+		AudioAsset(AssetSes::attack2).playOneShot();
 		m_play.GetMap().At(m_mapData.firstBlockPoint).kind = Play::TerrainKind::Floor;
 
-		m_playerService.onMoved = [&](auto, auto) { return; };
+		m_playerService.onMoved = [](auto, auto) { return; };
 	}
 
 	void tutorialScoop(YieldExtended& yield, ActorView self)

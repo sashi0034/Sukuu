@@ -2,6 +2,7 @@
 #include "UiGameOver.h"
 
 #include "AssetKeys.h"
+#include "Assets.generated.h"
 #include "Constants.h"
 #include "Play/PlayScene.h"
 #include "Play/Other/PlayingTips.h"
@@ -92,6 +93,7 @@ struct UiGameOver::Impl
 private:
 	void perform(YieldExtended& yield, ActorView self)
 	{
+		AudioAsset(AssetSes::game_over_back).playOneShot();
 		yield.WaitForDead(
 			AnimateEasing<EaseInSine>(self, &m_bgAlpha, 1.0, 1.5));
 		PlayScene::Instance().GetEnemies().KillAll();
@@ -118,6 +120,7 @@ private:
 		yield.WaitForTime(1.0);
 
 		// ヒント
+		AudioAsset(AssetSes::game_over_front).playOneShot();
 		m_tipsMessage = U"[TIPS] " + GetPlayingTips(m_floorIndex);
 		AnimateEasing<EaseOutBack>(self, &m_tipsScale, 1.0, appearDuration);
 

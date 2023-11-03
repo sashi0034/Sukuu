@@ -163,6 +163,7 @@ struct Play::Player::Impl
 		if (m_guardHelmet)
 		{
 			// ヘルメットガード発動
+			AudioAsset(AssetSes::break_helmet).playOneShot();
 			m_guardHelmet = false;
 			m_immortal.immortalTime = 1.0;
 			EffectHelmetConsume(getDrawPos() + getHelmetOffset(), getPlayerTexture());

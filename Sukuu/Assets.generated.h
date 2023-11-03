@@ -96,10 +96,13 @@ namespace AssetSes
 	constexpr StringView arrow_step = U"asset/se/arrow_step.mp3";
 	constexpr StringView attack1 = U"asset/se/attack1.mp3";
 	constexpr StringView attack2 = U"asset/se/attack2.mp3";
+	constexpr StringView break_helmet = U"asset/se/break_helmet.mp3";
 	constexpr StringView damaged = U"asset/se/damaged.mp3";
 	constexpr StringView enemy_find = U"asset/se/enemy_find.mp3";
 	constexpr StringView fall_down = U"asset/se/fall_down.mp3";
 	constexpr StringView floor_transition = U"asset/se/floor_transition.mp3";
+	constexpr StringView game_over_back = U"asset/se/game_over_back.mp3";
+	constexpr StringView game_over_front = U"asset/se/game_over_front.mp3";
 	constexpr StringView item_enter = U"asset/se/item_enter.mp3";
 	constexpr StringView item_use = U"asset/se/item_use.mp3";
 	constexpr StringView recover_large = U"asset/se/recover_large.mp3";
@@ -118,10 +121,13 @@ namespace AssetSes
 			arrow_step,
 			attack1,
 			attack2,
+			break_helmet,
 			damaged,
 			enemy_find,
 			fall_down,
 			floor_transition,
+			game_over_back,
+			game_over_front,
 			item_enter,
 			item_use,
 			recover_large,
