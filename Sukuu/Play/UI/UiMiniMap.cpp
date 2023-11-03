@@ -197,7 +197,8 @@ private:
 			Rect(drawingTl, (Size{1, 1} * renderCell).movedBy(-2, -2))
 				.drawFrame(2, GetTomlParameter<Color>(U"play.ui_minimap.stairs_color"));
 		}
-		if (GimmickToItem(gimmick[checking]) != ConsumableItem::None)
+		if (GimmickToItem(gimmick[checking]) != ConsumableItem::None ||
+			IsSemiItemGimmick(gimmick[checking]))
 		{
 			// アイテム発見
 			m_discoveredItemPoints.push_back(checking);

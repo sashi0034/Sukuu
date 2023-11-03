@@ -216,11 +216,11 @@ namespace
 		if (floorIndex == 7) return 18;
 		if (floorIndex <= 12) return Random(5, 11);
 		if (floorIndex == 13) return 24;
-		if (floorIndex <= 22) return Random(3, 17);
+		if (floorIndex <= 22) return Random(3, 13);
 		if (floorIndex == 23) return 24;
-		if (floorIndex <= 30) return Random(5, 13);
+		if (floorIndex <= 30) return Random(5, 9);
 		if (floorIndex == 31) return 24;
-		if (floorIndex <= 40) return Random(3, 13);
+		if (floorIndex <= 40) return Random(3, 11);
 		if (floorIndex == 41) return 18;
 		return Random(3, 7);
 	}
@@ -254,7 +254,7 @@ namespace
 			case ConsumableItem::Tube:
 				if (RandomBool(0.5)) return GimmickKind::Item_Tube;
 			case ConsumableItem::Solt:
-				if (RandomBool(0.9)) return GimmickKind::Item_Solt;
+				if (RandomBool(0.7)) return GimmickKind::Item_Solt;
 			default: ;
 				break;
 			}

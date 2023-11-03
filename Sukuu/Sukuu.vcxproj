@@ -611,7 +611,6 @@
         <Content Include="App\asset\se\credit.txt" />
         <Content Include="App\asset\se\damaged.mp3" />
         <Content Include="App\asset\se\enemy_find.mp3" />
-        <Content Include="App\asset\se\explode.mp3" />
         <Content Include="App\asset\se\fall_down.mp3" />
         <Content Include="App\asset\se\floor_transition.mp3" />
         <Content Include="App\asset\se\item_enter.mp3" />

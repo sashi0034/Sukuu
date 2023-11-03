@@ -72,6 +72,13 @@ namespace Play
 		}
 	}
 
+	inline bool IsSemiItemGimmick(GimmickKind gimmick)
+	{
+		return
+			gimmick == GimmickKind::SemiItem_Hourglass ||
+			gimmick == GimmickKind::SemiItem_Vessel;
+	}
+
 	inline Dir4Type GimmickArrowToDir(GimmickKind gimmick)
 	{
 		switch (gimmick)

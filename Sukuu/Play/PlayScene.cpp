@@ -188,11 +188,7 @@ namespace Play
 		s_instance = std::make_unique<PlayScene>(*this);
 	}
 
-	PlayScene::~PlayScene()
-	{
-		if (s_instance != nullptr && s_instance->p_impl == this->p_impl && p_impl.use_count() == 2)
-			s_instance.reset(nullptr);
-	}
+	PlayScene::~PlayScene() = default;
 
 	void PlayScene::Init(const PlaySingletonData& data)
 	{

@@ -39,7 +39,8 @@ struct Play::UiTimeLimiter::Impl
 	{
 		if (m_countEnabled)
 		{
-			m_data.remainingTime -= GetDeltaTime();
+			constexpr double slowCoefficient = 0.5;
+			m_data.remainingTime -= GetDeltaTime() * slowCoefficient;
 			if (m_data.remainingTime < 0) m_data.remainingTime = 0;
 		}
 

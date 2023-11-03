@@ -564,7 +564,7 @@ private:
 			break;
 		case GimmickKind::SemiItem_Hourglass: {
 			AudioAsset(AssetSes::recover_small).playOneShot();
-			RelayTimeHealAmount(m_pos, 10);
+			RelayTimeHealAmount(m_pos, 15);
 			gimmickGrid[newPoint] = GimmickKind::None;
 			break;
 		}
