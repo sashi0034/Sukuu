@@ -22,13 +22,14 @@ struct Play::ItemMagnet::Impl
 {
 	CharaPosition m_pos{};
 	AnimTimer m_animTimer{};
+	Trail m_trail{1.0};
 
 	void Update()
 	{
 		m_animTimer.Tick();
 
 		m_pos.viewPos = m_pos.actualPos + Circular(
-			getToml<int>(U"roll_radius") * (1 + Math::Sin(m_animTimer.Time() * getToml<double>(U"roll_jag"))),
+			getToml<int>(U"roll_radius"),
 			m_animTimer.Time() * getToml<double>(U"roll_speed"));
 
 		const double lifetime = getToml<double>(U"lifetime");
@@ -39,7 +40,9 @@ struct Play::ItemMagnet::Impl
 					  : 0.9
 				: 1.0;
 
-		(void)getTexture().drawAt(getDrawPos().movedBy(spriteRect.size / 2), ColorF{1.0, alpha});
+		const auto centerPos = getDrawPos().movedBy(spriteRect.size / 2);
+		updateTrail(centerPos, alpha > 0.5);
+		(void)getTexture().drawAt(centerPos), ColorF{1.0, alpha};
 
 		if (m_animTimer.Time() > lifetime)
 		{
@@ -55,12 +58,17 @@ private:
 
 	TextureRegion getTexture() const
 	{
-		const double scalePhase = m_animTimer.Time() * getToml<double>(U"scale_speed");
-		const double scale = 1 + (1 - Math::Cos(scalePhase)) * getToml<double>(U"scale_rate");
-
 		return TextureAsset(AssetImages::magnet_16x16)(spriteRect.movedBy(
-				m_animTimer.SliceFrames(getToml<double>(U"anim_interval"), 3) * spriteRect.w, 0))
-			.scaled(scale);
+			m_animTimer.SliceFrames(getToml<double>(U"anim_interval"), 3) * spriteRect.w, 0));
+	}
+
+	void updateTrail(const Vec2& center, bool isDraw)
+	{
+		m_trail.update();
+		constexpr ColorF color{U"#ffd42b"};
+		constexpr double size = 20.0;
+		m_trail.add(center, color, size);
+		if (isDraw) m_trail.draw();
 	}
 };
 

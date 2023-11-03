@@ -99,12 +99,9 @@ scale_rate = 0.1
 
 [play.item_magnet]
 anim_interval = 200
-scale_speed = 16.0
-scale_rate = 0.3
 lifetime = 15.0
-roll_radius = 8
-roll_jag = 8.0
-roll_speed = 2.0
+roll_radius = 12
+roll_speed = 12.0
 
 [play.item_grave]
 lifetime = 10.0
