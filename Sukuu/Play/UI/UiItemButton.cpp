@@ -2,6 +2,7 @@
 #include "UiItemButton.h"
 
 #include "AssetKeys.h"
+#include "Assets.generated.h"
 #include "Util/CoroActor.h"
 #include "Util/CoroUtil.h"
 #include "Util/EasingAnimation.h"
@@ -41,6 +42,7 @@ public:
 
 		if (entered && not m_enteredBefore)
 		{
+			if (isItemContaining) AudioAsset(AssetSes::item_enter).playOneShot();
 			m_scale = 1;
 			AnimateEasing<BoomerangParabola>(self, &m_scale, 1.1, 0.2);
 			if (isItemContaining) param.label.ShowMessage(FontAsset(AssetKeys::RocknRoll_24_Bitmap)(itemProps.desc));

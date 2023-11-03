@@ -90,6 +90,9 @@ private:
 
 	void startProcess(YieldExtended& yield, ActorView self)
 	{
+		const auto bgm = AudioAsset(AssetSes::title_environment);
+		bgm.setLoop(true);
+		bgm.play(1.0s);
 		openTransition(yield, self);
 
 		yield.WaitForTime(0.3);
@@ -104,6 +107,7 @@ private:
 		m_hud.SetShowPrompt(false);
 		AudioAsset(AssetSes::title_start).playOneShot();
 
+		bgm.stop(0.0s);
 		closeTransition(yield, self);
 
 		yield.WaitForTime(0.3);

@@ -36,7 +36,11 @@ struct Play::ItemPin::Impl
 			      m_animTimer.SliceFrames(200, 3) * spriteRect.w, 0))
 		      .rotatedAt(spriteRect.center(), m_rotation)
 		      .draw(getDrawPos());
-		PlayScene::Instance().GetEnemies().SendDamageCollider(m_attack, GetItemCollider(m_pos, spriteRect.size));
+		if (PlayScene::Instance().GetEnemies().SendDamageCollider(
+			m_attack, GetItemCollider(m_pos, spriteRect.size)) > 0)
+		{
+			AudioAsset(AssetSes::attack1).playOneShot();
+		}
 	}
 
 	void StartFlowchart(ActorView self)

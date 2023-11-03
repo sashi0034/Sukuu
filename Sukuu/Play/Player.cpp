@@ -98,6 +98,7 @@ struct Play::Player::Impl
 		if (PlayScene::Instance().GetTimeLimiter().GetData().remainingTime > 0) return;
 
 		// 以下、ゲームオーバー処理開始
+		AudioAsset(AssetSes::fall_down).playOneShot();
 		m_isGameOver = true;
 		m_flowchart.Kill();
 		m_distField.Clear();
@@ -168,6 +169,7 @@ struct Play::Player::Impl
 			return;
 		}
 
+		AudioAsset(AssetSes::damaged).playOneShot();
 		m_act = PlayerAct::Dead;
 		breakFlowchart();
 		focusCameraFor<EaseOutBack>(self, getToml<double>(U"focus_scale_large"));
@@ -438,6 +440,7 @@ private:
 			yield();
 			if (MouseL.pressed()) break;
 		}
+		AudioAsset(AssetSes::scoop_start).playOneShot();
 
 		// ドラッグ解除まで待機
 		m_scoopDrawing = [this]()
@@ -487,6 +490,8 @@ private:
 
 	void succeedScoop(YieldExtended& yield, ActorView self, const Vector2D<double> checkingPos)
 	{
+		AudioAsset(AssetSes::scoop_move).playOneShot();
+
 		if (const auto tutorial = PlayScene::Instance().Tutorial())
 		{
 			tutorial->PlayerService().onScooped(m_pos.actualPos);
@@ -525,12 +530,14 @@ private:
 		{
 		case GimmickKind::Stairs: {
 			// ゴール到達
+			AudioAsset(AssetSes::stairs_step).playOneShot();
 			m_cameraOffsetDestination = {0, 0};
 			m_immortal.immortalStock++;
 			PlayScene::Instance().GetTimeLimiter().SetImmortal(true);
 			PlayScene::Instance().EndTransition();
 			yield.WaitForDead(
 				AnimateEasing<EaseInBack>(self, &m_cameraScale, 8.0, 0.5));
+			AudioAsset(AssetSes::stairs_close).playOneShot();
 			yield.WaitForDead(
 				AnimateEasing<EaseOutCirc>(self, &m_cameraScale, 10.0, 0.5));
 			m_terminated = true;
@@ -551,14 +558,17 @@ private:
 			obtainItemAt(newPoint, gimmickGrid);
 			break;
 		case GimmickKind::SemiItem_Hourglass: {
+			AudioAsset(AssetSes::recover_small).playOneShot();
 			RelayTimeHealAmount(m_pos, 10);
 			gimmickGrid[newPoint] = GimmickKind::None;
 			break;
 		}
 		case GimmickKind::SemiItem_Vessel: {
+			AudioAsset(AssetSes::take_item).playOneShot();
 			focusCameraFor<EaseOutBack>(self, getToml<double>(U"focus_scale_large"));
 			PlayScene::Instance().RequestHitstopping(0.3);
 			yield.WaitForTime(0.3);
+			AudioAsset(AssetSes::recover_large).playOneShot();
 			focusCameraFor<EaseOutBack>(self, 1.0);
 			PlayScene::Instance().GetTimeLimiter().ExtendMax(30.0);
 			gimmickGrid[newPoint] = GimmickKind::None;
@@ -585,6 +595,7 @@ private:
 			if (m_personal.items[i] != ConsumableItem::None) continue;
 
 			// アイテム入手
+			AudioAsset(AssetSes::take_item).playOneShot();
 			m_personal.items[i] = GimmickToItem(gimmickGrid[point]);
 			assert(m_personal.items[i] != ConsumableItem::None);
 			gimmickGrid[point] = GimmickKind::None;
@@ -594,6 +605,7 @@ private:
 
 	void moveArrowWarp(YieldExtended& yield, ActorView self, const Point point)
 	{
+		AudioAsset(AssetSes::arrow_step).playOneShot();
 		const auto nextPoint =
 			GetArrowWarpPoint(PlayScene::Instance().GetMap(), PlayScene::Instance().GetGimmick(), point);
 		ProcessArrowWarpCharaPos(yield, self, m_pos, m_animOffset, nextPoint * CellPx_24);
@@ -671,6 +683,7 @@ namespace Play
 		const bool used = p_impl->UseItem(*this, p_impl->m_personal.items[itemIndex]);
 		if (used)
 		{
+			AudioAsset(AssetSes::item_use).playOneShot();
 			p_impl->m_personal.items[itemIndex] = ConsumableItem::None;
 		}
 		return used;

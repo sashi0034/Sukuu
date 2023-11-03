@@ -98,7 +98,6 @@ namespace AssetSes
 	constexpr StringView attack2 = U"asset/se/attack2.mp3";
 	constexpr StringView damaged = U"asset/se/damaged.mp3";
 	constexpr StringView enemy_find = U"asset/se/enemy_find.mp3";
-	constexpr StringView explode = U"asset/se/explode.mp3";
 	constexpr StringView fall_down = U"asset/se/fall_down.mp3";
 	constexpr StringView floor_transition = U"asset/se/floor_transition.mp3";
 	constexpr StringView item_enter = U"asset/se/item_enter.mp3";
@@ -121,7 +120,6 @@ namespace AssetSes
 			attack2,
 			damaged,
 			enemy_find,
-			explode,
 			fall_down,
 			floor_transition,
 			item_enter,

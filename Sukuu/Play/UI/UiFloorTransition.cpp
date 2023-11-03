@@ -2,6 +2,7 @@
 #include "UiFloorTransition.h"
 
 #include "AssetKeys.h"
+#include "Assets.generated.h"
 #include "Constants.h"
 #include "Play/Other/FloorMapGenerator.h"
 #include "Util/CoroUtil.h"
@@ -98,6 +99,8 @@ private:
 		m_centerLineRange.second = Scene::Size().x;
 		AnimateEasing<EaseOutCubic>(self, &m_centerLineRange.first, 0.0, getToml<double>(U"line_duration"));
 		yield.WaitForTime(getToml<double>(U"glyph_start"));
+
+		AudioAsset(AssetSes::floor_transition).playOneShot();
 
 		m_textHeightScale = 0;
 		AnimateEasing<EaseOutBack>(self, &m_textHeightScale, 1.0, 0.5);

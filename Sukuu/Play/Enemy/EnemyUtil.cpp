@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "EnemyUtil.h"
 
+#include "Assets.generated.h"
 #include "Play/PlayScene.h"
 #include "Play/Effect/FragmentTextureEffect.h"
 #include "Play/Other/PlayPenaltyBonus.h"
@@ -150,9 +151,10 @@ namespace Play
 		if (isPlayerImmortal) return;
 
 		auto&& scene = PlayScene::Instance();
-		bool isMazeMap = scene.GetMap().Category() == MapCategory::Maze;
+		const bool isMazeMap = scene.GetMap().Category() == MapCategory::Maze;
 		const auto resetTracking = [&]()
 		{
+			if (m_concern == 0) AudioAsset(AssetSes::enemy_find).playOneShot();
 			m_concern = isMazeMap ? maxConcern * 5 : maxConcern;
 		};
 		const auto playerPoint = scene.GetPlayer().CurrentPoint();

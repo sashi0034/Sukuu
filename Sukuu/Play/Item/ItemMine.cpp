@@ -72,6 +72,7 @@ namespace Play
 		// エネミー側で踏んだ時にギミックを変える
 		if (PlayScene::Instance().GetGimmick()[p_impl->m_pos.actualPos.MapPoint()] != GimmickKind::Installed_Mine)
 		{
+			AudioAsset(AssetSes::attack2).playOneShot();
 			Kill();
 		}
 	}
