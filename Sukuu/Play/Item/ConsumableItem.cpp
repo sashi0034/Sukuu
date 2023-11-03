@@ -54,7 +54,7 @@ namespace Play
 		data[static_cast<int>(c::Explorer)] = ItemProps{
 			.item = c::Explorer,
 			.emoji = U"🗂️",
-			.desc = U"マップに敵の位置を表示"
+			.desc = U"一定時間マップに敵の位置を表示"
 		};
 		data[static_cast<int>(c::Grave)] = ItemProps{
 			.item = c::Grave,

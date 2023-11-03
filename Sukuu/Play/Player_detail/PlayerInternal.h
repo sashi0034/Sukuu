@@ -34,5 +34,7 @@ namespace Play
 
 	bool CheckUseItemExplorer(ActorView self);
 
-	void updateVision(PlayerVisionState& vision, PlayerAct act);
+	void UpdatePlayerVision(PlayerVisionState& vision, PlayerAct act);
+
+	void ControlPlayerBgm(const CharaVec2& pos, const MapGrid& map);
 }

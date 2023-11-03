@@ -59,7 +59,7 @@ struct Play::Player::Impl
 #if _DEBUG
 		if (KeyNum1.down()) m_vision.mistRemoval = not m_vision.mistRemoval;
 #endif
-		updateVision(m_vision, m_act);
+		UpdatePlayerVision(m_vision, m_act);
 
 		m_immortal.immortalTime = std::max(m_immortal.immortalTime - GetDeltaTime(), 0.0);
 
@@ -91,6 +91,8 @@ struct Play::Player::Impl
 		{
 			TextureAsset(AssetImages::helmet_16x16)(0, 0, 16, 16).drawAt(drawingPos + getHelmetOffset());
 		}
+
+		ControlPlayerBgm(m_pos.actualPos, PlayScene::Instance().GetMap());
 	}
 
 	void CheckGameOver(ActorView self)

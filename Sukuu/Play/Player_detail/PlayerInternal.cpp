@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "PlayerInternal.h"
 
+#include "Play/PlayBgm.h"
 #include "Play/PlayScene.h"
 #include "Util/CoroUtil.h"
 #include "Util/TomlParametersWrapper.h"
@@ -45,7 +46,7 @@ namespace Play
 		return true;
 	}
 
-	void updateVision(PlayerVisionState& vision, PlayerAct act)
+	void UpdatePlayerVision(PlayerVisionState& vision, PlayerAct act)
 	{
 		const double d = Scene::DeltaTime() * 5.0;
 		double radius{1.0};
@@ -62,5 +63,17 @@ namespace Play
 
 		vision.radiusRate = Math::Lerp(vision.radiusRate, radius, d);
 		vision.heartbeatRate = Math::Lerp(vision.heartbeatRate, heartbeat, d);
+	}
+
+	void ControlPlayerBgm(const CharaVec2& pos, const MapGrid& map)
+	{
+		double rate = 1.0;
+		const auto currPoint = pos.MapPoint();
+		if (not map.Data().inBounds(currPoint) || map.At(currPoint).kind == TerrainKind::Wall)
+		{
+			// 壁にいる時は、ボリューム下げる
+			rate = 0.3;
+		}
+		PlayBgm::Instance().SetVolumeRate(rate);
 	}
 }

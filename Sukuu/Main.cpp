@@ -23,8 +23,13 @@ void Main()
 
 	for (auto&& path : AssetImages::GetKeys()) TextureAsset::Register(path, path);
 	for (auto&& path : AssetSes::GetKeys()) AudioAsset::Register(path, path);
-	for (auto&& path : AssetBgms::GetKeys()) AudioAsset::Register(path, path);
+	for (auto&& path : AssetBgms::GetKeys()) AudioAsset::Register(path, Audio::Stream, path);
 	AssetKeys::RegisterAll();
+
+	// プレイ用BGMは先にロードしておく
+	AudioAsset::LoadAsync(AssetBgms::kazegasane);
+	AudioAsset::LoadAsync(AssetBgms::obake_dance);
+	AudioAsset::LoadAsync(AssetBgms::tokeitou);
 
 	ActorContainer actorRoot{};
 #if _DEBUG

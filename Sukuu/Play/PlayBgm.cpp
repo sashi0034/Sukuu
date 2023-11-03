@@ -14,18 +14,22 @@ namespace
 		AssetBgms::kazegasane,
 		AssetBgms::obake_dance,
 	};
+
+	constexpr double baseVolume = 0.8;
 }
 
 struct PlayBgm::Impl
 {
 	bool m_playing{};
 	int m_bgmIndex{};
+	double m_volumeRate{1.0};
 
 	void Tick()
 	{
 		if (not m_playing) return;
 
 		const auto current = AudioAsset(bgmList[m_bgmIndex]);
+		(void)current.setVolume(m_volumeRate * baseVolume);
 		// 数秒後に止まるなら、現在の曲をストップして次に進む
 		if (current.posSec() > current.lengthSec() - 3.0)
 		{
@@ -60,6 +64,7 @@ namespace Play
 
 	void PlayBgm::StartPlay()
 	{
+		p_impl->m_volumeRate = 1.0;
 		p_impl->m_playing = true;
 		AudioAsset(bgmList[p_impl->m_bgmIndex]).play();
 	}
@@ -68,5 +73,10 @@ namespace Play
 	{
 		p_impl->m_playing = false;
 		AudioAsset(bgmList[p_impl->m_bgmIndex]).stop(1.0s);
+	}
+
+	void PlayBgm::SetVolumeRate(double rate)
+	{
+		p_impl->m_volumeRate = rate;
 	}
 }

@@ -1,16 +1,10 @@
 ﻿#include "stdafx.h"
 #include "EndingScene.h"
 
-#include "Assets.generated.h"
 #include "EndingBackground.h"
 #include "EndingHud.h"
-#include "Play/Chara/CharaUtil.h"
 #include "Play/Player_detail/PlayerAnimation.h"
 #include "Util/ActorContainer.h"
-
-namespace
-{
-}
 
 struct Ending::EndingScene::Impl
 {
