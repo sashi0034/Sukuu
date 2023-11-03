@@ -1,5 +1,8 @@
 # Sukuu
 
+![image](https://github.com/sashi0034/Sukuu/assets/82739042/e412a320-106f-4471-8537-75701a368077)
+
+
 ## About
 
 ゲーム
