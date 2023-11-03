@@ -2,6 +2,7 @@
 #include "EndingHud.h"
 
 #include "AssetKeys.h"
+#include "Assets.generated.h"
 #include "Constants.h"
 #include "Play/PlayScene.h"
 #include "Util/CoroUtil.h"
@@ -99,6 +100,9 @@ struct EndingHud::Impl
 private:
 	void flowchart(YieldExtended& yield, ActorView self, const Play::MeasuredSecondsArray& measured)
 	{
+		const auto bgm = AudioAsset(AssetBgms::dear_my_rabbit);
+		bgm.setLoop(true);
+		bgm.play();
 		m_openW = Scene::Size().x;
 		yield.WaitForDead(AnimateEasing<EaseOutCirc>(self, &m_openW, 0.0, 2.0));
 
@@ -137,6 +141,7 @@ private:
 
 		yield.WaitForTrue([]() { return IsSceneLeftClicked(); });
 
+		bgm.stop(5.0s);
 		yield.WaitForDead(AnimateEasing<EaseOutSine>(self, &m_closeCloseAlpha, 0.0, 5.0));
 
 		yield.WaitForDead(AnimateEasing<EaseOutSine>(self, &m_sashiAlpha, 1.0, 1.0));

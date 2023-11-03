@@ -181,6 +181,7 @@
         <ClCompile Include="Play\Other\FloorMapGenerator.cpp"/>
         <ClCompile Include="Play\Other\PlayPenaltyBonus.cpp"/>
         <ClCompile Include="Play\Other\PlayingTips.cpp"/>
+        <ClCompile Include="Play\PlayBgm.cpp" />
         <ClCompile Include="Play\Player.cpp"/>
         <ClCompile Include="Play\Player_detail\PlayerAnimation.cpp"/>
         <ClCompile Include="Play\Player_detail\PlayerDistField.cpp"/>
@@ -446,6 +447,7 @@
         <ClInclude Include="Play\Other\PlayPenaltyBonus.h"/>
         <ClInclude Include="Play\Other\PlayingTips.h"/>
         <ClInclude Include="Play\Other\TimeLimiter.h"/>
+        <ClInclude Include="Play\PlayBgm.h" />
         <ClInclude Include="Play\Player.h"/>
         <ClInclude Include="Play\Player_detail\PlayerAnimation.h"/>
         <ClInclude Include="Play\Player_detail\PlayerDistField.h"/>

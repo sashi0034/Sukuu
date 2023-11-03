@@ -4,6 +4,7 @@
 #include "Constants.h"
 #include "GameSavedata.h"
 #include "Ending/EndingScene.h"
+#include "Play/PlayBgm.h"
 #include "Play/PlayScene.h"
 #include "Title/TitleScene.h"
 #include "Tutorial/TutorialScene.h"
@@ -115,9 +116,14 @@ private:
 			if (not debugToml<bool>(U"skip_transition"))
 #endif
 			{
+				// 遷移演出
 				yield.WaitForExpire(
 					play.StartTransition(m_playData.floorIndex));
 			}
+
+			// 初回はBGM起動
+			if (not Play::PlayBgm::Instance().IsPlaying()) Play::PlayBgm::Instance().StartPlay();
+
 			play.Init(m_playData);
 			yield.WaitForTrue([&]()
 			{
@@ -137,6 +143,7 @@ private:
 			if (m_playData.floorIndex == Constants::MaxFloorIndex)
 			{
 				// エンディング
+				Play::PlayBgm::Instance().EndPlay();
 				checkSave(m_playData, true);
 				return true;
 			}
@@ -167,7 +174,7 @@ private:
 		}
 	}
 
-	void endingLoop(YieldExtended& yield, ActorView self)
+	void endingLoop(YieldExtended& yield, ActorView self) const
 	{
 		auto ending = self.AsParent().Birth(Ending::EndingScene());
 		ending.Init(m_playData.measuredSeconds);
@@ -190,5 +197,6 @@ namespace Sukuu
 	void GamesSupervisor::Update()
 	{
 		ActorBase::Update();
+		Play::PlayBgm::Instance().Refresh();
 	}
 }

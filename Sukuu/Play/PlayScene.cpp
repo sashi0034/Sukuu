@@ -39,6 +39,9 @@ namespace
 	{
 		return Util::GetTomlParameter<T>(U"play.scene." + key);
 	}
+
+	using namespace Play;
+	std::unique_ptr<PlayScene> s_instance = nullptr;
 }
 
 class Play::PlayScene::Impl
@@ -180,8 +183,6 @@ private:
 
 namespace Play
 {
-	std::unique_ptr<PlayScene> s_instance = nullptr;
-
 	PlayScene::PlayScene() : p_impl(std::make_shared<Impl>())
 	{
 		s_instance = std::make_unique<PlayScene>(*this);

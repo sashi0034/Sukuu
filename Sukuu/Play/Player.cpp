@@ -2,6 +2,7 @@
 #include "Player.h"
 
 #include "PlayScene.h"
+#include "PlayBgm.h"
 #include "Chara/CharaUtil.h"
 #include "Item/ItemGrave.h"
 #include "Item/ItemMagnet.h"
@@ -98,6 +99,7 @@ struct Play::Player::Impl
 		if (PlayScene::Instance().GetTimeLimiter().GetData().remainingTime > 0) return;
 
 		// 以下、ゲームオーバー処理開始
+		PlayBgm::Instance().EndPlay();
 		AudioAsset(AssetSes::fall_down).playOneShot();
 		m_isGameOver = true;
 		m_flowchart.Kill();
