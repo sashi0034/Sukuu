@@ -108,8 +108,8 @@ private:
 		tutorialFinal(yield, self);
 
 		yield.WaitForTrue([this]() { return m_play.GetPlayer().IsTerminated(); });
-		m_bgm.pause(2.0s);
-		yield.WaitForTime(2.0);
+		m_bgm.pause(3.0s);
+		yield.WaitForTime(3.0);
 		m_finished = true;
 	}
 
@@ -149,7 +149,7 @@ private:
 		m_play.GetMap().At(m_mapData.firstBlockPoint).kind = Play::TerrainKind::Wall;
 
 		yield.WaitForTime(2.0);
-		waitMessage(yield, U"ふむ、目が覚めたようだね", messageWaitMedium);
+		waitMessage(yield, U"目が覚めたようだね", messageWaitMedium);
 		waitMessage(yield, U"早速だがキミに動いてもらおう", messageWaitMedium);
 		m_playerService.canMove = true;
 		int movedCount{};
@@ -223,8 +223,10 @@ private:
 			}
 		});
 
+		(void)m_bgm.setVolume(0.7);
 		waitMessage(yield, U"おや、怪物に囲まれてしまったね", messageWaitMedium);
 		waitMessage(yield, U"では、キミに運命を 'スクう' チカラを与えよう", messageWaitMedium);
+		(void)m_bgm.setVolume(0.5);
 
 		bool hasScooped{};
 		m_playerService.canScoop = true;
@@ -251,6 +253,7 @@ private:
 		scoopingMessage.Kill();
 		m_focus.Hide();
 		SetTimeScale(1.0);
+		(void)m_bgm.setVolume(1.0);
 		yield.WaitForTime(1.0);
 
 		waitMessage(yield, U"間一髪、一難過ぎ去ったね", messageWaitShort);
