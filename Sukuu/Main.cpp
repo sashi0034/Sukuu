@@ -16,10 +16,15 @@ void Main()
 	Scene::SetBackground(Constants::HardDarkblue);
 
 	Window::SetStyle(WindowStyle::Sizable);
+	Window::SetTitle(Constants::GameIdentityTrueTitleName);
 	Scene::SetResizeMode(ResizeMode::Keep);
 	Scene::Resize(1920, 1080);
 	Window::Resize(Size{1280, 720});
 	System::SetTerminationTriggers(UserAction::CloseButtonClicked);
+#if not _DEBUG
+	Window::SetFullscreen(true);
+#endif
+	System::Update();
 
 	for (auto&& path : AssetImages::GetKeys()) TextureAsset::Register(path, path);
 	for (auto&& path : AssetSes::GetKeys()) AudioAsset::Register(path, path);

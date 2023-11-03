@@ -626,6 +626,7 @@
         <Content Include="App\asset\se\title_environment.mp3" />
         <Content Include="App\asset\se\title_start.mp3" />
         <Content Include="App\credit.html" />
+        <Content Include="App\make_distribution.py" />
     </ItemGroup>
     <ItemGroup>
       <Folder Include="App\asset\bgm\" />
