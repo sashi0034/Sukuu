@@ -4,6 +4,7 @@
 #include "PlayScene.h"
 #include "PlayBgm.h"
 #include "Chara/CharaUtil.h"
+#include "Effect/ItemObtainEffect.h"
 #include "Item/ItemGrave.h"
 #include "Item/ItemMagnet.h"
 #include "Item/ItemMine.h"
@@ -571,6 +572,7 @@ private:
 		case GimmickKind::SemiItem_Vessel: {
 			AudioAsset(AssetSes::take_item).playOneShot();
 			focusCameraFor<EaseOutBack>(self, getToml<double>(U"focus_scale_large"));
+			itemObtainEffect();
 			PlayScene::Instance().RequestHitstopping(0.3);
 			yield.WaitForTime(0.3);
 			AudioAsset(AssetSes::recover_large).playOneShot();
@@ -601,11 +603,17 @@ private:
 
 			// アイテム入手
 			AudioAsset(AssetSes::take_item).playOneShot();
+			itemObtainEffect();
 			m_personal.items[i] = GimmickToItem(gimmickGrid[point]);
 			assert(m_personal.items[i] != ConsumableItem::None);
 			gimmickGrid[point] = GimmickKind::None;
 			break;
 		}
+	}
+
+	void itemObtainEffect() const
+	{
+		PlayScene::Instance().BgEffect().add(MakeItemObtainEffect(m_pos.viewPos.movedBy(CellPx_24 / 2, CellPx_24 / 2)));
 	}
 
 	void moveArrowWarp(YieldExtended& yield, ActorView self, const Point point)

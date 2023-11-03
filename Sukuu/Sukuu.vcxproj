@@ -156,6 +156,7 @@
         <ClCompile Include="Play\Chara\CharaUtil.cpp"/>
         <ClCompile Include="Play\Effect\DamageCounterEffect.cpp"/>
         <ClCompile Include="Play\Effect\FragmentTextureEffect.cpp"/>
+        <ClCompile Include="Play\Effect\ItemObtainEffect.cpp" />
         <ClCompile Include="Play\Enemy\EnCatfish.cpp"/>
         <ClCompile Include="Play\Enemy\EnCrab.cpp"/>
         <ClCompile Include="Play\Enemy\EnemyDefinition.cpp"/>
@@ -218,6 +219,7 @@
         <ClCompile Include="Util\Utilities.cpp"/>
     </ItemGroup>
     <ItemGroup>
+        <Image Include="App\asset\image\particle.png" />
         <Image Include="App\engine\texture\box-shadow\128.png"/>
         <Image Include="App\engine\texture\box-shadow\16.png"/>
         <Image Include="App\engine\texture\box-shadow\256.png"/>
@@ -420,6 +422,7 @@
         <ClInclude Include="Play\Chara\CharaUtil.h"/>
         <ClInclude Include="Play\Effect\DamageCounterEffect.h"/>
         <ClInclude Include="Play\Effect\FragmentTextureEffect.h"/>
+        <ClInclude Include="Play\Effect\ItemObtainEffect.h" />
         <ClInclude Include="Play\Enemy\EnCatfish.h"/>
         <ClInclude Include="Play\Enemy\EnCrab.h"/>
         <ClInclude Include="Play\Enemy\EnemyDefinition.h"/>

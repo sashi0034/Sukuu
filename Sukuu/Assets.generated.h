@@ -29,6 +29,7 @@ namespace AssetImages
 	constexpr StringView mine_flower_16x16 = U"asset/image/mine_flower_16x16.png";
 	constexpr StringView mixed_nature_16x16 = U"asset/image/mixed_nature_16x16.png";
 	constexpr StringView omeme_patchouli_sun_16x16 = U"asset/image/omeme_patchouli_sun_16x16.png";
+	constexpr StringView particle = U"asset/image/particle.png";
 	constexpr StringView phine_32x32 = U"asset/image/phine_32x32.png";
 	constexpr StringView pin_16x16 = U"asset/image/pin_16x16.png";
 	constexpr StringView punicat_24x24 = U"asset/image/punicat_24x24.png";
@@ -72,6 +73,7 @@ namespace AssetImages
 			mine_flower_16x16,
 			mixed_nature_16x16,
 			omeme_patchouli_sun_16x16,
+			particle,
 			phine_32x32,
 			pin_16x16,
 			punicat_24x24,
