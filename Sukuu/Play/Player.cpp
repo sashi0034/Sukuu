@@ -49,7 +49,7 @@ struct Play::Player::Impl
 	bool m_terminated{};
 	PlayerImmortality m_immortal{};
 	bool m_guardHelmet{};
-	std::function<void()> m_scoopDrawing = {};
+	std::function<void()> m_subDrawing = {};
 	int m_scoopContinuous{};
 	PlayerVisionState m_vision{};
 	double m_faintStealthTime{};
@@ -68,10 +68,10 @@ struct Play::Player::Impl
 
 		m_faintStealthTime = std::max(m_faintStealthTime - GetDeltaTime(), 0.0);
 
-		if (m_scoopDrawing)
+		if (m_subDrawing)
 		{
-			// すくうの描画
-			m_scoopDrawing();
+			// すくうなどの描画
+			m_subDrawing();
 		}
 		else
 		{
@@ -107,7 +107,7 @@ struct Play::Player::Impl
 		m_isGameOver = true;
 		m_flowchart.Kill();
 		m_distField.Clear();
-		m_scoopDrawing = {};
+		m_subDrawing = {};
 		m_immortal.immortalStock++;
 		AnimateEasing<EaseOutCirc>(self, &m_cameraScale, 8.0, 0.5);
 		StartCoro(self, [this](YieldExtended yield)
@@ -321,7 +321,7 @@ private:
 		m_cameraOffsetDestination = {0, 0};
 		m_flowchart.Kill();
 		m_distField.Clear();
-		m_scoopDrawing = {};
+		m_subDrawing = {};
 	}
 
 	void flowchartLoop(YieldExtended& yield, ActorView self)
@@ -340,6 +340,9 @@ private:
 		auto moveDir = Dir4::Invalid;
 		while (true)
 		{
+			// マウス右クリックで向き変更
+			checkMouseDirectionRotation(yield);
+
 			// プレイヤーを掬おうとしてるかチェック
 			checkScoopFromMouse(yield, self);
 
@@ -411,6 +414,33 @@ private:
 		AnimateEasing<easing>(self, &m_focusCameraRate, scale, 0.5);
 	}
 
+	void checkMouseDirectionRotation(YieldExtended& yield)
+	{
+		if (not MouseR.pressed()) return;
+
+		while (true)
+		{
+			yield();
+			if (not MouseR.pressed())
+			{
+				m_subDrawing = {};
+				return;
+			}
+
+			const auto center = m_pos.actualPos.movedBy(CellPx_24 / 2, CellPx_24 / 2);
+			const auto deltaCursor = Cursor::PosF() - center;
+			m_direction = Dir4::FromXY(deltaCursor);
+			m_subDrawing = [center, d = m_direction, t = m_animTimer.Time()]()
+			{
+				constexpr auto c = ColorF(U"#ffc22b");
+				(void)Shape2D::Arrow(Line{center, center + d.ToXY() * (32 - 4 * Periodic::Jump0_1(0.5s, t))}, 20,
+				                     Vec2{16, 16})
+				      .draw(ColorF(c, 0.9)).drawFrame(1, ColorF(c * 0.3, 0.9));
+				Circle(Cursor::PosF(), 8).draw(ColorF{c, 0.5});
+			};
+		}
+	}
+
 	void checkScoopFromMouse(YieldExtended& yield, ActorView self)
 	{
 		if (RectF(m_pos.actualPos, {CellPx_24, CellPx_24}).intersects(Cursor::PosF()) == false)
@@ -425,12 +455,12 @@ private:
 
 		// マウスクリックまで待機
 		focusCameraFor(self, getToml<double>(U"focus_scale_large"));
-		m_scoopDrawing = [this, self]() mutable
+		m_subDrawing = [this, self]() mutable
 		{
 			if (RectF(m_pos.actualPos, {CellPx_24, CellPx_24}).intersects(Cursor::PosF()) == false)
 			{
 				// 解除
-				m_scoopDrawing = {};
+				m_subDrawing = {};
 				focusCameraFor(self, 1.0);
 				return;
 			}
@@ -449,7 +479,7 @@ private:
 		AudioAsset(AssetSes::scoop_start).playOneShot();
 
 		// ドラッグ解除まで待機
-		m_scoopDrawing = [this]()
+		m_subDrawing = [this]()
 		{
 			for (int i = 0; i < 4; ++i)
 			{
@@ -462,7 +492,7 @@ private:
 			yield();
 			if (MouseL.pressed() == false)
 			{
-				m_scoopDrawing = {};
+				m_subDrawing = {};
 				break;
 			}
 
@@ -479,7 +509,7 @@ private:
 
 				// 以下、移動させる処理を実行
 				// m_distField.Clear();
-				m_scoopDrawing = {};
+				m_subDrawing = {};
 				succeedScoop(yield, self, checkingPos);
 
 				goto dropped;
