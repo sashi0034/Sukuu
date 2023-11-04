@@ -42,8 +42,8 @@ namespace Play
 		ITutorialSetting* tutorial{};
 		int floorIndex{};
 		MeasuredSecondsArray measuredSeconds{};
-		PlayerPersonalData playerPersonal;
-		TimeLimiterData timeLimiter;
+		PlayerPersonalData playerPersonal{};
+		TimeLimiterData timeLimiter{};
 
 		bool IsTutorial() const { return tutorial != nullptr; }
 	};
@@ -52,7 +52,6 @@ namespace Play
 	{
 	public:
 		PlayScene();
-		~PlayScene() override;
 
 		void Init(const PlaySingletonData& data);
 		void Update() override;

@@ -17,11 +17,11 @@ namespace Util
 			return actor;
 		}
 
-		std::vector<std::unique_ptr<IActor>>& ActorList() { return m_actorList; }
-		const std::vector<std::unique_ptr<IActor>>& ActorList() const { return m_actorList; }
+		std::vector<std::unique_ptr<ActorBase>>& ActorList() { return m_actorList; }
+		const std::vector<std::unique_ptr<ActorBase>>& ActorList() const { return m_actorList; }
 
 	private:
-		std::vector<std::unique_ptr<IActor>> m_actorList{};
+		std::vector<std::unique_ptr<ActorBase>> m_actorList{};
 		void sortActorList();
 	};
 }

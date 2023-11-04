@@ -47,22 +47,22 @@ namespace
 class Play::PlayScene::Impl
 {
 public:
-	MapGrid m_map;
-	GimmickGrid m_gimmick;
+	MapGrid m_map{};
+	GimmickGrid m_gimmick{};
 	BgMapDrawer m_bgMapDrawer{};
-	Player m_player;
+	Player m_player{};
 	EnemyContainer m_enemies{};
-	Camera2D m_debugCamera;
+	Camera2D m_debugCamera{};
 	CameraKind::Value m_camera = CameraKind::Player;
 	ActorContainer m_ui{};
-	UiItemContainer m_uiItemContainer;
-	UiMiniMap m_uiMiniMap;
-	UiTimeLimiter m_uiTimeLimiter;
+	UiItemContainer m_uiItemContainer{};
+	UiMiniMap m_uiMiniMap{};
+	UiTimeLimiter m_uiTimeLimiter{};
 	CaveVision m_caveVision{};
 	int m_hitStoppingRequested{};
 	EffectWrapper m_fgEffect{};
 	EffectWrapper m_bgEffect{};
-	ITutorialSetting* m_tutorial;
+	ITutorialSetting* m_tutorial{};
 	UiFloorTransition m_floorTransition{};
 	UiCurrentFloor m_currentFloor{};
 	UiGameOver m_gameOver{};

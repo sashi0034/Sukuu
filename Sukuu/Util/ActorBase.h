@@ -17,7 +17,6 @@ namespace Util
 	{
 	public:
 		ActorBase();
-		~ActorBase() override = default;
 		void Update() override;
 		double OrderPriority() const override;
 

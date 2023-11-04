@@ -23,7 +23,7 @@ namespace
 
 struct Sukuu::GamesSupervisor::Impl
 {
-	void FlowchartAsync(YieldExtended& yield, ActorBase& self)
+	void FlowchartAsync(YieldExtended& yield, ActorView self)
 	{
 		while (true)
 		{
@@ -188,7 +188,7 @@ namespace Sukuu
 	GamesSupervisor::GamesSupervisor() :
 		p_impl(std::make_shared<Impl>())
 	{
-		StartCoro(*this, [*this](YieldExtended yield) mutable
+		StartCoro(*this, [*this](YieldExtended yield)
 		{
 			p_impl->FlowchartAsync(yield, *this);
 		});

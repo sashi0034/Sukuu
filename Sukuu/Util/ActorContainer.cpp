@@ -7,7 +7,7 @@ namespace Util
 	{
 		std::ranges::stable_sort(
 			m_actorList,
-			[](const std::unique_ptr<IActor>& left, const std::unique_ptr<IActor>& right)
+			[](const std::unique_ptr<ActorBase>& left, const std::unique_ptr<ActorBase>& right)
 			{
 				return left->OrderPriority() < right->OrderPriority();
 			});
@@ -28,7 +28,7 @@ namespace Util
 		for (int i = 0; i < m_actorList.size(); ++i)
 		{
 			auto&& actor = m_actorList[i];
-			actor->Update();
+			if (not actor->IsDead()) actor->Update();
 		}
 	}
 
