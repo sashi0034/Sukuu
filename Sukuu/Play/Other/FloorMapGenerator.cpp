@@ -98,6 +98,7 @@ namespace Play
 			return GenerateFreshDungeon(DungGenProps{
 				.size = {81, 81},
 				.areaDivision = 8,
+				.minAreaWidthHeight = 8,
 			});
 		}
 		if (floorIndex == 23)
@@ -111,7 +112,7 @@ namespace Play
 		{
 			return GenerateFreshDungeon(DungGenProps{
 				.size = {91, 91},
-				.areaDivision = 9 + Random(-2, 2),
+				.areaDivision = 8 + Random(-2, 2),
 			});
 		}
 		if (floorIndex == 31)
@@ -124,8 +125,8 @@ namespace Play
 		if (floorIndex <= 36)
 		{
 			return GenerateFreshDungeon(DungGenProps{
-				.size = {101, 101},
-				.areaDivision = 10 + Random(-2, 2),
+				.size = Size{1, 1} * (91 + Random(0, 1) * 4),
+				.areaDivision = 8 + Random(-2, 2),
 			});
 		}
 		if (floorIndex <= 40)
@@ -354,7 +355,8 @@ namespace
 		if (map.Category() != MapCategory::Dungeon) return false;
 		return
 			InRange(floorIndex, 16, 20) ||
-			InRange(floorIndex, 26, 30);
+			InRange(floorIndex, 26, 30) ||
+			InRange(floorIndex, 42, 46);
 	}
 
 	void installTrees(const MapGrid& map, GimmickGrid& gimmick, int floorIndex)
