@@ -28,7 +28,7 @@ namespace
 
 struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
 {
-	Play::PlayScene m_play{};
+	Play::PlayScene m_play{Play::PlayScene::Empty()};
 	TutorialMapData m_mapData{};
 	bool m_finished{};
 	Play::TutorialPlayerService m_playerService{
@@ -47,7 +47,7 @@ struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
 	void Init(ActorView self)
 	{
 		m_mapData = GetTutorialMap();
-		m_play = self.AsParent().Birth(Play::PlayScene());
+		m_play = self.AsParent().Birth(Play::PlayScene::Create());
 		m_play.Init({
 			.tutorial = this,
 			.playerPersonal = {},

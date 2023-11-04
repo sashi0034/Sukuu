@@ -41,7 +41,7 @@ namespace
 	}
 
 	using namespace Play;
-	std::unique_ptr<PlayScene> s_instance = nullptr;
+	PlayScene s_instance{PlayScene::Empty()};
 }
 
 class Play::PlayScene::Impl
@@ -183,9 +183,19 @@ private:
 
 namespace Play
 {
-	PlayScene::PlayScene() : p_impl(std::make_shared<Impl>())
+	PlayScene::PlayScene() = default;
+
+	PlayScene PlayScene::Empty()
 	{
-		s_instance = std::make_unique<PlayScene>(*this);
+		return {};
+	}
+
+	PlayScene PlayScene::Create()
+	{
+		PlayScene p{};
+		p.p_impl = std::make_shared<Impl>();
+		s_instance = p;
+		return p;
 	}
 
 	void PlayScene::Init(const PlaySingletonData& data)
@@ -217,8 +227,7 @@ namespace Play
 
 	PlayScene& PlayScene::Instance()
 	{
-		assert(s_instance != nullptr);
-		return *s_instance;
+		return s_instance;
 	}
 
 	MapGrid& PlayScene::GetMap()

@@ -51,7 +51,8 @@ namespace Play
 	class PlayScene : public ActorBase
 	{
 	public:
-		PlayScene();
+		static PlayScene Empty();
+		static PlayScene Create();
 
 		void Init(const PlaySingletonData& data);
 		void Update() override;
@@ -94,7 +95,9 @@ namespace Play
 		static PlayScene& Instance();
 
 	private:
+		PlayScene();
+
 		class Impl;
-		std::shared_ptr<Impl> p_impl;
+		std::shared_ptr<Impl> p_impl{};
 	};
 }

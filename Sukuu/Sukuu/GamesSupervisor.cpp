@@ -111,7 +111,7 @@ private:
 
 		while (true)
 		{
-			auto play = self.AsParent().Birth(Play::PlayScene());
+			auto play = self.AsParent().Birth(Play::PlayScene::Create());
 #if _DEBUG
 			if (not debugToml<bool>(U"skip_transition"))
 #endif
