@@ -188,8 +188,6 @@ namespace Play
 		s_instance = std::make_unique<PlayScene>(*this);
 	}
 
-	PlayScene::~PlayScene() = default;
-
 	void PlayScene::Init(const PlaySingletonData& data)
 	{
 		p_impl->Init(*this, data);
@@ -200,12 +198,6 @@ namespace Play
 		p_impl->UpdateScene(*this);
 		p_impl->m_caveVision.UpdateScreen();
 		p_impl->m_ui.Update();
-	}
-
-	void PlayScene::Kill()
-	{
-		ActorBase::Kill();
-		p_impl->m_ui.Kill();
 	}
 
 	ActorWeak PlayScene::StartTransition(int floorIndex)

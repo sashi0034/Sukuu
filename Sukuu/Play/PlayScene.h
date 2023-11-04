@@ -55,7 +55,6 @@ namespace Play
 
 		void Init(const PlaySingletonData& data);
 		void Update() override;
-		void Kill() override;
 
 		ActorWeak StartTransition(int floorIndex);
 		ActorWeak EndTransition();

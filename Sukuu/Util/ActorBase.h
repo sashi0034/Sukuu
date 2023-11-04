@@ -4,24 +4,16 @@ namespace Util
 {
 	class ActorContainer;
 
-	struct IActor
-	{
-		virtual ~IActor() = default;
-		virtual void Update() = 0;
-		virtual double OrderPriority() const = 0;
-		virtual void Kill() = 0;
-		virtual bool IsDead() const = 0;
-	};
-
-	class ActorBase : public IActor
+	class ActorBase
 	{
 	public:
 		ActorBase();
-		void Update() override;
-		double OrderPriority() const override;
+		virtual ~ActorBase() = default;
+		virtual void Update();
+		virtual double OrderPriority() const;
 
-		void Kill() override;
-		bool IsDead() const override;
+		void Kill();
+		bool IsDead() const;
 
 		bool HasChildren() const;
 		[[nodiscard]] ActorContainer& AsParent();
