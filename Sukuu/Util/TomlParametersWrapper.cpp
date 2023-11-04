@@ -8,7 +8,13 @@ namespace Util
 		struct ImplState
 		{
 			DirectoryWatcher directoryWatcher{U"asset"};
-			TOMLReader toml{U"asset/parameters.toml"};
+			TOMLReader toml{
+#if _DEBUG
+				U"asset/parameters.toml"
+#else
+				Resource(U"asset/parameters.toml")
+#endif
+			};
 		};
 	}
 
@@ -26,11 +32,13 @@ namespace Util
 
 	void TomlParametersWrapper::Update()
 	{
-		for (auto [path, action] : p_impl->directoryWatcher.retrieveChanges())
+#if _DEBUG
+  		for (auto [path, action] : p_impl->directoryWatcher.retrieveChanges())
 		{
 			if (FileSystem::FileName(path) == U"parameters.toml")
 				p_impl->toml.open({U"asset/parameters.toml"});
 		}
+#endif
 	}
 
 	TOMLValue GetTomlParameters(const String& valuePath)

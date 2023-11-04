@@ -5,14 +5,13 @@ import zipfile
 target_dir_name = "Mutant"
 
 folders_to_copy = [
-    "asset",
+    "asset/font",
+    "asset/other",
+    "asset/shader",
     "dll",
-    "engine"
 ]
 files_to_copy = [
     "credit.html",
-    "icon.ico",
-    "Resource.rc",
     "Sukuu.exe"
 ]
 

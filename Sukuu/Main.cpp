@@ -26,15 +26,22 @@ void Main()
 #endif
 	System::Update();
 
+#if _DEBUG
 	for (auto&& path : AssetImages::GetKeys()) TextureAsset::Register(path, path);
 	for (auto&& path : AssetSes::GetKeys()) AudioAsset::Register(path, path);
 	for (auto&& path : AssetBgms::GetKeys()) AudioAsset::Register(path, Audio::Stream, path);
+#else
+	for (auto&& path : AssetImages::GetKeys()) TextureAsset::Register(path, Resource(path));
+	for (auto&& path : AssetSes::GetKeys()) AudioAsset::Register(path, Resource(path));
+	for (auto&& path : AssetBgms::GetKeys()) AudioAsset::Register(path, Audio::Stream, Resource(path));
+#endif
+
 	AssetKeys::RegisterAll();
 
 	// プレイ用BGMは先にロードしておく
-	AudioAsset::LoadAsync(AssetBgms::kazegasane);
-	AudioAsset::LoadAsync(AssetBgms::obake_dance);
-	AudioAsset::LoadAsync(AssetBgms::tokeitou);
+	AudioAsset::Load(AssetBgms::kazegasane);
+	AudioAsset::Load(AssetBgms::obake_dance);
+	AudioAsset::Load(AssetBgms::tokeitou);
 
 	ActorContainer actorRoot{};
 #if _DEBUG

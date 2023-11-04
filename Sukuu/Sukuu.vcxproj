@@ -573,11 +573,9 @@
     </ItemGroup>
     <ItemGroup>
         <Content Include="App\.gitignore"/>
-        <Content Include="App\asset\generate_constexpr.py" />
         <Content Include="App\asset\image\beatrice_32x32.png" />
         <Content Include="App\asset\image\bookmark_16x16.png" />
         <Content Include="App\asset\image\brick_stylish_24x24.png" />
-        <Content Include="App\asset\image\brick_stylish_light_24x24 .png" />
         <Content Include="App\asset\image\catfish_24x24.png" />
         <Content Include="App\asset\image\clock_16x16.png" />
         <Content Include="App\asset\image\dango_wolf_24x24.png" />
@@ -628,7 +626,9 @@
         <Content Include="App\asset\se\title_environment.mp3" />
         <Content Include="App\asset\se\title_start.mp3" />
         <Content Include="App\credit.html" />
+        <Content Include="App\generate_constexpr.py" />
         <Content Include="App\make_distribution.py" />
+        <Content Include="App\Resource_template.txt" />
     </ItemGroup>
     <ItemGroup>
       <Folder Include="App\asset\bgm\" />

@@ -9,7 +9,7 @@ namespace AssetImages
 	constexpr StringView beatrice_32x32 = U"asset/image/beatrice_32x32.png";
 	constexpr StringView bookmark_16x16 = U"asset/image/bookmark_16x16.png";
 	constexpr StringView brick_stylish_24x24 = U"asset/image/brick_stylish_24x24.png";
-	constexpr StringView brick_stylish_light_24x24 = U"asset/image/brick_stylish_light_24x24 .png";
+	constexpr StringView brick_stylish_light_24x24 = U"asset/image/brick_stylish_light_24x24.png";
 	constexpr StringView bush_16x16 = U"asset/image/bush_16x16.png";
 	constexpr StringView catfish_24x24 = U"asset/image/catfish_24x24.png";
 	constexpr StringView clock_16x16 = U"asset/image/clock_16x16.png";
