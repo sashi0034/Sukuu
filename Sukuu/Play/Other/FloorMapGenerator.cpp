@@ -232,7 +232,7 @@ namespace
 			switch (static_cast<ConsumableItem>(Random(1, static_cast<int>(ConsumableItem::Max) - 1)))
 			{
 			case ConsumableItem::Wing:
-				if (RandomBool(0.5)) return GimmickKind::Item_Wing;
+				if (RandomBool(0.7)) return GimmickKind::Item_Wing;
 			case ConsumableItem::Helmet:
 				return GimmickKind::Item_Helmet;
 			case ConsumableItem::Pin:

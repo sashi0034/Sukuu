@@ -32,7 +32,7 @@ recover_immortal = 1.5
 helmet_offset = "(0, -10)"
 helmet_animation = 200
 light_bulb_duration = 12.0
-explorer_enemies_duration = 9.0
+explorer_enemies_duration = 15.0
 tube_heal_amount = 90
 solt_faint = 15.0
 
