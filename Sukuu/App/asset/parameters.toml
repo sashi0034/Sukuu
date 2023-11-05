@@ -197,9 +197,10 @@ prompt_y = 320.0
 record_outline = 0.1
 record_font = 32.0
 record_y = -480
-credit_size = "(196, 48)"
-credit_padding = "(-40, -20)"
-credit_color = "#525467"
+button_size = "(196, 48)"
+button_padding = "(-40, -20)"
+button_color = "#525467"
+button_space = 80
 
 [title.background]
 bg_color = "#313338"

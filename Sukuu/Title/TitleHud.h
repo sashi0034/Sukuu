@@ -14,7 +14,7 @@ namespace Title
 		double OrderPriority() const override;
 
 		void SetShowPrompt(bool show);
-		bool IsCreditHovered() const;
+		bool IsButtonHovered() const;
 
 	private:
 		struct Impl;

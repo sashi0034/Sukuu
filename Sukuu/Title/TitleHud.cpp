@@ -20,7 +20,7 @@ struct Title::TitleHud::Impl
 	String m_record{};
 	bool m_showPrompt{};
 	double m_promptAnim{};
-	bool m_creditHovered{};
+	bool m_buttonHovered{};
 
 	void Init(const Sukuu::GameSavedata& savedata)
 	{
@@ -70,17 +70,36 @@ struct Title::TitleHud::Impl
 				        ColorF(1.0, Math::Abs(Math::Sin(m_promptAnim))));
 		}
 
-		auto&& creditSize = getToml<Size>(U"credit_size");
-		const auto creditRect = Rect(Scene::Size().moveBy(getToml<Point>(U"credit_padding") - creditSize), creditSize);
-		m_creditHovered = creditRect.intersects(Cursor::PosF());
-		(void)creditRect
-		      .drawShadow({6, 6}, 24, 3)
-		      .rounded(20).draw(getToml<ColorF>(U"credit_color") * (m_creditHovered ? 1.3 : 1.0));
+		auto&& buttonSize = getToml<Size>(U"button_size");
+		const auto buttonDraw = [](const Rect& rect, bool hover)
+		{
+			rect
+				.drawShadow({6, 6}, 24, 3)
+				.rounded(20).draw(getToml<ColorF>(U"button_color") * (hover ? 1.3 : 1.0));
+		};
+
+		auto&& exitRect = Rect(Scene::Size().moveBy(getToml<Point>(U"button_padding") - buttonSize), buttonSize);
+		const bool exitHover = exitRect.intersects(Cursor::PosF());
+		buttonDraw(exitRect, exitHover);
+		(void)FontAsset(AssetKeys::RocknRoll_24_Bitmap)(U"終了").drawAt(exitRect.center());
+		if (exitHover && MouseL.down())
+		{
+			if (System::MessageBoxYesNo(U"ゲームを終了しますか", MessageBoxStyle::Question) == MessageBoxResult::Yes)
+			{
+				System::Exit();
+			}
+		}
+
+		auto&& creditRect = exitRect.movedBy(0, -getToml<int>(U"button_space"));
+		const bool creditHover = creditRect.intersects(Cursor::PosF());
+		buttonDraw(creditRect, creditHover);
 		(void)FontAsset(AssetKeys::RocknRoll_24_Bitmap)(U"クレジット").drawAt(creditRect.center());
-		if (m_creditHovered && MouseL.down())
+		if (creditHover && MouseL.down())
 		{
 			System::LaunchFile(U"./credit.html");
 		}
+
+		m_buttonHovered = exitHover || creditHover;
 	}
 };
 
@@ -112,8 +131,8 @@ namespace Title
 		p_impl->m_showPrompt = show;
 	}
 
-	bool TitleHud::IsCreditHovered() const
+	bool TitleHud::IsButtonHovered() const
 	{
-		return p_impl->m_creditHovered;
+		return p_impl->m_buttonHovered;
 	}
 }

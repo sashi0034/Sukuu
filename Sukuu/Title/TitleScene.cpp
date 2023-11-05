@@ -101,7 +101,7 @@ private:
 		yield.WaitForTrue([this]()
 		{
 			return
-				not m_hud.IsCreditHovered() &&
+				not m_hud.IsButtonHovered() &&
 				IsSceneLeftClicked();
 		});
 		m_hud.SetShowPrompt(false);
