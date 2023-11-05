@@ -336,7 +336,7 @@ private:
 		m_playerService.canMove = false;
 		waitMessage(yield, U"キミに語りかけられるのはここまでだ", messageWaitShort);
 		m_playerService.canMove = true;
-		waitMessage(yield, U"検討を祈っているよ", messageWaitShortShort);
+		waitMessage(yield, U"健闘を祈っているよ", messageWaitShortShort);
 	}
 };
 
