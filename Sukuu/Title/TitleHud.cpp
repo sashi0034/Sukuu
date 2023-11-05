@@ -47,7 +47,7 @@ struct Title::TitleHud::Impl
 		FontAsset(AssetKeys::RocknRoll_24_Bitmap)(U"Version git-" + GitRevisionLiteral)
 			.draw(Arg::bottomLeft = Scene::Size().y0().yx());
 
-		(void)FontAsset(AssetKeys::RocknRoll_Sdf_Bold)(U"右クリックを押してください")
+		(void)FontAsset(AssetKeys::RocknRoll_Sdf_Bold)(U"左クリックを押してください")
 			.drawAt(getToml<double>(U"prompt_font"),
 			        Scene::Center().movedBy(0, getToml<double>(U"prompt_y")),
 			        ColorF(1.0, Math::Abs(Math::Sin(m_promptAnim))));
@@ -64,7 +64,7 @@ struct Title::TitleHud::Impl
 		if (m_showPrompt)
 		{
 			m_promptAnim += 2.0 * Scene::DeltaTime();
-			(void)FontAsset(AssetKeys::RocknRoll_Sdf_Bold)(U"右クリックを押してください")
+			(void)FontAsset(AssetKeys::RocknRoll_Sdf_Bold)(U"左クリックを押してください")
 				.drawAt(getToml<double>(U"prompt_font"),
 				        Scene::Center().movedBy(0, getToml<double>(U"prompt_y")),
 				        ColorF(1.0, Math::Abs(Math::Sin(m_promptAnim))));
