@@ -14,6 +14,7 @@
 #include "Map/MazeGenerator.h"
 #include "Other/CaveVision.h"
 #include "Other/FloorMapGenerator.h"
+#include "Other/PlayingPause.h"
 #include "UI/UiCurrentFloor.h"
 #include "UI/UiFloorTransition.h"
 #include "UI/UiGameOver.h"
@@ -68,6 +69,7 @@ public:
 	UiGameOver m_gameOver{};
 	int m_floorIndex{};
 	MeasuredSecondsArray m_measuredSeconds{};
+	PlayingPause m_pause{};
 
 	void Init(ActorView self, const PlaySingletonData& data)
 	{
@@ -124,6 +126,8 @@ public:
 
 			m_currentFloor.Init(data.floorIndex);
 			m_gameOver.Init(data.floorIndex);
+
+			m_pause.SetAllowed(true);
 		}
 
 		m_uiMiniMap.Init(m_map.Data().size());
@@ -156,6 +160,10 @@ public:
 
 		// 背景描画
 		m_bgMapDrawer.UpdateDraw(self);
+
+		// ポーズ中なら更新無し
+		m_pause.Update();
+		if (m_pause.IsPaused()) return;
 
 		// キャラクターなどの通常更新
 		self.ActorBase::Update();
@@ -207,7 +215,7 @@ namespace Play
 	{
 		p_impl->UpdateScene(*this);
 		p_impl->m_caveVision.UpdateScreen();
-		p_impl->m_ui.Update();
+		if (not p_impl->m_pause.IsPaused()) p_impl->m_ui.Update();
 	}
 
 	ActorWeak PlayScene::StartTransition(int floorIndex)
@@ -217,11 +225,13 @@ namespace Play
 
 	ActorWeak PlayScene::EndTransition()
 	{
+		p_impl->m_pause.SetAllowed(false);
 		return p_impl->m_floorTransition.PerformClose();
 	}
 
 	ActorWeak PlayScene::PerformGameOver()
 	{
+		p_impl->m_pause.SetAllowed(false);
 		return p_impl->m_gameOver.StartPerform();
 	}
 
