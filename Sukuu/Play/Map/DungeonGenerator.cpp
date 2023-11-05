@@ -253,7 +253,7 @@ public:
 				}
 			}
 		}
-		return std::move(paths);
+		return paths;
 	}
 
 private:

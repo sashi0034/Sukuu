@@ -90,6 +90,7 @@ private:
 		}
 		yield.WaitForTrue([&]() { return title.IsConcluded(); });
 		title.Kill();
+		yield();
 	}
 
 	bool playLoop(YieldExtended& yield, ActorView self)
@@ -133,8 +134,9 @@ private:
 				return play.GetPlayer().IsTerminated();
 			});
 			if (not play.GetPlayer().IsTerminated()) yield();
-			play.Kill();
 			m_playData = play.CopyData();
+			play.Kill();
+			yield();
 			if (m_playData.timeLimiter.remainingTime == 0)
 			{
 				// ゲームオーバー
