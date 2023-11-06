@@ -104,7 +104,7 @@ private:
 		bgm.setLoop(true);
 		bgm.play();
 		m_openW = Scene::Size().x;
-		yield.WaitForDead(AnimateEasing<EaseOutCirc>(self, &m_openW, 0.0, 2.0));
+		yield.WaitForExpire(AnimateEasing<EaseOutCirc>(self, &m_openW, 0.0, 2.0));
 
 		constexpr int numLines = 10;
 		for (int i = 0; i < numLines; ++i)
@@ -137,16 +137,16 @@ private:
 
 		yield.WaitForTime(3.0);
 
-		yield.WaitForDead(AnimateEasing<EaseOutSine>(self, &m_closeAlpha, 1.0, 2.0));
+		yield.WaitForExpire(AnimateEasing<EaseOutSine>(self, &m_closeAlpha, 1.0, 2.0));
 
 		yield.WaitForTrue([]() { return IsSceneLeftClicked(); });
 
 		bgm.stop(5.0s);
-		yield.WaitForDead(AnimateEasing<EaseOutSine>(self, &m_closeCloseAlpha, 0.0, 5.0));
+		yield.WaitForExpire(AnimateEasing<EaseOutSine>(self, &m_closeCloseAlpha, 0.0, 5.0));
 
-		yield.WaitForDead(AnimateEasing<EaseOutSine>(self, &m_sashiAlpha, 1.0, 1.0));
+		yield.WaitForExpire(AnimateEasing<EaseOutSine>(self, &m_sashiAlpha, 1.0, 1.0));
 		yield.WaitForTime(3.0);
-		yield.WaitForDead(AnimateEasing<EaseOutSine>(self, &m_sashiAlpha, 0.0, 1.0));
+		yield.WaitForExpire(AnimateEasing<EaseOutSine>(self, &m_sashiAlpha, 0.0, 1.0));
 
 		m_finished = true;
 	}

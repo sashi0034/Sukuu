@@ -116,7 +116,7 @@ namespace Play
 		p_impl->animation.Kill();
 		p_impl->animation = StartCoro(*this, [&](YieldExtended yield)
 		{
-			yield.WaitForDead(AnimateEasing<EaseInBack>(*this, &p_impl->scale, 0.0, 0.2));
+			yield.WaitForExpire(AnimateEasing<EaseInBack>(*this, &p_impl->scale, 0.0, 0.2));
 			p_impl->isShowing = false;
 		});
 	}

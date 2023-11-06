@@ -125,7 +125,7 @@ private:
 
 		AnimateEasing<EaseOutCirc>(self, &m_rasterScrollCb->amplitude, 0.0f, alphaDuration);
 		AnimateEasing<EaseOutCirc>(self, &m_rasterScrollCb->freq, 2.0f, alphaDuration);
-		yield.WaitForDead(AnimateEasing<EaseOutSine>(self, &m_transitionAlpha, 0.0, alphaDuration));
+		yield.WaitForExpire(AnimateEasing<EaseOutSine>(self, &m_transitionAlpha, 0.0, alphaDuration));
 
 		m_bg.SetCameraTimescale(1.0);
 	}
@@ -135,7 +135,7 @@ private:
 		constexpr double alphaDuration = 1.5;
 		AnimateEasing<EaseOutCirc>(self, &m_rasterScrollCb->amplitude, 1.0f, alphaDuration);
 		AnimateEasing<EaseOutCirc>(self, &m_rasterScrollCb->freq, 10.0f, alphaDuration);
-		yield.WaitForDead(AnimateEasing<EaseOutSine>(self, &m_transitionAlpha, 1.0, alphaDuration));
+		yield.WaitForExpire(AnimateEasing<EaseOutSine>(self, &m_transitionAlpha, 1.0, alphaDuration));
 	}
 };
 

@@ -117,7 +117,7 @@ private:
 		}
 		m_glyphLength = 0;
 		m_glyphPeriod = 2.4;
-		yield.WaitForDead(
+		yield.WaitForExpire(
 			AnimateEasing<EaseInOutCubic>(self, &m_glyphLength, 0.96, getToml<double>(U"glyph_appear")));
 		AnimateEasing<EaseInOutSine>(self, &m_glyphPeriod, 4.0, 0.5);
 
@@ -125,7 +125,7 @@ private:
 
 		AnimateEasing<EaseInOutCubic>(self, &m_glyphLength, 0.0, getToml<double>(U"glyph_appear"));
 		AnimateEasing<EaseInCubic>(self, &m_centerLineRange.second, 0.0, getToml<double>(U"line_duration"));
-		yield.WaitForDead(AnimateEasing<EaseInCirc>(self, &m_textHeightScale, 0.0, 1.0));
+		yield.WaitForExpire(AnimateEasing<EaseInCirc>(self, &m_textHeightScale, 0.0, 1.0));
 
 		// 以下は、別のコルーチンとして実行
 		StartCoro(self, [this, self](YieldExtended yield1)

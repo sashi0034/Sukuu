@@ -111,7 +111,7 @@ struct Play::UiMiniMap::Impl
 	{
 		StartCoro(self, [this, self](YieldExtended yield)
 		{
-			yield.WaitForDead(AnimateEasing<EaseInBack>(self, &m_drawScale, {1, 0}, 0.3));
+			yield.WaitForExpire(AnimateEasing<EaseInBack>(self, &m_drawScale, {1, 0}, 0.3));
 			AnimateEasing<EaseOutBack>(self, &m_drawScale, {1, 1}, 0.3);
 		});
 	}

@@ -146,7 +146,7 @@ struct Play::Player::Impl
 			m_cameraOffset = {0, 1200};
 			constexpr double duration = 8.0;
 			AnimateEasing<EaseOutCubic>(self, &m_cameraOffset, {0, 0}, duration);
-			yield.WaitForDead(
+			yield.WaitForExpire(
 				AnimateEasing<EaseInOutBack>(self, &m_cameraScale, defaultCameraScale, duration));
 			StartFlowchart(self);
 		});
@@ -571,10 +571,10 @@ private:
 			m_immortal.immortalStock++;
 			PlayScene::Instance().GetTimeLimiter().SetImmortal(true);
 			PlayScene::Instance().EndTransition();
-			yield.WaitForDead(
+			yield.WaitForExpire(
 				AnimateEasing<EaseInBack>(self, &m_cameraScale, 8.0, 0.5));
 			AudioAsset(AssetSes::stairs_close).playOneShot();
-			yield.WaitForDead(
+			yield.WaitForExpire(
 				AnimateEasing<EaseOutCirc>(self, &m_cameraScale, 10.0, 0.5));
 			m_terminated = true;
 			break;

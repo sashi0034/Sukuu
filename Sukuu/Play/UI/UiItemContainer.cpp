@@ -51,15 +51,15 @@ private:
 	{
 		StartCoro(self, [&](YieldExtended yield1)
 		{
-			yield1.WaitForDead(
+			yield1.WaitForExpire(
 				AnimateEasing<EaseOutBack>(self, &m_scale, 2.0, 0.6));
-			yield1.WaitForDead(
+			yield1.WaitForExpire(
 				AnimateEasing<EaseInBack>(self, &m_scale, 1.0, 0.6));
 		});
 
-		yield.WaitForDead(
+		yield.WaitForExpire(
 			AnimateEasing<EaseOutBack>(self, &m_offset, {0, 80}, 0.6));
-		yield.WaitForDead(
+		yield.WaitForExpire(
 			AnimateEasing<EaseOutBack>(self, &m_offset, {0, 0}, 0.6));
 	}
 };

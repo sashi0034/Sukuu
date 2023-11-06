@@ -84,7 +84,7 @@ namespace Play
 			self, &pos.actualPos, CharaVec2(nextPos),
 			moveDuration);
 		// ビュー座標を移動し、これを待機
-		yield.WaitForDead(
+		yield.WaitForExpire(
 			Util::AnimateEasing<easing, EaseOption::None>(
 				self, &pos.viewPos, nextPos,
 				moveDuration)
@@ -102,7 +102,7 @@ namespace Play
 		Util::AnimateEasing<EaseInLinear>(
 			self, &pos.actualPos, CharaVec2(nextPos), moveDuration);
 		// 通常移動とは違い、微小時間の慣性を無視
-		yield.WaitForDead(
+		yield.WaitForExpire(
 			Util::AnimateEasing<EaseInLinear>(self, &pos.viewPos, nextPos, moveDuration)
 		);
 	}

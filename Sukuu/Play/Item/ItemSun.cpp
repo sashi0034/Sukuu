@@ -75,7 +75,7 @@ private:
 			if (CanMoveTo(PlayScene::Instance().GetMap(), m_pos.actualPos, m_dir) == false)
 			{
 				m_dir = m_dir.RotatedR();
-				yield.WaitForDead(AnimateEasing<EaseOutBack>(
+				yield.WaitForExpire(AnimateEasing<EaseOutBack>(
 					self,
 					&m_rotation,
 					m_rotation - Math::TwoPi,

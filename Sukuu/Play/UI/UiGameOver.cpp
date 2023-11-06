@@ -94,7 +94,7 @@ private:
 	void perform(YieldExtended& yield, ActorView self)
 	{
 		AudioAsset(AssetSes::game_over_back).playOneShot();
-		yield.WaitForDead(
+		yield.WaitForExpire(
 			AnimateEasing<EaseInSine>(self, &m_bgAlpha, 1.0, 1.5));
 		PlayScene::Instance().GetEnemies().KillAll();
 
@@ -133,7 +133,7 @@ private:
 			yield();
 		}
 
-		yield.WaitForDead(AnimateEasing<EaseInBack>(self, &m_wholeScale, 0.0, 0.3));
+		yield.WaitForExpire(AnimateEasing<EaseInBack>(self, &m_wholeScale, 0.0, 0.3));
 
 		yield.WaitForTime(0.5);
 	}

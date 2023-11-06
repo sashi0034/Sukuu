@@ -127,9 +127,9 @@ private:
 			prologueFont(U"ダンジョン50層先のいにしえの安息の地を求めて...").drawAt(
 				40.0, Scene::Center(), ColorF(1.0, prologueAlpha));
 		};
-		yield.WaitForDead(AnimateEasing<EaseInOutSine>(self, &prologueAlpha, 1.0, 2.0));
+		yield.WaitForExpire(AnimateEasing<EaseInOutSine>(self, &prologueAlpha, 1.0, 2.0));
 		yield.WaitForTime(3.0);
-		yield.WaitForDead(AnimateEasing<EaseInOutSine>(self, &prologueAlpha, 0.0, 2.0));
+		yield.WaitForExpire(AnimateEasing<EaseInOutSine>(self, &prologueAlpha, 0.0, 2.0));
 
 		// 真っ黒な画面から徐々に明るくしていく
 		m_play.GetPlayer().PerformTutorialOpening();
@@ -138,7 +138,7 @@ private:
 		{
 			Rect(Scene::Size()).draw(ColorF{Constants::HardDarkblue, rate});
 		};
-		yield.WaitForDead(
+		yield.WaitForExpire(
 			AnimateEasing<EaseInQuad>(self, &rate, 0.0, 8.0));
 		m_postDraw = {};
 	}
