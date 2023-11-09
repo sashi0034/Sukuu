@@ -2,13 +2,18 @@
 #include "PlayingPause.h"
 
 #include "AssetKeys.h"
+#include "Util/Utilities.h"
 
 namespace Play
 {
 	void PlayingPause::Update()
 	{
 		if (not m_pauseAllowed) return;
-		if (KeyEscape.down()) m_paused = not m_paused;
+
+		if (not Window::GetState().focused) m_paused = true;
+		else if (KeyEscape.down()) m_paused = not m_paused;
+		else if (m_paused && Util::IsSceneLeftClicked()) m_paused = false;
+
 		if (not m_paused) return;
 
 		const ScopedRenderStates2D sampler{SamplerState::ClampLinear};
