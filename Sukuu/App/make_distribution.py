@@ -38,7 +38,7 @@ def main():
 
             _rename_file(dest_file, file)
 
-    with zipfile.ZipFile(target_dir_name + ".zip", 'w') as zipf:
+    with zipfile.ZipFile(target_dir_name + ".zip", 'w', compression=zipfile.ZIP_DEFLATED) as zipf:
         for foldername, subfolders, filenames in os.walk(target_dir_name):
             for filename in filenames:
                 file_path = os.path.join(foldername, filename)
