@@ -16,9 +16,9 @@ namespace Util
 #endif
 			};
 		};
-	}
 
-	ImplState* s_instance;
+		ImplState* s_instance;
+	}
 
 	struct TomlParametersWrapper::Impl : ImplState
 	{
