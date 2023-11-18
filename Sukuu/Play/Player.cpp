@@ -26,8 +26,6 @@ namespace
 	{
 		return Util::GetTomlParameter<T>(U"play.player." + key);
 	}
-
-	constexpr double defaultCameraScale = 4.0;
 }
 
 struct Play::Player::Impl
@@ -38,7 +36,7 @@ struct Play::Player::Impl
 	CharaPosition m_pos;
 	Vec2 m_animOffset{};
 	double m_moveSpeed = 1.0;
-	double m_cameraScale = defaultCameraScale;
+	double m_cameraScale = DefaultCameraScale;
 	double m_focusCameraRate = 1.0;
 	Vec2 m_cameraOffset{};
 	Vec2 m_cameraOffsetDestination{};
@@ -132,7 +130,7 @@ struct Play::Player::Impl
 	void PerformInitialCamera(ActorView self)
 	{
 		m_cameraScale = 10.0;
-		AnimateEasing<EaseOutBack>(self, &m_cameraScale, defaultCameraScale, 0.5);
+		AnimateEasing<EaseOutBack>(self, &m_cameraScale, DefaultCameraScale, 0.5);
 	}
 
 	void PerformTutorialOpening(ActorView self)
@@ -147,7 +145,7 @@ struct Play::Player::Impl
 			constexpr double duration = 8.0;
 			AnimateEasing<EaseOutCubic>(self, &m_cameraOffset, {0, 0}, duration);
 			yield.WaitForExpire(
-				AnimateEasing<EaseInOutBack>(self, &m_cameraScale, defaultCameraScale, duration));
+				AnimateEasing<EaseInOutBack>(self, &m_cameraScale, DefaultCameraScale, duration));
 			StartFlowchart(self);
 		});
 	}
