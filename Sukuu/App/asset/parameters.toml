@@ -125,7 +125,7 @@ dust_gravity = 20.0
 dust_alpha = 0.5
 dust_scale_fade = 3.0
 visible_padding = 80
-update_freq = 20
+update_freq = 15
 
 [play.damage_counter_effect]
 appear_time = 0.1

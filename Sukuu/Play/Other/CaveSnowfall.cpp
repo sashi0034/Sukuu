@@ -17,11 +17,13 @@ namespace
 	struct SnowfallDust
 	{
 		double time;
+		Vec2 oldPos;
 		Vec2 pos;
 		Circular vel1;
 		double velAc1;
 		Circular vel2;
 		double velAc2;
+		double oldScale;
 		double scale;
 		double scalePeriod;
 		double scaleBase;
@@ -41,7 +43,8 @@ struct Play::CaveSnowfall::Impl
 		if (m_updateTimer > updatePeriod)
 		{
 			// ダストを更新
-			m_updateTimer -= updatePeriod;
+			while (m_updateTimer > updatePeriod) m_updateTimer -= updatePeriod;
+
 			controlDustAmount();
 
 			for (auto&& d : m_dusts)
@@ -53,7 +56,7 @@ struct Play::CaveSnowfall::Impl
 		ScopedRenderStates2D sampler{BlendState::Default2D, SamplerState::ClampLinear};
 		for (auto&& d : m_dusts)
 		{
-			drawDust(d);
+			drawDust(d, m_updateTimer / updatePeriod);
 		}
 	}
 
@@ -106,17 +109,21 @@ private:
 		}
 	}
 
-	void drawDust(const SnowfallDust& dust) const
+	static void drawDust(const SnowfallDust& dust, double interpolate)
 	{
-		const double alpha = getToml<double>(U"dust_alpha") * 1 - (dust.scale / getToml<double>(U"dust_scale_fade"));
+		const auto scale = Math::Lerp(dust.oldScale, dust.scale, interpolate);
+		const double alpha = getToml<double>(U"dust_alpha") * 1 - (scale / getToml<double>(U"dust_scale_fade"));
 
 		(void)TextureAsset(AssetImages::particle)
-		      .scaled(dust.scale)
-		      .drawAt(dust.pos, ColorF(1.0, alpha));
+		      .scaled(scale)
+		      .drawAt(Math::Lerp(dust.oldPos, dust.pos, interpolate), ColorF(1.0, alpha));
 	}
 
 	void updateDust(SnowfallDust& dust, double dt)
 	{
+		dust.oldPos = dust.pos;
+		dust.oldScale = dust.scale;
+
 		dust.time += dt;
 		dust.pos.y += dt * getToml<double>(U"dust_gravity");
 		dust.pos += (dust.vel1.toVec2() + dust.vel2.toVec2()) * 0.5 * dt;
