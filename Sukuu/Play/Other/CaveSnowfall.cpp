@@ -108,9 +108,11 @@ private:
 
 	void drawDust(const SnowfallDust& dust) const
 	{
+		const double alpha = getToml<double>(U"dust_alpha") * 1 - (dust.scale / getToml<double>(U"dust_scale_fade"));
+
 		(void)TextureAsset(AssetImages::particle)
 		      .scaled(dust.scale)
-		      .drawAt(dust.pos, ColorF(1.0, getToml<double>(U"dust_alpha")));
+		      .drawAt(dust.pos, ColorF(1.0, alpha));
 	}
 
 	void updateDust(SnowfallDust& dust, double dt)

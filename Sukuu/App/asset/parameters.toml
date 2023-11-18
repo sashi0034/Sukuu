@@ -123,6 +123,7 @@ dark_color = "#3D30A2"
 dust_amount = 196
 dust_gravity = 20.0
 dust_alpha = 0.5
+dust_scale_fade = 3.0
 visible_padding = 80
 update_freq = 20
 
