@@ -18,6 +18,10 @@ namespace
 	{
 		double time;
 		Vec2 pos;
+		Circular vel1;
+		double velAc1;
+		Circular vel2;
+		double velAc2;
 		double scale;
 		double scalePeriod;
 		double scaleBase;
@@ -38,7 +42,7 @@ struct Play::CaveSnowfall::Impl
 		{
 			// ダストを更新
 			m_updateTimer -= updatePeriod;
-			controlAmount();
+			controlDustAmount();
 
 			for (auto&& d : m_dusts)
 			{
@@ -54,7 +58,7 @@ struct Play::CaveSnowfall::Impl
 	}
 
 private:
-	void controlAmount()
+	void controlDustAmount()
 	{
 		// const auto inversed = (Graphics2D::GetCameraTransform() * Graphics2D::GetLocalTransform()).inverse();
 		// const auto mapTl = inversed.transformPoint(Vec2{0, 0}).asPoint();
@@ -82,12 +86,20 @@ private:
 		// 生成
 		while (m_dusts.size() < getToml<size_t>(U"dust_amount"))
 		{
-			const double scale = Random(0.5, 3.0);
+			const double vr = Random(40, 120);
+			const double va = Random(15_deg, 45_deg);
+
+			const double scale = Random(0.3, 1.2);
+
 			m_dusts.emplace_back(SnowfallDust{
 				.time = 0,
 				.pos = RandomPoint(visibleRect.stretched(visiblePadding)),
+				.vel1 = Circular(vr, Random(0.0, Math::Pi)),
+				.velAc1 = va,
+				.vel2 = Circular(vr * 1.5, Random(0.0, Math::Pi)),
+				.velAc2 = va / 1.5,
 				.scale = 0,
-				.scalePeriod = Random(3.0, 5.0),
+				.scalePeriod = Random(1.5, 3.0),
 				.scaleBase = scale,
 				.scaleAmplitude = scale / 2.0
 			});
@@ -105,6 +117,9 @@ private:
 	{
 		dust.time += dt;
 		dust.pos.y += dt * getToml<double>(U"dust_gravity");
+		dust.pos += (dust.vel1.toVec2() + dust.vel2.toVec2()) * 0.5 * dt;
+		dust.vel1.theta += dust.velAc1 * dt;
+		dust.vel2.theta += dust.velAc2 * dt;
 		dust.scale = dust.scaleBase + dust.scaleAmplitude * Periodic::Sine1_1(dust.scalePeriod, dust.time);
 	}
 };
