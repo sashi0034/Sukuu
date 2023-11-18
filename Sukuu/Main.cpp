@@ -7,6 +7,7 @@
 #include "Sukuu/GamesSupervisor.h"
 #include "Util/ActorContainer.h"
 #include "Util/TomlParametersWrapper.h"
+#include "Util/Utilities.h"
 
 using namespace Util;
 using namespace Sukuu;
@@ -52,6 +53,7 @@ void Main()
 
 	while (System::Update())
 	{
+		RefreshDeltaTime();
 		actorRoot.Update();
 	}
 }

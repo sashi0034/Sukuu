@@ -5,6 +5,7 @@ namespace Util
 	void SetTimeScale(double scale);
 	double GetTimeScale();
 
+	void RefreshDeltaTime();
 	double GetDeltaTime();
 
 	template <typename T>
