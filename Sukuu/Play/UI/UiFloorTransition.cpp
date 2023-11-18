@@ -89,7 +89,7 @@ struct Play::UiFloorTransition::Impl
 private:
 	void processPerformOpen(YieldExtended& yield, ActorView self, int floorIndex)
 	{
-		m_vesselMark = IsExistVesselFloor(floorIndex);
+		m_vesselMark = IsFloorExistVessel(floorIndex);
 
 		m_maxRadialRadius = (Scene::Size() / 2).length();
 		m_isMasking = false;

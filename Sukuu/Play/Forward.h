@@ -24,4 +24,7 @@ namespace Play
 	}
 
 	constexpr int MaxItemPossession = 9;
+
+	constexpr double FgEffectPriority = 32767;
+	constexpr double BgEffectPriority = -32768;
 }

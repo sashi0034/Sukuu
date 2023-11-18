@@ -178,6 +178,7 @@
         <ClCompile Include="Play\Map\BgMapDrawer.cpp"/>
         <ClCompile Include="Play\Map\MapGrid.cpp"/>
         <ClCompile Include="Play\Map\MazeGenerator.cpp"/>
+        <ClCompile Include="Play\Other\CaveSnowfall.cpp" />
         <ClCompile Include="Play\Other\CaveVision.cpp"/>
         <ClCompile Include="Play\Other\FloorMapGenerator.cpp"/>
         <ClCompile Include="Play\Other\PlayingPause.cpp" />
@@ -446,6 +447,7 @@
         <ClInclude Include="Play\Map\BgMapDrawer.h"/>
         <ClInclude Include="Play\Map\MapGrid.h"/>
         <ClInclude Include="Play\Map\MazeGenerator.h"/>
+        <ClInclude Include="Play\Other\CaveSnowfall.h" />
         <ClInclude Include="Play\Other\CaveVision.h"/>
         <ClInclude Include="Play\Other\FloorMapGenerator.h"/>
         <ClInclude Include="Play\Other\PlayingPause.h" />

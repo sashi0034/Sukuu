@@ -119,6 +119,9 @@ blinking_start = 32
 default_vision_radius = 160
 dark_color = "#3D30A2"
 
+[play.cave_snowfall]
+dust_amount = 100
+
 [play.damage_counter_effect]
 appear_time = 0.1
 outline = 0.4

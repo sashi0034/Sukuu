@@ -2,16 +2,10 @@
 #include "PlayScene.h"
 
 #include "Player.h"
-#include "Enemy/EnCatfish.h"
-#include "Enemy/EnCrab.h"
-#include "Enemy/EnKnight.h"
-#include "Enemy/EnLion.h"
-#include "Enemy/EnSlimeCat.h"
 #include "Gimmick/GimmickInstaller.h"
 #include "Map/BgMapDrawer.h"
-#include "Map/DungeonGenerator.h"
 #include "Map/MapGrid.h"
-#include "Map/MazeGenerator.h"
+#include "Other/CaveSnowfall.h"
 #include "Other/CaveVision.h"
 #include "Other/FloorMapGenerator.h"
 #include "Other/PlayingPause.h"
@@ -89,8 +83,8 @@ public:
 		m_gimmick.resize(m_map.Data().size(), GimmickKind::None);
 
 		// 生成
-		m_fgEffect = self.AsParent().Birth(EffectWrapper(32767));
-		m_bgEffect = self.AsParent().Birth(EffectWrapper(-32768));
+		m_fgEffect = self.AsParent().Birth(EffectWrapper(FgEffectPriority));
+		m_bgEffect = self.AsParent().Birth(EffectWrapper(BgEffectPriority));
 
 		m_fgEffect.GetEffect().setMaxLifeTime(std::numeric_limits<double>::max());
 		m_fgEffect.GetEffect().add([this](auto)
@@ -101,6 +95,8 @@ public:
 		m_bgMapDrawer.SetBgShader(GetFloorBgShader(data.floorIndex));
 
 		m_player = self.AsParent().Birth(Player());
+
+		if (IsFloorSnowfall(data.floorIndex)) self.AsParent().Birth(CaveSnowfall());
 
 		m_uiItemContainer = m_ui.Birth(UiItemContainer());
 

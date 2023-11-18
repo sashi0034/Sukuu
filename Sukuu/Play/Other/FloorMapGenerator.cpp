@@ -369,7 +369,7 @@ namespace
 
 	void installGimmicks(const MapGrid& map, GimmickGrid& gimmick, int floorIndex)
 	{
-		if (IsExistVesselFloor(floorIndex))
+		if (IsFloorExistVessel(floorIndex))
 		{
 			InstallGimmickRandomly(gimmick, map, GimmickKind::SemiItem_Vessel);
 		}
@@ -405,7 +405,7 @@ namespace
 
 namespace Play
 {
-	bool IsExistVesselFloor(int floorIndex)
+	bool IsFloorExistVessel(int floorIndex)
 	{
 		return
 			floorIndex == 7 ||
@@ -466,5 +466,10 @@ namespace Play
 			};
 		}
 		return [](double t) { return ScopedCustomShader2D{}; };
+	}
+
+	bool IsFloorSnowfall(int floorIndex)
+	{
+		return InRange(floorIndex, 44, 48);
 	}
 }
