@@ -12,9 +12,12 @@ namespace Play
 
 		const Transformer2D transform{Mat3x2::Identity(), TransformCursor::Yes, Transformer2D::Target::SetLocal};
 
+#if not _DEBUG
 		if (not Window::GetState().focused) m_paused = true;
-		else if (KeyEscape.down()) m_paused = not m_paused;
-		else if (m_paused && Util::IsSceneLeftClicked()) m_paused = false;
+#endif
+
+		if (KeyEscape.down()) m_paused = not m_paused;
+		if (m_paused && Util::IsSceneLeftClicked()) m_paused = false;
 
 		if (not m_paused) return;
 
