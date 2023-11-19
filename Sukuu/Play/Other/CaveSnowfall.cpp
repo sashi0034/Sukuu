@@ -28,6 +28,7 @@ namespace
 		double scalePeriod;
 		double scaleBase;
 		double scaleAmplitude;
+		Optional<Trail> trail;
 	};
 }
 
@@ -78,12 +79,19 @@ private:
 		{
 			if (dust.pos.x < visibleRect.leftX() - visiblePadding)
 				dust.pos.x += visibleRect.size.x + visiblePadding * 2;
-			if (dust.pos.x > visibleRect.rightX() + visiblePadding)
+			else if (dust.pos.x > visibleRect.rightX() + visiblePadding)
 				dust.pos.x -= visibleRect.size.x + visiblePadding * 2;
-			if (dust.pos.y < visibleRect.topY() - visiblePadding)
+			else if (dust.pos.y < visibleRect.topY() - visiblePadding)
 				dust.pos.y += visibleRect.size.y + visiblePadding * 2;
-			if (dust.pos.y > visibleRect.bottomY() + visiblePadding)
+			else if (dust.pos.y > visibleRect.bottomY() + visiblePadding)
 				dust.pos.y -= visibleRect.size.y + visiblePadding * 2;
+			else continue;
+			// 以下、画面外に行ってしまったときの動作
+
+			if (dust.trail.has_value())
+			{
+				dust.trail = Trail();
+			}
 		}
 
 		// 生成
@@ -92,7 +100,7 @@ private:
 			const double vr = Random(40, 120);
 			const double va = Random(15_deg, 45_deg);
 
-			const double scale = Random(0.3, 1.2);
+			const double scale = Random(0.10, 0.15);
 
 			m_dusts.emplace_back(SnowfallDust{
 				.time = 0,
@@ -104,28 +112,43 @@ private:
 				.scale = 0,
 				.scalePeriod = Random(1.5, 3.0),
 				.scaleBase = scale,
-				.scaleAmplitude = scale / 2.0
+				.scaleAmplitude = scale / 2.0,
+				.trail = RandomBool(0.05) ? Optional(Trail()) : none
 			});
 		}
 	}
 
-	static void drawDust(const SnowfallDust& dust, double interpolate)
+	static void drawDust(SnowfallDust& dust, double interpolate)
 	{
+		const auto pos = Math::Lerp(dust.oldPos, dust.pos, interpolate);
+
 		const auto scale = Math::Lerp(dust.oldScale, dust.scale, interpolate);
-		const double alpha = getToml<double>(U"dust_alpha") * 1 - (scale / getToml<double>(U"dust_scale_fade"));
+		constexpr double baseAlpha = 0.5;
+		constexpr double scaleFade = 5.0;
+		const double alpha = baseAlpha * 1 - (scale / scaleFade);
+
+		if (dust.trail.has_value())
+		{
+			dust.trail->update();
+			dust.trail->add(pos,
+			                ColorF{getToml<Color>(U"trail_color"), alpha},
+			                TextureAsset(AssetImages::particle).size().x * scale);
+			dust.trail->draw();
+		}
 
 		(void)TextureAsset(AssetImages::particle)
 		      .scaled(scale)
-		      .drawAt(Math::Lerp(dust.oldPos, dust.pos, interpolate), ColorF(1.0, alpha));
+		      .drawAt(pos, ColorF(1.0, alpha));
 	}
 
-	void updateDust(SnowfallDust& dust, double dt)
+	static void updateDust(SnowfallDust& dust, double dt)
 	{
 		dust.oldPos = dust.pos;
 		dust.oldScale = dust.scale;
 
 		dust.time += dt;
-		dust.pos.y += dt * getToml<double>(U"dust_gravity");
+		constexpr double gravity = 20.0;
+		dust.pos.y += dt * gravity;
 		dust.pos += (dust.vel1.toVec2() + dust.vel2.toVec2()) * 0.5 * dt;
 		dust.vel1.theta += dust.velAc1 * dt;
 		dust.vel2.theta += dust.velAc2 * dt;

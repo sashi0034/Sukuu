@@ -120,10 +120,8 @@ default_vision_radius = 160
 dark_color = "#3D30A2"
 
 [play.cave_snowfall]
-dust_amount = 196
-dust_gravity = 20.0
-dust_alpha = 0.5
-dust_scale_fade = 3.0
+dust_amount = 400
+trail_color = "#c0c0ff"
 visible_padding = 80
 update_freq = 15
 
