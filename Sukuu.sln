@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sukuu", "Sukuu\Sukuu.vcxpro
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MapEditor", "MapEditor\MapEditor.vcxproj", "{51033A32-3B69-4073-A784-E54A020C5EB3}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MusicPlayer", "MusicPlayer\MusicPlayer.vcxproj", "{DABD4518-ACC2-4DBB-B029-5715170FCE5D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,10 @@ Global
 		{51033A32-3B69-4073-A784-E54A020C5EB3}.Debug|x64.Build.0 = Debug|x64
 		{51033A32-3B69-4073-A784-E54A020C5EB3}.Release|x64.ActiveCfg = Release|x64
 		{51033A32-3B69-4073-A784-E54A020C5EB3}.Release|x64.Build.0 = Release|x64
+		{DABD4518-ACC2-4DBB-B029-5715170FCE5D}.Debug|x64.ActiveCfg = Debug|x64
+		{DABD4518-ACC2-4DBB-B029-5715170FCE5D}.Debug|x64.Build.0 = Debug|x64
+		{DABD4518-ACC2-4DBB-B029-5715170FCE5D}.Release|x64.ActiveCfg = Release|x64
+		{DABD4518-ACC2-4DBB-B029-5715170FCE5D}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
