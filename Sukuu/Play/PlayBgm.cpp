@@ -65,8 +65,8 @@ namespace Play
 
 	void PlayBgm::EndPlay()
 	{
-		p_impl->m_musicInfo.music = {};
 		AudioAsset(p_impl->m_musicInfo.music).stop(1.0s);
+		p_impl->m_musicInfo.music = {};
 	}
 
 	void PlayBgm::SetVolumeRate(double rate)
