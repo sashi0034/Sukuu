@@ -185,9 +185,11 @@ Resource(asset/se/take_item.mp3)
 Resource(asset/se/title_environment.mp3)
 Resource(asset/se/title_start.mp3)
 Resource(asset/bgm/dear_my_rabbit.mp3)
+Resource(asset/bgm/itsukushiminoame_shiro.mp3)
 Resource(asset/bgm/kazegasane.mp3)
 Resource(asset/bgm/obake_dance.mp3)
 Resource(asset/bgm/tokeitou.mp3)
+Resource(asset/bgm/yugata.mp3)
 
 #endif
 

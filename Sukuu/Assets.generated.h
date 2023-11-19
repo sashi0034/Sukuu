@@ -148,17 +148,21 @@ namespace AssetSes
 namespace AssetBgms
 {
 	constexpr StringView dear_my_rabbit = U"asset/bgm/dear_my_rabbit.mp3";
+	constexpr StringView itsukushiminoame_shiro = U"asset/bgm/itsukushiminoame_shiro.mp3";
 	constexpr StringView kazegasane = U"asset/bgm/kazegasane.mp3";
 	constexpr StringView obake_dance = U"asset/bgm/obake_dance.mp3";
 	constexpr StringView tokeitou = U"asset/bgm/tokeitou.mp3";
+	constexpr StringView yugata = U"asset/bgm/yugata.mp3";
 
 	inline Array<StringView> GetKeys()
 	{
 		return {
 			dear_my_rabbit,
+			itsukushiminoame_shiro,
 			kazegasane,
 			obake_dance,
 			tokeitou,
+			yugata,
 		};
 	}
 }

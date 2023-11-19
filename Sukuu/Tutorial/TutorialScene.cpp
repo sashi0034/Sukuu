@@ -108,7 +108,7 @@ private:
 		tutorialFinal(yield, self);
 
 		yield.WaitForTrue([this]() { return m_play.GetPlayer().IsTerminated(); });
-		m_bgm.pause(3.0s);
+		m_bgm.stop(3.0s);
 		yield.WaitForTime(3.0);
 		m_finished = true;
 	}
