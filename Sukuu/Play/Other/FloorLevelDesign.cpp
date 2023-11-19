@@ -1,7 +1,5 @@
 ﻿#include "stdafx.h"
-#include "FloorMapGenerator.h"
-
-#include <Siv3D/ScriptFunction.hpp>
+#include "FloorLevelDesign.h"
 
 #include "AssetKeys.h"
 #include "Play/Enemy/EnSlimeCat.h"

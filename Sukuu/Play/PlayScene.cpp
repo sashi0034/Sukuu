@@ -7,7 +7,7 @@
 #include "Map/MapGrid.h"
 #include "Other/CaveSnowfall.h"
 #include "Other/CaveVision.h"
-#include "Other/FloorMapGenerator.h"
+#include "Other\FloorLevelDesign.h"
 #include "Other/PlayingPause.h"
 #include "UI/UiCurrentFloor.h"
 #include "UI/UiFloorTransition.h"

@@ -4,7 +4,7 @@
 #include "AssetKeys.h"
 #include "Assets.generated.h"
 #include "Constants.h"
-#include "Play/Other/FloorMapGenerator.h"
+#include "Play/Other/FloorLevelDesign.h"
 #include "Util/CoroUtil.h"
 #include "Util/EasingAnimation.h"
 #include "Util/TomlParametersWrapper.h"
