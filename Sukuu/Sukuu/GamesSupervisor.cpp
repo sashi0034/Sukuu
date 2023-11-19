@@ -6,6 +6,7 @@
 #include "Ending/EndingScene.h"
 #include "Play/PlayBgm.h"
 #include "Play/PlayScene.h"
+#include "Play/Other/FloorLevelDesign.h"
 #include "Title/TitleScene.h"
 #include "Tutorial/TutorialScene.h"
 #include "Util/CoroUtil.h"
@@ -113,6 +114,10 @@ private:
 		while (true)
 		{
 			auto play = self.AsParent().Birth(Play::PlayScene::Create());
+
+			// フロアに合わせたBGMを再生
+			Play::PlayBgm::Instance().RequestPlay(Play::GetFloorBgm(m_playData.floorIndex));
+
 #if _DEBUG
 			if (not debugToml<bool>(U"skip_transition"))
 #endif
@@ -121,9 +126,6 @@ private:
 				yield.WaitForExpire(
 					play.StartTransition(m_playData.floorIndex));
 			}
-
-			// 初回はBGM起動
-			if (not Play::PlayBgm::Instance().IsPlaying()) Play::PlayBgm::Instance().StartPlay();
 
 			play.Init(m_playData);
 			yield.WaitForTrue([&]()

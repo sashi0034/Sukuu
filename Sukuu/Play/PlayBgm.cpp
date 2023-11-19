@@ -9,37 +9,32 @@ namespace
 
 	PlayBgm s_instance{};
 
-	std::array bgmList = {
-		AssetBgms::tokeitou,
-		AssetBgms::kazegasane,
-		AssetBgms::obake_dance,
-	};
-
-	constexpr double baseVolume = 0.8;
+	constexpr double baseVolume = 0.7;
 }
 
 struct PlayBgm::Impl
 {
-	bool m_playing{};
-	int m_bgmIndex{};
+	BgmInfo m_musicInfo{};
 	double m_volumeRate{1.0};
 	double m_targetVolumeRate{1.0};
 
 	void Refresh()
 	{
-		if (not m_playing) return;
+		if (m_musicInfo.music.isEmpty()) return;
 
 		m_volumeRate = Math::Lerp(m_volumeRate, m_targetVolumeRate, Scene::DeltaTime() * 5.0);
 
-		const auto current = AudioAsset(bgmList[m_bgmIndex]);
-		(void)current.setVolume(m_volumeRate * baseVolume);
-		// 数秒後に止まるなら、現在の曲をストップして次に進む
-		if (current.posSec() > current.lengthSec() - 3.0)
+		const auto playingMusic = AudioAsset(m_musicInfo.music);
+		(void)playingMusic.setVolume(m_volumeRate * baseVolume);
+
+		if (playingMusic.posSec() >= m_musicInfo.loopEnd)
 		{
-			current.stop(3.0s);
-			m_bgmIndex = (m_bgmIndex + 1) % bgmList.size();
-			AudioAsset(bgmList[m_bgmIndex]).play(2.0s);
+			// ループ処理
+			playingMusic.seekTime(m_musicInfo.loopBegin);
 		}
+
+		// 再生してなかったら、再生する
+		if (playingMusic.isPlaying() == false) playingMusic.play();
 	}
 };
 
@@ -55,28 +50,23 @@ namespace Play
 		p_impl->Refresh();
 	}
 
-	bool PlayBgm::IsPlaying() const
-	{
-		return p_impl->m_playing;
-	}
-
 	PlayBgm::PlayBgm() :
 		p_impl(std::make_shared<Impl>())
 	{
 	}
 
-	void PlayBgm::StartPlay()
+	void PlayBgm::RequestPlay(const BgmInfo& bgm)
 	{
-		p_impl->m_volumeRate = 1.0;
-		p_impl->m_targetVolumeRate = 1.0;
-		p_impl->m_playing = true;
-		AudioAsset(bgmList[p_impl->m_bgmIndex]).play();
+		if (p_impl->m_musicInfo.music == bgm.music) return;
+
+		if (not p_impl->m_musicInfo.music.isEmpty()) AudioAsset(p_impl->m_musicInfo.music).stop(0.5s);
+		p_impl->m_musicInfo = bgm;
 	}
 
 	void PlayBgm::EndPlay()
 	{
-		p_impl->m_playing = false;
-		AudioAsset(bgmList[p_impl->m_bgmIndex]).stop(1.0s);
+		p_impl->m_musicInfo.music = {};
+		AudioAsset(p_impl->m_musicInfo.music).stop(1.0s);
 	}
 
 	void PlayBgm::SetVolumeRate(double rate)

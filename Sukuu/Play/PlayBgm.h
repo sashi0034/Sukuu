@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+#include "Play/Forward.h"
+
 namespace Play
 {
 	class PlayBgm : Uncopyable
@@ -9,8 +11,7 @@ namespace Play
 		PlayBgm();
 		void Refresh();
 
-		bool IsPlaying() const;
-		void StartPlay();
+		void RequestPlay(const BgmInfo& bgm);
 		void EndPlay();
 		void SetVolumeRate(double rate);
 

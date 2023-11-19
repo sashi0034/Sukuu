@@ -62,6 +62,10 @@ namespace
 			{
 				music.seekTime(loopEnd - 1.0);
 			}
+			if (SimpleGUI::Button(U"Goto 3 sec before loop end", {0, ly.NextLY()}))
+			{
+				music.seekTime(loopEnd - 3.0);
+			}
 			if (SimpleGUI::Button(U"Change music", {0, Scene::Size().y - LineY::Height}))
 			{
 				return;

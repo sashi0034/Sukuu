@@ -2,6 +2,7 @@
 #include "FloorLevelDesign.h"
 
 #include "AssetKeys.h"
+#include "Assets.generated.h"
 #include "Play/Enemy/EnSlimeCat.h"
 #include "Play/Enemy/EnCatfish.h"
 #include "Play/Enemy/EnCrab.h"
@@ -14,14 +15,19 @@
 namespace
 {
 	using namespace Play;
+
+	// 迷路: 7、13, 23, 31, 41
+	constexpr int maze_7 = 7;
+	constexpr int maze_13 = 13;
+	constexpr int maze_23 = 23;
+	constexpr int maze_31 = 31;
+	constexpr int maze_41 = 41;
 }
 
 namespace Play
 {
 	MapGrid GenerateFloorMap(int floorIndex)
 	{
-		// 迷路: 7、13, 23, 31, 41
-
 		if (floorIndex == 1)
 		{
 			return GenerateFreshDungeon(DungGenProps{
@@ -55,7 +61,7 @@ namespace Play
 				.minRoomWidthHeight = 6,
 			});
 		}
-		if (floorIndex == 7)
+		if (floorIndex == maze_7)
 		{
 			return GenerateFreshMaze(MazeGenProps{
 				.size = {55, 55},
@@ -73,7 +79,7 @@ namespace Play
 				.minRoomWidthHeight = 8,
 			});
 		}
-		if (floorIndex == 13)
+		if (floorIndex == maze_13)
 		{
 			return GenerateFreshMaze(MazeGenProps{
 				.size = {65, 65},
@@ -99,7 +105,7 @@ namespace Play
 				.minAreaWidthHeight = 8,
 			});
 		}
-		if (floorIndex == 23)
+		if (floorIndex == maze_23)
 		{
 			return GenerateFreshMaze(MazeGenProps{
 				.size = {75, 75},
@@ -113,7 +119,7 @@ namespace Play
 				.areaDivision = 8 + Random(-2, 2),
 			});
 		}
-		if (floorIndex == 31)
+		if (floorIndex == maze_31)
 		{
 			return GenerateFreshMaze(MazeGenProps{
 				.size = {85, 85},
@@ -138,7 +144,7 @@ namespace Play
 				.minRoomWidthHeight = 8,
 			});
 		}
-		if (floorIndex == 41)
+		if (floorIndex == maze_41)
 		{
 			return GenerateFreshMaze(MazeGenProps{
 				.size = {75, 75},
@@ -212,15 +218,15 @@ namespace
 		if (floorIndex == 1) return 3;
 		if (floorIndex <= 3) return Random(3, 5);
 		if (floorIndex <= 6) return Random(3, 7);
-		if (floorIndex == 7) return 18;
+		if (floorIndex == maze_7) return 18;
 		if (floorIndex <= 12) return Random(5, 11);
-		if (floorIndex == 13) return 24;
+		if (floorIndex == maze_13) return 24;
 		if (floorIndex <= 22) return Random(3, 13);
-		if (floorIndex == 23) return 24;
+		if (floorIndex == maze_23) return 24;
 		if (floorIndex <= 30) return Random(5, 9);
-		if (floorIndex == 31) return 24;
+		if (floorIndex == maze_31) return 24;
 		if (floorIndex <= 40) return Random(3, 11);
-		if (floorIndex == 41) return 18;
+		if (floorIndex == maze_41) return 18;
 		return Random(3, 7);
 	}
 
@@ -265,15 +271,15 @@ namespace
 		if (floorIndex == 1) return 2;
 		if (floorIndex <= 3) return Random(4, 8);
 		if (floorIndex <= 6) return Random(4, 12);
-		if (floorIndex == 7) return 18;
+		if (floorIndex == maze_7) return 18;
 		if (floorIndex <= 12) return Random(8, 16);
-		if (floorIndex == 13) return 20;
+		if (floorIndex == maze_13) return 20;
 		if (floorIndex <= 22) return Random(10, 16);
-		if (floorIndex == 23) return 24;
+		if (floorIndex == maze_23) return 24;
 		if (floorIndex <= 30) return Random(12, 18);
-		if (floorIndex == 31) return 28;
+		if (floorIndex == maze_31) return 28;
 		if (floorIndex <= 40) return Random(12, 20);
-		if (floorIndex == 41) return 32;
+		if (floorIndex == maze_41) return 32;
 		return Random(12, 24);
 	}
 
@@ -406,11 +412,11 @@ namespace Play
 	bool IsFloorExistVessel(int floorIndex)
 	{
 		return
-			floorIndex == 7 ||
-			floorIndex == 13 ||
+			floorIndex == maze_7 ||
+			floorIndex == maze_13 ||
 			floorIndex == 17 ||
 			floorIndex == 29 ||
-			floorIndex == 31 ||
+			floorIndex == maze_31 ||
 			floorIndex == 37;
 	}
 
@@ -443,7 +449,7 @@ namespace Play
 				return ScopedCustomShader2D(PixelShaderAsset(AssetKeys::PsRgbToBgr));
 			};
 		}
-		if (floor == 41)
+		if (floor == maze_41)
 		{
 			return [&](double t)
 			{
@@ -469,5 +475,15 @@ namespace Play
 	bool IsFloorSnowfall(int floorIndex)
 	{
 		return InRange(floorIndex, 44, 48);
+	}
+
+	BgmInfo GetFloorBgm(int floor)
+	{
+		if (floor < maze_7) return {AssetBgms::tokeitou, 10.7, 179.7};
+		if (floor < maze_13) return {AssetBgms::obake_dance, 13.0, 125.7};
+		if (floor < maze_23) return {AssetBgms::yugata, 16.5, 101.5};
+		if (floor < maze_31) return {AssetBgms::kazegasane, 1.6, 174.2};
+		if (floor < maze_41) return {AssetBgms::shiro, 9.5, 105.5};
+		return {AssetBgms::tokeitou_2023, 31.0, 205.5};
 	}
 }

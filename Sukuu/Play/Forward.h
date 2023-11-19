@@ -29,4 +29,11 @@ namespace Play
 	constexpr double BgEffectPriority = -32768;
 
 	constexpr double DefaultCameraScale = 4.0;
+
+	struct BgmInfo
+	{
+		AssetNameView music;
+		double loopBegin;
+		double loopEnd;
+	};
 }
