@@ -439,7 +439,7 @@ namespace Play
 
 	std::function<ScopedCustomShader2D(double t)> GetFloorBgShader(int floor)
 	{
-		if (InRange(floor, 24, 28))
+		if (InRange(floor, 12, 20))
 		{
 			return [&](double t)
 			{
@@ -447,6 +447,16 @@ namespace Play
 				cb->rate = 0.9 + 0.1 * static_cast<float>(Periodic::Sine1_1(20.0s, t));
 				Graphics2D::SetPSConstantBuffer(1, cb);
 				return ScopedCustomShader2D(PixelShaderAsset(AssetKeys::PsRgbToBgr));
+			};
+		}
+		if (InRange(floor, 24, 28))
+		{
+			return [&](double t)
+			{
+				ConstantBuffer<GrayscaleCb> cb{};
+				cb->rate = 0.8 + 0.2 * static_cast<float>(Periodic::Sine0_1(20.0s, t));
+				Graphics2D::SetPSConstantBuffer(1, cb);
+				return ScopedCustomShader2D(PixelShaderAsset(AssetKeys::PsGrayscale));
 			};
 		}
 		if (floor == maze_41)
@@ -474,7 +484,8 @@ namespace Play
 
 	bool IsFloorSnowfall(int floorIndex)
 	{
-		return InRange(floorIndex, 44, 48);
+		return InRange(floorIndex, 24, 28)
+			|| InRange(floorIndex, 44, 48);
 	}
 
 	BgmInfo GetFloorBgm(int floor)
