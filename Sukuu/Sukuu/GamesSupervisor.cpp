@@ -168,9 +168,16 @@ private:
 			.bestReached = data.floorIndex,
 			.completedTime = isCleared ? data.measuredSeconds.Sum() : 0
 		};
+
+		// 到達フロア更新
 		const bool updatedReached = newData.bestReached > m_savedata.bestReached;
-		const bool updatedCleared = newData.bestReached == 50 &&
-			0 < newData.completedTime && newData.completedTime < m_savedata.completedTime;
+
+		// クリア時間更新
+		const bool updatedCleared =
+			newData.bestReached == 50
+			&& 0 < newData.completedTime
+			&& (m_savedata.completedTime == 0 || newData.completedTime < m_savedata.completedTime);
+
 		if (updatedReached || updatedCleared)
 		{
 			SaveSavedata(newData);
