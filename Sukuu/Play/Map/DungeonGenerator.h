@@ -7,7 +7,6 @@ namespace Play
 	{
 		Size size;
 		int areaDivision;
-		uint32 maxProgramLoopCount = 100000;
 		uint32 minAreaSize = 40;
 		uint32 minAreaWidthHeight = 12;
 		uint32 minRoomSize = 20;

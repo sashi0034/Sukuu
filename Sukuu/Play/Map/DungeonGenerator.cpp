@@ -39,6 +39,12 @@ namespace Play
 		};
 	}
 
+	template <typename T>
+	inline T midpoint(T x, T y)
+	{
+		return (x + y) / 2;
+	}
+
 	class DungGenInternal;
 }
 
@@ -60,7 +66,29 @@ public:
 
 	std::pair<SeparatedArea, SeparatedArea> separateArea(const SeparatedArea& area) const
 	{
-		for (auto in : step(props.maxProgramLoopCount))
+		const bool validAreaX = [&]()
+		{
+			// 無限ループに陥らないようにチェック
+			const int sepY = midpoint(area.topY(), area.bottomY() - 1) / 2 * 2;
+			const int sepH1 = sepY - area.y;
+			const int sepH2 = area.h - sepH1;
+			if (sepH1 <= props.minAreaWidthHeight || sepH2 <= props.minAreaWidthHeight) return false;
+			if (area.w * sepH1 < props.minAreaSize || area.h * sepH2 < props.minAreaSize) return false;
+			return true;
+		}();
+
+		const bool validAreaY = [&]()
+		{
+			const int sepX = midpoint(area.leftX(), area.rightX() - 1) / 2 * 2;
+			const int sepW1 = sepX - area.x;
+			const int sepW2 = area.w - sepW1;
+			if (sepW1 <= props.minAreaWidthHeight || sepW2 <= props.minAreaWidthHeight) return false;
+			if (sepW1 * area.h < props.minAreaSize || sepW2 * area.h < props.minAreaSize) return false;
+			return true;
+		}();
+		if (not validAreaX && not validAreaY) throw DungGenError();
+
+		while (true)
 		{
 			std::pair<SeparatedArea, SeparatedArea> result;
 			const bool isVertical = Random(0, 1);
@@ -70,6 +98,7 @@ public:
 				const int sepH1 = sepY - area.y;
 				const int sepH2 = area.h - sepH1;
 				if (sepH1 <= props.minAreaWidthHeight || sepH2 <= props.minAreaWidthHeight) continue;
+				if (area.w * sepH1 < props.minAreaSize || area.h * sepH2 < props.minAreaSize) continue;
 				result = std::pair{
 					SeparatedArea{area.x, area.y, area.w, sepH1},
 					SeparatedArea{area.x, sepY, area.w, sepH2}
@@ -81,17 +110,15 @@ public:
 				const int sepW1 = sepX - area.x;
 				const int sepW2 = area.w - sepW1;
 				if (sepW1 <= props.minAreaWidthHeight || sepW2 <= props.minAreaWidthHeight) continue;
+				if (sepW1 * area.h < props.minAreaSize || sepW2 * area.h < props.minAreaSize) continue;
 				result = std::pair{
 					SeparatedArea{area.x, area.y, sepW1, area.h},
 					SeparatedArea{sepX, area.y, sepW2, area.h}
 				};
 			}
 
-			if (result.first.area() < props.minAreaSize || result.second.area() < props.minAreaSize) continue;
-
 			return result;
 		}
-		throw DungGenError();
 	}
 
 	Array<AreaRoom> distributeRoomFromArea(const Array<SeparatedArea>& areas) const
@@ -99,10 +126,27 @@ public:
 		Array<AreaRoom> areaRooms{Arg::reserve(areas.size())};
 		for (auto&& area : areas)
 		{
-			bool isSucceeded = false;
-			for (auto in : step(props.maxProgramLoopCount))
+			const uint8 padding = props.areaRoomPadding;
+
+			const bool validArea = [&]()
 			{
-				const uint8 padding = props.areaRoomPadding;
+				// 無限ループに陥らないようにチェック
+				const int x = (area.leftX() + padding) / 2 * 2; // 偶数正規化
+				const int w = ((area.rightX() - 1 - padding) - x) / 2 * 2 + 1; // 奇数正規化
+				if (w <= props.minRoomWidthHeight) return false;
+
+				const int y = (area.topY() + padding) / 2 * 2; // 偶数正規化
+				const int h = ((area.bottomY() - 1 - padding) - y) / 2 * 2 + 1; // 奇数正規化
+				if (h <= props.minRoomWidthHeight) return false;
+
+				if (w * h <= props.minRoomSize) return false;
+
+				return true;
+			}();
+			if (not validArea) throw DungGenError();
+
+			while (true)
+			{
 				const int x = Random(area.leftX() + padding, area.rightX() - 1 - padding) / 2 * 2; // 偶数正規化
 				const int w = (Random(x, area.rightX() - 1 - padding) - x) / 2 * 2 + 1; // 奇数正規化
 				if (w <= props.minRoomWidthHeight) continue;
@@ -118,10 +162,8 @@ public:
 					.area = area,
 					.room = Rect{x, y, w, h}
 				});
-				isSucceeded = true;
 				break;
 			}
-			if (isSucceeded == false) throw DungGenError();
 		}
 		return areaRooms;
 	}

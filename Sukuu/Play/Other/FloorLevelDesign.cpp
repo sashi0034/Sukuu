@@ -33,7 +33,7 @@ namespace Play
 			return GenerateFreshDungeon(DungGenProps{
 				.size = {41, 41},
 				.areaDivision = 4,
-				. minAreaSize = 20,
+				.minAreaSize = 20,
 				.minAreaWidthHeight = 12,
 				.minRoomSize = 10,
 				.minRoomWidthHeight = 6,
