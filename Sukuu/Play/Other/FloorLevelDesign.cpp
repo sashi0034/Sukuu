@@ -54,7 +54,7 @@ namespace Play
 		{
 			return GenerateFreshDungeon(DungGenProps{
 				.size = {61, 61},
-				.areaDivision = 6,
+				.areaDivision = 6 - (floorIndex % 2),
 				.minAreaSize = 28,
 				.minAreaWidthHeight = 12,
 				.minRoomSize = 14,
@@ -71,8 +71,8 @@ namespace Play
 		if (floorIndex <= 12)
 		{
 			return GenerateFreshDungeon(DungGenProps{
-				.size = {71, 71},
-				.areaDivision = 7,
+				.size = {65, 65},
+				.areaDivision = 7 - (floorIndex % 2),
 				.minAreaSize = 28,
 				.minAreaWidthHeight = 16,
 				.minRoomSize = 14,
@@ -89,7 +89,7 @@ namespace Play
 		if (floorIndex == 14)
 		{
 			return GenerateFreshDungeon(DungGenProps{
-				.size = {65, 65},
+				.size = {61, 61},
 				.areaDivision = 4,
 				.minAreaSize = 24,
 				.minAreaWidthHeight = 16,
@@ -100,8 +100,8 @@ namespace Play
 		if (floorIndex <= 22)
 		{
 			return GenerateFreshDungeon(DungGenProps{
-				.size = {81, 81},
-				.areaDivision = 8,
+				.size = {75, 75},
+				.areaDivision = 8 - (floorIndex % 3),
 				.minAreaWidthHeight = 8,
 			});
 		}
@@ -115,8 +115,8 @@ namespace Play
 		if (floorIndex <= 30)
 		{
 			return GenerateFreshDungeon(DungGenProps{
-				.size = {91, 91},
-				.areaDivision = 8 + Random(-2, 2),
+				.size = {81, 81},
+				.areaDivision = 9 - (floorIndex % 3),
 			});
 		}
 		if (floorIndex == maze_31)
@@ -129,15 +129,15 @@ namespace Play
 		if (floorIndex <= 36)
 		{
 			return GenerateFreshDungeon(DungGenProps{
-				.size = Size{1, 1} * (91 + Random(0, 1) * 4),
-				.areaDivision = 8 + Random(-2, 2),
+				.size = Size::One() * (91 + (floorIndex % 2) * 4),
+				.areaDivision = 9 - (floorIndex % 3),
 			});
 		}
 		if (floorIndex <= 40)
 		{
 			return GenerateFreshDungeon(DungGenProps{
-				.size = {81, 81},
-				.areaDivision = 8 + Random(-2, 2),
+				.size = Size::One() * (81 + (floorIndex % 2) * 4),
+				.areaDivision = 9 - (floorIndex % 3),
 				.minAreaSize = 28,
 				.minAreaWidthHeight = 16,
 				.minRoomSize = 14,
@@ -358,7 +358,7 @@ namespace
 	{
 		if (map.Category() != MapCategory::Dungeon) return false;
 		return
-			InRange(floorIndex, 16, 20) ||
+			InRange(floorIndex, 14, 20) ||
 			InRange(floorIndex, 26, 30) ||
 			InRange(floorIndex, 42, 46);
 	}
@@ -439,7 +439,7 @@ namespace Play
 
 	std::function<ScopedCustomShader2D(double t)> GetFloorBgShader(int floor)
 	{
-		if (InRange(floor, 12, 20))
+		if (InRange(floor, 8, 12))
 		{
 			return [&](double t)
 			{
@@ -449,7 +449,7 @@ namespace Play
 				return ScopedCustomShader2D(PixelShaderAsset(AssetKeys::PsRgbToBgr));
 			};
 		}
-		if (InRange(floor, 24, 28))
+		if (InRange(floor, 23, 29))
 		{
 			return [&](double t)
 			{
@@ -484,7 +484,7 @@ namespace Play
 
 	bool IsFloorSnowfall(int floorIndex)
 	{
-		return InRange(floorIndex, 24, 28)
+		return InRange(floorIndex, 23, 28)
 			|| InRange(floorIndex, 44, 48);
 	}
 

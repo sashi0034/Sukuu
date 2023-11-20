@@ -58,8 +58,8 @@ tire_count = 40
 tire_penalty = 10
 
 [play.en_knight]
-move_duration = 0.5
-min_move_duration = 0.1
+move_duration = 0.49
+min_move_duration = 0.11
 speedup = 0.001
 sleeping_sensing = 5
 max_player_concern = 8
