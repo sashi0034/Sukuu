@@ -51,9 +51,9 @@ private:
 	tutorial:
 		tutorialLoop(yield, self);
 	title:
-		titleLoop(yield, self);
+		if (const bool retryTutorial = titleLoop(yield, self)) goto tutorial;
 	play:
-		if (const bool cleared = playLoop(yield, self)) goto ending;
+		if (const bool clearedPlay = playLoop(yield, self)) goto ending;
 		goto title;
 	ending:
 		endingLoop(yield, self);
@@ -76,11 +76,11 @@ private:
 		tutorial.Init();
 		yield.WaitForTrue([&]() { return tutorial.IsFinished(); });
 		tutorial.Kill();
-
 		SaveSavedata(m_savedata);
+		yield();
 	}
 
-	void titleLoop(YieldExtended& yield, ActorView self) const
+	bool titleLoop(YieldExtended& yield, ActorView self) const
 	{
 		auto title = self.AsParent().Birth(Title::TitleScene());
 		title.Init(m_savedata);
@@ -89,9 +89,25 @@ private:
 			// 遊んだ後なら死に戻り演出
 			title.PerformReincarnate();
 		}
-		yield.WaitForTrue([&]() { return title.IsConcluded(); });
+		yield.WaitForTrue([&]()
+		{
+			return dialogRetryTutorial() || title.IsConcluded();
+		});
+		const bool retryTutorial = not title.IsConcluded();
 		title.Kill();
 		yield();
+		return retryTutorial;;
+	}
+
+	static bool dialogRetryTutorial()
+	{
+		if (KeyLControl.pressed() && KeyR.down())
+		{
+			const bool yes =
+				System::MessageBoxYesNo(U"もう一度チュートリアルをしますか?", MessageBoxStyle::Question) == MessageBoxResult::Yes;
+			return yes;
+		}
+		return false;
 	}
 
 	bool playLoop(YieldExtended& yield, ActorView self)
