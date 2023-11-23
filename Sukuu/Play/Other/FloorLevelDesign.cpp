@@ -278,9 +278,9 @@ namespace
 		if (floorIndex == maze_23) return 24;
 		if (floorIndex <= 30) return Random(12, 18);
 		if (floorIndex == maze_31) return 28;
-		if (floorIndex <= 40) return Random(12, 20);
+		if (floorIndex <= 40) return Random(10, 20);
 		if (floorIndex == maze_41) return 32;
-		return Random(12, 24);
+		return Random(12, 20);
 	}
 
 	bool tryRandomBirthEnemy(ActorView enemyParent, EnemyContainer& enemyContainer, int floorIndex)
