@@ -91,23 +91,12 @@ private:
 		}
 		yield.WaitForTrue([&]()
 		{
-			return dialogRetryTutorial() || title.IsConcluded();
+			return title.IsConcludedPlay() || title.IsConcludedRetryTutorial();
 		});
-		const bool retryTutorial = not title.IsConcluded();
+		const bool retryTutorial = title.IsConcludedRetryTutorial();
 		title.Kill();
 		yield();
-		return retryTutorial;;
-	}
-
-	static bool dialogRetryTutorial()
-	{
-		if (KeyLControl.pressed() && KeyR.down())
-		{
-			const bool yes =
-				System::MessageBoxYesNo(U"もう一度チュートリアルをしますか?", MessageBoxStyle::Question) == MessageBoxResult::Yes;
-			return yes;
-		}
-		return false;
+		return retryTutorial;
 	}
 
 	bool playLoop(YieldExtended& yield, ActorView self)

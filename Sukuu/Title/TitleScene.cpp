@@ -29,7 +29,7 @@ namespace
 
 struct Title::TitleScene::Impl
 {
-	bool m_concluded{};
+	bool m_concludedPlay{};
 	TitleBackground m_bg{};
 	TitleHud m_hud{};
 	RenderTexture m_renderTexture{};
@@ -112,7 +112,7 @@ private:
 
 		yield.WaitForTime(0.3);
 
-		m_concluded = true;
+		m_concludedPlay = true;
 	}
 
 	void openTransition(YieldExtended& yield, ActorView self)
@@ -161,8 +161,13 @@ namespace Title
 		p_impl->m_bg.ReincarnatePlayer();
 	}
 
-	bool TitleScene::IsConcluded() const
+	bool TitleScene::IsConcludedPlay() const
 	{
-		return p_impl->m_concluded;
+		return p_impl->m_concludedPlay;
+	}
+
+	bool TitleScene::IsConcludedRetryTutorial() const
+	{
+		return p_impl->m_hud.IsConcludedRetryTutorial();
 	}
 }

@@ -13,7 +13,8 @@ namespace Title
 		void Update() override;
 		void PerformReincarnate();
 
-		bool IsConcluded() const;
+		bool IsConcludedPlay() const;
+		bool IsConcludedRetryTutorial() const;
 
 	private:
 		struct Impl;

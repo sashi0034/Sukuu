@@ -21,6 +21,7 @@ struct Title::TitleHud::Impl
 	bool m_showPrompt{};
 	double m_promptAnim{};
 	bool m_buttonHovered{};
+	bool m_concludedRetryTutorial{};
 
 	void Init(const Sukuu::GameSavedata& savedata)
 	{
@@ -78,6 +79,8 @@ struct Title::TitleHud::Impl
 				.rounded(20).draw(getToml<ColorF>(U"button_color") * (hover ? 1.3 : 1.0));
 		};
 
+		const int buttonSpace = getToml<int>(U"button_space");
+
 		auto&& exitRect = Rect(Scene::Size().moveBy(getToml<Point>(U"button_padding") - buttonSize), buttonSize);
 		const bool exitHover = exitRect.intersects(Cursor::PosF());
 		buttonDraw(exitRect, exitHover);
@@ -90,7 +93,7 @@ struct Title::TitleHud::Impl
 			}
 		}
 
-		auto&& creditRect = exitRect.movedBy(0, -getToml<int>(U"button_space"));
+		auto&& creditRect = exitRect.movedBy(0, -buttonSpace);
 		const bool creditHover = creditRect.intersects(Cursor::PosF());
 		buttonDraw(creditRect, creditHover);
 		(void)FontAsset(AssetKeys::RocknRoll_24_Bitmap)(U"クレジット").drawAt(creditRect.center());
@@ -99,7 +102,19 @@ struct Title::TitleHud::Impl
 			System::LaunchFile(U"./credit.html");
 		}
 
-		m_buttonHovered = exitHover || creditHover;
+		auto&& tutorialRect = creditRect.movedBy(0, -buttonSpace);
+		const bool tutorialHover = tutorialRect.intersects(Cursor::PosF());
+		buttonDraw(tutorialRect, tutorialHover);
+		(void)FontAsset(AssetKeys::RocknRoll_24_Bitmap)(U"チュートリアル").drawAt(tutorialRect.center());
+		if (tutorialHover && MouseL.down())
+		{
+			if (System::MessageBoxYesNo(U"もう一度チュートリアルをしますか", MessageBoxStyle::Question) == MessageBoxResult::Yes)
+			{
+				m_concludedRetryTutorial = true;
+			}
+		}
+
+		m_buttonHovered = exitHover || creditHover || tutorialHover;
 	}
 };
 
@@ -134,5 +149,10 @@ namespace Title
 	bool TitleHud::IsButtonHovered() const
 	{
 		return p_impl->m_buttonHovered;
+	}
+
+	bool TitleHud::IsConcludedRetryTutorial() const
+	{
+		return p_impl->m_concludedRetryTutorial;
 	}
 }

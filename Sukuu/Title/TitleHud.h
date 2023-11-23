@@ -15,6 +15,7 @@ namespace Title
 
 		void SetShowPrompt(bool show);
 		bool IsButtonHovered() const;
+		bool IsConcludedRetryTutorial() const;
 
 	private:
 		struct Impl;
