@@ -38,6 +38,9 @@ struct Title::TitleScene::Impl
 
 	void Init(ActorBase& self, const Sukuu::GameSavedata& savedata)
 	{
+		// 念のため
+		SetTimeScale(1.0);
+
 		m_bg = self.AsParent().Birth(TitleBackground());
 		m_bg.Init();
 

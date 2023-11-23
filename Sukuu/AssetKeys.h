@@ -12,6 +12,7 @@ namespace AssetKeys
 	constexpr AssetNameView PsRasterScroll = U"asset/shader/raster_scroll";
 	constexpr AssetNameView PsRgbToBgr = U"asset/shader/rgb_to_bgr";
 	constexpr AssetNameView PsGrayscale = U"asset/shader/grayscale";
+	constexpr AssetNameView PsRgbShift = U"asset/shader/rgb_shift";
 	constexpr AssetNameView VsCaveVision = U"asset/shader/soft_shape";
 
 	constexpr AssetNameView title_logo = U"asset/other/title_logo.png";
@@ -23,6 +24,7 @@ namespace AssetKeys
 		PixelShaderAsset::Register(PsRasterScroll, HLSL(PsRasterScroll + U".hlsl"));
 		PixelShaderAsset::Register(PsRgbToBgr, HLSL(PsRgbToBgr + U".hlsl"));
 		PixelShaderAsset::Register(PsGrayscale, HLSL(PsGrayscale + U".hlsl"));
+		PixelShaderAsset::Register(PsRgbShift, HLSL(PsRgbShift + U".hlsl"));
 		VertexShaderAsset::Register(VsCaveVision, HLSL(VsCaveVision + U".hlsl"));
 	}
 

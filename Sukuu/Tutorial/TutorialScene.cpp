@@ -124,7 +124,7 @@ private:
 		m_postDraw = [&]()
 		{
 			Rect(Scene::Size()).draw(ColorF{Constants::HardDarkblue});
-			prologueFont(U"ダンジョン50層先の安息の地を求めて...").drawAt(
+			prologueFont(U"ダンジョン50層先のいにしえの地を求めて...").drawAt(
 				40.0, Scene::Center(), ColorF(1.0, prologueAlpha));
 		};
 		yield.WaitForExpire(AnimateEasing<EaseInOutSine>(self, &prologueAlpha, 1.0, 2.0));

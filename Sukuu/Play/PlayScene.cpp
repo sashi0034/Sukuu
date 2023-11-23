@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "PlayScene.h"
 
+#include "AssetKeys.h"
 #include "Player.h"
 #include "Gimmick/GimmickInstaller.h"
 #include "Map/BgMapDrawer.h"
@@ -38,6 +39,17 @@ namespace
 
 	using namespace Play;
 	PlayScene s_instance{PlayScene::Empty()};
+
+	struct RgbShiftCb
+	{
+		float amount;
+	};
+
+	struct SlowMotionState
+	{
+		RenderTexture bufferTexture{};
+		double time{};
+	};
 }
 
 class Play::PlayScene::Impl
@@ -66,6 +78,7 @@ public:
 	int m_floorIndex{};
 	MeasuredSecondsArray m_measuredSeconds{};
 	PlayingPause m_pause{};
+	SlowMotionState m_slowMotion{};
 
 	void Init(ActorView self, const PlaySingletonData& data)
 	{
@@ -135,6 +148,8 @@ public:
 		m_uiTimeLimiter.Init(data.timeLimiter);
 
 		m_uiDashKeep.Init(data.dashKeeping);
+
+		m_slowMotion.bufferTexture = RenderTexture(Scene::Size());
 	}
 
 	ActorWeak StartTransition(int floorIndex)
@@ -160,6 +175,12 @@ public:
 
 		const ScopedRenderStates2D sampler{SamplerState::BorderNearest};
 
+		const bool isSlowMotion = m_player.IsSlowMotion();
+		const ScopedRenderTarget2D rt0{
+			isSlowMotion ? ScopedRenderTarget2D(m_slowMotion.bufferTexture) : ScopedRenderTarget2D(none)
+		};
+		m_slowMotion.time = isSlowMotion ? m_slowMotion.time + Scene::DeltaTime() : 0;
+
 		// 背景描画
 		m_bgMapDrawer.UpdateDraw(self);
 
@@ -181,9 +202,24 @@ public:
 		// ヒットストッピング管理
 		SetTimeScale(m_hitStoppingRequested > 0
 			             ? getToml<double>(U"hitstopping_timescale")
-			             : (m_player.IsSlowMotion()
+			             : (isSlowMotion
 				                ? getToml<double>(U"slow_timescale")
-				                : 1.0));
+				                : 1.0)
+		);
+
+		if (isSlowMotion)
+		{
+			// スローモーションのときの描画
+			ConstantBuffer<RgbShiftCb> cb{};
+			cb->amount = getToml<double>(U"slow_shake") * Periodic::Sine1_1(2.0s, m_slowMotion.time);
+			Graphics2D::SetPSConstantBuffer(1, cb);
+
+			const Transformer2D rollbackTransform{Mat3x2::Identity(), Transformer2D::Target::SetLocal};
+			const ScopedCustomShader2D slowMotionShader{PixelShaderAsset(AssetKeys::PsRgbShift)};
+			const ScopedRenderTarget2D rt1{none};
+			const ScopedRenderStates2D rs1{SamplerState::ClampLinear};
+			(void)m_slowMotion.bufferTexture.draw();
+		}
 	}
 
 private:
