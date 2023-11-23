@@ -124,7 +124,7 @@ private:
 		m_postDraw = [&]()
 		{
 			Rect(Scene::Size()).draw(ColorF{Constants::HardDarkblue});
-			prologueFont(U"ダンジョン50層先のいにしえの安息の地を求めて...").drawAt(
+			prologueFont(U"ダンジョン50層先の安息の地を求めて...").drawAt(
 				40.0, Scene::Center(), ColorF(1.0, prologueAlpha));
 		};
 		yield.WaitForExpire(AnimateEasing<EaseInOutSine>(self, &prologueAlpha, 1.0, 2.0));
@@ -318,25 +318,14 @@ private:
 		waitMessage(yield, U"砂時計を見てもらいたい", messageWaitShort);
 
 		waitMessage(yield, U"これが0になるとキミは死を迎えるだろう", messageWaitShort);
-		waitMessage(yield, U"気を付けるといい", messageWaitShortShort);
+		waitMessage(yield, U"これは怪物を倒したりアイテムで回復が可能だ", messageWaitShort);
+
+		waitMessage(yield, U"では、キミの健闘を祈っているよ", messageWaitShortShort);
 
 		m_focus.Hide();
 
 		m_playerService.canMove = true;
 		m_playerService.canScoop = true;
-
-		bool nearStairs2{};
-		m_playerService.onMoved = [&](const Play::CharaVec2& pos, bool isRunning)
-		{
-			if ((pos.MapPoint() - m_mapData.stairsPoint).manhattanLength() <= 2) nearStairs2 = true;
-		};
-		yield.WaitForTrueVal(nearStairs2);
-		m_playerService.onMoved = [](auto, auto) { return; };
-
-		m_playerService.canMove = false;
-		waitMessage(yield, U"キミに語りかけられるのはここまでだ", messageWaitShort);
-		m_playerService.canMove = true;
-		waitMessage(yield, U"健闘を祈っているよ", messageWaitShortShort);
 	}
 };
 
