@@ -32,9 +32,9 @@ namespace AssetKeys
 	{
 		FontAsset::Register(RocknRoll_24_Bitmap, 24, U"asset/font/RocknRoll/RocknRollOne-Regular.ttf");
 		FontAsset::Register(RocknRoll_72_Bitmap, 72, U"asset/font/RocknRoll/RocknRollOne-Regular.ttf");
-		FontAsset::Register(RocknRoll_Sdf, FontMethod::SDF, 24, U"asset/font/RocknRoll/RocknRollOne-Regular.ttf");
+		FontAsset::Register(RocknRoll_Sdf, FontMethod::SDF, 48, U"asset/font/RocknRoll/RocknRollOne-Regular.ttf");
 		FontAsset::Register(
-			RocknRoll_Sdf_Bold, FontMethod::SDF, 24, U"asset/font/RocknRoll/RocknRollOne-Regular.ttf", FontStyle::Bold);
+			RocknRoll_Sdf_Bold, FontMethod::SDF, 48, U"asset/font/RocknRoll/RocknRollOne-Regular.ttf", FontStyle::Bold);
 
 		TextureAsset::Register(title_logo, title_logo, TextureDesc::Mipped);
 
