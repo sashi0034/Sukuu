@@ -45,6 +45,7 @@ namespace Play
 		MeasuredSecondsArray measuredSeconds{};
 		PlayerPersonalData playerPersonal{};
 		TimeLimiterData timeLimiter{};
+		bool dashKeeping{};
 
 		bool IsTutorial() const { return tutorial != nullptr; }
 	};

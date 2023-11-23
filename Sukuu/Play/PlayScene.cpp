@@ -133,6 +133,8 @@ public:
 		m_uiMiniMap.Init(m_map.Data().size());
 
 		m_uiTimeLimiter.Init(data.timeLimiter);
+
+		m_uiDashKeep.Init(data.dashKeeping);
 	}
 
 	ActorWeak StartTransition(int floorIndex)
@@ -356,7 +358,8 @@ namespace Play
 			.floorIndex = p_impl->m_floorIndex,
 			.measuredSeconds = p_impl->m_measuredSeconds,
 			.playerPersonal = p_impl->m_player.PersonalData(),
-			.timeLimiter = p_impl->m_uiTimeLimiter.GetData()
+			.timeLimiter = p_impl->m_uiTimeLimiter.GetData(),
+			.dashKeeping = p_impl->m_uiDashKeep.IsKeeping(),
 		};
 	}
 }
