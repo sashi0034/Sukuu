@@ -87,6 +87,7 @@ struct Title::TitleHud::Impl
 		(void)FontAsset(AssetKeys::RocknRoll_24_Bitmap)(U"終了").drawAt(exitRect.center());
 		if (exitHover && MouseL.down())
 		{
+			const ScopedRenderTarget2D rs{none};
 			if (System::MessageBoxYesNo(U"ゲームを終了しますか", MessageBoxStyle::Question) == MessageBoxResult::Yes)
 			{
 				System::Exit();
@@ -108,6 +109,7 @@ struct Title::TitleHud::Impl
 		(void)FontAsset(AssetKeys::RocknRoll_24_Bitmap)(U"チュートリアル").drawAt(tutorialRect.center());
 		if (tutorialHover && MouseL.down())
 		{
+			const ScopedRenderTarget2D rs{none};
 			if (System::MessageBoxYesNo(U"もう一度チュートリアルをしますか", MessageBoxStyle::Question) == MessageBoxResult::Yes)
 			{
 				m_concludedRetryTutorial = true;
