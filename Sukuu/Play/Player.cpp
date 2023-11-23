@@ -47,7 +47,9 @@ struct Play::Player::Impl
 	bool m_terminated{};
 	PlayerImmortality m_immortal{};
 	bool m_guardHelmet{};
-	std::function<void()> m_subDrawing = {};
+	std::function<void()> m_subUpdating = {};
+	bool m_scoopRequested{};
+	bool m_slowMotion{};
 	int m_scoopContinuous{};
 	PlayerVisionState m_vision{};
 	double m_faintStealthTime{};
@@ -66,10 +68,10 @@ struct Play::Player::Impl
 
 		m_faintStealthTime = std::max(m_faintStealthTime - GetDeltaTime(), 0.0);
 
-		if (m_subDrawing)
+		if (m_subUpdating)
 		{
 			// すくうなどの描画
-			m_subDrawing();
+			m_subUpdating();
 		}
 		else
 		{
@@ -105,7 +107,7 @@ struct Play::Player::Impl
 		m_isGameOver = true;
 		m_flowchart.Kill();
 		m_distField.Clear();
-		m_subDrawing = {};
+		m_subUpdating = {};
 		m_immortal.immortalStock++;
 		AnimateEasing<EaseOutCirc>(self, &m_cameraScale, 8.0, 0.5);
 		StartCoro(self, [this](YieldExtended yield)
@@ -354,7 +356,9 @@ private:
 		m_cameraOffsetDestination = {0, 0};
 		m_flowchart.Kill();
 		m_distField.Clear();
-		m_subDrawing = {};
+		m_subUpdating = {};
+		m_scoopRequested = false;
+		m_slowMotion = false;
 	}
 
 	void flowchartLoop(YieldExtended& yield, ActorView self)
@@ -461,15 +465,16 @@ private:
 			yield();
 			if (not MouseR.pressed())
 			{
-				m_subDrawing = {};
+				m_subUpdating = {};
 				return;
 			}
 
 			const auto center = m_pos.actualPos.movedBy(CellPx_24 / 2, CellPx_24 / 2);
 			const auto deltaCursor = Cursor::PosF() - center;
 			m_direction = Dir4::FromXY(deltaCursor);
-			m_subDrawing = [center, d = m_direction, t = m_animTimer.Time()]()
+			m_subUpdating = [center, d = m_direction, t = m_animTimer.Time()]()
 			{
+				// 矢印描画
 				constexpr auto c = ColorF(U"#ffc22b");
 				(void)Shape2D::Arrow(Line{center, center + d.ToXY() * (32 - 4 * Periodic::Jump0_1(0.5s, t))}, 20,
 				                     Vec2{16, 16})
@@ -481,7 +486,8 @@ private:
 
 	void checkScoopFromMouse(YieldExtended& yield, ActorView self)
 	{
-		if (RectF(m_pos.actualPos, {CellPx_24, CellPx_24}).intersects(Cursor::PosF()) == false)
+		if (not m_scoopRequested &&
+			RectF(m_pos.actualPos, {CellPx_24, CellPx_24}).intersects(Cursor::PosF()) == false)
 			return;
 
 		if (const auto tutorial = PlayScene::Instance().Tutorial())
@@ -493,31 +499,28 @@ private:
 
 		// マウスクリックまで待機
 		focusCameraFor(self, getToml<double>(U"focus_scale_large"));
-		m_subDrawing = [this, self]() mutable
+		m_subUpdating = [this, self]() mutable
 		{
 			if (RectF(m_pos.actualPos, {CellPx_24, CellPx_24}).intersects(Cursor::PosF()) == false)
 			{
 				// 解除
-				m_subDrawing = {};
+				m_subUpdating = {};
 				focusCameraFor(self, 1.0);
 				return;
 			}
 			RectF(m_pos.actualPos.MapPoint() * CellPx_24, {CellPx_24, CellPx_24})
-				.draw(getToml<ColorF>(U"scoop_rect_color_1"));
+				.draw(m_scoopRequested
+					      ? getToml<ColorF>(U"scoop_rect_color_2")
+					      : getToml<ColorF>(U"scoop_rect_color_1"));
+			if (MouseL.down()) m_scoopRequested = true;
 		};
-		while (true)
-		{
-			if (checkMoveInput() != Dir4::Invalid && MouseL.pressed() == false) return;
-			if (RectF(m_pos.actualPos, {CellPx_24, CellPx_24}).intersects(Cursor::PosF()) == false)
-				return;
 
-			yield();
-			if (MouseL.pressed()) break;
-		}
+		// すくうが要求されるまで処理を進めない
+		if (not m_scoopRequested) return;
 		AudioAsset(AssetSes::scoop_start).playOneShot();
 
-		// ドラッグ解除まで待機
-		m_subDrawing = [this]()
+		// すくう方向を決定
+		m_subUpdating = [this]()
 		{
 			for (int i = 0; i < 4; ++i)
 			{
@@ -525,41 +528,44 @@ private:
 				r.draw(getToml<ColorF>(U"scoop_rect_color_2"));
 			}
 		};
+		m_slowMotion = true;
 		while (true)
 		{
 			yield();
-			if (MouseL.pressed() == false)
+			if (MouseL.down())
 			{
-				m_subDrawing = {};
+				// すくう解除
+				m_subUpdating = {};
+				m_scoopRequested = false;
+				m_slowMotion = false;
 				break;
 			}
 
-			// 目標が決まったかチェック
-			for (int i = 0; i < 4; ++i)
+			const auto centerRect = RectF(m_pos.actualPos, Vec2{CellPx_24, CellPx_24});
+
+			// もともとのマスからカーソルが離れたら処理スタート
+			if (centerRect.intersects(Cursor::PosF())) continue;
+
+			const auto centerPoint = m_pos.actualPos.movedBy(Point::One() * CellPx_24 / 2);
+
+			// カーソルをもとに目標の方向を決める
+			auto dir = Dir4::FromXY(Cursor::PosF() - centerPoint);
+
+			const auto checkingPos = m_pos.actualPos.movedBy(Dir4Type(dir).ToXY() * CellPx_24);
+			if (const auto tutorial = PlayScene::Instance().Tutorial())
 			{
-				const auto checkingPos = m_pos.actualPos.movedBy(Dir4Type(i).ToXY() * CellPx_24);
-				auto r = RectF(checkingPos, {CellPx_24, CellPx_24});
-				if (r.intersects(Cursor::PosF()) == false) continue;
-				if (const auto tutorial = PlayScene::Instance().Tutorial())
-				{
-					if (not tutorial->PlayerService().canScoopTo(checkingPos)) continue;
-				}
-
-				// 以下、移動させる処理を実行
-				// m_distField.Clear();
-				m_subDrawing = {};
-				succeedScoop(yield, self, checkingPos);
-
-				goto dropped;
+				if (not tutorial->PlayerService().canScoopTo(checkingPos)) continue;
 			}
-		}
 
-	dropped:;
-		focusCameraFor(self, 1.0);
-		yield.WaitForTrue([]()
-		{
-			return MouseL.pressed() == false;
-		});
+			// 以下、移動させる処理を実行
+			// m_distField.Clear();
+			m_scoopRequested = false;
+			m_subUpdating = {};
+			m_slowMotion = false;
+			succeedScoop(yield, self, checkingPos);
+			focusCameraFor(self, 1.0);
+			break;
+		}
 	}
 
 	void succeedScoop(YieldExtended& yield, ActorView self, const Vector2D<double> checkingPos)
@@ -798,6 +804,11 @@ namespace Play
 	const PlayerDistField& Player::DistField() const
 	{
 		return p_impl->m_distField.Field();
+	}
+
+	bool Player::IsSlowMotion() const
+	{
+		return p_impl->m_slowMotion;
 	}
 
 	bool Player::IsImmortal() const

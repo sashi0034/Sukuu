@@ -179,7 +179,11 @@ public:
 		m_measuredSeconds[m_floorIndex] += GetDeltaTime();
 
 		// ヒットストッピング管理
-		SetTimeScale(m_hitStoppingRequested > 0 ? getToml<double>(U"hitstopping_timescale") : 1.0);
+		SetTimeScale(m_hitStoppingRequested > 0
+			             ? getToml<double>(U"hitstopping_timescale")
+			             : (m_player.IsSlowMotion()
+				                ? getToml<double>(U"slow_timescale")
+				                : 1.0));
 	}
 
 private:

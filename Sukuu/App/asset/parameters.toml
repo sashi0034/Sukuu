@@ -8,6 +8,7 @@ constant_floor = true
 
 [play.scene]
 hitstopping_timescale = 0.1
+slow_timescale = 0.3
 
 [play.player]
 move_duration = 0.3
