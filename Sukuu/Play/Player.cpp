@@ -366,7 +366,7 @@ private:
 		{
 			m_animTimer.Reset();
 		}
-		m_act = KeyShift.pressed() ? PlayerAct::Running : PlayerAct::Walk;
+		m_act = isDashing() ? PlayerAct::Running : PlayerAct::Walk;
 		m_direction = moveDir;
 		m_scoopContinuous = 0;
 		m_cameraOffsetDestination = -moveDir.ToXY() * getToml<double>(U"camera_offset_amount");
@@ -384,6 +384,11 @@ private:
 		{
 			tutorial->PlayerService().onMoved(newPos, m_act == PlayerAct::Running);
 		}
+	}
+
+	static bool isDashing()
+	{
+		return KeyShift.pressed() || PlayScene::Instance().GetDashKeep().IsKeeping();
 	}
 
 	bool canMoveTo(Dir4Type dir) const

@@ -40,7 +40,7 @@ struct Play::UiDashKeep::Impl
 		if (m_keeping)
 		{
 			FontAsset(AssetKeys::RocknRoll_24_Bitmap)(U"ダッシュ")
-				.regionAt(center).stretched(4.0).shearedX(12.0).draw(ColorF(0.3, 0.7));
+				.regionAt(center).stretched(4.0).shearedX(12.0).rotatedAt(center, 3.0).draw(ColorF(0.3, 0.7));
 		}
 		(void)FontAsset(AssetKeys::RocknRoll_24_Bitmap)(U"ダッシュ")
 			.drawAt(center, Palette::White);
