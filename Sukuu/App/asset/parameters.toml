@@ -48,7 +48,7 @@ attacker_lion = 35
 magnet_penalty = 0.2
 
 [play.en_slime_cat]
-move_duration = 0.2
+move_duration = 0.22
 anim_interval = 250
 floor_turn_pr = 0.75
 pathway_turn_pr = 0.5
