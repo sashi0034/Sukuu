@@ -7,6 +7,13 @@
 #include "Util/CoroUtil.h"
 #include "Util/EasingAnimation.h"
 
+namespace
+{
+	constexpr std::array<Input, 10> numberKeys = {
+		Key0, Key1, Key2, Key3, Key4, Key5, Key6, Key7, Key8, Key9
+	};
+}
+
 class Play::UiItemButton::Impl
 {
 public:
@@ -36,9 +43,11 @@ public:
 			(void)TextureAsset(itemProps.emoji).resized(Vec2{w, w} * 0.8f).drawAt(
 				param.center, ColorF(entered ? 0.7 : 1.0));
 
-		const bool justUsed = entered && MouseL.down()
-			                      ? param.requestUse()
-			                      : false;
+		const bool justUsed =
+			// オブジェクト範囲がクリックされたか、番号キーが押されたか
+			(entered && MouseL.down()) || numberKeys[param.index].down()
+				? param.requestUse()
+				: false;
 
 		if (entered && not m_enteredBefore)
 		{
