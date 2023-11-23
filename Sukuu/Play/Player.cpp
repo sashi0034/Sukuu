@@ -399,10 +399,10 @@ private:
 
 	static Dir4Type checkMoveInput()
 	{
-		if (KeyW.pressed()) return Dir4::Up;
-		if (KeyA.pressed()) return Dir4::Left;
-		if (KeyS.pressed()) return Dir4::Down;
-		if (KeyD.pressed()) return Dir4::Right;
+		if (KeyW.pressed() || KeyUp.pressed()) return Dir4::Up;
+		if (KeyA.pressed() || KeyLeft.pressed()) return Dir4::Left;
+		if (KeyS.pressed() || KeyDown.pressed()) return Dir4::Down;
+		if (KeyD.pressed() || KeyRight.pressed()) return Dir4::Right;
 		return Dir4::Invalid;
 	}
 
@@ -696,8 +696,8 @@ namespace Play
 		p_impl->StartFlowchart(*this);
 
 #if _DEBUG
-		// p_impl->m_personal.items[0] = ConsumableItem::Pin;
-		// p_impl->m_personal.items[1] = ConsumableItem::Sun;
+		p_impl->m_personal.items[0] = ConsumableItem::Wing;
+		p_impl->m_personal.items[1] = ConsumableItem::LightBulb;
 		// p_impl->m_personal.items[2] = ConsumableItem::Mine;
 #endif
 	}

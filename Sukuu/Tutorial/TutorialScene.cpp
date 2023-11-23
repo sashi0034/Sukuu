@@ -159,7 +159,7 @@ private:
 			if (isRunning) runningCount++;
 			movedCount++;
 		};
-		m_messanger.ShowMessageForever(U"まずは'W, A, S, D' で移動の確認をしてみようか");
+		m_messanger.ShowMessageForever(U"まずは 'W, A, S, D' か `矢印キー` で移動の確認をしてみようか");
 		yield.WaitForTrue([&]
 		{
 			return movedCount > 10;
