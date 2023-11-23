@@ -6,6 +6,7 @@
 #include "Enemy/EnemyDefinition.h"
 #include "Map/MapGrid.h"
 #include "Other/TimeLimiter.h"
+#include "UI/UiDashKeep.h"
 #include "UI/UiMiniMap.h"
 #include "UI/UiTimeLimiter.h"
 #include "Util/EffectWrapper.h"
@@ -78,6 +79,9 @@ namespace Play
 
 		UiMiniMap& GetMiniMap();
 		const UiMiniMap& GetMiniMap() const;
+
+		UiDashKeep& GetDashKeep();
+		const UiDashKeep& GetDashKeep() const;
 
 		EffectWrapper& FgEffect();
 		const EffectWrapper& FgEffect() const;

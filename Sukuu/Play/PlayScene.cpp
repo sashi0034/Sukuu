@@ -10,6 +10,7 @@
 #include "Other\FloorLevelDesign.h"
 #include "Other/PlayingPause.h"
 #include "UI/UiCurrentFloor.h"
+#include "UI/UiDashKeep.h"
 #include "UI/UiFloorTransition.h"
 #include "UI/UiGameOver.h"
 #include "UI/UiItemContainer.h"
@@ -53,14 +54,15 @@ public:
 	UiItemContainer m_uiItemContainer{};
 	UiMiniMap m_uiMiniMap{};
 	UiTimeLimiter m_uiTimeLimiter{};
+	UiDashKeep m_uiDashKeep{};
 	CaveVision m_caveVision{};
 	int m_hitStoppingRequested{};
 	EffectWrapper m_fgEffect{};
 	EffectWrapper m_bgEffect{};
 	ITutorialSetting* m_tutorial{};
 	UiFloorTransition m_floorTransition{};
-	UiCurrentFloor m_currentFloor{};
-	UiGameOver m_gameOver{};
+	UiCurrentFloor m_uiCurrentFloor{};
+	UiGameOver m_uiGameOver{};
 	int m_floorIndex{};
 	MeasuredSecondsArray m_measuredSeconds{};
 	PlayingPause m_pause{};
@@ -104,9 +106,11 @@ public:
 
 		m_uiTimeLimiter = m_ui.Birth(UiTimeLimiter());
 
-		m_currentFloor = m_ui.Birth(UiCurrentFloor());
+		m_uiDashKeep = m_ui.Birth(UiDashKeep());
 
-		m_gameOver = m_ui.Birth(UiGameOver());
+		m_uiCurrentFloor = m_ui.Birth(UiCurrentFloor());
+
+		m_uiGameOver = m_ui.Birth(UiGameOver());
 
 		ensureInitializedTransition();
 
@@ -120,8 +124,8 @@ public:
 			GenerateEnemiesAndGimmicks(data.floorIndex, m_map, self, m_enemies, m_gimmick);
 			m_player.Init(data.playerPersonal, GetInitialPos(m_map, m_map.Category() == MapCategory::Maze));
 
-			m_currentFloor.Init(data.floorIndex);
-			m_gameOver.Init(data.floorIndex);
+			m_uiCurrentFloor.Init(data.floorIndex);
+			m_uiGameOver.Init(data.floorIndex);
 
 			m_pause.SetAllowed(true);
 		}
@@ -228,7 +232,7 @@ namespace Play
 	ActorWeak PlayScene::PerformGameOver()
 	{
 		p_impl->m_pause.SetAllowed(false);
-		return p_impl->m_gameOver.StartPerform();
+		return p_impl->m_uiGameOver.StartPerform();
 	}
 
 	PlayScene& PlayScene::Instance()
@@ -294,6 +298,16 @@ namespace Play
 	const UiMiniMap& PlayScene::GetMiniMap() const
 	{
 		return p_impl->m_uiMiniMap;
+	}
+
+	UiDashKeep& PlayScene::GetDashKeep()
+	{
+		return p_impl->m_uiDashKeep;
+	}
+
+	const UiDashKeep& PlayScene::GetDashKeep() const
+	{
+		return p_impl->m_uiDashKeep;
 	}
 
 	EffectWrapper& PlayScene::FgEffect()

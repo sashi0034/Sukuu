@@ -191,6 +191,7 @@
         <ClCompile Include="Play\Player_detail\PlayerInternal.cpp"/>
         <ClCompile Include="Play\PlayScene.cpp"/>
         <ClCompile Include="Play\UI\UiCurrentFloor.cpp"/>
+        <ClCompile Include="Play\UI\UiDashKeep.cpp" />
         <ClCompile Include="Play\UI\UiFloorTransition.cpp"/>
         <ClCompile Include="Play\UI\UiGameOver.cpp"/>
         <ClCompile Include="Play\UI\UiItemButton.cpp"/>
@@ -462,6 +463,7 @@
         <ClInclude Include="Play\Player_detail\PlayerInternal.h"/>
         <ClInclude Include="Play\PlayScene.h"/>
         <ClInclude Include="Play\UI\UiCurrentFloor.h"/>
+        <ClInclude Include="Play\UI\UiDashKeep.h" />
         <ClInclude Include="Play\UI\UiFloorTransition.h"/>
         <ClInclude Include="Play\UI\UiGameOver.h"/>
         <ClInclude Include="Play\UI\UiItemButton.h"/>
