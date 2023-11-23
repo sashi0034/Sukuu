@@ -318,7 +318,7 @@ private:
 		waitMessage(yield, U"砂時計を見てもらいたい", messageWaitShort);
 
 		waitMessage(yield, U"これが0になるとキミは死を迎えるだろう", messageWaitShort);
-		waitMessage(yield, U"これは怪物を倒したりアイテムで回復が可能だ", messageWaitShort);
+		waitMessage(yield, U"これは怪物を倒したり、アイテムで回復が可能だ", messageWaitShort);
 
 		waitMessage(yield, U"では、キミの健闘を祈っているよ", messageWaitShortShort);
 
