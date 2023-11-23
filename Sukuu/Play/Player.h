@@ -16,7 +16,8 @@ namespace Play
 		double OrderPriority() const override;
 
 		void SendEnemyCollide(const RectF& rect, EnemyKind enemy);
-		bool RequestUseItem(int itemIndex);
+		bool CanUseItem(int itemIndex) const;
+		void RequestUseItem(int itemIndex);
 
 		void PerformTutorialOpening();
 

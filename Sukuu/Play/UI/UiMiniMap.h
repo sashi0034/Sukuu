@@ -13,7 +13,8 @@ namespace Play
 		void Init(const Size& mapSize);
 		void Update() override;
 
-		bool SpotStairsAndAllItems();
+		bool CanSpotStairsAndAllItems() const;
+		void SpotStairsAndAllItems();
 		void SetShowEnemies(bool isShow);
 		bool IsShowEnemies() const;
 

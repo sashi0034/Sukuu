@@ -27,12 +27,13 @@ public:
 
 		auto&& itemProps = GetItemProps(param.item);
 		const bool isItemContaining = param.item != ConsumableItem::None;
+		const bool canUseItem = param.canUse();
 
 		const auto rect = RoundRect{param.center - Point{w / 2, w / 2}, w, w, r};
 		const bool entered = rect.rect.mouseOver();
 		(void)rect
 		      .drawShadow(Vec2{6, 6}, 24, 3)
-		      .draw(Color{U"#3b3b3b"}.lerp(Palette::White, entered && isItemContaining ? 0.7 : 0.0));
+		      .draw(Color{U"#3b3b3b"}.lerp(Palette::White, entered && isItemContaining && canUseItem ? 0.7 : 0.0));
 		const auto textPos = param.center - Point{w / 3, w / 2};
 		Circle(textPos, w / 4)
 			.drawShadow(Vec2{2, 2}, 8, 2)
@@ -41,13 +42,12 @@ public:
 
 		if (isItemContaining)
 			(void)TextureAsset(itemProps.emoji).resized(Vec2{w, w} * 0.8f).drawAt(
-				param.center, ColorF(entered ? 0.7 : 1.0));
+				param.center, ColorF(entered ? 0.7 : 1.0, canUseItem ? 1.0 : 0.3));
 
 		const bool justUsed =
 			// オブジェクト範囲がクリックされたか、番号キーが押されたか
-			(entered && MouseL.down()) || numberKeys[param.index].down()
-				? param.requestUse()
-				: false;
+			(entered && MouseL.down()) || numberKeys[param.index].down();
+		if (canUseItem && justUsed) param.requestUse();
 
 		if (entered && not m_enteredBefore)
 		{

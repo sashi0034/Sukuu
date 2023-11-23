@@ -83,11 +83,10 @@ struct Play::UiMiniMap::Impl
 		}
 	}
 
-	bool SpotStairsAndAllItems(ActorView self)
+	void SpotStairsAndAllItems(ActorView self)
 	{
 		// 階段とアイテムを探して全て表示
 		auto&& gimmick = PlayScene::Instance().GetGimmick();
-		if (m_hasExploreStairsAndAllItems) return false;
 		const int renderCell = getRenderCellSize();
 		const auto scoped = scopeRenderMinimap();
 		for (auto&& p : step(gimmick.size()))
@@ -103,8 +102,6 @@ struct Play::UiMiniMap::Impl
 
 		// マップの拡縮アニメーション
 		AnimateShake(self);
-
-		return true;
 	}
 
 	void AnimateShake(ActorView self)
@@ -225,9 +222,14 @@ namespace Play
 		p_impl->Update();
 	}
 
-	bool UiMiniMap::SpotStairsAndAllItems()
+	bool UiMiniMap::CanSpotStairsAndAllItems() const
 	{
-		return p_impl->SpotStairsAndAllItems(*this);
+		return not p_impl->m_hasExploreStairsAndAllItems;
+	}
+
+	void UiMiniMap::SpotStairsAndAllItems()
+	{
+		p_impl->SpotStairsAndAllItems(*this);
 	}
 
 	void UiMiniMap::SetShowEnemies(bool isShow)

@@ -38,7 +38,8 @@ struct Play::UiItemContainer::Impl
 				.index = (i + 1),
 				.center = center.movedBy({(i - m_items.size() / 2) * 96, 0}),
 				.item = playerItems[i],
-				.requestUse = [&]() { return player.RequestUseItem(i); }
+				.canUse = [&]() { return player.CanUseItem(i); },
+				.requestUse = [&]() { player.RequestUseItem(i); }
 			});
 		}
 

@@ -192,72 +192,107 @@ struct Play::Player::Impl
 		});
 	}
 
-	bool UseItem(ActorView self, ConsumableItem item)
+	bool CanUseItem(ConsumableItem item) const
+	{
+		switch (item)
+		{
+		case ConsumableItem::None:
+			return false;
+		case ConsumableItem::Wing:
+			return m_act == PlayerAct::Idle;
+		case ConsumableItem::Helmet:
+			return not m_guardHelmet;
+		case ConsumableItem::Pin:
+			if (m_act != PlayerAct::Idle) return false;
+			return true;
+		case ConsumableItem::Mine:
+			if (canInstallGimmickNow() == false) return false;
+			return true;
+		case ConsumableItem::LightBulb:
+			if (m_vision.mistRemoval) return false;
+			return true;
+		case ConsumableItem::Magnet:
+			return canInstallGimmickNow();
+		case ConsumableItem::Bookmark:
+			return PlayScene::Instance().GetMiniMap().CanSpotStairsAndAllItems();
+		case ConsumableItem::Explorer:
+			return not PlayScene::Instance().GetMiniMap().IsShowEnemies();
+		case ConsumableItem::Grave:
+			return canInstallGimmickNow();
+		case ConsumableItem::Sun:
+			return m_act == PlayerAct::Idle;
+		case ConsumableItem::Tube:
+			return m_act != PlayerAct::Dead;
+		case ConsumableItem::Solt:
+			if (m_faintStealthTime > 0) return false;
+			return true;
+		case ConsumableItem::Max:
+			return false;
+		default: ;
+			assert(false);
+			return false;
+		}
+	}
+
+	void UseItem(ActorView self, ConsumableItem item)
 	{
 		switch (item)
 		{
 		case ConsumableItem::None:
 			break;
 		case ConsumableItem::Wing:
-			if (m_act != PlayerAct::Idle) return false;
-			return gotoStairsByWing(self);
-		case ConsumableItem::Helmet: {
-			if (m_guardHelmet) return false;
+			gotoStairsByWing(self);
+			break;
+		case ConsumableItem::Helmet:
 			m_guardHelmet = true;
-			return true;
-		}
+			break;
 		case ConsumableItem::Pin: {
-			if (m_act != PlayerAct::Idle) return false;
 			auto pin = PlayScene::Instance().AsParent().Birth(ItemPin());
 			pin.Init(m_pos.actualPos, m_direction);
-			return true;
+			break;
 		}
 		case ConsumableItem::Mine: {
-			if (canInstallGimmickNow() == false) return false;
 			auto mine = PlayScene::Instance().AsParent().Birth(ItemMine());
 			mine.Init(m_pos.actualPos);
-			return true;
+			break;
 		}
 		case ConsumableItem::LightBulb:
-			return CheckUseItemLightBulb(self, m_vision);
+			UseItemLightBulb(self, m_vision);
+			break;
 		case ConsumableItem::Magnet: {
-			if (canInstallGimmickNow() == false) return false;
 			auto magnet = PlayScene::Instance().AsParent().Birth(ItemMagnet());
 			magnet.Init(m_pos.actualPos);
-			return true;
+			break;
 		}
 		case ConsumableItem::Bookmark:
-			return PlayScene::Instance().GetMiniMap().SpotStairsAndAllItems();
+			PlayScene::Instance().GetMiniMap().SpotStairsAndAllItems();
+			break;
 		case ConsumableItem::Explorer:
-			return CheckUseItemExplorer(self);
+			CheckUseItemExplorer(self);
+			break;
 		case ConsumableItem::Grave: {
-			if (canInstallGimmickNow() == false) return false;
 			auto grave = PlayScene::Instance().AsParent().Birth(ItemGrave());
 			grave.Init(m_pos.actualPos);
-			return true;
+			break;
 		}
 		case ConsumableItem::Sun: {
-			if (m_act != PlayerAct::Idle) return false;
 			auto sun = PlayScene::Instance().AsParent().Birth(ItemSun());
 			sun.Init(m_pos.actualPos, m_direction);
-			return true;
+			break;
 		}
 		case ConsumableItem::Tube: {
-			if (m_act == PlayerAct::Dead) return false;
 			RelayTimeHealAmount(m_pos, getToml<int>(U"tube_heal_amount"));
-			return true;
+			break;
 		}
 		case ConsumableItem::Solt: {
-			if (m_faintStealthTime > 0) return false;
 			m_faintStealthTime += getToml<double>(U"solt_faint");
 			refreshDistField();
-			return true;
+			break;
 		}
 		case ConsumableItem::Max:
 			break;
 		default: ;
 		}
-		return false;
 	}
 
 	Mat3x2 CameraTransform() const
@@ -668,7 +703,7 @@ private:
 		return true;
 	}
 
-	bool gotoStairsByWing(ActorView self)
+	void gotoStairsByWing(ActorView self)
 	{
 		breakFlowchart();
 		StartCoro(self, [this, self](YieldExtended yield) mutable
@@ -676,7 +711,6 @@ private:
 			AnimatePlayerUsingWing(yield, self, m_animOffset, m_pos);
 			StartFlowchart(self);
 		});
-		return true;
 	}
 };
 
@@ -724,15 +758,16 @@ namespace Play
 		p_impl->EnemyCollide(*this, rect, enemy);
 	}
 
-	bool Player::RequestUseItem(int itemIndex)
+	bool Player::CanUseItem(int itemIndex) const
 	{
-		const bool used = p_impl->UseItem(*this, p_impl->m_personal.items[itemIndex]);
-		if (used)
-		{
-			AudioAsset(AssetSes::item_use).playOneShot();
-			p_impl->m_personal.items[itemIndex] = ConsumableItem::None;
-		}
-		return used;
+		return p_impl->CanUseItem(p_impl->m_personal.items[itemIndex]);
+	}
+
+	void Player::RequestUseItem(int itemIndex)
+	{
+		p_impl->UseItem(*this, p_impl->m_personal.items[itemIndex]);
+		AudioAsset(AssetSes::item_use).playOneShot();
+		p_impl->m_personal.items[itemIndex] = ConsumableItem::None;
 	}
 
 	void Player::PerformTutorialOpening()

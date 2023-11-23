@@ -30,9 +30,9 @@ namespace Play
 		}
 	};
 
-	bool CheckUseItemLightBulb(ActorView self, PlayerVisionState& vision);
+	void UseItemLightBulb(ActorView self, PlayerVisionState& vision);
 
-	bool CheckUseItemExplorer(ActorView self);
+	void CheckUseItemExplorer(ActorView self);
 
 	void UpdatePlayerVision(PlayerVisionState& vision, PlayerAct act);
 
