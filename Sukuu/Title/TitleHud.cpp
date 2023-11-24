@@ -82,7 +82,8 @@ struct Title::TitleHud::Impl
 		const int buttonSpace = getToml<int>(U"button_space");
 
 		auto&& exitRect = Rect(Scene::Size().moveBy(getToml<Point>(U"button_padding") - buttonSize), buttonSize);
-		const bool exitHover = exitRect.intersects(Cursor::PosF());
+		const bool exitHover =
+			exitRect.intersects(RectF(Arg::center = Cursor::PosF(), Constants::CursorSize_64));
 		buttonDraw(exitRect, exitHover);
 		(void)FontAsset(AssetKeys::RocknRoll_24_Bitmap)(U"終了").drawAt(exitRect.center());
 		if (exitHover && MouseL.down())
@@ -95,7 +96,8 @@ struct Title::TitleHud::Impl
 		}
 
 		auto&& creditRect = exitRect.movedBy(0, -buttonSpace);
-		const bool creditHover = creditRect.intersects(Cursor::PosF());
+		const bool creditHover = not exitHover &&
+			creditRect.intersects(RectF(Arg::center = Cursor::PosF(), Constants::CursorSize_64));
 		buttonDraw(creditRect, creditHover);
 		(void)FontAsset(AssetKeys::RocknRoll_24_Bitmap)(U"クレジット").drawAt(creditRect.center());
 		if (creditHover && MouseL.down())
@@ -104,7 +106,8 @@ struct Title::TitleHud::Impl
 		}
 
 		auto&& tutorialRect = creditRect.movedBy(0, -buttonSpace);
-		const bool tutorialHover = tutorialRect.intersects(Cursor::PosF());
+		const bool tutorialHover = not creditHover &&
+			tutorialRect.intersects(RectF(Arg::center = Cursor::PosF(), Constants::CursorSize_64));
 		buttonDraw(tutorialRect, tutorialHover);
 		(void)FontAsset(AssetKeys::RocknRoll_24_Bitmap)(U"チュートリアル").drawAt(tutorialRect.center());
 		if (tutorialHover && MouseL.down())
