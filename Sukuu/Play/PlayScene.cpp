@@ -40,9 +40,9 @@ namespace
 	using namespace Play;
 	PlayScene s_instance{PlayScene::Empty()};
 
-	struct RgbShiftCb
+	struct GradientBlueCb
 	{
-		float amount;
+		Float2 center;
 	};
 
 	struct SlowMotionState
@@ -169,9 +169,9 @@ public:
 #endif
 		if (m_camera == CameraKind::Debug) m_debugCamera.update();
 
-		const auto t = m_camera == CameraKind::Player
-			               ? Transformer2D(m_player.CameraTransform(), TransformCursor::Yes)
-			               : m_debugCamera.createTransformer();
+		const auto transformer = m_camera == CameraKind::Player
+			                         ? Transformer2D(m_player.CameraTransform(), TransformCursor::Yes)
+			                         : m_debugCamera.createTransformer();
 
 		const ScopedRenderStates2D sampler{SamplerState::BorderNearest};
 
@@ -210,12 +210,14 @@ public:
 		if (isSlowMotion)
 		{
 			// スローモーションのときの描画
-			ConstantBuffer<RgbShiftCb> cb{};
-			cb->amount = getToml<double>(U"slow_shake") * Periodic::Sine1_1(2.0s, m_slowMotion.time);
+			const auto playerScreenPos = Graphics2D::GetLocalTransform().transformPoint(
+				m_player.CurrentPos().actualPos.movedBy(Vec2::One() * CellPx_24 / 2)) / Scene::Size();
+			ConstantBuffer<GradientBlueCb> cb{};
+			cb->center = playerScreenPos;
 			Graphics2D::SetPSConstantBuffer(1, cb);
 
 			const Transformer2D rollbackTransform{Mat3x2::Identity(), Transformer2D::Target::SetLocal};
-			const ScopedCustomShader2D slowMotionShader{PixelShaderAsset(AssetKeys::PsRgbShift)};
+			const ScopedCustomShader2D slowMotionShader{PixelShaderAsset(AssetKeys::PsGradientBlur)};
 			const ScopedRenderTarget2D rt1{none};
 			const ScopedRenderStates2D rs1{SamplerState::ClampLinear};
 			(void)m_slowMotion.bufferTexture.draw();

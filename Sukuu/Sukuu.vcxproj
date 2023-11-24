@@ -136,6 +136,7 @@
         <None Include="App\asset\font\RocknRoll\README-JP.md"/>
         <None Include="App\asset\font\RocknRoll\README.md"/>
         <None Include="App\asset\shader\cave_vision.hlsl"/>
+        <None Include="App\asset\shader\gradient_blur.hlsl" />
         <None Include="App\asset\shader\grayscale.hlsl"/>
         <None Include="App\asset\shader\multi_texture_mask.hlsl"/>
         <None Include="App\asset\shader\raster_scroll.hlsl"/>

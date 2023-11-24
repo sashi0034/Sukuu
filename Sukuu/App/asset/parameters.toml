@@ -9,7 +9,6 @@ constant_floor = true
 [play.scene]
 hitstopping_timescale = 0.1
 slow_timescale = 0.3
-slow_shake = 0.003
 
 [play.player]
 move_duration = 0.3
@@ -129,7 +128,7 @@ update_freq = 15
 
 [play.damage_counter_effect]
 appear_time = 0.1
-outline = 0.4
+outline = 0.8
 font_size = 12
 offset = -20
 fade_offset = -12
