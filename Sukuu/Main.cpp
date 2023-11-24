@@ -55,6 +55,9 @@ void Main()
 	{
 		RefreshDeltaTime();
 		actorRoot.Update();
+
+		Cursor::RequestStyle(CursorStyle::Hidden);
+		TextureAsset(AssetImages::cursor).resized(Point::One() * Constants::CursorSize_64).drawAt(Cursor::PosF());
 	}
 }
 

@@ -13,6 +13,7 @@ namespace AssetImages
 	constexpr StringView bush_16x16 = U"asset/image/bush_16x16.png";
 	constexpr StringView catfish_24x24 = U"asset/image/catfish_24x24.png";
 	constexpr StringView clock_16x16 = U"asset/image/clock_16x16.png";
+	constexpr StringView cursor = U"asset/image/cursor.png";
 	constexpr StringView dango_wolf_24x24 = U"asset/image/dango_wolf_24x24.png";
 	constexpr StringView dark_tree_16x16 = U"asset/image/dark_tree_16x16.png";
 	constexpr StringView dark_tree_48x48 = U"asset/image/dark_tree_48x48.png";
@@ -57,6 +58,7 @@ namespace AssetImages
 			bush_16x16,
 			catfish_24x24,
 			clock_16x16,
+			cursor,
 			dango_wolf_24x24,
 			dark_tree_16x16,
 			dark_tree_48x48,

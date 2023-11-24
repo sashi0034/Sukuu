@@ -26,6 +26,11 @@ namespace
 	{
 		return Util::GetTomlParameter<T>(U"play.player." + key);
 	}
+
+	inline RectF getCursorRect()
+	{
+		return RectF(Arg::center = Cursor::PosF(), Constants::CursorSize_64 / Graphics2D::GetMaxScaling());
+	}
 }
 
 struct Play::Player::Impl
@@ -166,7 +171,7 @@ struct Play::Player::Impl
 		if (m_act == PlayerAct::Dead) return;
 		if (PlayScene::Instance().Tutorial() != nullptr) return; // チュートリアル中は無敵
 
-		const auto player = RectF{m_pos.actualPos, PlayerCellRect.size}.stretched(
+		const auto player = RectF{m_pos.actualPos, Point::One() * CellPx_24}.stretched(
 			getToml<int>(U"collider_padding"));
 
 		if (rect.intersects(player) == false) return;
@@ -500,7 +505,7 @@ private:
 				(void)Shape2D::Arrow(Line{center, center + d.ToXY() * (32 - 4 * Periodic::Jump0_1(0.5s, t))}, 20,
 				                     Vec2{16, 16})
 				      .draw(ColorF(c, 0.9)).drawFrame(1, ColorF(c * 0.3, 0.9));
-				Circle(Cursor::PosF(), 8).draw(ColorF{c, 0.5});
+				Circle(Cursor::PosF(), 16).draw(ColorF{c, 0.5});
 			};
 		}
 	}
@@ -508,7 +513,7 @@ private:
 	void checkScoopFromMouse(YieldExtended& yield, ActorView self)
 	{
 		if (not m_scoopRequested &&
-			RectF(m_pos.actualPos, {CellPx_24, CellPx_24}).intersects(Cursor::PosF()) == false)
+			RectF(m_pos.actualPos, {CellPx_24, CellPx_24}).intersects(getCursorRect()) == false)
 			return;
 
 		if (const auto tutorial = PlayScene::Instance().Tutorial())
@@ -522,7 +527,7 @@ private:
 		focusCameraFor(self, getToml<double>(U"focus_scale_large"));
 		m_subUpdating = [this, self]() mutable
 		{
-			if (RectF(m_pos.actualPos, {CellPx_24, CellPx_24}).intersects(Cursor::PosF()) == false)
+			if (RectF(m_pos.actualPos, {CellPx_24, CellPx_24}).intersects(getCursorRect()) == false)
 			{
 				// 解除
 				m_subUpdating = {};
@@ -565,7 +570,7 @@ private:
 			const auto centerRect = RectF(m_pos.actualPos, Vec2{CellPx_24, CellPx_24});
 
 			// もともとのマスからカーソルが離れたら処理スタート
-			if (centerRect.intersects(Cursor::PosF())) continue;
+			if (centerRect.intersects(getCursorRect())) continue;
 
 			const auto centerPoint = m_pos.actualPos.movedBy(Point::One() * CellPx_24 / 2);
 
