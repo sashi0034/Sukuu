@@ -47,6 +47,8 @@ struct Play::Player::Impl
 	bool m_terminated{};
 	PlayerImmortality m_immortal{};
 	bool m_guardHelmet{};
+	Trail m_trail{};
+	int m_trailStock{};
 	std::function<void()> m_subUpdating = {};
 	bool m_scoopRequested{};
 	bool m_slowMotion{};
@@ -68,6 +70,12 @@ struct Play::Player::Impl
 
 		m_faintStealthTime = std::max(m_faintStealthTime - GetDeltaTime(), 0.0);
 
+		// 描画基準点
+		const auto drawingTl = getDrawPos();
+
+		// 軌跡更新
+		updateTrail(drawingTl);
+
 		if (m_subUpdating)
 		{
 			// すくうなどの描画
@@ -75,7 +83,7 @@ struct Play::Player::Impl
 		}
 		else
 		{
-			// ドラッグ中じゃないなら、カメラのオフセットを動かす
+			// 特殊処理してないなら、カメラのオフセットを動かす
 			m_cameraOffset += (m_cameraOffsetDestination - m_cameraOffset)
 				* Scene::DeltaTime()
 				* getToml<double>(U"camera_offset_speed");
@@ -83,14 +91,13 @@ struct Play::Player::Impl
 
 		const ScopedRenderStates2D rs = getRenderState();
 
-		const auto drawingPos = getDrawPos();
 		(void)getPlayerTexture()
-			.draw(drawingPos, ColorF{1.0, getTextureAlpha()});
+			.draw(drawingTl, ColorF{1.0, getTextureAlpha()});
 
 		// ヘルメット
 		if (m_guardHelmet)
 		{
-			TextureAsset(AssetImages::helmet_16x16)(0, 0, 16, 16).drawAt(drawingPos + getHelmetOffset());
+			TextureAsset(AssetImages::helmet_16x16)(0, 0, 16, 16).drawAt(drawingTl + getHelmetOffset());
 		}
 
 		ControlPlayerBgm(m_pos.actualPos, PlayScene::Instance().GetMap());
@@ -184,7 +191,7 @@ struct Play::Player::Impl
 		RelayTimeDamageAmount(m_pos, GetEnemyAttackDamage(enemy), true);
 
 		// やられた演出
-		StartCoro(self, [this, self](YieldExtended yield) mutable
+		StartCoro(self, [this, self](YieldExtended yield)
 		{
 			AnimatePlayerDie(yield, self, m_animOffset, m_cameraOffset);
 
@@ -349,6 +356,20 @@ private:
 	{
 		return getToml<double>(U"move_duration")
 			/ (m_moveSpeed * (m_act == PlayerAct::Running ? 2.0 : 1.0));
+	}
+
+	void updateTrail(const Vec2 drawingTl)
+	{
+		// 軌跡更新
+		// ScopedRenderStates2D rs(BlendState::Additive);
+		if (m_trailStock > 0)
+		{
+			m_trail.add(drawingTl.movedBy(PlayerCellRect.bottomCenter()),
+			            getToml<ColorF>(U"trail_color"),
+			            getToml<int>(U"trail_size"));
+		}
+		m_trail.update(GetDeltaTime());
+		m_trail.draw();
 	}
 
 	void breakFlowchart()
@@ -579,10 +600,14 @@ private:
 
 		// 上手くすくって別の場所に移動するときの処理
 		m_immortal.immortalStock++;
+		m_trailStock++;
+
 		const double animDuration = getToml<double>(U"scoop_move_duration");
 		AnimateEasing<BoomerangParabola>(self, &m_animOffset, Vec2{0, -32}, animDuration);
 		ProcessMoveCharaPos(yield, self, m_pos, checkingPos, animDuration);
 		refreshDistField();
+
+		m_trailStock--;
 		m_immortal.immortalStock--;
 
 		if (PlayScene::Instance().GetMap().At(m_pos.actualPos.MapPoint()).kind == TerrainKind::Wall)
