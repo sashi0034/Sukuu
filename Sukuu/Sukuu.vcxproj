@@ -204,6 +204,7 @@
             <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
         </ClCompile>
         <ClCompile Include="Sukuu\AssetReloader.cpp"/>
+        <ClCompile Include="Sukuu\GameCursor.cpp" />
         <ClCompile Include="Sukuu\GameSavedata.cpp"/>
         <ClCompile Include="Sukuu\GamesSupervisor.cpp"/>
         <ClCompile Include="Title\TitleBackground.cpp"/>
@@ -473,6 +474,7 @@
         <ClInclude Include="Play\UI\UiTimeLimiter.h"/>
         <ClInclude Include="stdafx.h"/>
         <ClInclude Include="Sukuu\AssetReloader.h"/>
+        <ClInclude Include="Sukuu\GameCursor.h" />
         <ClInclude Include="Sukuu\GameSavedata.h"/>
         <ClInclude Include="Sukuu\GamesSupervisor.h"/>
         <ClInclude Include="Title\Forward.h"/>

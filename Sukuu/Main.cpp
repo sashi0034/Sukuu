@@ -4,6 +4,7 @@
 #include "Assets.generated.h"
 #include "Constants.h"
 #include "Sukuu/AssetReloader.h"
+#include "Sukuu/GameCursor.h"
 #include "Sukuu/GamesSupervisor.h"
 #include "Util/ActorContainer.h"
 #include "Util/TomlParametersWrapper.h"
@@ -39,11 +40,6 @@ void Main()
 
 	AssetKeys::RegisterAll();
 
-	// プレイ用BGMは先にロードしておく
-	AudioAsset::Load(AssetBgms::kazegasane);
-	AudioAsset::Load(AssetBgms::obake_dance);
-	AudioAsset::Load(AssetBgms::tokeitou);
-
 	ActorContainer actorRoot{};
 #if _DEBUG
 	actorRoot.Birth(AssetReloader());
@@ -54,10 +50,10 @@ void Main()
 	while (System::Update())
 	{
 		RefreshDeltaTime();
+
 		actorRoot.Update();
 
-		Cursor::RequestStyle(CursorStyle::Hidden);
-		TextureAsset(AssetImages::cursor).resized(Point::One() * Constants::CursorSize_64).drawAt(Cursor::PosF());
+		UpdateGameCursor();
 	}
 }
 

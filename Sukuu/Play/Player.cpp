@@ -14,6 +14,7 @@
 #include "Player_detail/PlayerAnimation.h"
 #include "Player_detail/PlayerDistField.h"
 #include "Player_detail/PlayerInternal.h"
+#include "Sukuu/GameCursor.h"
 #include "Util/CoroUtil.h"
 #include "Util/Dir4.h"
 #include "Util/EasingAnimation.h"
@@ -27,9 +28,14 @@ namespace
 		return Util::GetTomlParameter<T>(U"play.player." + key);
 	}
 
+	inline float getCursorSize()
+	{
+		return Constants::CursorSize_64 / Graphics2D::GetMaxScaling();
+	}
+
 	inline RectF getCursorRect()
 	{
-		return RectF(Arg::center = Cursor::PosF(), Constants::CursorSize_64 / Graphics2D::GetMaxScaling());
+		return RectF(Arg::center = Cursor::PosF(), getCursorSize());
 	}
 }
 
@@ -43,6 +49,7 @@ struct Play::Player::Impl
 	double m_moveSpeed = 1.0;
 	double m_cameraScale = DefaultCameraScale;
 	double m_focusCameraRate = 1.0;
+	ActorWeak m_focusCameraProcess{};
 	Vec2 m_cameraOffset{};
 	Vec2 m_cameraOffsetDestination{};
 	PlayerAct m_act = PlayerAct::Idle;
@@ -52,7 +59,7 @@ struct Play::Player::Impl
 	bool m_terminated{};
 	PlayerImmortality m_immortal{};
 	bool m_guardHelmet{};
-	Trail m_trail{};
+	Trail m_footTrail{};
 	int m_trailStock{};
 	std::function<void()> m_subUpdating = {};
 	bool m_scoopRequested{};
@@ -369,12 +376,12 @@ private:
 		// ScopedRenderStates2D rs(BlendState::Additive);
 		if (m_trailStock > 0)
 		{
-			m_trail.add(drawingTl.movedBy(PlayerCellRect.bottomCenter()),
-			            getToml<ColorF>(U"trail_color"),
-			            getToml<int>(U"trail_size"));
+			m_footTrail.add(drawingTl.movedBy(PlayerCellRect.bottomCenter()),
+			                getToml<ColorF>(U"trail_color"),
+			                getToml<int>(U"trail_size"));
 		}
-		m_trail.update(GetDeltaTime());
-		m_trail.draw();
+		m_footTrail.update(GetDeltaTime());
+		m_footTrail.draw();
 	}
 
 	void breakFlowchart()
@@ -479,7 +486,8 @@ private:
 	template <double easing(double) = EaseInOutSine>
 	void focusCameraFor(ActorView self, double scale)
 	{
-		AnimateEasing<easing>(self, &m_focusCameraRate, scale, 0.5);
+		m_focusCameraProcess.Kill();
+		m_focusCameraProcess = AnimateEasing<easing>(self, &m_focusCameraRate, scale, 0.5);
 	}
 
 	void checkMouseDirectionRotation(YieldExtended& yield)
@@ -524,21 +532,28 @@ private:
 		// 以下、マウスカーソルが当たった状態
 
 		// マウスクリックまで待機
-		focusCameraFor(self, getToml<double>(U"focus_scale_large"));
 		m_subUpdating = [this, self]() mutable
 		{
 			if (RectF(m_pos.actualPos, {CellPx_24, CellPx_24}).intersects(getCursorRect()) == false)
 			{
 				// 解除
 				m_subUpdating = {};
-				focusCameraFor(self, 1.0);
 				return;
 			}
-			RectF(m_pos.actualPos.MapPoint() * CellPx_24, {CellPx_24, CellPx_24})
-				.draw(m_scoopRequested
-					      ? getToml<ColorF>(U"scoop_rect_color_2")
-					      : getToml<ColorF>(U"scoop_rect_color_1"));
+
 			if (MouseL.down()) m_scoopRequested = true;
+
+			const auto cellColor = m_scoopRequested
+				                       ? getToml<ColorF>(U"scoop_rect_color_2")
+				                       : getToml<ColorF>(U"scoop_rect_color_1");
+			(void)RectF(m_pos.actualPos.MapPoint() * CellPx_24, {CellPx_24, CellPx_24})
+			      .draw(cellColor)
+			      .drawFrame(1.0, cellColor * 0.5);
+			// カーソルを非表示にして
+			Sukuu::RequestHideGameCursor();
+			// 現在のカーソル位置を代替描画
+			(void)Shape2D::Plus(getCursorSize() / 2, 2, Cursor::PosF())
+				.draw(cellColor * getToml<double>(U"alternative_cursor_bright"));
 		};
 
 		// すくうが要求されるまで処理を進めない
@@ -546,12 +561,14 @@ private:
 		AudioAsset(AssetSes::scoop_start).playOneShot();
 
 		// すくう方向を決定
+		focusCameraFor(self, getToml<double>(U"focus_scale_large"));
 		m_subUpdating = [this]()
 		{
+			const auto cellColor = getToml<ColorF>(U"scoop_rect_color_2");
 			for (int i = 0; i < 4; ++i)
 			{
 				auto r = RectF(m_pos.actualPos.movedBy(Dir4Type(i).ToXY() * CellPx_24), {CellPx_24, CellPx_24});
-				r.draw(getToml<ColorF>(U"scoop_rect_color_2"));
+				(void)r.draw(cellColor).drawFrame(1.0, cellColor * 0.3);
 			}
 		};
 		m_slowMotion = true;
@@ -561,6 +578,7 @@ private:
 			if (MouseL.down())
 			{
 				// すくう解除
+				focusCameraFor(self, 1.0);
 				m_subUpdating = {};
 				m_scoopRequested = false;
 				m_slowMotion = false;
