@@ -548,12 +548,17 @@ private:
 				                       : getToml<ColorF>(U"scoop_rect_color_1");
 			(void)RectF(m_pos.actualPos.MapPoint() * CellPx_24, {CellPx_24, CellPx_24})
 			      .draw(cellColor)
-			      .drawFrame(1.0, cellColor * 0.5);
+			      .drawFrame(0.5, ColorF(cellColor.rgb() * 0.5, 1.0));
+
 			// カーソルを非表示にして
 			Sukuu::RequestHideGameCursor();
 			// 現在のカーソル位置を代替描画
-			(void)Shape2D::Plus(getCursorSize() / 2, 2, Cursor::PosF())
-				.draw(cellColor * getToml<double>(U"alternative_cursor_bright"));
+			const auto cursorColor = cellColor;
+			// ColorF(cellColor * getToml<double>(U"alternative_cursor_bright"), cellColor.a);
+			// (void)Shape2D::Plus(getCursorSize() / 2, 2, Cursor::PosF())
+			(void)Circle(Cursor::PosF(), getCursorSize() / 2)
+			      .draw(cursorColor)
+			      .drawFrame(0.5, ColorF(cursorColor.rgb() * 0.5, 1.0));
 		};
 
 		// すくうが要求されるまで処理を進めない
@@ -568,7 +573,7 @@ private:
 			for (int i = 0; i < 4; ++i)
 			{
 				auto r = RectF(m_pos.actualPos.movedBy(Dir4Type(i).ToXY() * CellPx_24), {CellPx_24, CellPx_24});
-				(void)r.draw(cellColor).drawFrame(1.0, cellColor * 0.3);
+				(void)r.draw(cellColor).drawFrame(0.5, ColorF(cellColor.rgb() * 0.5, 1.0));
 			}
 		};
 		m_slowMotion = true;
@@ -660,6 +665,7 @@ private:
 			// ゴール到達
 			AudioAsset(AssetSes::stairs_step).playOneShot();
 			m_cameraOffsetDestination = {0, 0};
+			m_subUpdating = {};
 			m_immortal.immortalStock++;
 			PlayScene::Instance().GetTimeLimiter().SetImmortal(true);
 			PlayScene::Instance().EndTransition();
