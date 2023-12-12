@@ -250,4 +250,8 @@ rect_thickness = 8.0
 dot_speed = 20
 
 [gm.gamepad_registering]
-bg_brightness = 1.5
+bg = "#d9d9d9"
+top_y = 80
+gamepad_y = -160
+gamepad_scale = 0.6
+font_size = 40

@@ -12,19 +12,39 @@ namespace
 	{
 		return Util::GetTomlParameter<T>(U"gm.gamepad_registering." + key);
 	}
-}
 
-void loopInternal()
-{
-	while (System::Update())
+	struct GamepadRegisteringState
 	{
-		Util::RefreshTomlParameters();
-		Scene::SetBackground(ColorF(Constants::SoftDarkblue) * getToml<double>(U"bg_brightness"));
+	};
 
-		ClearPrint();
-		Print(Cursor::Pos());
+	void drawTexts()
+	{
+		FontAsset(AssetKeys::RocknRoll_Sdf)(U"コントローラー設定")
+			.drawAt(getToml<int>(U"font_size"), Vec2{Scene::Center().x, getToml<int>(U"top_y")}, Palette::Gray);
+	}
 
+	void updateGamepad()
+	{
+		Transformer2D transformer2D{
+			Mat3x2::Scale(getToml<double>(U"gamepad_scale"), Scene::Center().movedBy(0, getToml<int>(U"gamepad_y")))
+		};
 		TextureAsset(AssetKeys::gamepad).resized(1024).drawAt(Scene::Center());
+	}
+
+	void loopInternal()
+	{
+		while (System::Update())
+		{
+			Util::RefreshTomlParameters();
+			Scene::SetBackground(getToml<ColorF>(U"bg"));
+
+			ClearPrint();
+			Print(Cursor::Pos());
+
+			drawTexts();
+
+			updateGamepad();
+		}
 	}
 }
 
