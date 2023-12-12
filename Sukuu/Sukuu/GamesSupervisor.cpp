@@ -4,6 +4,7 @@
 #include "Constants.h"
 #include "Gm/GameSavedata.h"
 #include "Ending/EndingScene.h"
+#include "Gm/GamepadRegistering.h"
 #include "Play/PlayBgm.h"
 #include "Play/PlayScene.h"
 #include "Play/Other/FloorLevelDesign.h"
@@ -45,6 +46,8 @@ private:
 		if (entryPoint == U"title") goto title;
 		if (entryPoint == U"play") goto play;
 		if (entryPoint == U"ending") goto ending;
+
+		if (entryPoint == U"gamepad") DialogGamepadRegistering();
 #endif
 
 		if (tryLoadSavedata()) goto title;

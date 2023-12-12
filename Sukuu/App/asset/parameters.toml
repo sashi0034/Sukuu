@@ -248,3 +248,6 @@ icon_move = "(-120, 0)"
 rect_size = "(240, 240)"
 rect_thickness = 8.0
 dot_speed = 20
+
+[gm.gamepad_registering]
+bg_brightness = 1.5

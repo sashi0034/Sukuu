@@ -32,4 +32,6 @@ namespace Util
 		return loaded;
 #endif
 	}
+
+	void RefreshTomlParameters();
 }

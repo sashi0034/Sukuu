@@ -1,25 +1,34 @@
 ﻿#include "stdafx.h"
 #include "TomlParametersWrapper.h"
 
-namespace Util
+namespace
 {
-	namespace
+	struct ImplState
 	{
-		struct ImplState
-		{
-			DirectoryWatcher directoryWatcher{U"asset"};
-			TOMLReader toml{
+		DirectoryWatcher directoryWatcher{U"asset"};
+		TOMLReader toml{
 #if _DEBUG
-				U"asset/parameters.toml"
+			U"asset/parameters.toml"
 #else
-				Resource(U"asset/parameters.toml")
+			Resource(U"asset/parameters.toml")
 #endif
-			};
 		};
 
-		ImplState* s_instance;
-	}
+		void Refresh()
+		{
+			for (auto [path, action] : directoryWatcher.retrieveChanges())
+			{
+				if (FileSystem::FileName(path) == U"parameters.toml")
+					toml.open({U"asset/parameters.toml"});
+			}
+		}
+	};
 
+	ImplState* s_instance;
+}
+
+namespace Util
+{
 	struct TomlParametersWrapper::Impl : ImplState
 	{
 	};
@@ -33,11 +42,7 @@ namespace Util
 	void TomlParametersWrapper::Update()
 	{
 #if _DEBUG
-  		for (auto [path, action] : p_impl->directoryWatcher.retrieveChanges())
-		{
-			if (FileSystem::FileName(path) == U"parameters.toml")
-				p_impl->toml.open({U"asset/parameters.toml"});
-		}
+		p_impl->Refresh();
 #endif
 	}
 
@@ -51,5 +56,10 @@ namespace Util
 		}
 #endif
 		return value;
+	}
+
+	void RefreshTomlParameters()
+	{
+		s_instance->Refresh();
 	}
 }

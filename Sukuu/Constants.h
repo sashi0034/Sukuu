@@ -10,5 +10,7 @@ namespace Constants
 	constexpr int BigValue_100000 = 100000;
 
 	constexpr int MaxFloorIndex = 50;
+
 	constexpr Color HardDarkblue = Color(Color(U"#121317"));
+	constexpr Color SoftDarkblue = Color(Color(U"#343541"));
 }
