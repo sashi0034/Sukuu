@@ -23,7 +23,7 @@ struct Title::TitleHud::Impl
 	bool m_buttonHovered{};
 	bool m_concludedRetryTutorial{};
 
-	void Init(const Sukuu::GameSavedata& savedata)
+	void Init(const Gm::GameSavedata& savedata)
 	{
 		m_record = [&]() -> String
 		{
@@ -136,7 +136,7 @@ namespace Title
 		p_impl->Update();
 	}
 
-	void TitleHud::Init(const Sukuu::GameSavedata& savedata)
+	void TitleHud::Init(const Gm::GameSavedata& savedata)
 	{
 		p_impl->Init(savedata);
 	}

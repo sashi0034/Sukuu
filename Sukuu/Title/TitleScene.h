@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "Forward.h"
-#include "Sukuu/GameSavedata.h"
+#include "Gm/GameSavedata.h"
 
 namespace Title
 {
@@ -9,7 +9,7 @@ namespace Title
 	{
 	public:
 		TitleScene();
-		void Init(const Sukuu::GameSavedata& savedata);
+		void Init(const Gm::GameSavedata& savedata);
 		void Update() override;
 		void PerformReincarnate();
 

@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-namespace Sukuu
+namespace Gm
 {
 	void RequestHideGameCursor();
 	void UpdateGameCursor();

@@ -2,7 +2,7 @@
 #include "GamesSupervisor.h"
 
 #include "Constants.h"
-#include "GameSavedata.h"
+#include "Gm/GameSavedata.h"
 #include "Ending/EndingScene.h"
 #include "Play/PlayBgm.h"
 #include "Play/PlayScene.h"
@@ -14,6 +14,7 @@
 namespace
 {
 	using namespace Util;
+	using namespace Gm;
 
 	template <typename T>
 	inline T debugToml(const String& key)

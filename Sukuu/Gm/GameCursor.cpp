@@ -9,7 +9,7 @@ namespace
 	bool s_hide{};
 }
 
-namespace Sukuu
+namespace Gm
 {
 	void RequestHideGameCursor()
 	{

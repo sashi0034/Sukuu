@@ -4,7 +4,7 @@
 #include "Assets.generated.h"
 #include "Constants.h"
 #include "Sukuu/AssetReloader.h"
-#include "Sukuu/GameCursor.h"
+#include "Gm/GameCursor.h"
 #include "Sukuu/GamesSupervisor.h"
 #include "Util/ActorContainer.h"
 #include "Util/TomlParametersWrapper.h"
@@ -53,7 +53,7 @@ void Main()
 
 		actorRoot.Update();
 
-		UpdateGameCursor();
+		Gm::UpdateGameCursor();
 	}
 }
 

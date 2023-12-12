@@ -6,7 +6,7 @@ namespace
 	constexpr StringView dataPath = U"savedata.dat";
 }
 
-namespace Sukuu
+namespace Gm
 {
 	Optional<GameSavedata> LoadSavedata()
 	{

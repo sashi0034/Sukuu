@@ -36,7 +36,7 @@ struct Title::TitleScene::Impl
 	ConstantBuffer<RasterScrollCb> m_rasterScrollCb{};
 	double m_transitionAlpha{};
 
-	void Init(ActorBase& self, const Sukuu::GameSavedata& savedata)
+	void Init(ActorBase& self, const Gm::GameSavedata& savedata)
 	{
 		// 念のため
 		SetTimeScale(1.0);
@@ -149,7 +149,7 @@ namespace Title
 	{
 	}
 
-	void TitleScene::Init(const Sukuu::GameSavedata& savedata)
+	void TitleScene::Init(const Gm::GameSavedata& savedata)
 	{
 		p_impl->Init(*this, savedata);
 	}

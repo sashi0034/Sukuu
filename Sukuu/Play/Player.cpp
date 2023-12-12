@@ -14,7 +14,7 @@
 #include "Player_detail/PlayerAnimation.h"
 #include "Player_detail/PlayerDistField.h"
 #include "Player_detail/PlayerInternal.h"
-#include "Sukuu/GameCursor.h"
+#include "Gm/GameCursor.h"
 #include "Util/CoroUtil.h"
 #include "Util/Dir4.h"
 #include "Util/EasingAnimation.h"
@@ -551,7 +551,7 @@ private:
 			      .drawFrame(0.5, ColorF(cellColor.rgb() * 0.5, 1.0));
 
 			// カーソルを非表示にして
-			Sukuu::RequestHideGameCursor();
+			Gm::RequestHideGameCursor();
 			// 現在のカーソル位置を代替描画
 			const auto cursorColor = cellColor;
 			// ColorF(cellColor * getToml<double>(U"alternative_cursor_bright"), cellColor.a);
