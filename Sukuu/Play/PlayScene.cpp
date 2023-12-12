@@ -197,7 +197,8 @@ public:
 		// 視界マスク更新
 		m_caveVision.UpdateMask(m_player.CurrentPos().viewPos + Point(CellPx_24, CellPx_24) / 2);
 
-		m_measuredSeconds[m_floorIndex] += GetDeltaTime();
+		// 実時間でフロア経過時間を計測
+		m_measuredSeconds[m_floorIndex] += Scene::DeltaTime();
 
 		// ヒットストッピング管理
 		SetTimeScale(m_hitStoppingRequested > 0

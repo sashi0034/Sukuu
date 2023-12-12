@@ -39,8 +39,10 @@ struct Play::UiTimeLimiter::Impl
 	{
 		if (m_countEnabled)
 		{
+			// 実時間で時を進めることにする
+			const double dt = Scene::DeltaTime();
 			constexpr double slowCoefficient = 0.5;
-			m_data.remainingTime -= GetDeltaTime() * slowCoefficient;
+			m_data.remainingTime -= dt * slowCoefficient;
 			if (m_data.remainingTime < 0) m_data.remainingTime = 0;
 		}
 
