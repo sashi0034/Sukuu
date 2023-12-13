@@ -74,7 +74,11 @@ namespace Gm
 		if (not p_impl->isUsingGamepad)
 		{
 			// ゲームパッドのボタンを押したら認識する
-			p_impl->isUsingGamepad = (gamepad.buttons.contains_if([](auto&& b) { return b.pressed(); }));
+			p_impl->isUsingGamepad = (gamepad.buttons.contains_if([](auto&& b) { return b.down(); }));
+		}
+		else
+		{
+			p_impl->isUsingGamepad = not(Keyboard::GetAllInputs().contains_if([](auto&& i) { return i.down(); }));
 		}
 
 		const bool recognizedNew = p_impl->isUsingGamepad && p_impl->currentGamepad != gamepad.getInfo().name;
