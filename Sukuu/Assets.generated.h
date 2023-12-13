@@ -115,6 +115,8 @@ namespace AssetSes
 	constexpr StringView scoop_start = U"asset/se/scoop_start.mp3";
 	constexpr StringView stairs_close = U"asset/se/stairs_close.mp3";
 	constexpr StringView stairs_step = U"asset/se/stairs_step.mp3";
+	constexpr StringView system_no = U"asset/se/system_no.mp3";
+	constexpr StringView system_yes = U"asset/se/system_yes.mp3";
 	constexpr StringView take_item = U"asset/se/take_item.mp3";
 	constexpr StringView title_environment = U"asset/se/title_environment.mp3";
 	constexpr StringView title_start = U"asset/se/title_start.mp3";
@@ -140,6 +142,8 @@ namespace AssetSes
 			scoop_start,
 			stairs_close,
 			stairs_step,
+			system_no,
+			system_yes,
 			take_item,
 			title_environment,
 			title_start,
