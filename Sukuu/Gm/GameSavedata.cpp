@@ -4,6 +4,17 @@
 namespace
 {
 	constexpr StringView dataPath = U"savedata.dat";
+
+	using namespace Gm;
+
+	constexpr int alignedSaveDataSize = 1024;
+
+	struct AlignedSavedata : GameSavedata
+	{
+		uint8 padding[alignedSaveDataSize - sizeof(GameSavedata)];
+	};
+
+	static_assert(sizeof(AlignedSavedata) == alignedSaveDataSize);
 }
 
 namespace Gm
@@ -12,15 +23,16 @@ namespace Gm
 	{
 		BinaryReader reader{dataPath};
 		if (not reader) return none;
-		GameSavedata d;
+		AlignedSavedata d;
 		reader.read(d);
-		return d;
+		return GameSavedata(d);
 	}
 
 	void SaveSavedata(const GameSavedata& data)
 	{
 		BinaryWriter writer{dataPath};
 		if (not writer) return;
-		writer.write(data);
+		const auto d = AlignedSavedata(data);
+		writer.write(d);
 	}
 }
