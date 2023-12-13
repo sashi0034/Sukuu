@@ -2,20 +2,41 @@
 #include "GamepadRegistering.h"
 
 #include "AssetKeys.h"
-#include "Constants.h"
 #include "Util/TomlParametersWrapper.h"
 
 namespace
 {
+	using namespace Gm;
+
 	template <typename T>
 	inline T getToml(const String& key)
 	{
 		return Util::GetTomlParameter<T>(U"gm.gamepad_registering." + key);
 	}
 
+	enum class RegisterStage
+	{
+		Register_A,
+		Register_B,
+		Register_X,
+		Register_Y,
+		Register_DRight,
+		Register_DUp,
+		Register_DLeft,
+		Register_DDown,
+		Register_LB,
+		Register_RB,
+		Register_LT,
+		Register_RT,
+		Register_Menu,
+		Finished,
+	};
+
 	struct InternalState
 	{
 		Texture keyboardEmoji{U"⌨"_emoji};
+		RegisterStage stage = RegisterStage::Register_A;
+		std::array<int, GamepadButtonSize> registered{};
 	};
 
 	constexpr ColorF blackColor = ColorF(0.3);
@@ -80,6 +101,14 @@ namespace
 		drawButtonLiteral(isEnabled, bp, buttonLiteral);
 	}
 
+	void drawBeanButton(bool isEnabled, const String& bp)
+	{
+		if (isEnabled)
+		{
+			(void)Circle(getToml<Point>(bp), getToml<int>(U"bs_bean")).draw(redColor);
+		}
+	}
+
 	void drawSquareButton(bool isEnabled, const String& bp)
 	{
 		if (isEnabled)
@@ -100,8 +129,10 @@ namespace
 		drawButtonLiteral(isEnabled, bp, buttonLiteral);
 	}
 
-	void updateGamepad()
+	void drawGamepad(const InternalState& state)
 	{
+		const auto stage = state.stage;
+
 		const double scale = getToml<double>(U"gamepad_scale");
 		Transformer2D transformer2D{
 			Mat3x2::Scale(scale, Scene::Center())
@@ -109,30 +140,115 @@ namespace
 		};
 		TextureAsset(AssetKeys::gamepad).resized(1024).drawAt(Scene::Center());
 
-		drawCircleButton(true, U"bp_a", U"A");
-		drawCircleButton(true, U"bp_b", U"B");
-		drawCircleButton(true, U"bp_x", U"X");
-		drawCircleButton(true, U"bp_y", U"Y");
+		using enum RegisterStage;
+		drawCircleButton(stage == Register_A, U"bp_a", U"A");
+		drawCircleButton(stage == Register_B, U"bp_b", U"B");
+		drawCircleButton(stage == Register_X, U"bp_x", U"X");
+		drawCircleButton(stage == Register_Y, U"bp_y", U"Y");
 
-		drawSquareButton(true, U"bp_du");
-		drawSquareButton(true, U"bp_dl");
-		drawSquareButton(true, U"bp_dd");
-		drawSquareButton(true, U"bp_dr");
+		drawSquareButton(stage == Register_DUp, U"bp_du");
+		drawSquareButton(stage == Register_DLeft, U"bp_dl");
+		drawSquareButton(stage == Register_DDown, U"bp_dd");
+		drawSquareButton(stage == Register_DRight, U"bp_dr");
 
-		drawHorizontalButton(true, U"bp_lb", U"LB");
-		drawHorizontalButton(true, U"bp_rb", U"RB");
+		drawHorizontalButton(stage == Register_LB, U"bp_lb", U"LB");
+		drawHorizontalButton(stage == Register_RB, U"bp_rb", U"RB");
 
-		drawVerticalButton(true, U"bp_lt", U"LT");
-		drawVerticalButton(true, U"bp_rt", U"RT");
+		drawVerticalButton(stage == Register_LT, U"bp_lt", U"LT");
+		drawVerticalButton(stage == Register_RT, U"bp_rt", U"RT");
+
+		drawBeanButton(stage == Register_Menu, U"bp_menu");
+	}
+
+	int getGamepadUpButton(const detail::Gamepad_impl& gamepad)
+	{
+		for (auto [i, button] : Indexed(gamepad.buttons))
+		{
+			if (button.up()) return i;
+		}
+		return -1;
+	}
+
+	void checkInput(InternalState& state, const detail::Gamepad_impl& gamepad)
+	{
+		if (KeyBackspace.down())
+		{
+			// 戻る
+			state.stage = static_cast<RegisterStage>(std::max(0, (static_cast<int>(state.stage) - 1)));
+		}
+
+		const int downButton = getGamepadUpButton(gamepad);
+		if (downButton != -1)
+		{
+			const auto r = [&](GamepadButton b)
+			{
+				// ボタンを割り当てる
+				state.registered[static_cast<int>(b)] = downButton;
+
+				// 進める
+				state.stage = static_cast<RegisterStage>(static_cast<int>(state.stage) + 1);
+			};
+
+			switch (state.stage)
+			{
+			case RegisterStage::Register_A:
+				r(GamepadButton::A);
+				break;
+			case RegisterStage::Register_B:
+				r(GamepadButton::B);
+				break;
+			case RegisterStage::Register_X:
+				r(GamepadButton::X);
+				break;
+			case RegisterStage::Register_Y:
+				r(GamepadButton::Y);
+				break;
+			case RegisterStage::Register_DRight:
+				r(GamepadButton::DRight);
+				break;
+			case RegisterStage::Register_DUp:
+				r(GamepadButton::DUp);
+				break;
+			case RegisterStage::Register_DLeft:
+				r(GamepadButton::DLeft);
+				break;
+			case RegisterStage::Register_DDown:
+				r(GamepadButton::DDown);
+				break;
+			case RegisterStage::Register_LB:
+				r(GamepadButton::LB);
+				break;
+			case RegisterStage::Register_RB:
+				r(GamepadButton::RB);
+				break;
+			case RegisterStage::Register_LT:
+				r(GamepadButton::LT);
+				break;
+			case RegisterStage::Register_RT:
+				r(GamepadButton::RT);
+				break;
+			case RegisterStage::Register_Menu:
+				r(GamepadButton::Menu);
+				break;
+			case RegisterStage::Finished:
+				break;
+			default: ;
+			}
+		}
 	}
 
 	void loopInternal()
 	{
+		const auto gamepad = Gamepad(0);
+		if (not gamepad) return;
+
 		InternalState state{};
 
 		while (System::Update())
 		{
+#if _DEBUG
 			Util::RefreshTomlParameters();
+#endif
 			Scene::SetBackground(getBgColor());
 
 			// ClearPrint();
@@ -140,8 +256,15 @@ namespace
 
 			drawTexts(state);
 
-			updateGamepad();
+			drawGamepad(state);
+
+			checkInput(state, gamepad);
+
+			if (state.stage == RegisterStage::Finished) break;
+			if (KeyEscape.down()) break;
 		}
+
+		System::Update();
 	}
 }
 
