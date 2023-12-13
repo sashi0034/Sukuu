@@ -6,7 +6,7 @@ initial_timelimit = 300.0
 initial_floor = 4
 constant_floor = false
 
-[play.scene]
+[play.core]
 hitstopping_timescale = 0.1
 slow_timescale = 0.3
 
@@ -40,7 +40,7 @@ tube_heal_amount = 90
 solt_faint = 15.0
 
 [play.chara]
-baloon_offset_y = -32
+balloon_offset_y = -32
 
 [play.enemy]
 attacker_slime_cat = 20

@@ -10,6 +10,11 @@ namespace Util
 		return parent.AsParent().Birth(CoroActor(coro));
 	}
 
+	inline CoroActor StartCoro(ActorContainer& parent, const CoroTaskFunc& coro)
+	{
+		return parent.Birth(CoroActor(coro));
+	}
+
 	class YieldExtended : Uncopyable
 	{
 	public:

@@ -2,7 +2,7 @@
 #include "UiItemContainer.h"
 
 #include "UiItemButton.h"
-#include "Play/PlayScene.h"
+#include "Play/PlayCore.h"
 #include "Util/CoroUtil.h"
 #include "Util/EasingAnimation.h"
 #include "Util/TomlParametersWrapper.h"
@@ -28,7 +28,7 @@ struct Play::UiItemContainer::Impl
 	{
 		const auto center = Point{Scene::Center().x, getToml<int>(U"base_vertical")};
 		const Transformer2D transform{Mat3x2::Translate(m_offset).scaled(m_scale, center)};
-		auto&& player = PlayScene::Instance().GetPlayer();
+		auto&& player = PlayCore::Instance().GetPlayer();
 		const auto& playerItems = player.PersonalData().items;
 
 		for (int i = 0; i < m_items.size(); ++i)

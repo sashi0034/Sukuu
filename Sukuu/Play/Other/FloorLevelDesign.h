@@ -9,7 +9,7 @@ namespace Play
 	bool IsFloorExistVessel(int floorIndex);
 
 	void GenerateEnemiesAndGimmicks(
-		int floor, const MapGrid& map, ActorView scene, EnemyContainer& enemyContainer, GimmickGrid& gimmick);
+		int floor, const MapGrid& map, ActorContainer& scene, EnemyContainer& enemyContainer, GimmickGrid& gimmick);
 
 	std::function<ScopedCustomShader2D(double t)> GetFloorBgShader(int floor);
 

@@ -3,7 +3,7 @@
 
 #include "Assets.generated.h"
 #include "detail/ItemUtil.h"
-#include "Play/PlayScene.h"
+#include "Play/PlayCore.h"
 #include "Play/Effect/FragmentTextureEffect.h"
 
 namespace
@@ -36,7 +36,7 @@ struct Play::ItemPin::Impl
 			      m_animTimer.SliceFrames(200, 3) * spriteRect.w, 0))
 		      .rotatedAt(spriteRect.center(), m_rotation)
 		      .draw(getDrawPos());
-		if (PlayScene::Instance().GetEnemies().SendDamageCollider(
+		if (PlayCore::Instance().GetEnemies().SendDamageCollider(
 			m_attack, GetItemCollider(m_pos, spriteRect.size)) > 0)
 		{
 			AudioAsset(AssetSes::attack1).playOneShot();
@@ -63,7 +63,7 @@ private:
 		while (true)
 		{
 			yield();
-			if (CanMoveTo(PlayScene::Instance().GetMap(), m_pos.actualPos, m_dir) == false) break;
+			if (CanMoveTo(PlayCore::Instance().GetMap(), m_pos.actualPos, m_dir) == false) break;
 			auto nextPos = m_pos.actualPos + m_dir.ToXY() * CellPx_24;
 			ProcessMoveCharaPos(yield, self, m_pos, nextPos, getToml<double>(U"move_duration"));
 		}
@@ -71,13 +71,13 @@ private:
 		if (m_attack.AttackedCount() == 0)
 		{
 			// また取れるようにする
-			PlayScene::Instance().GetGimmick()[m_pos.actualPos.MapPoint()] =
+			PlayCore::Instance().GetGimmick()[m_pos.actualPos.MapPoint()] =
 				GimmickKind::Item_Pin;
 		}
 		else
 		{
 			// エフェクト
-			PlayScene::Instance().FgEffect().add(EmitFragmentTextureEffect(
+			PlayCore::Instance().FgEffect().add(EmitFragmentTextureEffect(
 				getDrawPos().moveBy(spriteRect.size / 2),
 				TextureAsset(AssetImages::pin_16x16)(spriteRect),
 				Palette::Bisque, 64));

@@ -2,7 +2,7 @@
 #include "EnemyUtil.h"
 
 #include "Assets.generated.h"
-#include "Play/PlayScene.h"
+#include "Play/PlayCore.h"
 #include "Play/Effect/FragmentTextureEffect.h"
 #include "Play/Other/PlayPenaltyBonus.h"
 #include "Util/TomlParametersWrapper.h"
@@ -55,7 +55,7 @@ namespace Play
 	{
 		const auto drawingPos = enemy.GetDrawPos();
 		const auto texture = enemy.GetTexture();
-		auto&& playScene = PlayScene::Instance();
+		auto&& playScene = PlayCore::Instance();
 		playScene.RequestHitstopping(0.5);
 		playScene.FgEffect().add(EmitFragmentTextureEffect(
 			drawingPos.movedBy(texture.size / 2),
@@ -126,7 +126,7 @@ namespace Play
 		int maxConcern,
 		const std::function<void()>& onLostPlayer)
 	{
-		auto&& player = PlayScene::Instance().GetPlayer();
+		auto&& player = PlayCore::Instance().GetPlayer();
 		auto&& playerDf = player.DistField();
 		const int currentDist = playerDf[currentPoint].distance;
 		const auto nextPoint = currentPoint + direction.ToXY().asPoint();
@@ -150,7 +150,7 @@ namespace Play
 		// プレイヤーが無敵のときは、追跡しない
 		if (isPlayerImmortal) return;
 
-		auto&& scene = PlayScene::Instance();
+		auto&& scene = PlayCore::Instance();
 		const bool isMazeMap = scene.GetMap().Category() == MapCategory::Maze;
 		const auto resetTracking = [&]()
 		{
@@ -197,7 +197,7 @@ namespace Play
 	bool CheckEnemyTrappingGimmick(
 		YieldExtended& yield, ActorView self, const Point& currentPoint, EnemyTransform& transform)
 	{
-		auto&& gimmick = PlayScene::Instance().GetGimmick();
+		auto&& gimmick = PlayCore::Instance().GetGimmick();
 		switch (gimmick[currentPoint])
 		{
 		case GimmickKind::Installed_Mine: {
@@ -226,8 +226,8 @@ namespace Play
 			// 矢印
 			transform.m_collideEnabled = false;
 			const Vec2 nextPos = GetArrowWarpPoint(
-				PlayScene::Instance().GetMap(),
-				PlayScene::Instance().GetGimmick(),
+				PlayCore::Instance().GetMap(),
+				PlayCore::Instance().GetGimmick(),
 				transform.m_pos.actualPos.MapPoint()) * CellPx_24;
 			ProcessArrowWarpCharaPos(yield, self, transform.m_pos, transform.m_animOffset, nextPos);
 			transform.m_collideEnabled = true;

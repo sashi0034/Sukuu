@@ -54,3 +54,5 @@ namespace Util
 		return std::accumulate(s.begin(), s.end(), T{});
 	}
 }
+
+#define SINGLETON_SIDEEFFECT

@@ -283,46 +283,46 @@ namespace
 		return Random(12, 20);
 	}
 
-	bool tryRandomBirthEnemy(ActorView enemyParent, EnemyContainer& enemyContainer, int floorIndex)
+	bool tryRandomBirthEnemy(ActorContainer& enemyParent, EnemyContainer& enemyContainer, int floorIndex)
 	{
 		switch (static_cast<EnemyKind>(Random(0, static_cast<int>(EnemyKind::Max) - 1)))
 		{
 		case EnemyKind::SlimeCat: {
-			auto enemy = enemyContainer.Birth(enemyParent.AsParent(), EnSlimeCat());
+			auto enemy = enemyContainer.Birth(enemyParent, EnSlimeCat());
 			enemy.Init();
 			return true;
 		}
 		case EnemyKind::Knight: {
 			if (floorIndex <= 1) return false;
 			if (RandomBool(0.4)) return false;
-			auto enemy = enemyContainer.Birth(enemyParent.AsParent(), EnKnight());
+			auto enemy = enemyContainer.Birth(enemyParent, EnKnight());
 			enemy.Init();
 			return true;
 		}
 		case EnemyKind::Catfish: {
 			if (floorIndex <= 5) return false;
 			if (RandomBool(0.8)) return false;
-			auto enemy = enemyContainer.Birth(enemyParent.AsParent(), EnCatfish());
+			auto enemy = enemyContainer.Birth(enemyParent, EnCatfish());
 			enemy.Init();
 			return true;
 		}
 		case EnemyKind::Crab: {
 			if (floorIndex <= 15) return false;
 			if (RandomBool(0.6)) return false;
-			auto enemy = enemyContainer.Birth(enemyParent.AsParent(), EnCrab());
+			auto enemy = enemyContainer.Birth(enemyParent, EnCrab());
 			enemy.Init();
 			return true;
 		}
 		case EnemyKind::Lion: {
 			if (floorIndex <= 25) return false;
 			if (RandomBool(0.4)) return false;
-			auto enemy = enemyContainer.Birth(enemyParent.AsParent(), EnLion());
+			auto enemy = enemyContainer.Birth(enemyParent, EnLion());
 			enemy.Init();
 			return true;
 		}
 		case EnemyKind::SlimeCat_prime: {
 			if (floorIndex <= 35) return false;
-			auto enemy = enemyContainer.Birth(enemyParent.AsParent(), EnSlimeCat());
+			auto enemy = enemyContainer.Birth(enemyParent, EnSlimeCat());
 			enemy.Init();
 			enemy.BecomePrime();
 			return true;
@@ -330,7 +330,7 @@ namespace
 		case EnemyKind::Knight_prime: {
 			if (floorIndex <= 40) return false;
 			if (RandomBool(0.4)) return false;
-			auto enemy = enemyContainer.Birth(enemyParent.AsParent(), EnKnight());
+			auto enemy = enemyContainer.Birth(enemyParent, EnKnight());
 			enemy.Init();
 			enemy.BecomePrime();
 			return true;
@@ -341,7 +341,7 @@ namespace
 	}
 
 
-	void installEnemies(ActorView enemyParent, EnemyContainer& enemyContainer, int floorIndex)
+	void installEnemies(ActorContainer& enemyParent, EnemyContainer& enemyContainer, int floorIndex)
 	{
 		const int enemyCount = getRoomEnemyCount(floorIndex);
 
@@ -421,7 +421,7 @@ namespace Play
 	}
 
 	void GenerateEnemiesAndGimmicks(
-		int floor, const MapGrid& map, ActorView scene, EnemyContainer& enemyContainer, GimmickGrid& gimmick)
+		int floor, const MapGrid& map, ActorContainer& scene, EnemyContainer& enemyContainer, GimmickGrid& gimmick)
 	{
 		if (map.Category() == MapCategory::Maze)
 		{

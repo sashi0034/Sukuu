@@ -4,7 +4,7 @@
 #include "AssetKeys.h"
 #include "Assets.generated.h"
 #include "Constants.h"
-#include "Play/PlayScene.h"
+#include "Play/PlayCore.h"
 #include "Play/Other/PlayingTips.h"
 #include "Util/CoroUtil.h"
 #include "Util/EasingAnimation.h"
@@ -96,7 +96,7 @@ private:
 		AudioAsset(AssetSes::game_over_back).playOneShot();
 		yield.WaitForExpire(
 			AnimateEasing<EaseInSine>(self, &m_bgAlpha, 1.0, 1.5));
-		PlayScene::Instance().GetEnemies().KillAll();
+		PlayCore::Instance().GetEnemies().KillAll();
 
 		constexpr double appearDuration = 1.0;
 

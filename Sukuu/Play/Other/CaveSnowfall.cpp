@@ -3,7 +3,7 @@
 
 #include "AssetKeys.h"
 #include "Assets.generated.h"
-#include "Play/PlayScene.h"
+#include "Play/PlayCore.h"
 #include "Util/TomlParametersWrapper.h"
 
 namespace
@@ -69,7 +69,7 @@ private:
 		// const auto mapBr = inversed.transformPoint(Scene::Size()).asPoint();
 
 		const auto playerPoint =
-			PlayScene::Instance().GetPlayer().CurrentPos().actualPos.movedBy(Vec2::One() * CellPx_24 / 2).asPoint();
+			PlayCore::Instance().GetPlayer().CurrentPos().actualPos.movedBy(Vec2::One() * CellPx_24 / 2).asPoint();
 		const auto visibleRange = (Scene::Size() / DefaultCameraScale).asPoint();
 		const auto visibleRect = Rect(playerPoint - visibleRange / 2, visibleRange);
 

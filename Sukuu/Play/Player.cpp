@@ -112,13 +112,13 @@ struct Play::Player::Impl
 			TextureAsset(AssetImages::helmet_16x16)(0, 0, 16, 16).drawAt(drawingTl + getHelmetOffset());
 		}
 
-		ControlPlayerBgm(m_pos.actualPos, PlayScene::Instance().GetMap());
+		ControlPlayerBgm(m_pos.actualPos, PlayCore::Instance().GetMap());
 	}
 
 	void CheckGameOver(ActorView self)
 	{
 		if (m_isGameOver) return;
-		if (PlayScene::Instance().GetTimeLimiter().GetData().remainingTime > 0) return;
+		if (PlayCore::Instance().GetTimeLimiter().GetData().remainingTime > 0) return;
 
 		// 以下、ゲームオーバー処理開始
 		PlayBgm::Instance().EndPlay();
@@ -132,7 +132,7 @@ struct Play::Player::Impl
 		StartCoro(self, [this](YieldExtended yield)
 		{
 			yield.WaitForTime(1.0);
-			yield.WaitForExpire(PlayScene::Instance().PerformGameOver());
+			yield.WaitForExpire(PlayCore::Instance().PerformGameOver());
 			m_terminated = true;
 		});
 	}
@@ -176,7 +176,7 @@ struct Play::Player::Impl
 	{
 		if (m_immortal.IsImmortal()) return;;
 		if (m_act == PlayerAct::Dead) return;
-		if (PlayScene::Instance().Tutorial() != nullptr) return; // チュートリアル中は無敵
+		if (PlayCore::Instance().Tutorial() != nullptr) return; // チュートリアル中は無敵
 
 		const auto player = RectF{m_pos.actualPos, Point::One() * CellPx_24}.stretched(
 			getToml<int>(U"collider_padding"));
@@ -235,9 +235,9 @@ struct Play::Player::Impl
 		case ConsumableItem::Magnet:
 			return canInstallGimmickNow();
 		case ConsumableItem::Bookmark:
-			return PlayScene::Instance().GetMiniMap().CanSpotStairsAndAllItems();
+			return PlayCore::Instance().GetMiniMap().CanSpotStairsAndAllItems();
 		case ConsumableItem::Explorer:
-			return not PlayScene::Instance().GetMiniMap().IsShowEnemies();
+			return not PlayCore::Instance().GetMiniMap().IsShowEnemies();
 		case ConsumableItem::Grave:
 			return canInstallGimmickNow();
 		case ConsumableItem::Sun:
@@ -268,12 +268,12 @@ struct Play::Player::Impl
 			m_guardHelmet = true;
 			break;
 		case ConsumableItem::Pin: {
-			auto pin = PlayScene::Instance().AsParent().Birth(ItemPin());
+			auto pin = PlayCore::Instance().AsMainContent().Birth(ItemPin());
 			pin.Init(m_pos.actualPos, m_direction);
 			break;
 		}
 		case ConsumableItem::Mine: {
-			auto mine = PlayScene::Instance().AsParent().Birth(ItemMine());
+			auto mine = PlayCore::Instance().AsMainContent().Birth(ItemMine());
 			mine.Init(m_pos.actualPos);
 			break;
 		}
@@ -281,23 +281,23 @@ struct Play::Player::Impl
 			UseItemLightBulb(self, m_vision);
 			break;
 		case ConsumableItem::Magnet: {
-			auto magnet = PlayScene::Instance().AsParent().Birth(ItemMagnet());
+			auto magnet = PlayCore::Instance().AsMainContent().Birth(ItemMagnet());
 			magnet.Init(m_pos.actualPos);
 			break;
 		}
 		case ConsumableItem::Bookmark:
-			PlayScene::Instance().GetMiniMap().SpotStairsAndAllItems();
+			PlayCore::Instance().GetMiniMap().SpotStairsAndAllItems();
 			break;
 		case ConsumableItem::Explorer:
 			CheckUseItemExplorer(self);
 			break;
 		case ConsumableItem::Grave: {
-			auto grave = PlayScene::Instance().AsParent().Birth(ItemGrave());
+			auto grave = PlayCore::Instance().AsMainContent().Birth(ItemGrave());
 			grave.Init(m_pos.actualPos);
 			break;
 		}
 		case ConsumableItem::Sun: {
-			auto sun = PlayScene::Instance().AsParent().Birth(ItemSun());
+			auto sun = PlayCore::Instance().AsMainContent().Birth(ItemSun());
 			sun.Init(m_pos.actualPos, m_direction);
 			break;
 		}
@@ -452,7 +452,7 @@ private:
 		const auto newPoint = CharaVec2(newPos).MapPoint();
 		checkGimmickAt(yield, self, newPoint);
 
-		if (const auto tutorial = PlayScene::Instance().Tutorial())
+		if (const auto tutorial = PlayCore::Instance().Tutorial())
 		{
 			tutorial->PlayerService().onMoved(newPos, m_act == PlayerAct::Running);
 		}
@@ -460,13 +460,13 @@ private:
 
 	static bool isDashing()
 	{
-		return KeyShift.pressed() || PlayScene::Instance().GetDashKeep().IsKeeping();
+		return KeyShift.pressed() || PlayCore::Instance().GetDashKeep().IsKeeping();
 	}
 
 	bool canMoveTo(Dir4Type dir) const
 	{
-		if (not CanMoveTo(PlayScene::Instance().GetMap(), m_pos.actualPos, dir)) return false;
-		if (const auto tutorial = PlayScene::Instance().Tutorial())
+		if (not CanMoveTo(PlayCore::Instance().GetMap(), m_pos.actualPos, dir)) return false;
+		if (const auto tutorial = PlayCore::Instance().Tutorial())
 		{
 			return tutorial->PlayerService().canMove &&
 				tutorial->PlayerService().canMoveTo((m_pos.actualPos + dir.ToXY() * CellPx_24));
@@ -524,7 +524,7 @@ private:
 			RectF(m_pos.actualPos, {CellPx_24, CellPx_24}).intersects(getCursorRect()) == false)
 			return;
 
-		if (const auto tutorial = PlayScene::Instance().Tutorial())
+		if (const auto tutorial = PlayCore::Instance().Tutorial())
 		{
 			if (not tutorial->PlayerService().canScoop) return;
 		}
@@ -601,7 +601,7 @@ private:
 			auto dir = Dir4::FromXY(Cursor::PosF() - centerPoint);
 
 			const auto checkingPos = m_pos.actualPos.movedBy(Dir4Type(dir).ToXY() * CellPx_24);
-			if (const auto tutorial = PlayScene::Instance().Tutorial())
+			if (const auto tutorial = PlayCore::Instance().Tutorial())
 			{
 				if (not tutorial->PlayerService().canScoopTo(checkingPos)) continue;
 			}
@@ -621,7 +621,7 @@ private:
 	{
 		AudioAsset(AssetSes::scoop_move).playOneShot();
 
-		if (const auto tutorial = PlayScene::Instance().Tutorial())
+		if (const auto tutorial = PlayCore::Instance().Tutorial())
 		{
 			tutorial->PlayerService().onScooped(m_pos.actualPos);
 		}
@@ -638,7 +638,7 @@ private:
 		m_trailStock--;
 		m_immortal.immortalStock--;
 
-		if (PlayScene::Instance().GetMap().At(m_pos.actualPos.MapPoint()).kind == TerrainKind::Wall)
+		if (PlayCore::Instance().GetMap().At(m_pos.actualPos.MapPoint()).kind == TerrainKind::Wall)
 		{
 			// ペナルティ発生
 			RelayTimeDamageAmount(m_pos, GetPlayerScoopedPenaltyDamage(m_scoopContinuous), false);
@@ -650,7 +650,7 @@ private:
 	{
 		// ディスタンスフィールドの更新
 		const int maxDist = m_faintStealthTime > 0 ? 2 : 11;
-		m_distField.Refresh(PlayScene::Instance().GetMap(), m_pos.actualPos, maxDist);
+		m_distField.Refresh(PlayCore::Instance().GetMap(), m_pos.actualPos, maxDist);
 	}
 
 	void checkGimmickAt(YieldExtended& yield, ActorView self, const Point newPoint)
@@ -658,7 +658,7 @@ private:
 		const auto storedAct = m_act;
 		m_act = PlayerAct::Idle;
 
-		auto&& gimmickGrid = PlayScene::Instance().GetGimmick();
+		auto&& gimmickGrid = PlayCore::Instance().GetGimmick();
 		switch (gimmickGrid[newPoint])
 		{
 		case GimmickKind::Stairs: {
@@ -667,8 +667,8 @@ private:
 			m_cameraOffsetDestination = {0, 0};
 			m_subUpdating = {};
 			m_immortal.immortalStock++;
-			PlayScene::Instance().GetTimeLimiter().SetImmortal(true);
-			PlayScene::Instance().EndTransition();
+			PlayCore::Instance().GetTimeLimiter().SetImmortal(true);
+			PlayCore::Instance().EndTransition();
 			yield.WaitForExpire(
 				AnimateEasing<EaseInBack>(self, &m_cameraScale, 8.0, 0.5));
 			AudioAsset(AssetSes::stairs_close).playOneShot();
@@ -701,11 +701,11 @@ private:
 			AudioAsset(AssetSes::take_item).playOneShot();
 			focusCameraFor<EaseOutBack>(self, getToml<double>(U"focus_scale_large"));
 			itemObtainEffect();
-			PlayScene::Instance().RequestHitstopping(0.3);
+			PlayCore::Instance().RequestHitstopping(0.3);
 			yield.WaitForTime(0.3);
 			AudioAsset(AssetSes::recover_large).playOneShot();
 			focusCameraFor<EaseOutBack>(self, 1.0);
-			PlayScene::Instance().GetTimeLimiter().ExtendMax(30.0);
+			PlayCore::Instance().GetTimeLimiter().ExtendMax(30.0);
 			gimmickGrid[newPoint] = GimmickKind::None;
 			break;
 		}
@@ -741,14 +741,14 @@ private:
 
 	void itemObtainEffect() const
 	{
-		PlayScene::Instance().BgEffect().add(MakeItemObtainEffect(m_pos.viewPos.movedBy(CellPx_24 / 2, CellPx_24 / 2)));
+		PlayCore::Instance().BgEffect().add(MakeItemObtainEffect(m_pos.viewPos.movedBy(CellPx_24 / 2, CellPx_24 / 2)));
 	}
 
 	void moveArrowWarp(YieldExtended& yield, ActorView self, const Point point)
 	{
 		AudioAsset(AssetSes::arrow_step).playOneShot();
 		const auto nextPoint =
-			GetArrowWarpPoint(PlayScene::Instance().GetMap(), PlayScene::Instance().GetGimmick(), point);
+			GetArrowWarpPoint(PlayCore::Instance().GetMap(), PlayCore::Instance().GetGimmick(), point);
 		ProcessArrowWarpCharaPos(yield, self, m_pos, m_animOffset, nextPoint * CellPx_24);
 		refreshDistField();
 	}
@@ -757,7 +757,7 @@ private:
 	{
 		if (m_act != PlayerAct::Idle) return false;
 		const auto p = m_pos.actualPos.MapPoint();
-		auto&& gimmick = PlayScene::Instance().GetGimmick();
+		auto&& gimmick = PlayCore::Instance().GetGimmick();
 		if (gimmick.inBounds(p) == false) return false;
 		if (gimmick[p] != GimmickKind::None) return false;
 		return true;
@@ -786,9 +786,9 @@ namespace Play
 
 		p_impl->m_pos.SetPos(initialPos);
 
-		p_impl->m_distField.Resize(PlayScene::Instance().GetMap().Data().size());
+		p_impl->m_distField.Resize(PlayCore::Instance().GetMap().Data().size());
 
-		if (not PlayScene::Instance().Tutorial()) p_impl->PerformInitialCamera(*this);
+		if (not PlayCore::Instance().Tutorial()) p_impl->PerformInitialCamera(*this);
 
 		p_impl->m_immortal.immortalTime = getToml<double>(U"initial_immortal");
 

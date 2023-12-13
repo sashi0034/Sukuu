@@ -3,7 +3,7 @@
 
 #include "Assets.generated.h"
 #include "detail/ItemUtil.h"
-#include "Play/PlayScene.h"
+#include "Play/PlayCore.h"
 
 namespace
 {
@@ -62,7 +62,7 @@ namespace Play
 	void ItemMine::Init(const CharaVec2& pos)
 	{
 		p_impl->m_pos.SetPos(pos);
-		PlayScene::Instance().GetGimmick()[pos.MapPoint()] = GimmickKind::Installed_Mine;
+		PlayCore::Instance().GetGimmick()[pos.MapPoint()] = GimmickKind::Installed_Mine;
 	}
 
 	void ItemMine::Update()
@@ -70,7 +70,7 @@ namespace Play
 		ActorBase::Update();
 		p_impl->Update();
 		// エネミー側で踏んだ時にギミックを変える
-		if (PlayScene::Instance().GetGimmick()[p_impl->m_pos.actualPos.MapPoint()] != GimmickKind::Installed_Mine)
+		if (PlayCore::Instance().GetGimmick()[p_impl->m_pos.actualPos.MapPoint()] != GimmickKind::Installed_Mine)
 		{
 			AudioAsset(AssetSes::attack2).playOneShot();
 			Kill();

@@ -3,7 +3,7 @@
 
 #include "Assets.generated.h"
 #include "EnemyUtil.h"
-#include "Play/PlayScene.h"
+#include "Play/PlayCore.h"
 #include "Play/Chara/CharaUtil.h"
 #include "Util/EasingAnimation.h"
 #include "Util/TomlParametersWrapper.h"
@@ -29,7 +29,7 @@ struct Play::EnCatfish::Impl : EnemyTransform
 		m_animTimer.Tick();
 
 		// プレイヤーとの当たり判定
-		CheckSendEnemyCollide(PlayScene::Instance().GetPlayer(), *this, EnemyKind::Catfish);
+		CheckSendEnemyCollide(PlayCore::Instance().GetPlayer(), *this, EnemyKind::Catfish);
 
 		const AssetNameView emotion = [&]()
 		{
@@ -74,8 +74,8 @@ private:
 		int proceededCount{};
 		while (true)
 		{
-			auto&& map = PlayScene::Instance().GetMap();
-			auto&& gimmick = PlayScene::Instance().GetGimmick();
+			auto&& map = PlayCore::Instance().GetMap();
+			auto&& gimmick = PlayCore::Instance().GetGimmick();
 			const TerrainKind currentTerrain = GetTerrainAt(map, m_pos.actualPos);
 			const auto currentPoint = m_pos.actualPos.MapPoint();
 
@@ -153,7 +153,7 @@ namespace Play
 
 	void EnCatfish::Init()
 	{
-		p_impl->m_pos.SetPos(GetInitialPos(PlayScene::Instance().GetMap()));
+		p_impl->m_pos.SetPos(GetInitialPos(PlayCore::Instance().GetMap()));
 		p_impl->StartFlowchart(*this);
 	}
 

@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "Play/PlayScene.h"
+#include "Play/PlayCore.h"
 
 namespace Play
 {
@@ -9,7 +9,7 @@ namespace Play
 	{
 	public:
 		BgMapDrawer();
-		void UpdateDraw(const PlayScene& scene);
+		void UpdateDraw();
 		void PostDraw();
 		void SetBgShader(const std::function<ScopedCustomShader2D(double t)>& shader);
 

@@ -2,7 +2,7 @@
 
 #include "PlayerAnimation.h"
 
-#include "Play/PlayScene.h"
+#include "Play/PlayCore.h"
 #include "Play/Effect/FragmentTextureEffect.h"
 #include "Util/EasingAnimation.h"
 
@@ -72,7 +72,7 @@ namespace Play
 
 	void AnimatePlayerDie(YieldExtended& yield, ActorView self, Vec2& animOffset, Vec2& cameraOffset)
 	{
-		PlayScene::Instance().RequestHitstopping(0.5);
+		PlayCore::Instance().RequestHitstopping(0.5);
 		yield.WaitForTime(0.5, Scene::DeltaTime);
 
 		// カメラシェイク
@@ -99,7 +99,7 @@ namespace Play
 
 	void AnimatePlayerUsingWing(YieldExtended& yield, ActorView self, Vec2& animOffset, CharaPosition& pos)
 	{
-		const auto stairs = PlayScene::Instance().GetGimmick().GetSinglePoint(GimmickKind::Stairs);
+		const auto stairs = PlayCore::Instance().GetGimmick().GetSinglePoint(GimmickKind::Stairs);
 		const Vec2 warpPos = stairs.movedBy(0, 1) * CellPx_24;
 		const double animDuration = GetTomlParameter<double>(U"play.player.warp_duration");
 		AnimateEasing<BoomerangParabola>(
@@ -110,7 +110,7 @@ namespace Play
 
 	void EffectHelmetConsume(const Vec2& helmetPos, const TextureRegion& helmetTex)
 	{
-		PlayScene::Instance().FgEffect().add(EmitFragmentTextureEffect(
+		PlayCore::Instance().FgEffect().add(EmitFragmentTextureEffect(
 			helmetPos,
 			helmetTex,
 			Palette::Burlywood

@@ -3,7 +3,7 @@
 
 #include "Assets.generated.h"
 #include "EnemyUtil.h"
-#include "Play/PlayScene.h"
+#include "Play/PlayCore.h"
 #include "Play/Chara/CharaUtil.h"
 #include "Util/TomlParametersWrapper.h"
 
@@ -30,7 +30,7 @@ struct Play::EnKnight::Impl : EnemyTransform
 		m_animTimer.Tick();
 
 		// プレイヤーとの当たり判定
-		CheckSendEnemyCollide(PlayScene::Instance().GetPlayer(), *this, EnemyKind::Knight);
+		CheckSendEnemyCollide(PlayCore::Instance().GetPlayer(), *this, EnemyKind::Knight);
 
 		const AssetNameView emotion = [&]()
 		{
@@ -85,7 +85,7 @@ private:
 		while (m_sleeping)
 		{
 			yield();
-			auto&& playerDf = PlayScene::Instance().GetPlayer().DistField();
+			auto&& playerDf = PlayCore::Instance().GetPlayer().DistField();
 			// プレイヤーが近くに来たら起動
 			const bool nearPlayer = playerDf[m_pos.actualPos.MapPoint()].distance < getToml<int>(U"sleeping_sensing");
 			// プライムは時間経過でも起動
@@ -102,8 +102,8 @@ private:
 		int proceededCount{};
 		while (true)
 		{
-			auto&& map = PlayScene::Instance().GetMap();
-			auto&& gimmick = PlayScene::Instance().GetGimmick();
+			auto&& map = PlayCore::Instance().GetMap();
+			auto&& gimmick = PlayCore::Instance().GetGimmick();
 			const TerrainKind currentTerrain = GetTerrainAt(map, m_pos.actualPos);
 			const auto currentPoint = m_pos.actualPos.MapPoint();
 
@@ -169,7 +169,7 @@ namespace Play
 
 	void EnKnight::Init()
 	{
-		p_impl->m_pos.SetPos(GetInitialPos(PlayScene::Instance().GetMap()));
+		p_impl->m_pos.SetPos(GetInitialPos(PlayCore::Instance().GetMap()));
 		p_impl->StartFlowchart(*this);
 	}
 

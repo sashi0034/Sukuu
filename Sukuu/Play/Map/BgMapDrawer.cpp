@@ -5,7 +5,7 @@
 #include "Assets.generated.h"
 #include "AutoTiler.h"
 #include "MapGrid.h"
-#include "Play/PlayScene.h"
+#include "Play/PlayCore.h"
 #include "Play/Chara/CharaUtil.h"
 #include "Util/TomlParametersWrapper.h"
 
@@ -200,8 +200,9 @@ namespace Play
 		           TerrainKind::Wall, {TerrainKind::Wall});
 	}
 
-	void BgMapDrawer::UpdateDraw(const PlayScene& scene)
+	void BgMapDrawer::UpdateDraw()
 	{
+		auto&& scene = PlayCore::Instance();
 		p_impl->m_animTimer.Tick();
 
 		const auto inversed = (Graphics2D::GetCameraTransform() * Graphics2D::GetLocalTransform()).inverse();

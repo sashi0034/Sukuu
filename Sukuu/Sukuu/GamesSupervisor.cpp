@@ -122,7 +122,8 @@ private:
 
 		while (true)
 		{
-			auto play = self.AsParent().Birth(Play::PlayScene::Create());
+			auto playScene = self.AsParent().Birth(Play::PlayScene());
+			auto&& play = playScene.GetCore();
 
 			// フロアに合わせたBGMを再生
 			Play::PlayBgm::Instance().RequestPlay(Play::GetFloorBgm(m_playData.floorIndex));
@@ -136,7 +137,7 @@ private:
 					play.StartTransition(m_playData.floorIndex));
 			}
 
-			play.Init(m_playData);
+			playScene.Init(m_playData);
 			yield.WaitForTrue([&]()
 			{
 #if _DEBUG
@@ -146,7 +147,7 @@ private:
 			});
 			if (not play.GetPlayer().IsTerminated()) yield();
 			m_playData = play.CopyData();
-			play.Kill();
+			playScene.Kill();
 			yield();
 			if (m_playData.timeLimiter.remainingTime == 0)
 			{

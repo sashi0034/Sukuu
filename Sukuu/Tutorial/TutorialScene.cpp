@@ -28,7 +28,8 @@ namespace
 
 struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
 {
-	Play::PlayScene m_play{Play::PlayScene::Empty()};
+	Play::PlayScene m_playScene{};
+	Play::PlayCore m_play{};
 	TutorialMapData m_mapData{};
 	bool m_finished{};
 	Play::TutorialPlayerService m_playerService{
@@ -47,8 +48,8 @@ struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
 	void Init(ActorView self)
 	{
 		m_mapData = GetTutorialMap();
-		m_play = self.AsParent().Birth(Play::PlayScene::Create());
-		m_play.Init({
+		m_playScene = self.AsParent().Birth(Play::PlayScene());
+		m_playScene.Init({
 			.tutorial = this,
 			.playerPersonal = {},
 			.timeLimiter = Play::TimeLimiterData{
@@ -56,6 +57,7 @@ struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
 				.remainingTime = 60
 			}
 		});
+		m_play = m_playScene.GetCore();
 		auto&& timeLimiter = m_play.GetTimeLimiter();
 		timeLimiter.SetCountEnabled(false);
 		timeLimiter.SetImmortal(true);
@@ -191,10 +193,10 @@ private:
 		m_playerService.onMoved = [](auto, auto) { return; };
 
 		// すくう入手イベント発生
-		auto catSouth = m_play.GetEnemies().Birth(m_play.AsParent(), Play::EnSlimeCat());
+		auto catSouth = m_play.GetEnemies().Birth(m_play.AsMainContent(), Play::EnSlimeCat());
 		catSouth.InitTutorial(m_mapData.catSpawnPoint_South * Play::CellPx_24, Dir4::Up);
 
-		auto catNorth = m_play.GetEnemies().Birth(m_play.AsParent(), Play::EnSlimeCat());
+		auto catNorth = m_play.GetEnemies().Birth(m_play.AsMainContent(), Play::EnSlimeCat());
 		catNorth.InitTutorial(m_mapData.catSpawnPoint_North * Play::CellPx_24, Dir4::Down);
 
 		const auto catNorthDist = [&]()
@@ -269,7 +271,7 @@ private:
 
 	void tutorialItem(YieldExtended& yield, ActorView self)
 	{
-		auto knight = m_play.GetEnemies().Birth(m_play.AsParent(), Play::EnKnight());
+		auto knight = m_play.GetEnemies().Birth(m_play.AsMainContent(), Play::EnKnight());
 		knight.InitTutorial(m_mapData.knightSpawnPoint * Play::CellPx_24, Dir4::Left);
 
 		bool nearItem{};

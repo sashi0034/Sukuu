@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "Forward.h"
-#include "Play/PlayScene.h"
+#include "Play/PlayCore.h"
 
 namespace Ending
 {

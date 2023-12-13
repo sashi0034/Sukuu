@@ -1,7 +1,7 @@
 ﻿#include "stdafx.h"
 #include "CharaUtil.h"
 
-#include "Play/PlayScene.h"
+#include "Play/PlayCore.h"
 #include "Play/Effect/DamageCounterEffect.h"
 #include "Util/EasingAnimation.h"
 #include "Util/TomlParametersWrapper.h"
@@ -132,7 +132,7 @@ namespace Play
 	{
 		ScopedRenderStates2D sampler{SamplerState::ClampLinear};
 		const auto drawingRect = RectF{
-			drawingPos.movedBy(0, GetTomlParameter<int>(U"play.chara.baloon_offset_y")), {CellPx_24, CellPx_24}
+			drawingPos.movedBy(0, GetTomlParameter<int>(U"play.chara.balloon_offset_y")), {CellPx_24, CellPx_24}
 		};
 
 		const auto tri = Triangle(drawingRect.bl().moveBy(4, -1),
@@ -148,7 +148,7 @@ namespace Play
 
 	static void relayTimeDamage(const CharaPosition& pos, int amount, const Color& c, bool isEnemyDamage = false)
 	{
-		auto&& timeLimiter = PlayScene::Instance().GetTimeLimiter();
+		auto&& timeLimiter = PlayCore::Instance().GetTimeLimiter();
 		if (timeLimiter.IsCountEnabled() == false) return;
 		if (amount > 0)
 		{
@@ -158,7 +158,7 @@ namespace Play
 		{
 			timeLimiter.Damage(-amount, isEnemyDamage);
 		}
-		PlayScene::Instance().FgEffect().add(EmitDamageCounterEffect({
+		PlayCore::Instance().FgEffect().add(EmitDamageCounterEffect({
 			.center = (pos.viewPos + Vec2(1, 1) * CellPx_24 / 2),
 			.amount = amount,
 			.color = c,

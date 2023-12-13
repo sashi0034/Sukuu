@@ -3,7 +3,7 @@
 
 #include "Assets.generated.h"
 #include "detail/ItemUtil.h"
-#include "Play/PlayScene.h"
+#include "Play/PlayCore.h"
 #include "Util/EasingAnimation.h"
 
 namespace
@@ -45,7 +45,7 @@ struct Play::ItemSun::Impl
 		      .rotatedAt(spriteRect.center(), m_rotation)
 		      .draw(getDrawPos(), ColorF{1.0, alpha});
 
-		if (PlayScene::Instance().GetEnemies().SendDamageCollider(
+		if (PlayCore::Instance().GetEnemies().SendDamageCollider(
 			m_attack, GetItemCollider(m_pos, spriteRect.size)) > 0)
 		{
 			AudioAsset(AssetSes::attack1).playOneShot();
@@ -72,7 +72,7 @@ private:
 
 		while (true)
 		{
-			if (CanMoveTo(PlayScene::Instance().GetMap(), m_pos.actualPos, m_dir) == false)
+			if (CanMoveTo(PlayCore::Instance().GetMap(), m_pos.actualPos, m_dir) == false)
 			{
 				m_dir = m_dir.RotatedR();
 				yield.WaitForExpire(AnimateEasing<EaseOutBack>(

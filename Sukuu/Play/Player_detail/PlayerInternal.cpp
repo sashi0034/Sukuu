@@ -2,7 +2,7 @@
 #include "PlayerInternal.h"
 
 #include "Play/PlayBgm.h"
-#include "Play/PlayScene.h"
+#include "Play/PlayCore.h"
 #include "Util/CoroUtil.h"
 #include "Util/TomlParametersWrapper.h"
 
@@ -31,12 +31,12 @@ namespace Play
 	void CheckUseItemExplorer(ActorView self)
 	{
 		// エネミーを一定時間全表示
-		auto&& minimap = PlayScene::Instance().GetMiniMap();
+		auto&& minimap = PlayCore::Instance().GetMiniMap();
 		minimap.SetShowEnemies(true);
 		StartCoro(self, [](YieldExtended yield)
 		{
 			yield.WaitForTime(getToml<double>(U"explorer_enemies_duration"));
-			auto&& minimap1 = PlayScene::Instance().GetMiniMap();
+			auto&& minimap1 = PlayCore::Instance().GetMiniMap();
 			if (minimap1.IsShowEnemies() == false) return;
 			minimap1.SetShowEnemies(false);
 		});

@@ -76,6 +76,6 @@ namespace Play
 
 	void DrawCharaEmotion(const Vec2& drawingPos, AssetNameView emoji);
 
-	PLAYSCENE_SIDEEFFECT void RelayTimeDamageAmount(const CharaPosition& pos, int amount, bool isEnemyDamage);
-	PLAYSCENE_SIDEEFFECT void RelayTimeHealAmount(const CharaPosition& pos, int amount);
+	SINGLETON_SIDEEFFECT void RelayTimeDamageAmount(const CharaPosition& pos, int amount, bool isEnemyDamage);
+	SINGLETON_SIDEEFFECT void RelayTimeHealAmount(const CharaPosition& pos, int amount);
 }

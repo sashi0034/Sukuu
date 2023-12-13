@@ -1,7 +1,7 @@
 ﻿#include "stdafx.h"
 #include "UiMiniMap.h"
 
-#include "Play/PlayScene.h"
+#include "Play/PlayCore.h"
 #include "Util/EasingAnimation.h"
 #include "Util/TomlParametersWrapper.h"
 
@@ -49,7 +49,7 @@ struct Play::UiMiniMap::Impl
 
 		const int rc = getRenderCellSize();
 
-		auto&& scene = PlayScene::Instance();
+		auto&& scene = PlayCore::Instance();
 
 		if (static_cast<int>(Scene::Time() * 10) % 5 >= 2)
 		{
@@ -75,7 +75,7 @@ struct Play::UiMiniMap::Impl
 		{
 			// エネミー描画
 			const auto enemyColor = getToml<Color>(U"enemy_color");
-			PlayScene::Instance().GetEnemies().ForEach([&](auto&& enemy)
+			PlayCore::Instance().GetEnemies().ForEach([&](auto&& enemy)
 			{
 				auto enemyPos = enemy.Pos().actualPos.movedBy(Point{CellPx_24, CellPx_24} / 2) / CellPx_24;
 				(void)Circle(enemyPos * rc, rc / 2).draw(enemyColor);
@@ -86,7 +86,7 @@ struct Play::UiMiniMap::Impl
 	void SpotStairsAndAllItems(ActorView self)
 	{
 		// 階段とアイテムを探して全て表示
-		auto&& gimmick = PlayScene::Instance().GetGimmick();
+		auto&& gimmick = PlayCore::Instance().GetGimmick();
 		const int renderCell = getRenderCellSize();
 		const auto scoped = scopeRenderMinimap();
 		for (auto&& p : step(gimmick.size()))
@@ -116,13 +116,13 @@ struct Play::UiMiniMap::Impl
 private:
 	void checkRefreshMap()
 	{
-		auto&& player = PlayScene::Instance().GetPlayer();
+		auto&& player = PlayCore::Instance().GetPlayer();
 		const auto playerPoint = player.CurrentPoint();
 		if (player.DistField().IsPlayerExistAt(playerPoint) == false) return;
 		if (m_flag[playerPoint].isArrived) return;
 		m_flag[playerPoint].isArrived = true;
 
-		auto&& map = PlayScene::Instance().GetMap();
+		auto&& map = PlayCore::Instance().GetMap();
 
 		const int vision = GetTomlParameter<int>(U"play.ui_minimap.vision_render");
 		const int renderCell = getRenderCellSize();
@@ -159,7 +159,7 @@ private:
 
 	void drawCellAt(const MapGrid& map, int renderCell, const Point& checking)
 	{
-		auto&& gimmick = PlayScene::Instance().GetGimmick();
+		auto&& gimmick = PlayCore::Instance().GetGimmick();
 
 		// 描画
 		const Point drawingTl = checking * renderCell;

@@ -3,7 +3,7 @@
 
 #include "AssetKeys.h"
 #include "Assets.generated.h"
-#include "Play/PlayScene.h"
+#include "Play/PlayCore.h"
 #include "Util/TomlParametersWrapper.h"
 
 namespace
@@ -28,7 +28,7 @@ struct Play::CaveVision::Impl
 
 	void UpdateMask(const Vec2& pos)
 	{
-		auto&& vision = PlayScene::Instance().GetPlayer().Vision();
+		auto&& vision = PlayCore::Instance().GetPlayer().Vision();
 
 		// 霧払い済み
 		if (vision.mistRemoval)

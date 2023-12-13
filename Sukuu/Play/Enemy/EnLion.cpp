@@ -3,7 +3,7 @@
 
 #include "Assets.generated.h"
 #include "EnemyUtil.h"
-#include "Play/PlayScene.h"
+#include "Play/PlayCore.h"
 #include "Play/Chara/CharaUtil.h"
 #include "Util/EasingAnimation.h"
 #include "Util/TomlParametersWrapper.h"
@@ -29,7 +29,7 @@ struct Play::EnLion::Impl : EnemyTransform
 		m_animTimer.Tick();
 
 		// プレイヤーとの当たり判定
-		CheckSendEnemyCollide(PlayScene::Instance().GetPlayer(), *this, EnemyKind::Lion);
+		CheckSendEnemyCollide(PlayCore::Instance().GetPlayer(), *this, EnemyKind::Lion);
 
 		const AssetNameView emotion = [&]()
 		{
@@ -75,8 +75,8 @@ private:
 		const bool leftPriority = RandomBool(0.5);
 		while (true)
 		{
-			auto&& map = PlayScene::Instance().GetMap();
-			auto&& gimmick = PlayScene::Instance().GetGimmick();
+			auto&& map = PlayCore::Instance().GetMap();
+			auto&& gimmick = PlayCore::Instance().GetGimmick();
 			const TerrainKind currentTerrain = GetTerrainAt(map, m_pos.actualPos);
 			const auto currentPoint = m_pos.actualPos.MapPoint();
 
@@ -116,8 +116,8 @@ private:
 
 	void checkJumpAttack(YieldExtended& yield, ActorView self)
 	{
-		auto&& player = PlayScene::Instance().GetPlayer();
-		auto&& map = PlayScene::Instance().GetMap();
+		auto&& player = PlayCore::Instance().GetPlayer();
+		auto&& map = PlayCore::Instance().GetMap();
 		if (not m_playerTracker.IsTracking()) return;
 		const auto playerPoint = player.CurrentPoint();
 		if ((m_pos.actualPos.MapPoint() - playerPoint).manhattanLength() != 1) return;
@@ -168,7 +168,7 @@ namespace Play
 
 	void EnLion::Init()
 	{
-		p_impl->m_pos.SetPos(GetInitialPos(PlayScene::Instance().GetMap()));
+		p_impl->m_pos.SetPos(GetInitialPos(PlayCore::Instance().GetMap()));
 		p_impl->StartFlowchart(*this);
 	}
 

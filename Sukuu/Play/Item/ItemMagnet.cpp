@@ -3,7 +3,7 @@
 
 #include "Assets.generated.h"
 #include "detail/ItemUtil.h"
-#include "Play/PlayScene.h"
+#include "Play/PlayCore.h"
 
 namespace
 {
@@ -46,7 +46,7 @@ struct Play::ItemMagnet::Impl
 
 		if (m_animTimer.Time() > lifetime)
 		{
-			PlayScene::Instance().GetGimmick()[m_pos.actualPos.MapPoint()] = GimmickKind::None;
+			PlayCore::Instance().GetGimmick()[m_pos.actualPos.MapPoint()] = GimmickKind::None;
 		}
 	}
 
@@ -82,7 +82,7 @@ namespace Play
 	void ItemMagnet::Init(const CharaVec2& pos)
 	{
 		p_impl->m_pos.SetPos(pos);
-		PlayScene::Instance().GetGimmick()[pos.MapPoint()] = GimmickKind::Installed_Magnet;
+		PlayCore::Instance().GetGimmick()[pos.MapPoint()] = GimmickKind::Installed_Magnet;
 	}
 
 	void ItemMagnet::Update()
@@ -90,7 +90,7 @@ namespace Play
 		ActorBase::Update();
 		p_impl->Update();
 
-		if (PlayScene::Instance().GetGimmick()[p_impl->m_pos.actualPos.MapPoint()] != GimmickKind::Installed_Magnet)
+		if (PlayCore::Instance().GetGimmick()[p_impl->m_pos.actualPos.MapPoint()] != GimmickKind::Installed_Magnet)
 		{
 			Kill();
 		}

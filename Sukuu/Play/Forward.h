@@ -3,8 +3,6 @@
 #include "Util/ActorBase.h"
 #include "Util/Utilities.h"
 
-#define PLAYSCENE_SIDEEFFECT
-
 namespace Play
 {
 	using namespace Util;
