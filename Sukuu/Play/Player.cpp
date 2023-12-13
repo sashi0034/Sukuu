@@ -485,15 +485,15 @@ private:
 		if (Gm::IsUsingGamepad())
 		{
 			if (IsGamepadPressed(Gm::GamepadButton::DUp)) return Dir4::Up;
-			if (IsGamepadPressed(Gm::GamepadButton::DLeft)) return Dir4::Left;
 			if (IsGamepadPressed(Gm::GamepadButton::DDown)) return Dir4::Down;
+			if (IsGamepadPressed(Gm::GamepadButton::DLeft)) return Dir4::Left;
 			if (IsGamepadPressed(Gm::GamepadButton::DRight)) return Dir4::Right;
 		}
 		else
 		{
 			if (KeyW.pressed() || KeyUp.pressed()) return Dir4::Up;
-			if (KeyA.pressed() || KeyLeft.pressed()) return Dir4::Left;
 			if (KeyS.pressed() || KeyDown.pressed()) return Dir4::Down;
+			if (KeyA.pressed() || KeyLeft.pressed()) return Dir4::Left;
 			if (KeyD.pressed() || KeyRight.pressed()) return Dir4::Right;
 		}
 		return Dir4::Invalid;
