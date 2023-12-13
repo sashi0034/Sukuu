@@ -46,8 +46,8 @@ void Main()
 	actorRoot.Birth(AssetReloader());
 #endif
 	actorRoot.Birth(TomlParametersWrapper());
-	actorRoot.Birth(GamesSupervisor());
 	actorRoot.Birth(Gm::GamepadObserver());
+	actorRoot.Birth(GamesSupervisor());
 
 	while (System::Update())
 	{

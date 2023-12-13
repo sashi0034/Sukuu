@@ -40,6 +40,7 @@ private:
 
 	void flowchartLoop(YieldExtended& yield, ActorView self)
 	{
+		yield();
 #if _DEBUG
 		const auto entryPoint = debugToml<String>(U"entry_point");
 		if (entryPoint == U"tutorial") goto tutorial;

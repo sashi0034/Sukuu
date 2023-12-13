@@ -15,6 +15,7 @@
 #include "Player_detail/PlayerDistField.h"
 #include "Player_detail/PlayerInternal.h"
 #include "Gm/GameCursor.h"
+#include "Gm/GamepadObserver.h"
 #include "Util/CoroUtil.h"
 #include "Util/Dir4.h"
 #include "Util/EasingAnimation.h"
@@ -113,6 +114,8 @@ struct Play::Player::Impl
 		}
 
 		ControlPlayerBgm(m_pos.actualPos, PlayCore::Instance().GetMap());
+
+		if (Gm::IsUsingGamepad()) Gm::RequestHideGameCursor();
 	}
 
 	void CheckGameOver(ActorView self)
@@ -460,7 +463,10 @@ private:
 
 	static bool isDashing()
 	{
-		return KeyShift.pressed() || PlayCore::Instance().GetDashKeep().IsKeeping();
+		const bool pressed = Gm::IsUsingGamepad()
+			                     ? IsGamepadPressed(Gm::GamepadButton::B)
+			                     : KeyShift.pressed();
+		return pressed || PlayCore::Instance().GetDashKeep().IsKeeping();
 	}
 
 	bool canMoveTo(Dir4Type dir) const
@@ -476,10 +482,20 @@ private:
 
 	static Dir4Type checkMoveInput()
 	{
-		if (KeyW.pressed() || KeyUp.pressed()) return Dir4::Up;
-		if (KeyA.pressed() || KeyLeft.pressed()) return Dir4::Left;
-		if (KeyS.pressed() || KeyDown.pressed()) return Dir4::Down;
-		if (KeyD.pressed() || KeyRight.pressed()) return Dir4::Right;
+		if (Gm::IsUsingGamepad())
+		{
+			if (IsGamepadPressed(Gm::GamepadButton::DUp)) return Dir4::Up;
+			if (IsGamepadPressed(Gm::GamepadButton::DLeft)) return Dir4::Left;
+			if (IsGamepadPressed(Gm::GamepadButton::DDown)) return Dir4::Down;
+			if (IsGamepadPressed(Gm::GamepadButton::DRight)) return Dir4::Right;
+		}
+		else
+		{
+			if (KeyW.pressed() || KeyUp.pressed()) return Dir4::Up;
+			if (KeyA.pressed() || KeyLeft.pressed()) return Dir4::Left;
+			if (KeyS.pressed() || KeyDown.pressed()) return Dir4::Down;
+			if (KeyD.pressed() || KeyRight.pressed()) return Dir4::Right;
+		}
 		return Dir4::Invalid;
 	}
 
