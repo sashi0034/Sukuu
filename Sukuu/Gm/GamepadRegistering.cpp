@@ -2,6 +2,7 @@
 #include "GamepadRegistering.h"
 
 #include "AssetKeys.h"
+#include "Assets.generated.h"
 #include "Util/TomlParametersWrapper.h"
 
 namespace
@@ -54,6 +55,9 @@ namespace
 		Texture keyboardEmoji{U"⌨"_emoji};
 		RegisterStage stage = RegisterStage::Register_A;
 		std::array<int, GamepadButtonSize> registered{};
+		double passedStarted{};
+		double passedFinished{};
+		double passedCurrentStage{};
 	};
 
 	constexpr ColorF blackColor = ColorF(0.3);
@@ -70,11 +74,11 @@ namespace
 		return getToml<ColorF>(U"bg");
 	}
 
-	void drawTexts(const InternalState& state)
+	void drawTexts(const InternalState& state, const GamepadInfo& gamepad)
 	{
 		const auto fontSize = getFontSize();
 
-		const auto titleText = FontAsset(AssetKeys::RocknRoll_24_Bitmap)(U"コントローラー登録画面");
+		const auto titleText = FontAsset(AssetKeys::RocknRoll_24_Bitmap)(U"コントローラー登録\n" + gamepad.name);
 		const auto titlePos = Vec2{1, 1} * getToml<int>(U"top");
 		(void)titleText.region(Arg::leftCenter = titlePos).stretched(16, 8).draw(grayColor);
 		titleText.draw(Arg::leftCenter = titlePos, ColorF(1.0));
@@ -188,12 +192,6 @@ namespace
 
 	void checkInput(InternalState& state, const detail::Gamepad_impl& gamepad)
 	{
-		if (KeyBackspace.down())
-		{
-			// 戻る
-			state.stage = static_cast<RegisterStage>(std::max(0, (static_cast<int>(state.stage) - 1)));
-		}
-
 		const int downButton = getGamepadUpButton(gamepad);
 		if (downButton != -1)
 		{
@@ -204,6 +202,9 @@ namespace
 
 				// 進める
 				state.stage = static_cast<RegisterStage>(static_cast<int>(state.stage) + 1);
+				state.passedCurrentStage = 0;
+
+				AudioAsset(AssetSes::system_yes).playOneShot();
 			};
 
 			switch (state.stage)
@@ -260,25 +261,49 @@ namespace
 		if (not gamepad) return;
 
 		InternalState state{};
+		bool cancelRequested{};
 
 		while (System::Update())
 		{
+			// 簡易繊維アニメーション
+			constexpr double transitionStart = 0.3;
+			constexpr double transitionFinish = 0.3;
+			state.passedStarted += Scene::DeltaTime();
+			state.passedCurrentStage += Scene::DeltaTime();
+			if (state.stage == RegisterStage::Finished || cancelRequested) state.passedFinished += Scene::DeltaTime();
+
+			const double transitionScale = 0.5
+				+ 0.5 * EaseOutBack(Math::Min(transitionStart, state.passedStarted) / transitionStart)
+				- 0.5 * EaseInBack(Math::Min(transitionFinish, state.passedFinished) / transitionFinish);
+			Transformer2D transformer2D{
+				Mat3x2::Scale(transitionScale, Scene::Center()).rotated(ToRadians(45 * (1.0 - transitionScale)))
+			};
+
 #if _DEBUG
 			Util::RefreshTomlParameters();
 #endif
 			Scene::SetBackground(getBgColor());
 
-			// ClearPrint();
-			// Print(Cursor::Pos());
-
-			drawTexts(state);
+			drawTexts(state, gamepad.getInfo());
 
 			drawGamepad(state);
 
 			checkInput(state, gamepad);
 
-			if (state.stage == RegisterStage::Finished) break;
-			if (KeyEscape.down()) break;
+			if (KeyEscape.down())
+			{
+				// キャンセル
+				cancelRequested = true;
+				AudioAsset(AssetSes::system_no).playOneShot();
+			}
+			if (KeyBackspace.down())
+			{
+				// 戻る
+				state.stage = static_cast<RegisterStage>(std::max(0, (static_cast<int>(state.stage) - 1)));
+				AudioAsset(AssetSes::system_no).playOneShot();
+			}
+
+			if (state.passedFinished > transitionFinish) break;
 		}
 
 		System::Update();

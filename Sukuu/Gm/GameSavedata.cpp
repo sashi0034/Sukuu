@@ -11,7 +11,7 @@ namespace
 
 	struct AlignedSavedata : GameSavedata
 	{
-		uint8 padding[alignedSaveDataSize - sizeof(GameSavedata)];
+		uint8 padding[alignedSaveDataSize - sizeof(GameSavedata)]{};
 	};
 
 	static_assert(sizeof(AlignedSavedata) == alignedSaveDataSize);
