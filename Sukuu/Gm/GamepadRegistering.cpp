@@ -32,6 +32,23 @@ namespace
 		Finished,
 	};
 
+	constexpr std::array<StringView, static_cast<int>(RegisterStage::Finished) + 1> stageDescription = {
+		U"[ A ] アイテム",
+		U"[ B ] ダッシュ",
+		U"[ X ] ?",
+		U"[ Y ] ?",
+		U"[ Right ] 移動",
+		U"[ Up ] 移動",
+		U"[ Left ] 移動",
+		U"[ Down ] 移動",
+		U"[ LB ] アイテム変更",
+		U"[ RB ] アイテム変更",
+		U"[ LT ] 方向転換",
+		U"[ RT ] すくう",
+		U"[ Menu ] ポーズ",
+		U"終了"
+	};
+
 	struct InternalState
 	{
 		Texture keyboardEmoji{U"⌨"_emoji};
@@ -68,7 +85,7 @@ namespace
 			fontSize, bottom1, blackColor);
 		FontAsset(AssetKeys::RocknRoll_Sdf)(U"設定したいボタンを押してください").drawAt(
 			fontSize, bottom.movedBy(0, -getToml<int>(U"bottom2")), blackColor);
-		const auto buttDesc = FontAsset(AssetKeys::RocknRoll_Sdf)(U"B BUTTON : DASH");
+		const auto buttDesc = FontAsset(AssetKeys::RocknRoll_Sdf)(stageDescription[static_cast<int>(state.stage)]);
 		const auto bottom3 = bottom.movedBy(0, -getToml<int>(U"bottom3"));
 		(void)buttDesc.regionAt(fontSize, bottom3)
 		              .stretched(getToml<Point>(U"desc_padding"))
