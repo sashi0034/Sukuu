@@ -23,20 +23,12 @@
 
 namespace
 {
+	using namespace Play::Player_detail;
+
 	template <typename T>
 	T getToml(const String& key)
 	{
 		return Util::GetTomlParameter<T>(U"play.player." + key);
-	}
-
-	inline float getCursorSize()
-	{
-		return Constants::CursorSize_64 / Graphics2D::GetMaxScaling();
-	}
-
-	inline RectF getCursorRect()
-	{
-		return RectF(Arg::center = Cursor::PosF(), getCursorSize());
 	}
 }
 
@@ -63,7 +55,7 @@ struct Play::Player::Impl
 	Trail m_footTrail{};
 	int m_trailStock{};
 	std::function<void()> m_subUpdating = {};
-	bool m_scoopRequested{};
+	ScoopDevice m_scoopRequested{};
 	bool m_slowMotion{};
 	int m_scoopContinuous{};
 	PlayerVisionState m_vision{};
@@ -393,7 +385,7 @@ private:
 		m_flowchart.Kill();
 		m_distField.Clear();
 		m_subUpdating = {};
-		m_scoopRequested = false;
+		m_scoopRequested = ScoopDevice::None;
 		m_slowMotion = false;
 	}
 
@@ -419,7 +411,7 @@ private:
 			// プレイヤーを掬おうとしてるかチェック
 			checkScoopFromMouse(yield, self);
 
-			moveDir = checkMoveInput();
+			moveDir = CheckMoveInput();
 			if (moveDir != Dir4::Invalid && canMoveTo(moveDir))
 			{
 				// 移動方向決定
@@ -441,7 +433,7 @@ private:
 		{
 			m_animTimer.Reset();
 		}
-		m_act = isDashing() ? PlayerAct::Running : PlayerAct::Walk;
+		m_act = IsDashingInput() ? PlayerAct::Running : PlayerAct::Walk;
 		m_direction = moveDir;
 		m_scoopContinuous = 0;
 		m_cameraOffsetDestination = -moveDir.ToXY() * getToml<double>(U"camera_offset_amount");
@@ -461,13 +453,6 @@ private:
 		}
 	}
 
-	static bool isDashing()
-	{
-		const bool pressed = Gm::IsUsingGamepad()
-			                     ? IsGamepadPressed(Gm::GamepadButton::B)
-			                     : KeyShift.pressed();
-		return pressed || PlayCore::Instance().GetDashKeep().IsKeeping();
-	}
 
 	bool canMoveTo(Dir4Type dir) const
 	{
@@ -478,25 +463,6 @@ private:
 				tutorial->PlayerService().canMoveTo((m_pos.actualPos + dir.ToXY() * CellPx_24));
 		}
 		return true;
-	}
-
-	static Dir4Type checkMoveInput()
-	{
-		if (Gm::IsUsingGamepad())
-		{
-			if (IsGamepadPressed(Gm::GamepadButton::DUp)) return Dir4::Up;
-			if (IsGamepadPressed(Gm::GamepadButton::DDown)) return Dir4::Down;
-			if (IsGamepadPressed(Gm::GamepadButton::DLeft)) return Dir4::Left;
-			if (IsGamepadPressed(Gm::GamepadButton::DRight)) return Dir4::Right;
-		}
-		else
-		{
-			if (KeyW.pressed() || KeyUp.pressed()) return Dir4::Up;
-			if (KeyS.pressed() || KeyDown.pressed()) return Dir4::Down;
-			if (KeyA.pressed() || KeyLeft.pressed()) return Dir4::Left;
-			if (KeyD.pressed() || KeyRight.pressed()) return Dir4::Right;
-		}
-		return Dir4::Invalid;
 	}
 
 	template <double easing(double) = EaseInOutSine>
@@ -536,10 +502,6 @@ private:
 
 	void checkScoopFromMouse(YieldExtended& yield, ActorView self)
 	{
-		if (not m_scoopRequested &&
-			RectF(m_pos.actualPos, {CellPx_24, CellPx_24}).intersects(getCursorRect()) == false)
-			return;
-
 		if (const auto tutorial = PlayCore::Instance().Tutorial())
 		{
 			if (not tutorial->PlayerService().canScoop) return;
@@ -548,37 +510,40 @@ private:
 		// 以下、マウスカーソルが当たった状態
 
 		// マウスクリックまで待機
-		m_subUpdating = [this, self]() mutable
+		m_subUpdating = [this]
 		{
-			if (RectF(m_pos.actualPos, {CellPx_24, CellPx_24}).intersects(getCursorRect()) == false)
-			{
-				// 解除
-				m_subUpdating = {};
-				return;
-			}
+			if (m_scoopRequested == ScoopDevice::None) m_scoopRequested = CheckScoopEnterInput();
 
-			if (MouseL.down()) m_scoopRequested = true;
-
-			const auto cellColor = m_scoopRequested
+			const auto cellColor = m_scoopRequested != ScoopDevice::None
 				                       ? getToml<ColorF>(U"scoop_rect_color_2")
 				                       : getToml<ColorF>(U"scoop_rect_color_1");
-			(void)RectF(m_pos.actualPos.MapPoint() * CellPx_24, {CellPx_24, CellPx_24})
-			      .draw(cellColor)
-			      .drawFrame(0.5, ColorF(cellColor.rgb() * 0.5, 1.0));
 
-			// カーソルを非表示にして
-			Gm::RequestHideGameCursor();
-			// 現在のカーソル位置を代替描画
-			const auto cursorColor = cellColor;
-			// ColorF(cellColor * getToml<double>(U"alternative_cursor_bright"), cellColor.a);
-			// (void)Shape2D::Plus(getCursorSize() / 2, 2, Cursor::PosF())
-			(void)Circle(Cursor::PosF(), getCursorSize() / 2)
-			      .draw(cursorColor)
-			      .drawFrame(0.5, ColorF(cursorColor.rgb() * 0.5, 1.0));
+			const bool intersectsCursor =
+				not Gm::IsUsingGamepad() && RectF(m_pos.actualPos, {CellPx_24, CellPx_24}).intersects(GetCursorRect());
+
+			if (m_scoopRequested != ScoopDevice::None || intersectsCursor)
+			{
+				// セル描画
+				(void)RectF(m_pos.actualPos.MapPoint() * CellPx_24, {CellPx_24, CellPx_24})
+				      .draw(cellColor)
+				      .drawFrame(0.5, ColorF(cellColor.rgb() * 0.5, 1.0));
+			}
+
+			if (intersectsCursor)
+			{
+				// カーソルを非表示にして
+				Gm::RequestHideGameCursor();
+
+				// 現在のカーソル位置を代替描画
+				const auto cursorColor = cellColor;
+				(void)Circle(Cursor::PosF(), GetCursorSize() / 2)
+				      .draw(cursorColor)
+				      .drawFrame(0.5, ColorF(cursorColor.rgb() * 0.5, 1.0));
+			}
 		};
 
 		// すくうが要求されるまで処理を進めない
-		if (not m_scoopRequested) return;
+		if (m_scoopRequested == ScoopDevice::None) return;
 		AudioAsset(AssetSes::scoop_start).playOneShot();
 
 		// すくう方向を決定
@@ -596,25 +561,18 @@ private:
 		while (true)
 		{
 			yield();
-			if (MouseL.down())
+			if (IsScoopExitInput(m_scoopRequested))
 			{
 				// すくう解除
 				focusCameraFor(self, 1.0);
 				m_subUpdating = {};
-				m_scoopRequested = false;
+				m_scoopRequested = ScoopDevice::None;
 				m_slowMotion = false;
 				break;
 			}
 
-			const auto centerRect = RectF(m_pos.actualPos, Vec2{CellPx_24, CellPx_24});
-
-			// もともとのマスからカーソルが離れたら処理スタート
-			if (centerRect.intersects(getCursorRect())) continue;
-
-			const auto centerPoint = m_pos.actualPos.movedBy(Point::One() * CellPx_24 / 2);
-
-			// カーソルをもとに目標の方向を決める
-			auto dir = Dir4::FromXY(Cursor::PosF() - centerPoint);
+			const auto dir = CheckScoopMoveInput(m_scoopRequested, m_pos.actualPos);
+			if (dir == Dir4::Invalid) continue;
 
 			const auto checkingPos = m_pos.actualPos.movedBy(Dir4Type(dir).ToXY() * CellPx_24);
 			if (const auto tutorial = PlayCore::Instance().Tutorial())
@@ -624,7 +582,7 @@ private:
 
 			// 以下、移動させる処理を実行
 			// m_distField.Clear();
-			m_scoopRequested = false;
+			m_scoopRequested = ScoopDevice::None;
 			m_subUpdating = {};
 			m_slowMotion = false;
 			succeedScoop(yield, self, checkingPos);
@@ -657,7 +615,7 @@ private:
 		if (PlayCore::Instance().GetMap().At(m_pos.actualPos.MapPoint()).kind == TerrainKind::Wall)
 		{
 			// ペナルティ発生
-			RelayTimeDamageAmount(m_pos, GetPlayerScoopedPenaltyDamage(m_scoopContinuous), false);
+			RelayTimeDamageAmount(m_pos, static_cast<int>(GetPlayerScoopedPenaltyDamage(m_scoopContinuous)), false);
 			m_scoopContinuous++;
 		}
 	}
