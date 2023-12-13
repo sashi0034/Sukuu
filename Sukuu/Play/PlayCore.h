@@ -47,6 +47,7 @@ namespace Play
 		PlayerPersonalData playerPersonal{};
 		TimeLimiterData timeLimiter{};
 		bool dashKeeping{};
+		int itemIndexing{};
 
 		bool IsTutorial() const { return tutorial != nullptr; }
 	};

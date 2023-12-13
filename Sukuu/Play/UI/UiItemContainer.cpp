@@ -2,6 +2,7 @@
 #include "UiItemContainer.h"
 
 #include "UiItemButton.h"
+#include "Gm/GamepadObserver.h"
 #include "Play/PlayCore.h"
 #include "Util/CoroUtil.h"
 #include "Util/EasingAnimation.h"
@@ -23,6 +24,7 @@ struct Play::UiItemContainer::Impl
 	double m_scale = 1.0;
 	CoroActor m_animation{};
 	UiItemLabel m_itemLabel{};
+	int m_gamepadIndexing{};
 
 	void Update(ActorView self)
 	{
@@ -31,11 +33,21 @@ struct Play::UiItemContainer::Impl
 		auto&& player = PlayCore::Instance().GetPlayer();
 		const auto& playerItems = player.PersonalData().items;
 
+		if (Gm::IsUsingGamepad())
+		{
+			// ゲームパッドで動かす
+			if (IsGamepadDown(Gm::GamepadButton::LB)) m_gamepadIndexing--;
+			if (IsGamepadDown(Gm::GamepadButton::RB)) m_gamepadIndexing++;
+			if (m_gamepadIndexing < 0) m_gamepadIndexing = MaxItemPossession - 1;
+			if (m_gamepadIndexing >= MaxItemPossession) m_gamepadIndexing = 0;
+		}
+
 		for (int i = 0; i < m_items.size(); ++i)
 		{
 			m_items[i].Tick({
 				.label = m_itemLabel,
-				.index = (i + 1),
+				.index = i,
+				.gamepadIndexing = Gm::IsUsingGamepad() ? m_gamepadIndexing : -1,
 				.center = center.movedBy({(i - m_items.size() / 2) * 96, 0}),
 				.item = playerItems[i],
 				.canUse = [&]() { return player.CanUseItem(i); },
@@ -72,9 +84,19 @@ namespace Play
 	{
 	}
 
+	void UiItemContainer::Init(int itemIndexing)
+	{
+		p_impl->m_gamepadIndexing = itemIndexing;
+	}
+
 	void UiItemContainer::Update()
 	{
 		ActorBase::Update();
 		p_impl->Update(*this);
+	}
+
+	int UiItemContainer::GetIndexing() const
+	{
+		return p_impl->m_gamepadIndexing;
 	}
 }

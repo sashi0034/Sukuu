@@ -2,6 +2,7 @@
 #include "UiDashKeep.h"
 
 #include "AssetKeys.h"
+#include "Gm/GamepadObserver.h"
 #include "Util/TomlParametersWrapper.h"
 
 namespace
@@ -19,6 +20,13 @@ struct Play::UiDashKeep::Impl
 
 	void Update()
 	{
+		if (Gm::IsUsingGamepad())
+		{
+			// ゲームパッド使用中は非表示
+			m_keeping = false;
+			return;
+		}
+
 		const auto center = Scene::Size() + getToml<Point>(U"padding");
 		const auto circle = Circle(center, getToml<int>(U"radius"));
 

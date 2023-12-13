@@ -10,6 +10,7 @@ namespace Play
 	{
 		UiItemLabel& label;
 		int index;
+		int gamepadIndexing;
 		Point center;
 		ConsumableItem item;
 		std::function<bool()> canUse;

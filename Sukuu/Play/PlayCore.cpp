@@ -145,6 +145,8 @@ public:
 			m_pause.SetAllowed(true);
 		}
 
+		m_uiItemContainer.Init(data.itemIndexing);
+
 		m_uiMiniMap.Init(m_map.Data().size());
 
 		m_uiTimeLimiter.Init(data.timeLimiter);
@@ -406,6 +408,7 @@ namespace Play
 			.playerPersonal = p_impl->m_player.PersonalData(),
 			.timeLimiter = p_impl->m_uiTimeLimiter.GetData(),
 			.dashKeeping = p_impl->m_uiDashKeep.IsKeeping(),
+			.itemIndexing = p_impl->m_uiItemContainer.GetIndexing()
 		};
 	}
 }
