@@ -251,7 +251,15 @@ dot_speed = 20
 
 [gm.gamepad_registering]
 bg = "#d9d9d9"
-top_y = 80
-gamepad_y = -160
-gamepad_scale = 0.6
 font_size = 40
+top = 64
+gamepad_y = -176
+gamepad_scale = 0.8
+bottom1 = 64
+bottom2 = 192
+bottom3 = 280
+line_y = 112
+line_thickness = 4
+desc_padding = "(12, 4)"
+keyboard_left = 160
+keyboard_size = 120
