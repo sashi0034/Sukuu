@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "GamepadRegistering.h"
 
+#include "GamepadObserver.h"
 #include "AssetKeys.h"
 #include "Assets.generated.h"
 #include "Util/TomlParametersWrapper.h"
@@ -54,7 +55,7 @@ namespace
 	{
 		Texture keyboardEmoji{U"⌨"_emoji};
 		RegisterStage stage = RegisterStage::Register_A;
-		std::array<int, GamepadButtonSize> registered{};
+		GamepadButtonMap<int> registered{};
 		double passedStarted{};
 		double passedFinished{};
 		double passedCurrentStage{};
@@ -95,7 +96,7 @@ namespace
 		              .stretched(getToml<Point>(U"desc_padding"))
 		              .rounded(10)
 		              .drawShadow(Vec2{3, 3}, 12, 1).draw(grayColor)
-		              .draw(grayColor);
+		              .draw(state.stage == RegisterStage::Finished ? redColor : grayColor);
 		(void)buttDesc.drawAt(fontSize, bottom3, Palette::White);
 
 		constexpr int lineX = 64;
@@ -181,24 +182,24 @@ namespace
 		drawBeanButton(stage == Register_Menu, U"bp_menu");
 	}
 
-	int getGamepadUpButton(const detail::Gamepad_impl& gamepad)
+	int getGamepadDownButton(const detail::Gamepad_impl& gamepad)
 	{
 		for (auto [i, button] : Indexed(gamepad.buttons))
 		{
-			if (button.up()) return i;
+			if (button.down()) return i;
 		}
 		return -1;
 	}
 
 	void checkInput(InternalState& state, const detail::Gamepad_impl& gamepad)
 	{
-		const int downButton = getGamepadUpButton(gamepad);
-		if (downButton != -1)
+		const int downButton = getGamepadDownButton(gamepad);
+		if (downButton != -1 && state.passedCurrentStage > 0.1)
 		{
 			const auto r = [&](GamepadButton b)
 			{
 				// ボタンを割り当てる
-				state.registered[static_cast<int>(b)] = downButton;
+				state.registered[b] = downButton;
 
 				// 進める
 				state.stage = static_cast<RegisterStage>(static_cast<int>(state.stage) + 1);
@@ -255,10 +256,15 @@ namespace
 		}
 	}
 
-	void loopInternal()
+	bool canFinishTransition(const InternalState& state)
+	{
+		return (state.stage == RegisterStage::Finished && state.passedCurrentStage > 1.5);
+	}
+
+	Optional<GamepadButtonMap<int>> loopInternal()
 	{
 		const auto gamepad = Gamepad(0);
-		if (not gamepad) return;
+		if (not gamepad) return none;
 
 		InternalState state{};
 		bool cancelRequested{};
@@ -270,7 +276,7 @@ namespace
 			constexpr double transitionFinish = 0.3;
 			state.passedStarted += Scene::DeltaTime();
 			state.passedCurrentStage += Scene::DeltaTime();
-			if (state.stage == RegisterStage::Finished || cancelRequested) state.passedFinished += Scene::DeltaTime();
+			if (canFinishTransition(state) || cancelRequested) state.passedFinished += Scene::DeltaTime();
 
 			const double transitionScale = 0.5
 				+ 0.5 * EaseOutBack(Math::Min(transitionStart, state.passedStarted) / transitionStart)
@@ -307,12 +313,15 @@ namespace
 		}
 
 		System::Update();
+		if (cancelRequested) return none;
+		return state.registered;
 	}
 }
 
-void Gm::DialogGamepadRegistering()
+Optional<GamepadButtonMap<int>> Gm::DialogGamepadRegistering()
 {
 	const auto beforeBg = Scene::GetBackground();
-	loopInternal();
+	auto result = loopInternal();
 	Scene::SetBackground(beforeBg);
+	return result;
 }

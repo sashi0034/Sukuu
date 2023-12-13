@@ -5,6 +5,7 @@
 #include "Constants.h"
 #include "Sukuu/AssetReloader.h"
 #include "Gm/GameCursor.h"
+#include "Gm/GamepadObserver.h"
 #include "Sukuu/GamesSupervisor.h"
 #include "Util/ActorContainer.h"
 #include "Util/TomlParametersWrapper.h"
@@ -46,6 +47,7 @@ void Main()
 #endif
 	actorRoot.Birth(TomlParametersWrapper());
 	actorRoot.Birth(GamesSupervisor());
+	actorRoot.Birth(Gm::GamepadObserver());
 
 	while (System::Update())
 	{

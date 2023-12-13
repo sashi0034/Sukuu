@@ -1,4 +1,5 @@
-﻿#include "PlayScene.h"
+﻿#include "stdafx.h"
+#include "PlayScene.h"
 
 class Play::PlayScene::Impl
 {

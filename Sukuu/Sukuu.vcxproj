@@ -155,6 +155,7 @@
         <ClCompile Include="GitRevision.generated.cpp"/>
         <ClCompile Include="Gm/GameCursor.cpp"/>
         <ClCompile Include="Gm/GameSavedata.cpp"/>
+        <ClCompile Include="Gm\GamepadObserver.cpp" />
         <ClCompile Include="Gm\GamepadRegistering.cpp" />
         <ClCompile Include="Main.cpp"/>
         <ClCompile Include="Play\Chara\CharaUtil.cpp"/>
@@ -427,6 +428,7 @@
         <ClInclude Include="AssetKeys.h"/>
         <ClInclude Include="Assets.generated.h"/>
         <ClInclude Include="Gm\GameCursor.h" />
+        <ClInclude Include="Gm\GamepadObserver.h" />
         <ClInclude Include="Gm\GamepadRegistering.h" />
         <ClInclude Include="Gm\GameSavedata.h" />
         <ClInclude Include="Play\Chara\CharaUtil.h" />
