@@ -410,7 +410,7 @@ private:
 			checkMouseDirectionRotation(yield);
 
 			// プレイヤーを掬おうとしてるかチェック
-			checkScoopFromMouse(yield, self);
+			checkScoopProcess(yield, self);
 
 			moveDir = CheckMoveInput();
 			if (moveDir != Dir4::Invalid && canMoveTo(moveDir))
@@ -504,14 +504,12 @@ private:
 		}
 	}
 
-	void checkScoopFromMouse(YieldExtended& yield, ActorView self)
+	void checkScoopProcess(YieldExtended& yield, ActorView self)
 	{
 		if (const auto tutorial = PlayCore::Instance().Tutorial())
 		{
 			if (not tutorial->PlayerService().canScoop) return;
 		}
-
-		// 以下、マウスカーソルが当たった状態
 
 		// マウスクリックまで待機
 		m_subUpdating = [this]
@@ -527,25 +525,20 @@ private:
 				                       ? getToml<ColorF>(U"scoop_rect_color_2")
 				                       : getToml<ColorF>(U"scoop_rect_color_1");
 
-			if (isAttempt || m_scoopRequested != ScoopDevice::None)
-			{
-				// セル描画
-				(void)RectF(m_pos.actualPos.MapPoint() * CellPx_24, {CellPx_24, CellPx_24})
-				      .draw(cellColor)
-				      .drawFrame(0.5, ColorF(cellColor.rgb() * 0.5, 1.0));
-			}
+			const bool isDrawCell = isAttempt || m_scoopRequested != ScoopDevice::None;
+			if (not isDrawCell) return;
 
+			// セル描画
+			Polygon polygon = RectF(m_pos.actualPos.MapPoint() * CellPx_24, {CellPx_24, CellPx_24}).asPolygon();
 			if (intersectsCursor)
 			{
-				// カーソルを非表示にして
+				// カーソルを代替表示
 				Gm::RequestHideGameCursor();
-
-				// 現在のカーソル位置を代替描画
-				const auto cursorColor = cellColor;
-				(void)Circle(Cursor::PosF(), GetCursorSize() / 2)
-				      .draw(cursorColor)
-				      .drawFrame(0.5, ColorF(cursorColor.rgb() * 0.5, 1.0));
+				polygon.append(Circle(Cursor::PosF(), GetCursorSize() / 2).asPolygon());
 			}
+			(void)polygon
+			      .draw(cellColor)
+			      .drawFrame(0.5, ColorF(cellColor.rgb() * 0.5, 1.0));
 		};
 
 		// すくうが要求されるまで処理を進めない
