@@ -86,7 +86,14 @@ namespace
 
 		const auto bottom = Vec2{Scene::Center().x, Scene::Size().y};
 		const auto bottom1 = bottom.movedBy(0, -getToml<int>(U"bottom1"));
-		(void)FontAsset(AssetKeys::RocknRoll_Sdf)(U"Backspace 一つ戻る\tEsc キャンセルして戻る").drawAt(
+
+		const auto exitPoint = Vec2(getToml<int>(U"exit_left"), bottom1.y);
+		const auto exitText = FontAsset(AssetKeys::RocknRoll_Sdf)(U"戻る");
+
+		(void)exitText.region(fontSize, Arg::leftCenter = exitPoint).stretched(32, 4).rounded(8).draw(grayColor);
+		(void)exitText.draw(fontSize, Arg::leftCenter = exitPoint, ColorF(1));
+
+		const auto rollbackArea = FontAsset(AssetKeys::RocknRoll_Sdf)(U"Backspace やり直し").drawAt(
 			fontSize, bottom1, blackColor);
 		FontAsset(AssetKeys::RocknRoll_Sdf)(U"設定したいボタンを押してください").drawAt(
 			fontSize, bottom.movedBy(0, -getToml<int>(U"bottom2")), blackColor);
@@ -105,7 +112,7 @@ namespace
 		(void)Line(lineX, lineY, Scene::Size().x - lineX, lineY).draw(lineThickness, grayColor);
 
 		state.keyboardEmoji.resized(getToml<int>(U"keyboard_size"))
-		     .draw(Arg::leftCenter = Vec2{getToml<int>(U"keyboard_left"), bottom1.y});
+		     .draw(Arg::rightCenter = Vec2{rollbackArea.leftX() - 16, bottom1.y});
 	}
 
 	void drawButtonLiteral(bool isEnabled, const String& bp, const String& buttonLiteral)
