@@ -390,6 +390,11 @@ private:
 		m_slowMotion = false;
 	}
 
+	static Vec2 getDirectionCameraOffset(Dir4Type moveDir)
+	{
+		return -moveDir.ToXY() * getToml<double>(U"camera_offset_amount");
+	}
+
 	void flowchartLoop(YieldExtended& yield, ActorView self)
 	{
 		while (m_isGameOver)
@@ -437,7 +442,7 @@ private:
 		m_act = IsDashingInput() ? PlayerAct::Running : PlayerAct::Walk;
 		m_direction = moveDir;
 		m_scoopContinuous = 0;
-		m_cameraOffsetDestination = -moveDir.ToXY() * getToml<double>(U"camera_offset_amount");
+		m_cameraOffsetDestination = getDirectionCameraOffset(moveDir);
 
 		// 移動
 		const auto newPos = Vec2(m_pos.actualPos + moveDir.ToXY() * CellPx_24);
@@ -481,25 +486,35 @@ private:
 
 	void checkMouseDirectionRotation(YieldExtended& yield)
 	{
-		if (not MouseR.pressed()) return;
+		const auto pressed = []()
+		{
+			return Gm::IsUsingGamepad()
+				       ? IsGamepadPressed(Gm::GamepadButton::LT)
+				       : MouseR.pressed();
+		};
+
+		if (not pressed()) return;
 
 		// 方向転換をチェック
 		while (true)
 		{
 			yield();
-			if (not MouseR.pressed())
+			if (not pressed())
 			{
 				m_subUpdating = {};
 				return;
 			}
 
 			const auto center = m_pos.actualPos.movedBy(Vec2::One() * CellPx_24 / 2);
-			const auto deltaCursor = Cursor::PosF() - center;
-			m_direction = Dir4::FromXY(deltaCursor);
+			auto moveInput = CheckMoveInput();
+			m_direction = Gm::IsUsingGamepad()
+				              ? (moveInput != Dir4::Invalid ? moveInput : m_direction)
+				              : Dir4::FromXY(Cursor::PosF() - center);
+			m_cameraOffsetDestination = getDirectionCameraOffset(m_direction);
 			m_subUpdating = [center, d = m_direction, t = m_animTimer.Time()]()
 			{
 				drawArrow(center, d, 32 - 4 * Periodic::Jump0_1(0.5s, t));
-				Circle(Cursor::PosF(), 16).draw(ColorF{arrowColor, 0.5});
+				if (not Gm::IsUsingGamepad()) Circle(Cursor::PosF(), 16).draw(ColorF{arrowColor, 0.5});
 			};
 		}
 	}
