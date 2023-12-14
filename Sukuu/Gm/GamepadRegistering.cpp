@@ -55,7 +55,7 @@ namespace
 	{
 		Texture keyboardEmoji{U"⌨"_emoji};
 		RegisterStage stage = RegisterStage::Register_A;
-		GamepadButtonMap<int> registered{};
+		GamepadButtonMapping registered{};
 		double passedStarted{};
 		double passedFinished{};
 		double passedCurrentStage{};
@@ -261,7 +261,7 @@ namespace
 		return (state.stage == RegisterStage::Finished && state.passedCurrentStage > 1.5);
 	}
 
-	Optional<GamepadButtonMap<int>> loopInternal()
+	Optional<GamepadButtonMapping> loopInternal()
 	{
 		const auto gamepad = Gamepad(0);
 		if (not gamepad) return none;
@@ -318,7 +318,7 @@ namespace
 	}
 }
 
-Optional<GamepadButtonMap<int>> Gm::DialogGamepadRegistering()
+Optional<GamepadButtonMapping> Gm::DialogGamepadRegistering()
 {
 	const auto beforeBg = Scene::GetBackground();
 	auto result = loopInternal();

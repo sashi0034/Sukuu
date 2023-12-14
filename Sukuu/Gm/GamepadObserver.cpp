@@ -13,7 +13,7 @@ namespace
 	{
 		bool isUsingGamepad{};
 		String currentGamepad{literal_NotUsed};
-		GamepadButtonMap<int> currentMap{};
+		GamepadButtonMapping currentMap{};
 	};
 
 	ImplState* s_instance;

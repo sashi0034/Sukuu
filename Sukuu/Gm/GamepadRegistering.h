@@ -1,8 +1,8 @@
 ﻿#pragma once
-#include "GamepadObserver.h"
+#include "GamepadButton.h"
 
 namespace Gm
 {
 	[[nodiscard]]
-	Optional<GamepadButtonMap<int>> DialogGamepadRegistering();
+	Optional<GamepadButtonMapping> DialogGamepadRegistering();
 }
