@@ -512,16 +512,18 @@ private:
 		// マウスクリックまで待機
 		m_subUpdating = [this]
 		{
-			if (m_scoopRequested == ScoopDevice::None) m_scoopRequested = CheckScoopEnterInput();
+			const bool intersectsCursor =
+				not Gm::IsUsingGamepad() && RectF(m_pos.actualPos, {CellPx_24, CellPx_24}).intersects(GetCursorRect());
+
+			if (m_scoopRequested == ScoopDevice::None)
+				m_scoopRequested = CheckScoopRequestInput(intersectsCursor);
+			const bool isAttempt = m_scoopRequested == ScoopDevice::None && IsScoopAttemptInput(intersectsCursor);
 
 			const auto cellColor = m_scoopRequested != ScoopDevice::None
 				                       ? getToml<ColorF>(U"scoop_rect_color_2")
 				                       : getToml<ColorF>(U"scoop_rect_color_1");
 
-			const bool intersectsCursor =
-				not Gm::IsUsingGamepad() && RectF(m_pos.actualPos, {CellPx_24, CellPx_24}).intersects(GetCursorRect());
-
-			if (m_scoopRequested != ScoopDevice::None || intersectsCursor)
+			if (isAttempt || m_scoopRequested != ScoopDevice::None)
 			{
 				// セル描画
 				(void)RectF(m_pos.actualPos.MapPoint() * CellPx_24, {CellPx_24, CellPx_24})
@@ -561,7 +563,7 @@ private:
 		while (true)
 		{
 			yield();
-			if (IsScoopExitInput(m_scoopRequested))
+			if (IsScoopCancelInput(m_scoopRequested))
 			{
 				// すくう解除
 				focusCameraFor(self, 1.0);

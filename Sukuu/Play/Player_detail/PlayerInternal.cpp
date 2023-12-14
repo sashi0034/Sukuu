@@ -45,7 +45,21 @@ namespace Play::Player_detail
 		return Dir4::Invalid;
 	}
 
-	ScoopDevice CheckScoopEnterInput()
+	bool IsScoopAttemptInput(bool intersectsCursor)
+	{
+		if (Gm::IsUsingGamepad())
+		{
+			if (IsGamepadPressed(Gm::GamepadButton::RT)) return true;
+		}
+		else
+		{
+			if (intersectsCursor) return true;
+			if (KeySpace.pressed()) return true;
+		}
+		return false;
+	}
+
+	ScoopDevice CheckScoopRequestInput(bool intersectsCursor)
 	{
 		if (Gm::IsUsingGamepad())
 		{
@@ -53,13 +67,13 @@ namespace Play::Player_detail
 		}
 		else
 		{
-			if (MouseL.down()) return ScoopDevice::Mouse;
+			if (intersectsCursor && MouseL.down()) return ScoopDevice::Mouse;
 			if (KeySpace.up()) return ScoopDevice::Button;
 		}
 		return ScoopDevice::None;
 	}
 
-	bool IsScoopExitInput(ScoopDevice device)
+	bool IsScoopCancelInput(ScoopDevice device)
 	{
 		if (Gm::IsUsingGamepad())
 		{

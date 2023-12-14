@@ -52,8 +52,9 @@ namespace Play::Player_detail
 
 	Dir4Type CheckMoveInput();
 
-	ScoopDevice CheckScoopEnterInput();
-	bool IsScoopExitInput(ScoopDevice device);
+	bool IsScoopAttemptInput(bool intersectsCursor);
+	ScoopDevice CheckScoopRequestInput(bool intersectsCursor);
+	bool IsScoopCancelInput(ScoopDevice device);
 	Dir4Type CheckScoopMoveInput(ScoopDevice device, const CharaVec2& actualPos);
 
 	void UseItemLightBulb(ActorView self, PlayerVisionState& vision);
