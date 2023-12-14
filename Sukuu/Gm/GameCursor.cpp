@@ -3,10 +3,13 @@
 
 #include "Assets.generated.h"
 #include "Constants.h"
+#include "GamepadButton.h"
+#include "GamepadObserver.h"
 
 namespace
 {
 	bool s_hide{};
+	Vec2 s_gamepadCursor{};
 }
 
 namespace Gm
@@ -24,5 +27,20 @@ namespace Gm
 			TextureAsset(AssetImages::cursor).resized(Point::One() * Constants::CursorSize_64).drawAt(Cursor::PosF());
 		}
 		s_hide = false;
+	}
+
+	void MoveCursorByGamepad()
+	{
+		const auto gamepad = Gamepad(GamepadPlayer_0);
+		if (not gamepad) return;
+
+		if (s_gamepadCursor.asPoint() != Cursor::Pos())
+		{
+			s_gamepadCursor = Cursor::Pos();
+		}
+
+		s_gamepadCursor = s_gamepadCursor + 2048 * GetGamepadAxeL() * Scene::DeltaTime();
+		s_gamepadCursor.clamp(Rect(Scene::Size()).stretched(-Constants::CursorSize_64 / 2));
+		Cursor::SetPos(s_gamepadCursor.asPoint());
 	}
 }

@@ -48,4 +48,6 @@ namespace Gm
 	};
 
 	using GamepadButtonMapping = GamepadButtonMapper<int>;
+
+	constexpr int GamepadPlayer_0 = 0;
 }

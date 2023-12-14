@@ -10,6 +10,8 @@ namespace Gm
 	bool IsGamepadUp(GamepadButton button);
 	bool IsGamepadDown(GamepadButton button);
 
+	Vec2 GetGamepadAxeL();
+
 	class GamepadObserver : public Util::ActorBase
 	{
 	public:

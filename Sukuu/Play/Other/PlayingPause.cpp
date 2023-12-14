@@ -2,6 +2,7 @@
 #include "PlayingPause.h"
 
 #include "AssetKeys.h"
+#include "Gm/GamepadObserver.h"
 #include "Util/Utilities.h"
 
 namespace Play
@@ -16,7 +17,10 @@ namespace Play
 		if (not Window::GetState().focused) m_paused = true;
 #endif
 
-		if (KeyEscape.down()) m_paused = not m_paused;
+		const bool requestDown = Gm::IsUsingGamepad()
+			                         ? IsGamepadDown(Gm::GamepadButton::Menu)
+			                         : KeyEscape.down();
+		if (requestDown) m_paused = not m_paused;
 		if (m_paused && Util::IsSceneLeftClicked()) m_paused = false;
 
 		if (not m_paused) return;

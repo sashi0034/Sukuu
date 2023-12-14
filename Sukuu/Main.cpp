@@ -19,7 +19,7 @@ void Main()
 	Scene::SetBackground(Constants::HardDarkblue);
 
 	Window::SetStyle(WindowStyle::Sizable);
-	Window::SetTitle(Constants::GameIdentityTrueTitleName);
+	Window::SetTitle(Constants::GameIdentityTitleName);
 	Scene::SetResizeMode(ResizeMode::Keep);
 	Scene::Resize(1920, 1080);
 	Window::Resize(Size{1280, 720});

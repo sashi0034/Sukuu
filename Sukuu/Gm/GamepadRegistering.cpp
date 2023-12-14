@@ -263,7 +263,7 @@ namespace
 
 	Optional<GamepadButtonMapping> loopInternal()
 	{
-		const auto gamepad = Gamepad(0);
+		const auto gamepad = Gamepad(GamepadPlayer_0);
 		if (not gamepad) return none;
 
 		InternalState state{};

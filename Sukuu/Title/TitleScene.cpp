@@ -6,6 +6,8 @@
 #include "Constants.h"
 #include "TitleBackground.h"
 #include "TitleHud.h"
+#include "Gm/GameCursor.h"
+#include "Gm/GamepadObserver.h"
 #include "Util/ActorContainer.h"
 #include "Util/CoroUtil.h"
 #include "Util/EasingAnimation.h"
@@ -57,6 +59,8 @@ struct Title::TitleScene::Impl
 
 	void Update(ActorBase& self)
 	{
+		if (Gm::IsUsingGamepad()) Gm::MoveCursorByGamepad();
+
 		if (m_transitionAlpha > 0)
 		{
 			updateWhileTransition(self);

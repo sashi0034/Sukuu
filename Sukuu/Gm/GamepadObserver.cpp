@@ -18,8 +18,6 @@ namespace
 	};
 
 	ImplState* s_instance;
-
-	constexpr int defaultPlayer_0 = 0;
 }
 
 namespace Gm
@@ -35,23 +33,30 @@ namespace Gm
 
 	bool IsGamepadPressed(GamepadButton button)
 	{
-		if (const auto gamepad = Gamepad(defaultPlayer_0))
+		if (const auto gamepad = Gamepad(GamepadPlayer_0))
 			return gamepad.buttons[s_instance->currentMap[button]].pressed();
 		return false;
 	}
 
 	bool IsGamepadUp(GamepadButton button)
 	{
-		if (const auto gamepad = Gamepad(defaultPlayer_0))
+		if (const auto gamepad = Gamepad(GamepadPlayer_0))
 			return gamepad.buttons[s_instance->currentMap[button]].up();
 		return false;
 	}
 
 	bool IsGamepadDown(GamepadButton button)
 	{
-		if (const auto gamepad = Gamepad(defaultPlayer_0))
+		if (const auto gamepad = Gamepad(GamepadPlayer_0))
 			return gamepad.buttons[s_instance->currentMap[button]].down();
 		return false;
+	}
+
+	Vec2 GetGamepadAxeL()
+	{
+		if (const auto gamepad = Gamepad(GamepadPlayer_0))
+			return Vec2{gamepad.axes[0], gamepad.axes[1]};
+		return {};
 	}
 
 	GamepadObserver::GamepadObserver() :
@@ -63,7 +68,7 @@ namespace Gm
 	void GamepadObserver::Update()
 	{
 		ActorBase::Update();
-		const auto gamepad = Gamepad(defaultPlayer_0);
+		const auto gamepad = Gamepad(GamepadPlayer_0);
 		if (not gamepad)
 		{
 			// ゲームパッドを接続していない
