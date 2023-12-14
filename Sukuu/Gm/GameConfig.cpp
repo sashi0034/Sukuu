@@ -35,12 +35,31 @@ namespace
 			e[U"value"] = map.second;
 			gamepadMapping.push_back(e);
 		}
-		json[U"gamepad"][U"mapping"] = gamepadMapping;
+		json[U"gamepad"][U"mapping"] = Format(gamepadMapping);
 
 		if (not json.save(configPath))
 		{
 			System::MessageBoxOK(U"Failed to write " + configPath, MessageBoxStyle::Error);
 		}
+	}
+
+	Array<int> parseArrayInt(StringView str)
+	{
+		Array<int> result{};
+		String temp{};
+		const auto flash = [&]()
+		{
+			if (temp.isEmpty()) return;
+			result.push_back(Parse<int>(temp));
+			temp.clear();
+		};
+		for (const auto c : str)
+		{
+			if (U'0' <= c && c <= U'9') temp += c;
+			else flash();
+		}
+		flash();
+		return result;
 	}
 
 	GameConfig readJson()
@@ -54,7 +73,7 @@ namespace
 		{
 			for (const auto& mapping : json[U"gamepad"][U"mapping"].arrayView())
 			{
-				config.gamepad.mapping[mapping[U"key"].getString()] = mapping[U"value"].get<Array<int>>();
+				config.gamepad.mapping[mapping[U"key"].getString()] = parseArrayInt(mapping[U"value"].getString());
 			}
 		}
 		catch (...) { readError(U"gamepad.mapping"); }
