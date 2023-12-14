@@ -54,7 +54,7 @@ namespace Play::Player_detail
 		else
 		{
 			if (intersectsCursor) return true;
-			if (KeySpace.pressed()) return true;
+			// if (KeySpace.pressed()) return true;
 		}
 		return false;
 	}
@@ -82,7 +82,7 @@ namespace Play::Player_detail
 		else
 		{
 			if (device == ScoopDevice::Mouse) return MouseL.down();
-			if (device == ScoopDevice::Gamepad) return KeySpace.up();
+			// if (device == ScoopDevice::Gamepad) return KeySpace.up();
 		}
 		return false;
 	}

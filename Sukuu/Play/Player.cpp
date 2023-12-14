@@ -88,13 +88,11 @@ struct Play::Player::Impl
 			// すくうなどの描画
 			m_subUpdating();
 		}
-		else
-		{
-			// 特殊処理してないなら、カメラのオフセットを動かす
-			m_cameraOffset += (m_cameraOffsetDestination - m_cameraOffset)
-				* Scene::DeltaTime()
-				* getToml<double>(U"camera_offset_speed");
-		}
+
+		// 特殊処理してないなら、カメラのオフセットを動かす
+		m_cameraOffset += (m_cameraOffsetDestination - m_cameraOffset)
+			* Scene::DeltaTime()
+			* getToml<double>(U"camera_offset_speed");
 
 		const ScopedRenderStates2D rs = getRenderState();
 
@@ -315,8 +313,9 @@ struct Play::Player::Impl
 
 	Mat3x2 CameraTransform() const
 	{
+		const auto cameraOffset = m_cameraOffset + getToml<Point>(U"default_camera_offset");
 		return Mat3x2::Translate({Scene::Center()})
-		       .translated(-m_pos.viewPos + m_cameraOffset - Vec2{CellPx_24, CellPx_24} / 2)
+		       .translated(-m_pos.viewPos + cameraOffset - Vec2::One() * CellPx_24 / 2)
 		       .scaled(m_cameraScale * m_focusCameraRate, Scene::Center());
 	}
 
@@ -477,7 +476,7 @@ private:
 	static void drawArrow(const Vec2& center, Dir4Type dir, double length)
 	{
 		(void)Shape2D::Arrow(Line{center, center + dir.ToXY() * length}, 20, Vec2::One() * 16)
-		      .draw(ColorF(arrowColor, 0.9)).drawFrame(1, ColorF(arrowColor * 0.3, 0.9));
+		      .draw(ColorF(arrowColor, 0.9)).drawFrame(0.5, ColorF(arrowColor * 0.3, 0.9));
 	}
 
 	void checkMouseDirectionRotation(YieldExtended& yield)
@@ -563,14 +562,17 @@ private:
 			for (int i = 0; i < 4; ++i)
 			{
 				// 4方向セル
+				if (i == scoopingDir) continue;
 				auto r = RectF(m_pos.actualPos.movedBy(Dir4Type(i).ToXY() * CellPx_24), {CellPx_24, CellPx_24});
 				(void)r.draw(cellColor).drawFrame(0.5, ColorF(cellColor.rgb() * 0.5, 1.0));
 			}
 			if (m_scoopRequested == ScoopDevice::Gamepad && scoopingCharge > 0)
 			{
 				// 矢印
-				const double arrowLength = 32 * (scoopingCharge);
-				drawArrow(m_pos.actualPos.movedBy(Vec2::One() * CellPx_24 / 2), scoopingDir, arrowLength);
+				const double arrowLength = 40 * (scoopingCharge);
+				drawArrow(m_pos.actualPos.movedBy(Vec2::One() * CellPx_24 / 2) + scoopingDir.ToXY() * CellPx_24 / 2,
+				          scoopingDir,
+				          arrowLength);
 			}
 		};
 		m_slowMotion = true;
@@ -597,7 +599,8 @@ private:
 			if (m_scoopRequested == ScoopDevice::Gamepad && scoopingCharge < 1.0)
 			{
 				// ゲームパッドのときは、ためが必要
-				scoopingCharge = Math::Min(1.0, scoopingCharge + Scene::DeltaTime() / 0.3);
+				constexpr double chargingTIme = 0.15;
+				scoopingCharge = Math::Min(1.0, scoopingCharge + Scene::DeltaTime() / chargingTIme);
 				continue;
 			}
 
