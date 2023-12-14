@@ -20,6 +20,7 @@ class Play::UiItemButton::Impl
 public:
 	bool m_enteredBefore{};
 	double m_scale{1};
+	double m_enteringTime{};
 
 	void Tick(ActorView self, const ItemButtonParam& param)
 	{
@@ -35,10 +36,15 @@ public:
 			                     ? param.index == param.gamepadIndexing
 			                     : rect.rect.mouseOver();
 
+		m_enteringTime = entered ? m_enteringTime + Scene::DeltaTime() : 0;
+
 		if (Gm::IsUsingGamepad() && entered)
 		{
 			// ゲームパッド用UI
 			(void)rect.stretched(12).drawFrame(4, Palette::Gold);
+
+			// 邪魔なので説明隠す
+			if (m_enteringTime > 1.5) param.label.HideMessage();
 		}
 
 		(void)rect
@@ -103,6 +109,7 @@ namespace Play
 		double scale{};
 		ActorWeak animation{};
 		bool justShowed{};
+		bool requestedHide{};
 	};
 
 	UiItemLabel::UiItemLabel() :
@@ -131,6 +138,7 @@ namespace Play
 
 	void UiItemLabel::ShowMessage(const DrawableText& text)
 	{
+		p_impl->requestedHide = false;
 		p_impl->justShowed = true;
 		p_impl->animation.Kill();
 		p_impl->message = std::move(text);
@@ -142,11 +150,16 @@ namespace Play
 	void UiItemLabel::HideMessage()
 	{
 		if (p_impl->justShowed) return;
+		if (p_impl->requestedHide) return;
+
+		p_impl->requestedHide = true;
+
 		p_impl->animation.Kill();;
 		p_impl->animation = StartCoro(*this, [self = ActorView(*this), impl = p_impl.get()](YieldExtended yield)
 		{
 			yield.WaitForExpire(AnimateEasing<EaseInBack>(self, &impl->scale, 0.0, 0.2));
 			impl->isShowing = false;
+			impl->requestedHide = false;
 		});
 	}
 }
