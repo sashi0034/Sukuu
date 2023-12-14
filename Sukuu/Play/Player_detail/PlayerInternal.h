@@ -18,7 +18,7 @@ namespace Play::Player_detail
 	{
 		None,
 		Mouse,
-		Button,
+		Gamepad,
 	};
 
 	struct PlayerImmortality

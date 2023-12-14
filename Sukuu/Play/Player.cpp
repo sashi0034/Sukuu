@@ -30,6 +30,8 @@ namespace
 	{
 		return Util::GetTomlParameter<T>(U"play.player." + key);
 	}
+
+	constexpr ColorF arrowColor = ColorF(U"#ffc22b");;
 }
 
 struct Play::Player::Impl
@@ -472,10 +474,17 @@ private:
 		m_focusCameraProcess = AnimateEasing<easing>(self, &m_focusCameraRate, scale, 0.5);
 	}
 
+	static void drawArrow(const Vec2& center, Dir4Type dir, double length)
+	{
+		(void)Shape2D::Arrow(Line{center, center + dir.ToXY() * length}, 20, Vec2::One() * 16)
+		      .draw(ColorF(arrowColor, 0.9)).drawFrame(1, ColorF(arrowColor * 0.3, 0.9));
+	}
+
 	void checkMouseDirectionRotation(YieldExtended& yield)
 	{
 		if (not MouseR.pressed()) return;
 
+		// 方向転換をチェック
 		while (true)
 		{
 			yield();
@@ -485,17 +494,13 @@ private:
 				return;
 			}
 
-			const auto center = m_pos.actualPos.movedBy(CellPx_24 / 2, CellPx_24 / 2);
+			const auto center = m_pos.actualPos.movedBy(Vec2::One() * CellPx_24 / 2);
 			const auto deltaCursor = Cursor::PosF() - center;
 			m_direction = Dir4::FromXY(deltaCursor);
 			m_subUpdating = [center, d = m_direction, t = m_animTimer.Time()]()
 			{
-				// 矢印描画
-				constexpr auto c = ColorF(U"#ffc22b");
-				(void)Shape2D::Arrow(Line{center, center + d.ToXY() * (32 - 4 * Periodic::Jump0_1(0.5s, t))}, 20,
-				                     Vec2{16, 16})
-				      .draw(ColorF(c, 0.9)).drawFrame(1, ColorF(c * 0.3, 0.9));
-				Circle(Cursor::PosF(), 16).draw(ColorF{c, 0.5});
+				drawArrow(center, d, 32 - 4 * Periodic::Jump0_1(0.5s, t));
+				Circle(Cursor::PosF(), 16).draw(ColorF{arrowColor, 0.5});
 			};
 		}
 	}
@@ -549,14 +554,23 @@ private:
 		AudioAsset(AssetSes::scoop_start).playOneShot();
 
 		// すくう方向を決定
+		double scoopingCharge{};
+		Dir4Type scoopingDir{Dir4::Invalid};
 		focusCameraFor(self, getToml<double>(U"focus_scale_large"));
-		m_subUpdating = [this]()
+		m_subUpdating = [this, &scoopingCharge, &scoopingDir]()
 		{
 			const auto cellColor = getToml<ColorF>(U"scoop_rect_color_2");
 			for (int i = 0; i < 4; ++i)
 			{
+				// 4方向セル
 				auto r = RectF(m_pos.actualPos.movedBy(Dir4Type(i).ToXY() * CellPx_24), {CellPx_24, CellPx_24});
 				(void)r.draw(cellColor).drawFrame(0.5, ColorF(cellColor.rgb() * 0.5, 1.0));
+			}
+			if (m_scoopRequested == ScoopDevice::Gamepad && scoopingCharge > 0)
+			{
+				// 矢印
+				const double arrowLength = 32 * (scoopingCharge);
+				drawArrow(m_pos.actualPos.movedBy(Vec2::One() * CellPx_24 / 2), scoopingDir, arrowLength);
 			}
 		};
 		m_slowMotion = true;
@@ -573,13 +587,24 @@ private:
 				break;
 			}
 
-			const auto dir = CheckScoopMoveInput(m_scoopRequested, m_pos.actualPos);
-			if (dir == Dir4::Invalid) continue;
+			// すくう方向を決定
+			scoopingDir = CheckScoopMoveInput(m_scoopRequested, m_pos.actualPos);
+			if (scoopingDir == Dir4::Invalid)
+			{
+				scoopingCharge = 0;
+				continue;
+			}
+			if (m_scoopRequested == ScoopDevice::Gamepad && scoopingCharge < 1.0)
+			{
+				// ゲームパッドのときは、ためが必要
+				scoopingCharge = Math::Min(1.0, scoopingCharge + Scene::DeltaTime() / 0.3);
+				continue;
+			}
 
-			const auto checkingPos = m_pos.actualPos.movedBy(Dir4Type(dir).ToXY() * CellPx_24);
+			const auto nextPos = m_pos.actualPos.movedBy(Dir4Type(scoopingDir).ToXY() * CellPx_24);
 			if (const auto tutorial = PlayCore::Instance().Tutorial())
 			{
-				if (not tutorial->PlayerService().canScoopTo(checkingPos)) continue;
+				if (not tutorial->PlayerService().canScoopTo(nextPos)) continue;
 			}
 
 			// 以下、移動させる処理を実行
@@ -587,7 +612,7 @@ private:
 			m_scoopRequested = ScoopDevice::None;
 			m_subUpdating = {};
 			m_slowMotion = false;
-			succeedScoop(yield, self, checkingPos);
+			succeedScoop(yield, self, nextPos);
 			focusCameraFor(self, 1.0);
 			break;
 		}

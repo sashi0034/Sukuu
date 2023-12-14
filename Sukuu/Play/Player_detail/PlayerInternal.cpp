@@ -63,12 +63,12 @@ namespace Play::Player_detail
 	{
 		if (Gm::IsUsingGamepad())
 		{
-			if (IsGamepadUp(Gm::GamepadButton::RT)) return ScoopDevice::Button;
+			if (IsGamepadUp(Gm::GamepadButton::RT)) return ScoopDevice::Gamepad;
 		}
 		else
 		{
 			if (intersectsCursor && MouseL.down()) return ScoopDevice::Mouse;
-			if (KeySpace.up()) return ScoopDevice::Button;
+			// if (KeySpace.up()) return ScoopDevice::Gamepad;
 		}
 		return ScoopDevice::None;
 	}
@@ -77,12 +77,12 @@ namespace Play::Player_detail
 	{
 		if (Gm::IsUsingGamepad())
 		{
-			if (device == ScoopDevice::Button) return IsGamepadUp(Gm::GamepadButton::RT);
+			if (device == ScoopDevice::Gamepad) return IsGamepadUp(Gm::GamepadButton::RT);
 		}
 		else
 		{
 			if (device == ScoopDevice::Mouse) return MouseL.down();
-			if (device == ScoopDevice::Button) return KeySpace.up();
+			if (device == ScoopDevice::Gamepad) return KeySpace.up();
 		}
 		return false;
 	}
@@ -91,7 +91,7 @@ namespace Play::Player_detail
 	{
 		if (Gm::IsUsingGamepad())
 		{
-			if (device == ScoopDevice::Button)
+			if (device == ScoopDevice::Gamepad)
 			{
 				return CheckMoveInput();
 			}
@@ -109,7 +109,7 @@ namespace Play::Player_detail
 				// カーソルをもとに目標の方向を決める
 				return Dir4::FromXY(Cursor::PosF() - centerPoint);
 			}
-			if (device == ScoopDevice::Button)
+			if (device == ScoopDevice::Gamepad)
 			{
 				return CheckMoveInput();
 			}
