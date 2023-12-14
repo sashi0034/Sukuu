@@ -1,6 +1,7 @@
 ﻿#include "stdafx.h"
 #include "GamepadObserver.h"
 
+#include "GameConfig.h"
 #include "GamepadRegistering.h"
 
 namespace
@@ -70,7 +71,7 @@ namespace Gm
 			p_impl->currentGamepad = literal_NotUsed;
 			return;
 		}
-
+		GameConfig::Instance();
 		if (not p_impl->isUsingGamepad)
 		{
 			// ゲームパッドのボタンを押したら認識する
@@ -84,12 +85,22 @@ namespace Gm
 		const bool recognizedNew = p_impl->isUsingGamepad && p_impl->currentGamepad != gamepad.getInfo().name;
 		if (not recognizedNew) return;
 
-		// ゲームパッド名が違ったら、キーマップを設定
+		// ゲームパッド名が違ったら、設定ファイルから参照
+		for (auto&& map : GameConfig::Instance().gamepad.mapping)
+		{
+			if (map.first != gamepad.getInfo().name) continue;
+			p_impl->currentMap = map.second;
+			return;
+		}
+
+		// キーマップを新規設定
 		if (const auto newMap = DialogGamepadRegistering())
 		{
 			// 更新
 			p_impl->currentGamepad = gamepad.getInfo().name;
 			p_impl->currentMap = newMap.value();
+			GameConfig::Instance().gamepad.mapping[p_impl->currentGamepad] = p_impl->currentMap;
+			GameConfig::Instance().RequestWrite();
 		}
 		else
 		{

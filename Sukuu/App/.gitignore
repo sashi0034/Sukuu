@@ -1,7 +1,7 @@
 /*.exe
 /example/*
 /savedata.dat
-/config.toml
+/config.json
 /Mutant
 /Mutant.zip
 /Screenshot

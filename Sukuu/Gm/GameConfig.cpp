@@ -26,7 +26,21 @@ namespace
 	void writeJson(const GameConfig& config)
 	{
 		JSON json{};
-		// TODO
+
+		Array<JSON> gamepadMapping{};
+		for (auto&& map : config.gamepad.mapping)
+		{
+			auto e = JSON();
+			e[U"key"] = map.first;
+			e[U"value"] = map.second;
+			gamepadMapping.push_back(e);
+		}
+		json[U"gamepad"][U"mapping"] = gamepadMapping;
+
+		if (not json.save(configPath))
+		{
+			System::MessageBoxOK(U"Failed to write " + configPath, MessageBoxStyle::Error);
+		}
 	}
 
 	GameConfig readJson()
@@ -40,7 +54,7 @@ namespace
 		{
 			for (const auto& mapping : json[U"gamepad"][U"mapping"].arrayView())
 			{
-				config.gamepad.mapping[mapping[U"key"].getString()] = fromArrayView<int>(mapping[U"value"].arrayView());
+				config.gamepad.mapping[mapping[U"key"].getString()] = mapping[U"value"].get<Array<int>>();
 			}
 		}
 		catch (...) { readError(U"gamepad.mapping"); }
@@ -53,7 +67,7 @@ namespace Gm
 {
 	void GameConfig::RequestWrite()
 	{
-		if (s_instance.has_value()) writeJson(s_instance.value());
+		writeJson(*this);
 	}
 
 	GameConfig& GameConfig::Instance()
