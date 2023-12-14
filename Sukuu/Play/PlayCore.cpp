@@ -179,7 +179,7 @@ public:
 
 		const ScopedRenderStates2D sampler{SamplerState::BorderNearest};
 
-		const bool isSlowMotion = m_player.IsSlowMotion();
+		const bool isSlowMotion = not m_pause.IsPaused() && m_player.IsSlowMotion();
 		const ScopedRenderTarget2D rt0{
 			isSlowMotion ? ScopedRenderTarget2D(m_slowMotion.bufferTexture) : ScopedRenderTarget2D(none)
 		};
