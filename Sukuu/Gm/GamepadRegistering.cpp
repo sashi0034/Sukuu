@@ -75,7 +75,7 @@ namespace
 		return getToml<ColorF>(U"bg");
 	}
 
-	void drawTexts(const InternalState& state, const GamepadInfo& gamepad)
+	void drawTexts(const InternalState& state, const GamepadInfo& gamepad, bool* exitHover)
 	{
 		const auto fontSize = getFontSize();
 
@@ -90,7 +90,9 @@ namespace
 		const auto exitPoint = Vec2(getToml<int>(U"exit_left"), bottom1.y);
 		const auto exitText = FontAsset(AssetKeys::RocknRoll_Sdf)(U"戻る");
 
-		(void)exitText.region(fontSize, Arg::leftCenter = exitPoint).stretched(32, 4).rounded(8).draw(grayColor);
+		const auto exitRect = exitText.region(fontSize, Arg::leftCenter = exitPoint).stretched(32, 4);
+		*exitHover = exitRect.intersects(Cursor::Pos());
+		(void)exitRect.rounded(8).draw(grayColor * (*exitHover ? 0.7 : 1.0));
 		(void)exitText.draw(fontSize, Arg::leftCenter = exitPoint, ColorF(1));
 
 		const auto rollbackArea = FontAsset(AssetKeys::RocknRoll_Sdf)(U"Backspace やり直し").drawAt(
@@ -297,13 +299,14 @@ namespace
 #endif
 			Scene::SetBackground(getBgColor());
 
-			drawTexts(state, gamepad.getInfo());
+			bool exitHover;
+			drawTexts(state, gamepad.getInfo(), &exitHover);
 
 			drawGamepad(state);
 
 			checkInput(state, gamepad);
 
-			if (KeyEscape.down())
+			if (KeyEscape.down() || (exitHover && MouseL.down()))
 			{
 				// キャンセル
 				cancelRequested = true;
