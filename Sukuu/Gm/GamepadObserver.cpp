@@ -37,7 +37,9 @@ namespace
 		}
 		else
 		{
-			isUsingGamepad = not(Keyboard::GetAllInputs().contains_if([](auto&& i) { return i.down(); }));
+			const bool keyboardMouse = (Keyboard::GetAllInputs().contains_if([](auto&& i) { return i.down(); }))
+				|| Mouse::GetAllInputs().contains_if([](auto&& i) { return i.down(); });
+			isUsingGamepad = not keyboardMouse;
 		}
 
 		const bool recognizedNew = isUsingGamepad && currentGamepad != gamepad.getInfo().name;

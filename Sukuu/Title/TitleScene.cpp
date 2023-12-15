@@ -59,7 +59,7 @@ struct Title::TitleScene::Impl
 
 	void Update(ActorBase& self)
 	{
-		if (Gm::IsUsingGamepad()) Gm::MoveCursorByGamepad();
+		// if (Gm::IsUsingGamepad()) Gm::MoveCursorByGamepad();
 
 		if (m_transitionAlpha > 0)
 		{

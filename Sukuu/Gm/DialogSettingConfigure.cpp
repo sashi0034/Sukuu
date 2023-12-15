@@ -40,14 +40,16 @@ namespace
 		// 三角形部分
 		bool enteredLeft{};
 		bool enteredRight{};
-		if (IsUsingGamepad())
+		if (entered)
 		{
-			if (IsGamepadDown(GamepadButton::DLeft)) submit(false);
-			if (IsGamepadDown(GamepadButton::DRight)) submit(true);
-		}
-		else
-		{
-			if (entered)
+			if (IsUsingGamepad())
+			{
+				if (IsGamepadDown(GamepadButton::DLeft)) submit(false);
+				else if (IsGamepadDown(GamepadButton::DRight)) submit(true);
+				enteredRight = true;
+				enteredLeft = true;
+			}
+			else
 			{
 				const bool aimingRight = Cursor::Pos().x > rightRect.center().x;
 				if (MouseL.down()) submit(aimingRight);
@@ -72,12 +74,13 @@ namespace
 		               .drawFrame(1.5, DlBlack);
 	}
 
-	void drawContentTextRegion(const RectF& rightRect, bool entered, StringView name)
+	void drawContentTextRegion(
+		const RectF& rightRect, bool entered, StringView name, const ColorF& focusedColor = DlBlack)
 	{
 		// コンテント領域
 		drawContentRegionRect(rightRect, entered);
 		FontAsset(AssetKeys::RocknRoll_Sdf)(name)
-			.draw(DlFontSize(), Arg::center = rightRect.center(), entered ? DlBlack : DlGray);
+			.draw(DlFontSize(), Arg::center = rightRect.center(), entered ? focusedColor : DlGray);
 	}
 
 	void drawContentVolumeRegion(const RectF& rightRect, bool entered, double rate, double defaultRate)
@@ -122,7 +125,7 @@ namespace
 		// 左右つまみ付きテキストコンテント領域
 		return [name, onSubmit = std::move(onSubmit)](const RectF& rightRect, bool entered)
 		{
-			drawContentTextRegion(rightRect, entered, name);
+			drawContentTextRegion(rightRect, entered, name, DlRed);
 
 			if (not entered) return;
 
@@ -144,7 +147,7 @@ namespace
 		};
 	}
 
-	void updateRow(int row, StringView desc, const ContentUpdateFunc& contentUpdate)
+	void updateRow(int row, int* cursorRaw, StringView desc, const ContentUpdateFunc& contentUpdate)
 	{
 		const int top = getToml<int>(U"cell_top");
 		const auto cellSize = getToml<Size>(U"cell_rect");
@@ -154,7 +157,9 @@ namespace
 		const auto leftRect = RectF(Arg::rightCenter = center.movedBy(-cellSpace.x / 2, 0), cellSize);
 		const auto rightRect = RectF(Arg::leftCenter = center.movedBy(cellSpace.x / 2, 0), cellSize);
 
-		const bool entered = Cursor::Pos().intersects(rightRect);
+		const bool entered = IsUsingGamepad()
+			                     ? row == *cursorRaw
+			                     : Cursor::Pos().intersects(rightRect);
 
 		if (not desc.empty())
 		{
@@ -174,48 +179,60 @@ namespace
 		return fullscreen ? U"フルスクリーン" : U"ウィンドウ";
 	}
 
-	void updateUi(GameConfig& editing, bool* exitHover)
+	void updateUi(GameConfig& editing, bool* exitHover, int* cursorRaw)
 	{
 		static const auto defaultConfig = GameConfig();
 
 		DrawDialogTitle(U"設定");
 
-		updateRow(0, U"画面モード", wrapTextContentWithTabs(getFullscreenName(editing.fullscreen), [&](bool right)
-		{
-			editing.fullscreen = not editing.fullscreen;
-		}));
-		updateRow(1, U"言語", wrapTextContentWithTabs(LanguageLabels[static_cast<int>(editing.language)], [&](bool right)
-		{
-			editing.language = Util::AddModuloEnum<GameLanguage, GameLanguage::Max>(editing.language, right ? 1 : -1);
-		}));
-		updateRow(2, U"BGM", wrapVolumeContentWithTabs(
+		updateRow(0, cursorRaw, U"画面モード", wrapTextContentWithTabs(
+			          getFullscreenName(editing.fullscreen), [&](bool right)
+			          {
+				          editing.fullscreen = not editing.fullscreen;
+			          }));
+		updateRow(1, cursorRaw, U"言語", wrapTextContentWithTabs(
+			          LanguageLabels[static_cast<int>(editing.language)],
+			          [&](bool right)
+			          {
+				          editing.language = Util::AddModuloEnum<
+					          GameLanguage, GameLanguage::Max>(
+					          editing.language, right ? 1 : -1);
+			          }));
+		updateRow(2, cursorRaw, U"BGM", wrapVolumeContentWithTabs(
 			          editing.bgm_volume.GetRate(),
 			          defaultConfig.bgm_volume.GetRate(),
 			          [&](bool right)
 			          {
 				          editing.bgm_volume = TenStepNumber(editing.bgm_volume + (right ? 1 : -1));
 			          }));
-		updateRow(3, U"SE", wrapVolumeContentWithTabs(
+		updateRow(3, cursorRaw, U"SE", wrapVolumeContentWithTabs(
 			          editing.se_volume.GetRate(),
 			          defaultConfig.se_volume.GetRate(),
 			          [&](bool right)
 			          {
 				          editing.se_volume = TenStepNumber(editing.se_volume + (right ? 1 : -1));
 			          }));
-		updateRow(4, U"カメラ移動量", wrapVolumeContentWithTabs(
+		updateRow(4, cursorRaw, U"カメラ移動量", wrapVolumeContentWithTabs(
 			          editing.camera_move.GetRate(),
 			          defaultConfig.camera_move.GetRate(),
 			          [&](bool right)
 			          {
 				          editing.camera_move = TenStepNumber(editing.camera_move + (right ? 1 : -1));
 			          }));
-		updateRow(5, U"", wrapTextContentWithAction(U"ゲームパッド設定", [&]
+		updateRow(5, cursorRaw, U"", wrapTextContentWithAction(U"ゲームパッド設定", [&]
 		{
 			const auto gamepad = Gamepad(GamepadPlayer_0);
 			if (not gamepad) return;
 			if (const auto registered = DialogGamepadRegister())
 				editing.gamepad_mapping[gamepad.getInfo().name] = registered.value();
 		}));
+
+		if (IsUsingGamepad())
+		{
+			*cursorRaw =
+				Util::Mod2(*cursorRaw + (IsGamepadDown(GamepadButton::DDown) - IsGamepadDown(GamepadButton::DUp)),
+				           5 + 1);
+		}
 
 		DrawDialogBottomLine();
 
@@ -228,6 +245,7 @@ namespace
 		state.editing = current;
 
 		bool exitRequested{};
+		int cursorRaw{};
 
 		while (System::Update())
 		{
@@ -237,7 +255,7 @@ namespace
 			if (exitRequested) state.passedFinished += Scene::DeltaTime();
 
 			bool exitHover;
-			updateUi(state.editing, &exitHover);
+			updateUi(state.editing, &exitHover, &cursorRaw);
 
 			exitRequested = exitRequested || CheckDialogExit(exitHover, true);
 

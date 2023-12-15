@@ -22,13 +22,18 @@ namespace Util
 		T m_value;
 	};
 
+	template <typename T>
+	T Mod2(T value, T mod)
+	{
+		return ((value % mod) + mod) % mod;
+	}
+
 	template <typename Enum, Enum maxEnum, typename Value>
 	Enum AddModuloEnum(Enum e, Value add)
 	{
 		static_assert(std::is_enum<Enum>::value, "Enum must be an enumeration type.");
 		constexpr Value maxValue = static_cast<Value>(maxEnum);
-		const auto newValue = (static_cast<Value>(e) + add) % maxValue;
-		return Enum(newValue < 0 ? newValue + maxValue : newValue);
+		return Enum(Mod2<Value>(add + static_cast<Value>(e), maxValue));
 	}
 
 	template <typename FuncType>
