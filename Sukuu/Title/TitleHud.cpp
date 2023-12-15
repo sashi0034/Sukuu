@@ -4,6 +4,7 @@
 #include "AssetKeys.h"
 #include "Constants.h"
 #include "GitRevision.h"
+#include "Gm/DialogYesNo.h"
 #include "Util/Utilities.h"
 
 namespace
@@ -89,7 +90,7 @@ struct Title::TitleHud::Impl
 		if (exitHover && MouseL.down())
 		{
 			const ScopedRenderTarget2D rs{none};
-			if (System::MessageBoxYesNo(U"ゲームを終了しますか", MessageBoxStyle::Question) == MessageBoxResult::Yes)
+			if (Gm::DialogYesNo(U"ゲームを終了しますか") == MessageBoxResult::Yes)
 			{
 				System::Exit();
 			}
@@ -113,7 +114,7 @@ struct Title::TitleHud::Impl
 		if (tutorialHover && MouseL.down())
 		{
 			const ScopedRenderTarget2D rs{none};
-			if (System::MessageBoxYesNo(U"もう一度チュートリアルをしますか", MessageBoxStyle::Question) == MessageBoxResult::Yes)
+			if (Gm::DialogYesNo(U"もう一度チュートリアルをしますか") == MessageBoxResult::Yes)
 			{
 				m_concludedRetryTutorial = true;
 			}

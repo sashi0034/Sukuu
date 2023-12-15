@@ -2,6 +2,7 @@
 #include "DialogYesNo.h"
 
 #include "AssetKeys.h"
+#include "Assets.generated.h"
 #include "GamepadObserver.h"
 #include "detail/GameDialogCommon.h"
 #include "Util/TomlParametersWrapper.h"
@@ -39,7 +40,13 @@ namespace
 		const bool intersects = not IsUsingGamepad() && rect.intersects(Cursor::Pos());
 		const bool entered = (intersects) || alt.pressed();
 		const bool submitted = (intersects && MouseL.up()) || alt.up();;
-		if (submitted && *confirmed == OptionalYesNo::Unopt) *confirmed = answer;
+		if (submitted && *confirmed == OptionalYesNo::Unopt)
+		{
+			// 決定
+			*confirmed = answer;
+			if (answer == OptionalYesNo::No) AudioAsset(AssetSes::system_no).playOneShot();
+			if (answer == OptionalYesNo::Yes) AudioAsset(AssetSes::system_yes).playOneShot();
+		}
 		(void)rect.rounded(8).draw((*confirmed == answer)
 			                           ? DlRed
 			                           : (entered ? (DlGray * 0.9) : DlGray));
