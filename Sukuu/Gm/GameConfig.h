@@ -29,23 +29,13 @@ namespace Gm
 	{
 		bool fullscreen{};
 
-		struct
-		{
-			TenStepNumber bgm{5};
-			TenStepNumber se{5};
-		} volume{};
+		TenStepNumber bgm_volume{5};
+		TenStepNumber se_volume{5};
+		TenStepNumber camera_move{2};
 
-		GameLanguage language;
+		GameLanguage language{};
 
-		struct
-		{
-			HashTable<String, GamepadButtonMapping> mapping;
-		} gamepad{};
-
-		struct
-		{
-			TenStepNumber amount{5};
-		} camera;
+		HashTable<String, GamepadButtonMapping> gamepad_mapping{};
 
 		void RequestWrite();
 		static GameConfig& Instance();

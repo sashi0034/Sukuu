@@ -28,14 +28,14 @@ namespace
 		JSON json{};
 
 		Array<JSON> gamepadMapping{};
-		for (auto&& map : config.gamepad.mapping)
+		for (auto&& map : config.gamepad_mapping)
 		{
 			auto e = JSON();
 			e[U"key"] = map.first;
 			e[U"value"] = map.second;
 			gamepadMapping.push_back(e);
 		}
-		json[U"gamepad"][U"mapping"] = Format(gamepadMapping);
+		json[U"gamepad_mapping"] = Format(gamepadMapping);
 
 		if (not json.save(configPath))
 		{
@@ -71,12 +71,12 @@ namespace
 
 		try
 		{
-			for (const auto& mapping : json[U"gamepad"][U"mapping"].arrayView())
+			for (const auto& mapping : json[U"gamepad_mapping"].arrayView())
 			{
-				config.gamepad.mapping[mapping[U"key"].getString()] = parseArrayInt(mapping[U"value"].getString());
+				config.gamepad_mapping[mapping[U"key"].getString()] = parseArrayInt(mapping[U"value"].getString());
 			}
 		}
-		catch (...) { readError(U"gamepad.mapping"); }
+		catch (...) { readError(U"gamepad_mapping"); }
 
 		return config;
 	}

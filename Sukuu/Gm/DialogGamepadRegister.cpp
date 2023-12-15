@@ -259,7 +259,7 @@ namespace
 
 		while (System::Update())
 		{
-			Transformer2D transformer2D{PreUpdateDialog(state.passedStarted, state.passedFinished)};
+			Transformer2D transformer2D{PreUpdateDialog(state.passedStarted, state.passedFinished, false)};
 
 			state.passedStarted += Scene::DeltaTime();
 			state.passedCurrentStage += Scene::DeltaTime();

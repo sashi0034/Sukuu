@@ -156,7 +156,7 @@
         <ClCompile Include="Gm/GameCursor.cpp"/>
         <ClCompile Include="Gm/GameSavedata.cpp"/>
         <ClCompile Include="Gm\detail\GameDialogCommon.cpp" />
-        <ClCompile Include="Gm\DialogGameConfigure.cpp" />
+        <ClCompile Include="Gm\DialogSettingConfigure.cpp" />
         <ClCompile Include="Gm\DialogYesNo.cpp" />
         <ClCompile Include="Gm\GameConfig.cpp" />
         <ClCompile Include="Gm\GamepadObserver.cpp" />
@@ -432,7 +432,7 @@
         <ClInclude Include="AssetKeys.h"/>
         <ClInclude Include="Assets.generated.h"/>
         <ClInclude Include="Gm\detail\GameDialogCommon.h" />
-        <ClInclude Include="Gm\DialogGameConfigure.h" />
+        <ClInclude Include="Gm\DialogSettingConfigure.h" />
         <ClInclude Include="Gm\DialogYesNo.h" />
         <ClInclude Include="Gm\GameConfig.h" />
         <ClInclude Include="Gm\GameCursor.h" />

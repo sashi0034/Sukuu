@@ -35,12 +35,12 @@ namespace Gm::detail
 		return Vec2{Scene::Center().x, Scene::Size().y}.movedBy(0, -getToml<int>(U"bottom1"));
 	}
 
-	Transformer2D PreUpdateDialog(double passedStarted, double passedFinished)
+	Transformer2D PreUpdateDialog(double passedStarted, double passedFinished, bool enableGamepad)
 	{
 #if _DEBUG
 		Util::RefreshTomlParameters();
 #endif
-		RefreshGamepad();
+		if (enableGamepad) RefreshGamepad();
 		Scene::SetBackground(DlBackground());
 
 		// 簡易遷移アニメーション

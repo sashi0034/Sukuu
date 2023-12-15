@@ -44,7 +44,7 @@ namespace
 		if (not recognizedNew) return;
 
 		// ゲームパッド名が違ったら、設定ファイルから参照
-		for (auto&& map : GameConfig::Instance().gamepad.mapping)
+		for (auto&& map : GameConfig::Instance().gamepad_mapping)
 		{
 			if (map.first != gamepad.getInfo().name) continue;
 			currentMap = map.second;
@@ -59,7 +59,7 @@ namespace
 			isUsingGamepad = true;
 			currentGamepad = gamepad.getInfo().name;
 			currentMap = newMap.value();
-			GameConfig::Instance().gamepad.mapping[currentGamepad] = currentMap;
+			GameConfig::Instance().gamepad_mapping[currentGamepad] = currentMap;
 			GameConfig::Instance().RequestWrite();
 		}
 	}
