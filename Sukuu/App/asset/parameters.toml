@@ -293,4 +293,9 @@ button_size = "(440, 120)"
 button_offset = "(280, 120)"
 
 [gm.setting_configure]
-
+cell_top = 120
+cell_rect = "(640, 72)"
+cell_space = "(12, 32)"
+desc_left = 40
+triangle_space = 24
+triangle_size = 36

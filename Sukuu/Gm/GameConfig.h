@@ -28,12 +28,11 @@ namespace Gm
 	struct GameConfig
 	{
 		bool fullscreen{};
+		GameLanguage language{};
 
 		TenStepNumber bgm_volume{5};
 		TenStepNumber se_volume{5};
 		TenStepNumber camera_move{2};
-
-		GameLanguage language{};
 
 		HashTable<String, GamepadButtonMapping> gamepad_mapping{};
 

@@ -4,6 +4,7 @@ namespace Gm::detail
 {
 	constexpr ColorF DlBlack = ColorF(0.3);
 	constexpr ColorF DlGray = Palette::Gray;
+	constexpr ColorF DlLightGray = DlGray * 1.3;
 	constexpr ColorF DlRed = Palette::Red;
 
 	int DlFontSize();
