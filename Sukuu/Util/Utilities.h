@@ -53,6 +53,36 @@ namespace Util
 	{
 		return std::accumulate(s.begin(), s.end(), T{});
 	}
+
+	template <typename T, typename Rollback = std::function<void(T)>>
+	class ScopedValueStore : public Uncopyable
+	{
+	public:
+		[[nodiscard]]
+		ScopedValueStore(const T& current, Rollback rollback) :
+			m_before(current),
+			m_rollback(std::move(rollback))
+		{
+		}
+
+		~ScopedValueStore()
+		{
+			m_rollback(m_before);
+		}
+
+	private:
+		T m_before;
+		Rollback m_rollback;
+	};
+
+	class ScopedBackgroundStore : public ScopedValueStore<ColorF>
+	{
+	public:
+		[[nodiscard]]
+		ScopedBackgroundStore() : ScopedValueStore(Scene::GetBackground(), Scene::SetBackground)
+		{
+		}
+	};
 }
 
 #define SINGLETON_SIDEEFFECT

@@ -4,11 +4,16 @@
 #include "GamepadObserver.h"
 #include "AssetKeys.h"
 #include "Assets.generated.h"
+#include "detail/GameDialogCommon.h"
 #include "Util/TomlParametersWrapper.h"
+#include "Util/Utilities.h"
 
 namespace
 {
 	using namespace Gm;
+	using namespace Gm::detail;
+
+	using Gamepad_impl = s3d::detail::Gamepad_impl;
 
 	template <typename T>
 	inline T getToml(const String& key)
@@ -61,57 +66,31 @@ namespace
 		double passedCurrentStage{};
 	};
 
-	constexpr ColorF blackColor = ColorF(0.3);
-	constexpr ColorF grayColor = Palette::Gray;
-	constexpr ColorF redColor = Palette::Red;
-
-	int getFontSize()
-	{
-		return getToml<int>(U"font_size");
-	}
-
-	ColorF getBgColor()
-	{
-		return getToml<ColorF>(U"bg");
-	}
-
 	void drawTexts(const InternalState& state, const GamepadInfo& gamepad, bool* exitHover)
 	{
-		const auto fontSize = getFontSize();
+		const auto fontSize = DlFontSize();
 
-		const auto titleText = FontAsset(AssetKeys::RocknRoll_24_Bitmap)(U"コントローラー登録\n" + gamepad.name);
-		const auto titlePos = Vec2{1, 1} * getToml<int>(U"top");
-		(void)titleText.region(Arg::leftCenter = titlePos).stretched(16, 8).draw(grayColor);
-		titleText.draw(Arg::leftCenter = titlePos, ColorF(1.0));
+		DrawDialogTitle(U"コントローラー登録\n" + gamepad.name);
 
 		const auto bottom = Vec2{Scene::Center().x, Scene::Size().y};
-		const auto bottom1 = bottom.movedBy(0, -getToml<int>(U"bottom1"));
+		const auto bottom1 = DlBottom1();
 
-		const auto exitPoint = Vec2(getToml<int>(U"exit_left"), bottom1.y);
-		const auto exitText = FontAsset(AssetKeys::RocknRoll_Sdf)(U"戻る");
-
-		const auto exitRect = exitText.region(fontSize, Arg::leftCenter = exitPoint).stretched(32, 4);
-		*exitHover = exitRect.intersects(Cursor::Pos());
-		(void)exitRect.rounded(8).draw(grayColor * (*exitHover ? 0.7 : 1.0));
-		(void)exitText.draw(fontSize, Arg::leftCenter = exitPoint, ColorF(1));
+		DrawDialogExit(exitHover);
 
 		const auto rollbackArea = FontAsset(AssetKeys::RocknRoll_Sdf)(U"Backspace やり直し").drawAt(
-			fontSize, bottom1, blackColor);
+			fontSize, bottom1, DlBlack);
 		FontAsset(AssetKeys::RocknRoll_Sdf)(U"設定したいボタンを押してください").drawAt(
-			fontSize, bottom.movedBy(0, -getToml<int>(U"bottom2")), blackColor);
+			fontSize, bottom.movedBy(0, -getToml<int>(U"bottom2")), DlBlack);
 		const auto buttDesc = FontAsset(AssetKeys::RocknRoll_Sdf)(stageDescription[static_cast<int>(state.stage)]);
 		const auto bottom3 = bottom.movedBy(0, -getToml<int>(U"bottom3"));
 		(void)buttDesc.regionAt(fontSize, bottom3)
 		              .stretched(getToml<Point>(U"desc_padding"))
 		              .rounded(10)
-		              .drawShadow(Vec2{3, 3}, 12, 1).draw(grayColor)
-		              .draw(state.stage == RegisterStage::Finished ? redColor : grayColor);
+		              .drawShadow(Vec2{3, 3}, 12, 1).draw(DlGray)
+		              .draw(state.stage == RegisterStage::Finished ? DlRed : DlGray);
 		(void)buttDesc.drawAt(fontSize, bottom3, Palette::White);
 
-		constexpr int lineX = 64;
-		const int lineY = bottom.y - getToml<int>(U"line_y");
-		const int lineThickness = getToml<int>(U"line_thickness");
-		(void)Line(lineX, lineY, Scene::Size().x - lineX, lineY).draw(lineThickness, grayColor);
+		DrawDialogBottomLine();
 
 		state.keyboardEmoji.resized(getToml<int>(U"keyboard_size"))
 		     .draw(Arg::rightCenter = Vec2{rollbackArea.leftX() - 16, bottom1.y});
@@ -120,14 +99,14 @@ namespace
 	void drawButtonLiteral(bool isEnabled, const String& bp, const String& buttonLiteral)
 	{
 		(void)FontAsset(AssetKeys::RocknRoll_Sdf)(buttonLiteral)
-			.drawAt(getToml<int>(U"bs_text"), getToml<Point>(bp), isEnabled ? ColorF(1) : blackColor);
+			.drawAt(getToml<int>(U"bs_text"), getToml<Point>(bp), isEnabled ? ColorF(1) : DlBlack);
 	}
 
 	void drawCircleButton(bool isEnabled, const String& bp, const String& buttonLiteral)
 	{
 		if (isEnabled)
 		{
-			(void)Circle(getToml<Point>(bp), getToml<int>(U"bs_circle")).draw(redColor);
+			(void)Circle(getToml<Point>(bp), getToml<int>(U"bs_circle")).draw(DlRed);
 		}
 		drawButtonLiteral(isEnabled, bp, buttonLiteral);
 	}
@@ -136,27 +115,27 @@ namespace
 	{
 		if (isEnabled)
 		{
-			(void)Circle(getToml<Point>(bp), getToml<int>(U"bs_bean")).draw(redColor);
+			(void)Circle(getToml<Point>(bp), getToml<int>(U"bs_bean")).draw(DlRed);
 		}
 	}
 
 	void drawSquareButton(bool isEnabled, const String& bp)
 	{
 		if (isEnabled)
-			(void)Rect(Arg::center = getToml<Point>(bp), getToml<int>(U"bs_square")).rounded(8).draw(redColor);
+			(void)Rect(Arg::center = getToml<Point>(bp), getToml<int>(U"bs_square")).rounded(8).draw(DlRed);
 	}
 
 	void drawHorizontalButton(bool isEnabled, const String& bp, const String& buttonLiteral)
 	{
 		if (isEnabled)
-			(void)Rect(Arg::center = getToml<Point>(bp), getToml<Point>(U"bs_horizontal")).rounded(16).draw(redColor);
+			(void)Rect(Arg::center = getToml<Point>(bp), getToml<Point>(U"bs_horizontal")).rounded(16).draw(DlRed);
 		drawButtonLiteral(isEnabled, bp, buttonLiteral);
 	}
 
 	void drawVerticalButton(bool isEnabled, const String& bp, const String& buttonLiteral)
 	{
 		if (isEnabled)
-			(void)Rect(Arg::center = getToml<Point>(bp), getToml<Point>(U"bs_vertical")).rounded(16).draw(redColor);
+			(void)Rect(Arg::center = getToml<Point>(bp), getToml<Point>(U"bs_vertical")).rounded(16).draw(DlRed);
 		drawButtonLiteral(isEnabled, bp, buttonLiteral);
 	}
 
@@ -191,7 +170,7 @@ namespace
 		drawBeanButton(stage == Register_Menu, U"bp_menu");
 	}
 
-	int getGamepadDownButton(const detail::Gamepad_impl& gamepad)
+	int getGamepadDownButton(const Gamepad_impl& gamepad)
 	{
 		for (auto [i, button] : Indexed(gamepad.buttons))
 		{
@@ -200,7 +179,7 @@ namespace
 		return -1;
 	}
 
-	void checkInput(InternalState& state, const detail::Gamepad_impl& gamepad)
+	void checkInput(InternalState& state, const Gamepad_impl& gamepad)
 	{
 		const int downButton = getGamepadDownButton(gamepad);
 		if (downButton != -1 && state.passedCurrentStage > 0.1)
@@ -280,24 +259,11 @@ namespace
 
 		while (System::Update())
 		{
-			// 簡易繊維アニメーション
-			constexpr double transitionStart = 0.3;
-			constexpr double transitionFinish = 0.3;
+			Transformer2D transformer2D{PreUpdateDialog(state.passedStarted, state.passedFinished)};
+
 			state.passedStarted += Scene::DeltaTime();
 			state.passedCurrentStage += Scene::DeltaTime();
 			if (canFinishTransition(state) || cancelRequested) state.passedFinished += Scene::DeltaTime();
-
-			const double transitionScale = 0.5
-				+ 0.5 * EaseOutBack(Math::Min(transitionStart, state.passedStarted) / transitionStart)
-				- 0.5 * EaseInBack(Math::Min(transitionFinish, state.passedFinished) / transitionFinish);
-			Transformer2D transformer2D{
-				Mat3x2::Scale(transitionScale, Scene::Center()).rotated(ToRadians(45 * (1.0 - transitionScale)))
-			};
-
-#if _DEBUG
-			Util::RefreshTomlParameters();
-#endif
-			Scene::SetBackground(getBgColor());
 
 			bool exitHover;
 			drawTexts(state, gamepad.getInfo(), &exitHover);
@@ -306,12 +272,9 @@ namespace
 
 			checkInput(state, gamepad);
 
-			if (KeyEscape.down() || (exitHover && MouseL.down()))
-			{
-				// キャンセル
-				cancelRequested = true;
-				AudioAsset(AssetSes::system_no).playOneShot();
-			}
+			// キャンセルチェック
+			cancelRequested = cancelRequested || CheckDialogExit(exitHover);
+
 			if (KeyBackspace.down())
 			{
 				// 戻る
@@ -319,7 +282,7 @@ namespace
 				AudioAsset(AssetSes::system_no).playOneShot();
 			}
 
-			if (state.passedFinished > transitionFinish) break;
+			if (IsFinishDialog(state.passedFinished)) break;
 		}
 
 		System::Update();
@@ -330,8 +293,7 @@ namespace
 
 Optional<GamepadButtonMapping> Gm::DialogGamepadRegistering()
 {
-	const auto beforeBg = Scene::GetBackground();
+	const auto bg = Util::ScopedBackgroundStore();
 	auto result = loopInternal();
-	Scene::SetBackground(beforeBg);
 	return result;
 }

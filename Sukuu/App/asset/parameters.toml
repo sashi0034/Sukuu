@@ -250,19 +250,21 @@ rect_size = "(240, 240)"
 rect_thickness = 8.0
 dot_speed = 20
 
-[gm.gamepad_registering]
-bg = "#d9d9d9"
+[gm.dialog_common]
 font_size = 40
+bg = "#d9d9d9"
 top = 64
-gamepad_y = -176
-gamepad_scale = 0.8
 bottom1 = 64
-bottom2 = 192
-bottom3 = 280
 line_y = 112
 line_thickness = 4
-desc_padding = "(12, 4)"
 exit_left = 112
+
+[gm.gamepad_registering]
+gamepad_y = -176
+gamepad_scale = 0.8
+bottom2 = 192
+bottom3 = 280
+desc_padding = "(12, 4)"
 keyboard_size = 120
 bs_text = 36
 bs_circle = 32
