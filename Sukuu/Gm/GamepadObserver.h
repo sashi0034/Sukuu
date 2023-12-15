@@ -6,6 +6,7 @@ namespace Gm
 {
 	bool IsUsingGamepad();
 
+	Input GetGamepadInput(GamepadButton button);
 	bool IsGamepadPressed(GamepadButton button);
 	bool IsGamepadUp(GamepadButton button);
 	bool IsGamepadDown(GamepadButton button);

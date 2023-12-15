@@ -18,7 +18,7 @@ namespace
 	template <typename T>
 	inline T getToml(const String& key)
 	{
-		return Util::GetTomlParameter<T>(U"gm.gamepad_registering." + key);
+		return Util::GetTomlParameter<T>(U"gm.gamepad_register." + key);
 	}
 
 	enum class RegisterStage

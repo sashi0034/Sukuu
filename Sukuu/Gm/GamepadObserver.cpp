@@ -31,6 +31,13 @@ namespace Gm
 		return s_instance->isUsingGamepad;
 	}
 
+	Input GetGamepadInput(GamepadButton button)
+	{
+		if (const auto gamepad = Gamepad(GamepadPlayer_0))
+			return gamepad.buttons[s_instance->currentMap[button]];
+		return {};
+	}
+
 	bool IsGamepadPressed(GamepadButton button)
 	{
 		if (const auto gamepad = Gamepad(GamepadPlayer_0))
@@ -99,17 +106,15 @@ namespace Gm
 		}
 
 		// キーマップを新規設定
+		p_impl->isUsingGamepad = false;
 		if (const auto newMap = DialogGamepadRegister())
 		{
 			// 更新
+			p_impl->isUsingGamepad = true;
 			p_impl->currentGamepad = gamepad.getInfo().name;
 			p_impl->currentMap = newMap.value();
 			GameConfig::Instance().gamepad.mapping[p_impl->currentGamepad] = p_impl->currentMap;
 			GameConfig::Instance().RequestWrite();
-		}
-		else
-		{
-			p_impl->isUsingGamepad = false;
 		}
 	}
 }

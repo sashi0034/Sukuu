@@ -5,6 +5,7 @@
 #include "Gm/GameSavedata.h"
 #include "Ending/EndingScene.h"
 #include "Gm/DialogGamepadRegister.h"
+#include "Gm/DialogYesNo.h"
 #include "Play/PlayBgm.h"
 #include "Play/PlayScene.h"
 #include "Play/Other/FloorLevelDesign.h"
@@ -48,7 +49,8 @@ private:
 		if (entryPoint == U"play") goto play;
 		if (entryPoint == U"ending") goto ending;
 
-		if (entryPoint == U"gamepad") DialogGamepadRegister();
+		if (entryPoint == U"gamepad") (void)DialogGamepadRegister();
+		if (entryPoint == U"yesno") (void)DialogYesNo(U"ご注文はおねんねですか?");
 #endif
 
 		if (tryLoadSavedata()) goto title;

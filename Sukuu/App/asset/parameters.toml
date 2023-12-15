@@ -259,7 +259,7 @@ line_y = 112
 line_thickness = 4
 exit_left = 112
 
-[gm.gamepad_registering]
+[gm.gamepad_register]
 gamepad_y = -176
 gamepad_scale = 0.8
 bottom2 = 192
@@ -285,3 +285,9 @@ bp_rb = "(1244, 210)"
 bp_lt = "(660, 120)"
 bp_rt = "(1264, 120)"
 bp_menu = "(1001, 543)"
+
+[gm.yesno]
+area_width = 1200
+message_y = -104
+button_size = "(440, 120)"
+button_offset = "(280, 120)"

@@ -3,6 +3,7 @@
 
 #include "AssetKeys.h"
 #include "Assets.generated.h"
+#include "Gm/GamepadObserver.h"
 #include "Util/TomlParametersWrapper.h"
 
 namespace
@@ -78,7 +79,7 @@ namespace Gm::detail
 
 		const int fontSize = DlFontSize();
 		const auto exitRect = exitText.region(fontSize, Arg::leftCenter = exitPoint).stretched(32, 4);
-		*exitHover = exitRect.intersects(Cursor::Pos());
+		*exitHover = not IsUsingGamepad() && exitRect.intersects(Cursor::Pos());
 		(void)exitRect.rounded(8).draw(DlGray * (*exitHover ? 0.7 : 1.0));
 		(void)exitText.draw(fontSize, Arg::leftCenter = exitPoint, ColorF(1));
 	}
