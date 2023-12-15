@@ -540,7 +540,7 @@ private:
 				                       ? getToml<ColorF>(U"scoop_rect_color_2")
 				                       : getToml<ColorF>(U"scoop_rect_color_1");
 
-			const bool isDrawCell = isAttempt || not m_scoopRequested;
+			const bool isDrawCell = isAttempt || m_scoopRequested;
 			if (not isDrawCell) return;
 
 			// セル描画

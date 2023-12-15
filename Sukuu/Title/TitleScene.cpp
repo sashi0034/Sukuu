@@ -107,9 +107,7 @@ private:
 		m_hud.SetShowPrompt(true);
 		yield.WaitForTrue([this]()
 		{
-			return
-				not m_hud.IsButtonHovered() &&
-				IsSceneLeftClicked();
+			return m_hud.IsConcludedPlay();
 		});
 		m_hud.SetShowPrompt(false);
 		AudioAsset(AssetSes::title_start).playOneShot();

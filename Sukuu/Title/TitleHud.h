@@ -14,7 +14,7 @@ namespace Title
 		double OrderPriority() const override;
 
 		void SetShowPrompt(bool show);
-		bool IsButtonHovered() const;
+		bool IsConcludedPlay() const;
 		bool IsConcludedRetryTutorial() const;
 
 	private:

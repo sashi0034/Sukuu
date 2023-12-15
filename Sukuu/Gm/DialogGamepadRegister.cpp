@@ -293,6 +293,8 @@ namespace
 
 Optional<GamepadButtonMapping> Gm::DialogGamepadRegister()
 {
+	const ScopedRenderTarget2D rt{none};
+
 	const auto bg = Util::ScopedBackgroundStore();
 	auto result = loopInternal();
 	return result;

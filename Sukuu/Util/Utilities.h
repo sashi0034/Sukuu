@@ -49,9 +49,9 @@ namespace Util
 		};
 	}
 
-	inline bool IsSceneLeftClicked(int padding = -32)
+	inline bool IsSceneLeftClicked(int padding = 32)
 	{
-		return MouseL.down() && Rect(Scene::Size()).stretched(padding).intersects(Cursor::Pos());
+		return MouseL.down() && Rect(Scene::Size()).stretched(-padding).intersects(Cursor::Pos());
 	}
 
 	inline String FormatTimeSeconds(double t)

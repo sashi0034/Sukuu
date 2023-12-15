@@ -272,7 +272,15 @@ namespace
 
 GameConfig Gm::DialogSettingConfigure(const GameConfig& current)
 {
+	const ScopedRenderTarget2D rt{none};
+
 	const auto bg = Util::ScopedBackgroundStore();
 	const auto result = loopInternal(current);
 	return result;
+}
+
+void Gm::DialogSettingConfigure()
+{
+	GameConfig::Instance() = DialogSettingConfigure(GameConfig::Instance());
+	GameConfig::Instance().RequestWrite();
 }

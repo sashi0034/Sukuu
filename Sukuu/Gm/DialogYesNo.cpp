@@ -110,6 +110,8 @@ namespace
 
 MessageBoxResult Gm::DialogYesNo(StringView message)
 {
+	const ScopedRenderTarget2D rt{none};
+
 	const auto bg = Util::ScopedBackgroundStore();
 	const auto result = loopInternal(message);
 	return result;

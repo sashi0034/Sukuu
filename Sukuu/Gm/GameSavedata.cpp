@@ -9,12 +9,12 @@ namespace
 
 	constexpr int alignedSaveDataSize = 1024;
 
-	struct AlignedSavedata : GameSavedata
+	struct ReservedSavedata : GameSavedata
 	{
-		uint8 padding[alignedSaveDataSize - sizeof(GameSavedata)]{};
+		uint8 reserved[alignedSaveDataSize - sizeof(GameSavedata)]{};
 	};
 
-	static_assert(sizeof(AlignedSavedata) == alignedSaveDataSize);
+	static_assert(sizeof(ReservedSavedata) == alignedSaveDataSize);
 }
 
 namespace Gm
@@ -23,7 +23,7 @@ namespace Gm
 	{
 		BinaryReader reader{dataPath};
 		if (not reader) return none;
-		AlignedSavedata d;
+		ReservedSavedata d;
 		reader.read(d);
 		return GameSavedata(d);
 	}
@@ -32,7 +32,7 @@ namespace Gm
 	{
 		BinaryWriter writer{dataPath};
 		if (not writer) return;
-		const auto d = AlignedSavedata(data);
+		const auto d = ReservedSavedata(data);
 		writer.write(d);
 	}
 }

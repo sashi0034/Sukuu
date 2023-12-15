@@ -4,5 +4,7 @@
 namespace Gm
 {
 	[[nodiscard]]
-	GameConfig DialogSettingConfigure(const GameConfig& current = GameConfig::Instance());
+	GameConfig DialogSettingConfigure(const GameConfig& current);
+
+	void DialogSettingConfigure();
 }
