@@ -52,7 +52,7 @@ namespace Util
 #if _DEBUG
 		if (value.isEmpty())
 		{
-			System::MessageBoxOK(U"TOML parameter error", U"'{}' is missing."_fmt(valuePath), MessageBoxStyle::Error);
+			Console.writeln(U"TOML parameter error", U"'{}' is missing."_fmt(valuePath));
 		}
 #endif
 		return value;

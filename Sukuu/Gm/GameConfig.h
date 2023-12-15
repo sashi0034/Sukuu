@@ -6,11 +6,11 @@ namespace Gm
 {
 	enum class GameLanguage
 	{
-		Ja,
-		En,
-		Cs,
-		Ct,
-		Ko,
+		Ja = 0,
+		En = 1,
+		Cs = 2,
+		Ct = 3,
+		Ko = 4,
 		Max,
 	};
 

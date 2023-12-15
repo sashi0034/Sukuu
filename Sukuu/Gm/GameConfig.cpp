@@ -16,16 +16,19 @@ namespace
 		return a;
 	}
 
-	void readError(StringView labelView)
-	{
-#if _DEBUG
-		System::MessageBoxOK(U"Failed to load config: " + labelView, MessageBoxStyle::Error);
-#endif
-	}
-
 	void writeJson(const GameConfig& config)
 	{
 		JSON json{};
+
+		json[U"fullscreen"] = config.fullscreen;
+
+		json[U"bgm_volume"] = config.bgm_volume.value();
+
+		json[U"se_volume"] = config.se_volume.value();
+
+		json[U"camera_move"] = config.camera_move.value();
+
+		json[U"language"] = static_cast<int>(config.language);
 
 		Array<JSON> gamepadMapping{};
 		for (auto&& map : config.gamepad_mapping)
@@ -35,11 +38,25 @@ namespace
 			e[U"value"] = map.second;
 			gamepadMapping.push_back(e);
 		}
-		json[U"gamepad_mapping"] = Format(gamepadMapping);
+		json[U"gamepad_mapping"] = gamepadMapping;
 
 		if (not json.save(configPath))
 		{
 			System::MessageBoxOK(U"Failed to write " + configPath, MessageBoxStyle::Error);
+		}
+	}
+
+	void tryRead(StringView labelView, const std::function<void()>& read)
+	{
+		try
+		{
+			read();
+		}
+		catch (...)
+		{
+#if _DEBUG
+			Console.writeln(U"Failed to load config: " + labelView);
+#endif
 		}
 	}
 
@@ -69,14 +86,23 @@ namespace
 
 		auto config = GameConfig();
 
-		try
+		tryRead(U"fullscreen", [&] { config.fullscreen = json[U"fullscreen"].get<bool>(); });
+
+		tryRead(U"bgm_volume", [&] { config.bgm_volume = json[U"bgm_volume"].get<int>(); });
+
+		tryRead(U"se_volume", [&] { config.se_volume = json[U"se_volume"].get<int>(); });
+
+		tryRead(U"camera_move", [&] { config.camera_move = json[U"camera_move"].get<int>(); });
+
+		tryRead(U"language", [&] { config.language = static_cast<GameLanguage>(json[U"language"].get<int>()); });
+
+		tryRead(U"gamepad_mapping", [&]
 		{
 			for (const auto& mapping : json[U"gamepad_mapping"].arrayView())
 			{
 				config.gamepad_mapping[mapping[U"key"].getString()] = parseArrayInt(mapping[U"value"].getString());
 			}
-		}
-		catch (...) { readError(U"gamepad_mapping"); }
+		});
 
 		return config;
 	}
