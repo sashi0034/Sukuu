@@ -61,7 +61,7 @@ struct EndingHud::Impl
 			auto&& text = m_slideTexts[i];
 			if (text.text.isEmpty()) continue;
 			auto&& font = FontAsset(AssetKeys::RocknRoll_Sdf);
-			const auto pos = Vec2{text.x, marginY + i * availableY / m_slideTexts.size()};
+			const auto pos = Vec2{text.x, marginY + (i + 0.5) * availableY / m_slideTexts.size()};
 			font(text.text).regionAt(textSize, pos).stretched(Vec2{20, 4}).rounded(20).draw(ColorF(0.3, 0.7));
 			font(text.text).drawAt(TextStyle::Outline(0.3, ColorF(0.4)),
 			                       textSize,
