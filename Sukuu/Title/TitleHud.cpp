@@ -7,6 +7,7 @@
 #include "Gm/DialogSettingConfigure.h"
 #include "Gm/DialogYesNo.h"
 #include "Gm/GamepadObserver.h"
+#include "Play/Other/CornerButton.h"
 #include "Util/Utilities.h"
 
 namespace
@@ -17,64 +18,7 @@ namespace
 		return Util::GetTomlParameter<T>(U"title.hud." + key);
 	}
 
-	void drawButton(const Rect& rect, bool hover)
-	{
-		rect
-			.drawShadow({6, 6}, 24, 3)
-			.rounded(20).draw(getToml<ColorF>(U"button_color") * (hover ? 1.3 : 1.0));
-	};
-
-	void drawButtonFrame(const RectF& region)
-	{
-		region.stretched(8).rounded(8).drawFrame(4 + 4 * Periodic::Sine0_1(1.0s), Palette::Gold);
-	}
-
-	class CornerButton
-	{
-	public:
-		CornerButton(const StringView& label, const std::function<void()>& action) :
-			label(label),
-			action(action) { return; }
-
-		bool Update(int index, int cursorIndex) const
-		{
-			// ボタン描画基本処理
-			const auto buttonSize = getToml<Size>(U"button_size");
-			const int buttonSpace = getToml<int>(U"button_space");
-			const auto buttonPadding = getToml<Point>(U"button_padding");
-
-			auto&& exitRect = Rect(
-				Scene::Size().moveBy(buttonPadding - buttonSize).movedBy(0, -buttonSpace * index),
-				buttonSize);
-			const bool exitHover =
-				exitRect.intersects(RectF(Arg::center = Cursor::PosF(), Constants::CursorSize_64));
-			const bool focused = Gm::IsUsingGamepad()
-				                     ? index == cursorIndex
-				                     : exitHover;
-			drawButton(exitRect, focused);
-			(void)FontAsset(AssetKeys::RocknRoll_24_Bitmap)(label).drawAt(exitRect.center());
-
-			// 入力チェック
-			if (focused)
-			{
-				if (Gm::IsUsingGamepad())
-				{
-					drawButtonFrame(exitRect);
-					if (IsGamepadDown(Gm::GamepadButton::A)) action();
-				}
-				else
-				{
-					if (MouseL.down()) action();
-				}
-			}
-
-			return exitHover;
-		}
-
-	private:
-		StringView label;
-		std::function<void()> action;
-	};
+	using Play::CornerButton;
 }
 
 struct Title::TitleHud::Impl
@@ -183,7 +127,7 @@ struct Title::TitleHud::Impl
 				buttonCount);
 			if (m_cursorIndex == m_buttons.size())
 			{
-				drawButtonFrame(promptRegion);
+				Play::DrawButtonFrame(promptRegion);
 				if (IsGamepadDown(Gm::GamepadButton::A)) m_concludedPlay = true;
 			}
 		}

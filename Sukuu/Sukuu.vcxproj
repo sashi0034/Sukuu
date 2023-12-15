@@ -189,6 +189,7 @@
         <ClCompile Include="Play\Map\MazeGenerator.cpp"/>
         <ClCompile Include="Play\Other\CaveSnowfall.cpp" />
         <ClCompile Include="Play\Other\CaveVision.cpp"/>
+        <ClCompile Include="Play\Other\CornerButton.cpp" />
         <ClCompile Include="Play\Other\FloorLevelDesign.cpp" />
         <ClCompile Include="Play\Other\PlayingPause.cpp" />
         <ClCompile Include="Play\Other\PlayPenaltyBonus.cpp"/>
@@ -468,6 +469,7 @@
         <ClInclude Include="Play\Map\MazeGenerator.h" />
         <ClInclude Include="Play\Other\CaveSnowfall.h" />
         <ClInclude Include="Play\Other\CaveVision.h" />
+        <ClInclude Include="Play\Other\CornerButton.h" />
         <ClInclude Include="Play\Other\FloorLevelDesign.h" />
         <ClInclude Include="Play\Other\PlayingPause.h" />
         <ClInclude Include="Play\Other\PlayPenaltyBonus.h" />
