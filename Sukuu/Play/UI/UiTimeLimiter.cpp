@@ -221,6 +221,11 @@ namespace Play
 		p_impl->ExtendMax(*this, time);
 	}
 
+	void UiTimeLimiter::ForceTerminate()
+	{
+		p_impl->m_data.remainingTime = 0;
+	}
+
 	void UiTimeLimiter::SetCountEnabled(bool enabled)
 	{
 		p_impl->m_countEnabled = enabled;

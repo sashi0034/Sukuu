@@ -5,6 +5,7 @@
 #include "Constants.h"
 #include "GamepadButton.h"
 #include "GamepadObserver.h"
+#include "Util/Utilities.h"
 
 namespace
 {
@@ -43,5 +44,12 @@ namespace Gm
 		s_gamepadCursor.clamp(Rect(Scene::Size()).stretched(-Constants::CursorSize_64 / 2));
 		Cursor::SetPos(s_gamepadCursor.asPoint());
 		// FIXME: https://github.com/Siv3D/OpenSiv3D/issues/1167
+	}
+
+	bool CheckConfirmSimply()
+	{
+		return IsUsingGamepad()
+			       ? IsGamepadDown(GamepadButton::A)
+			       : Util::IsSceneLeftClicked();
 	}
 }

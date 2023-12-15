@@ -188,9 +188,18 @@ public:
 		// 背景描画
 		m_bgMapDrawer.UpdateDraw();
 
-		// ポーズ中なら更新無し
-		m_pause.Update();
-		if (m_pause.IsPaused()) return;
+		// ポーズ中なら更新打ち切り
+		if (m_pause.IsPaused())
+		{
+			const Transformer2D transform{Mat3x2::Identity(), TransformCursor::Yes, Transformer2D::Target::SetLocal};
+			m_caveVision.UpdateScreen();
+			m_pause.Update();
+			return;
+		}
+		else
+		{
+			m_pause.Update();
+		}
 
 		// キャラクターなどの通常更新
 		m_main.Update();
@@ -264,8 +273,9 @@ namespace Play
 	void PlayOperationCore::Update()
 	{
 		p_impl->UpdateScene();
+		if (p_impl->m_pause.IsPaused()) return;
 		p_impl->m_caveVision.UpdateScreen();
-		if (not p_impl->m_pause.IsPaused()) p_impl->m_ui.Update();
+		p_impl->m_ui.Update();
 	}
 
 	ActorWeak PlayCore::StartTransition(int floorIndex)

@@ -53,11 +53,11 @@ namespace Play
 			if (Gm::IsUsingGamepad())
 			{
 				DrawButtonFrame(exitRect);
-				if (IsGamepadDown(Gm::GamepadButton::A)) action();
+				if (Gm::IsGamepadUp(Gm::GamepadButton::A)) action();
 			}
 			else
 			{
-				if (MouseL.down()) action();
+				if (MouseL.up()) action();
 			}
 		}
 

@@ -208,6 +208,7 @@ struct Play::Player::Impl
 
 	bool CanUseItem(ConsumableItem item) const
 	{
+		if (PlayCore::Instance().GetTimeLimiter().GetData().remainingTime <= 0) return false;
 		switch (item)
 		{
 		case ConsumableItem::None:

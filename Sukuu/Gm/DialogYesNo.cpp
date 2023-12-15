@@ -35,12 +35,17 @@ namespace
 	constexpr double textScale = 1.3;
 
 	void updateYesNoButton(
-		const Rect& rect, StringView text, const InputGroup& alt, OptionalYesNo answer, OptionalYesNo* confirmed)
+		const Rect& rect,
+		StringView text,
+		const InputGroup& alt,
+		OptionalYesNo answer,
+		OptionalYesNo* confirmed,
+		bool allowedConfirm)
 	{
 		const bool intersects = not IsUsingGamepad() && rect.intersects(Cursor::Pos());
 		const bool entered = (intersects) || alt.pressed();
 		const bool submitted = (intersects && MouseL.up()) || alt.up();;
-		if (submitted && *confirmed == OptionalYesNo::Unopt)
+		if (allowedConfirm && submitted && *confirmed == OptionalYesNo::Unopt)
 		{
 			// 決定
 			*confirmed = answer;
@@ -53,7 +58,7 @@ namespace
 		FontAsset(AssetKeys::RocknRoll_Sdf)(text).drawAt(DlFontSize() * textScale, rect.center(), ColorF(1));
 	}
 
-	void updateUi(StringView message, OptionalYesNo* confirmed)
+	void updateUi(StringView message, OptionalYesNo* confirmed, bool allowedConfirm)
 	{
 		DrawDialogTitle(U"確認");
 
@@ -75,7 +80,8 @@ namespace
 			U"いいえ {}"_fmt(IsUsingGamepad() ? U"[B]" : U"(N)"),
 			KeyN | GetGamepadInput(GamepadButton::B),
 			OptionalYesNo::No,
-			confirmed);
+			confirmed,
+			allowedConfirm);
 
 		// はい
 		updateYesNoButton(
@@ -83,7 +89,8 @@ namespace
 			U"はい {}"_fmt(IsUsingGamepad() ? U"[A]" : U"(Y)"),
 			KeyY | GetGamepadInput(GamepadButton::A),
 			OptionalYesNo::Yes,
-			confirmed);
+			confirmed,
+			allowedConfirm);
 
 		DrawDialogBottomLine();
 	}
@@ -100,7 +107,7 @@ namespace
 			state.passedStarted += Scene::DeltaTime();
 			if (confirmed != OptionalYesNo::Unopt) state.passedFinished += Scene::DeltaTime();
 
-			updateUi(message, &confirmed);
+			updateUi(message, &confirmed, state.passedStarted > 0.5);
 
 			if (IsFinishDialog(state.passedFinished)) break;
 		}

@@ -19,6 +19,7 @@ namespace Play
 		void Damage(double time, bool isEnemyDamage);
 		void Heal(double time);
 		void ExtendMax(double time);
+		void ForceTerminate();
 
 		void SetCountEnabled(bool enabled);
 		bool IsCountEnabled() const;

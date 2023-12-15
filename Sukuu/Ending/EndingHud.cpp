@@ -4,6 +4,7 @@
 #include "AssetKeys.h"
 #include "Assets.generated.h"
 #include "Constants.h"
+#include "Gm/GameCursor.h"
 #include "Play/PlayCore.h"
 #include "Util/CoroUtil.h"
 #include "Util/EasingAnimation.h"
@@ -139,7 +140,7 @@ private:
 
 		yield.WaitForExpire(AnimateEasing<EaseOutSine>(self, &m_closeAlpha, 1.0, 2.0));
 
-		yield.WaitForTrue([]() { return IsSceneLeftClicked(); });
+		yield.WaitForTrue([]() { return Gm::CheckConfirmSimply(); });
 
 		bgm.stop(5.0s);
 		yield.WaitForExpire(AnimateEasing<EaseOutSine>(self, &m_closeCloseAlpha, 0.0, 5.0));

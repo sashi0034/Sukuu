@@ -4,6 +4,7 @@
 #include "AssetKeys.h"
 #include "Assets.generated.h"
 #include "Constants.h"
+#include "Gm/GameCursor.h"
 #include "Play/PlayCore.h"
 #include "Play/Other/PlayingTips.h"
 #include "Util/CoroUtil.h"
@@ -129,7 +130,7 @@ private:
 		{
 			waitTime += Scene::DeltaTime();
 			if (waitTime > 5.0) break;
-			if (IsSceneLeftClicked()) break;
+			if (Gm::CheckConfirmSimply()) break;
 			yield();
 		}
 
