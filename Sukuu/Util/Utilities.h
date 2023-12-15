@@ -22,6 +22,15 @@ namespace Util
 		T m_value;
 	};
 
+	template <typename Enum, Enum maxEnum, typename Value>
+	Enum AddModuloEnum(Enum e, Value add)
+	{
+		static_assert(std::is_enum<Enum>::value, "Enum must be an enumeration type.");
+		constexpr Value maxValue = static_cast<Value>(maxEnum);
+		const auto newValue = (static_cast<Value>(e) + add) % maxValue;
+		return Enum(newValue < 0 ? newValue + maxValue : newValue);
+	}
+
 	template <typename FuncType>
 	std::function<FuncType> EmptyLambda()
 	{

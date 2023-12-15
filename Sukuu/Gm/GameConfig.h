@@ -14,12 +14,22 @@ namespace Gm
 		Max,
 	};
 
+	constexpr std::array LanguageLabels{
+		U"日本語",
+		U"English",
+		U"简体中文",
+		U"繁體中文",
+		U"한국어",
+	};
+
+	static_assert(LanguageLabels.size() == static_cast<int>(GameLanguage::Max));
+
 	class TenStepNumber : public Util::EnumValue<int>
 	{
 	public:
 		TenStepNumber(int v) : EnumValue(std::max(std::min(v, 10), 0)) { return; }
 
-		double GetRate(double base = 5.0) const
+		double GetRate(double base = 10.0) const
 		{
 			return value() / base;
 		}
