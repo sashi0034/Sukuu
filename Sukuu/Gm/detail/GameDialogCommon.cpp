@@ -85,9 +85,9 @@ namespace Gm::detail
 		(void)exitText.draw(fontSize, Arg::leftCenter = exitPoint, ColorF(1));
 	}
 
-	bool CheckDialogExit(bool exitHover)
+	bool CheckDialogExit(bool exitHover, bool enableGamepad)
 	{
-		if (KeyEscape.down() || (exitHover && MouseL.down()))
+		if (KeyEscape.down() || (exitHover && MouseL.down()) || (enableGamepad && IsGamepadDown(GamepadButton::B)))
 		{
 			// キャンセル
 			AudioAsset(AssetSes::system_no).playOneShot();

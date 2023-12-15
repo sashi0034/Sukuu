@@ -42,5 +42,6 @@ namespace Gm
 		s_gamepadCursor = s_gamepadCursor + 2048 * GetGamepadAxeL() * Scene::DeltaTime();
 		s_gamepadCursor.clamp(Rect(Scene::Size()).stretched(-Constants::CursorSize_64 / 2));
 		Cursor::SetPos(s_gamepadCursor.asPoint());
+		// FIXME: https://github.com/Siv3D/OpenSiv3D/issues/1167
 	}
 }

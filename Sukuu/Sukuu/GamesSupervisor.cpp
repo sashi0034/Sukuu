@@ -4,6 +4,7 @@
 #include "Constants.h"
 #include "Gm/GameSavedata.h"
 #include "Ending/EndingScene.h"
+#include "Gm/DialogGameConfigure.h"
 #include "Gm/DialogGamepadRegister.h"
 #include "Gm/DialogYesNo.h"
 #include "Play/PlayBgm.h"
@@ -51,6 +52,7 @@ private:
 
 		if (entryPoint == U"gamepad") (void)DialogGamepadRegister();
 		if (entryPoint == U"yesno") (void)DialogYesNo(U"ご注文はおねんねですか?");
+		if (entryPoint == U"setting") (void)DialogSettingConfigure();
 #endif
 
 		if (tryLoadSavedata()) goto title;

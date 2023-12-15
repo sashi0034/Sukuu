@@ -15,5 +15,5 @@ namespace Gm::detail
 	void DrawDialogTitle(StringView title);
 	void DrawDialogBottomLine();
 	void DrawDialogExit(bool* exitHover);
-	bool CheckDialogExit(bool exitHover);
+	bool CheckDialogExit(bool exitHover, bool enableGamepad = false);
 }

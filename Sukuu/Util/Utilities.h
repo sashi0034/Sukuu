@@ -14,7 +14,7 @@ namespace Util
 		static_assert(std::is_integral<T>::value);
 
 	public:
-		explicit constexpr EnumValue(T v) : m_value{v} { return; }
+		constexpr EnumValue(T v) : m_value{v} { return; }
 		constexpr operator T() const { return m_value; }
 		T value() const { return m_value; }
 

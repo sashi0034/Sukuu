@@ -291,3 +291,6 @@ area_width = 1200
 message_y = -104
 button_size = "(440, 120)"
 button_offset = "(280, 120)"
+
+[gm.setting_configure]
+
