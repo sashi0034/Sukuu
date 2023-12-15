@@ -55,7 +55,7 @@ void Main()
 
 		actorRoot.Update();
 
-		Gm::UpdateGameCursor();
+		if (not Gm::IsUsingGamepad()) Gm::UpdateGameCursor();
 	}
 }
 

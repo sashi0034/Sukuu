@@ -106,8 +106,6 @@ struct Play::Player::Impl
 		}
 
 		ControlPlayerBgm(m_pos.actualPos, PlayCore::Instance().GetMap());
-
-		if (Gm::IsUsingGamepad()) Gm::RequestHideGameCursor();
 	}
 
 	void CheckGameOver(ActorView self)
