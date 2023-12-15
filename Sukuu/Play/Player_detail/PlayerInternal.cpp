@@ -54,67 +54,52 @@ namespace Play::Player_detail
 		else
 		{
 			if (intersectsCursor) return true;
-			// if (KeySpace.pressed()) return true;
 		}
 		return false;
 	}
 
-	ScoopDevice CheckScoopRequestInput(bool intersectsCursor)
+	bool CheckScoopRequestInput(bool intersectsCursor)
 	{
 		if (Gm::IsUsingGamepad())
 		{
-			if (IsGamepadUp(Gm::GamepadButton::RT)) return ScoopDevice::Gamepad;
+			if (IsGamepadUp(Gm::GamepadButton::RT)) return true;
 		}
 		else
 		{
-			if (intersectsCursor && MouseL.down()) return ScoopDevice::Mouse;
-			// if (KeySpace.up()) return ScoopDevice::Gamepad;
-		}
-		return ScoopDevice::None;
-	}
-
-	bool IsScoopCancelInput(ScoopDevice device)
-	{
-		if (Gm::IsUsingGamepad())
-		{
-			if (device == ScoopDevice::Gamepad) return IsGamepadUp(Gm::GamepadButton::RT);
-		}
-		else
-		{
-			if (device == ScoopDevice::Mouse) return MouseL.down();
-			// if (device == ScoopDevice::Gamepad) return KeySpace.up();
+			if (intersectsCursor && MouseL.down()) return true;
 		}
 		return false;
 	}
 
-	Dir4Type CheckScoopMoveInput(ScoopDevice device, const CharaVec2& actualPos)
+	bool IsScoopCancelInput()
 	{
 		if (Gm::IsUsingGamepad())
 		{
-			if (device == ScoopDevice::Gamepad)
-			{
-				return CheckMoveInput();
-			}
+			return IsGamepadUp(Gm::GamepadButton::RT);
 		}
 		else
 		{
-			if (device == ScoopDevice::Mouse)
-			{
-				// もともとのマスからカーソルが離れたら処理スタート
-				const auto centerRect = RectF(actualPos, Vec2{CellPx_24, CellPx_24});
-				if (centerRect.intersects(GetCursorRect())) return Dir4::Invalid;
-
-				const auto centerPoint = actualPos.movedBy(Point::One() * CellPx_24 / 2);
-
-				// カーソルをもとに目標の方向を決める
-				return Dir4::FromXY(Cursor::PosF() - centerPoint);
-			}
-			if (device == ScoopDevice::Gamepad)
-			{
-				return CheckMoveInput();
-			}
+			return MouseL.down();
 		}
-		return Dir4::Invalid;
+	}
+
+	Dir4Type CheckScoopMoveInput(const CharaVec2& actualPos)
+	{
+		if (Gm::IsUsingGamepad())
+		{
+			return CheckMoveInput();
+		}
+		else
+		{
+			// もともとのマスからカーソルが離れたら処理スタート
+			const auto centerRect = RectF(actualPos, Vec2{CellPx_24, CellPx_24});
+			if (centerRect.intersects(GetCursorRect())) return Dir4::Invalid;
+
+			const auto centerPoint = actualPos.movedBy(Point::One() * CellPx_24 / 2);
+
+			// カーソルをもとに目標の方向を決める
+			return Dir4::FromXY(Cursor::PosF() - centerPoint);
+		}
 	}
 
 	void UseItemLightBulb(ActorView self, PlayerVisionState& vision)

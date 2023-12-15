@@ -14,13 +14,6 @@ namespace Play::Player_detail
 		Dead,
 	};
 
-	enum class ScoopDevice
-	{
-		None,
-		Mouse,
-		Gamepad,
-	};
-
 	struct PlayerImmortality
 	{
 		double immortalTime{};
@@ -53,9 +46,9 @@ namespace Play::Player_detail
 	Dir4Type CheckMoveInput();
 
 	bool IsScoopAttemptInput(bool intersectsCursor);
-	ScoopDevice CheckScoopRequestInput(bool intersectsCursor);
-	bool IsScoopCancelInput(ScoopDevice device);
-	Dir4Type CheckScoopMoveInput(ScoopDevice device, const CharaVec2& actualPos);
+	bool CheckScoopRequestInput(bool intersectsCursor);
+	bool IsScoopCancelInput();
+	Dir4Type CheckScoopMoveInput(const CharaVec2& actualPos);
 
 	void UseItemLightBulb(ActorView self, PlayerVisionState& vision);
 

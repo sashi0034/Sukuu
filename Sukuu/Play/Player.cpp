@@ -57,7 +57,7 @@ struct Play::Player::Impl
 	Trail m_footTrail{};
 	int m_trailStock{};
 	std::function<void()> m_subUpdating = {};
-	ScoopDevice m_scoopRequested{};
+	bool m_scoopRequested{};
 	bool m_slowMotion{};
 	int m_scoopContinuous{};
 	PlayerVisionState m_vision{};
@@ -386,7 +386,7 @@ private:
 		m_flowchart.Kill();
 		m_distField.Clear();
 		m_subUpdating = {};
-		m_scoopRequested = ScoopDevice::None;
+		m_scoopRequested = false;
 		m_slowMotion = false;
 	}
 
@@ -532,15 +532,15 @@ private:
 			const bool intersectsCursor =
 				not Gm::IsUsingGamepad() && RectF(m_pos.actualPos, {CellPx_24, CellPx_24}).intersects(GetCursorRect());
 
-			if (m_scoopRequested == ScoopDevice::None)
+			if (not m_scoopRequested)
 				m_scoopRequested = CheckScoopRequestInput(intersectsCursor);
-			const bool isAttempt = m_scoopRequested == ScoopDevice::None && IsScoopAttemptInput(intersectsCursor);
+			const bool isAttempt = not m_scoopRequested && IsScoopAttemptInput(intersectsCursor);
 
-			const auto cellColor = m_scoopRequested != ScoopDevice::None
+			const auto cellColor = m_scoopRequested
 				                       ? getToml<ColorF>(U"scoop_rect_color_2")
 				                       : getToml<ColorF>(U"scoop_rect_color_1");
 
-			const bool isDrawCell = isAttempt || m_scoopRequested != ScoopDevice::None;
+			const bool isDrawCell = isAttempt || not m_scoopRequested;
 			if (not isDrawCell) return;
 
 			// セル描画
@@ -557,7 +557,7 @@ private:
 		};
 
 		// すくうが要求されるまで処理を進めない
-		if (m_scoopRequested == ScoopDevice::None) return;
+		if (not m_scoopRequested) return;
 		AudioAsset(AssetSes::scoop_start).playOneShot();
 
 		// すくう方向を決定
@@ -574,7 +574,7 @@ private:
 				auto r = RectF(m_pos.actualPos.movedBy(Dir4Type(i).ToXY() * CellPx_24), {CellPx_24, CellPx_24});
 				(void)r.draw(cellColor).drawFrame(0.5, ColorF(cellColor.rgb() * 0.5, 1.0));
 			}
-			if (m_scoopRequested == ScoopDevice::Gamepad && scoopingCharge > 0)
+			if (Gm::IsUsingGamepad() && scoopingCharge > 0)
 			{
 				// 矢印
 				const double arrowLength = 40 * (scoopingCharge);
@@ -587,24 +587,24 @@ private:
 		while (true)
 		{
 			yield();
-			if (IsScoopCancelInput(m_scoopRequested))
+			if (IsScoopCancelInput())
 			{
 				// すくう解除
 				focusCameraFor(self, 1.0);
 				m_subUpdating = {};
-				m_scoopRequested = ScoopDevice::None;
+				m_scoopRequested = false;
 				m_slowMotion = false;
 				break;
 			}
 
 			// すくう方向を決定
-			scoopingDir = CheckScoopMoveInput(m_scoopRequested, m_pos.actualPos);
+			scoopingDir = CheckScoopMoveInput(m_pos.actualPos);
 			if (scoopingDir == Dir4::Invalid)
 			{
 				scoopingCharge = 0;
 				continue;
 			}
-			if (m_scoopRequested == ScoopDevice::Gamepad && scoopingCharge < 1.0)
+			if (Gm::IsUsingGamepad() && scoopingCharge < 1.0)
 			{
 				// ゲームパッドのときは、ためが必要
 				constexpr double chargingTIme = 0.15;
@@ -620,7 +620,7 @@ private:
 
 			// 以下、移動させる処理を実行
 			// m_distField.Clear();
-			m_scoopRequested = ScoopDevice::None;
+			m_scoopRequested = false;
 			m_subUpdating = {};
 			m_slowMotion = false;
 			succeedScoop(yield, self, nextPos);
