@@ -13,4 +13,6 @@ namespace Constants
 
 	constexpr Color HardDarkblue = Color(Color(U"#121317"));
 	constexpr Color SoftDarkblue = Color(Color(U"#343541"));
+
+	constexpr MixBus BgmMixBus = MixBus1;
 }

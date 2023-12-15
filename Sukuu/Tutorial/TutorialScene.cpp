@@ -119,7 +119,7 @@ private:
 	{
 		yield();
 		m_bgm.setLoop(true);
-		m_bgm.play();
+		m_bgm.play(Constants::BgmMixBus);
 
 		double prologueAlpha{};
 		auto&& prologueFont = FontAsset(AssetKeys::RocknRoll_Sdf);

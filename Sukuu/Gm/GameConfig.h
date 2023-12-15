@@ -46,6 +46,8 @@ namespace Gm
 
 		HashTable<String, GamepadButtonMapping> gamepad_mapping{};
 
+		void ApplySystems();
+
 		void RequestWrite();
 		static GameConfig& Instance();
 	};

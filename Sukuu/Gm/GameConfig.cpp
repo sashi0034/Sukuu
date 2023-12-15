@@ -1,6 +1,8 @@
 ﻿#include "stdafx.h"
 #include "GameConfig.h"
 
+#include "Constants.h"
+
 namespace
 {
 	constexpr StringView configPath = U"config.json";
@@ -110,6 +112,13 @@ namespace
 
 namespace Gm
 {
+	void GameConfig::ApplySystems()
+	{
+		Window::SetFullscreen(fullscreen);
+		GlobalAudio::BusSetVolume(Constants::BgmMixBus, bgm_volume.GetRate(5));
+		GlobalAudio::BusSetVolume(MixBus0, se_volume.GetRate(5));
+	}
+
 	void GameConfig::RequestWrite()
 	{
 		writeJson(*this);
@@ -120,6 +129,7 @@ namespace Gm
 		if (not s_instance)
 		{
 			s_instance = readJson();
+			s_instance->ApplySystems();
 		}
 		return s_instance.value();
 	}

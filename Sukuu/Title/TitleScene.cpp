@@ -99,7 +99,7 @@ private:
 	{
 		const auto bgm = AudioAsset(AssetSes::title_environment);
 		bgm.setLoop(true);
-		bgm.play(1.0s);
+		bgm.play(1.0s, Constants::BgmMixBus);
 		openTransition(yield, self);
 
 		yield.WaitForTime(0.3);

@@ -2,6 +2,7 @@
 #include "PlayBgm.h"
 
 #include "Assets.generated.h"
+#include "Constants.h"
 
 namespace
 {
@@ -34,7 +35,7 @@ struct PlayBgm::Impl
 		}
 
 		// 再生してなかったら、再生する
-		if (playingMusic.isPlaying() == false) playingMusic.play();
+		if (playingMusic.isPlaying() == false) playingMusic.play(Constants::BgmMixBus);
 	}
 };
 

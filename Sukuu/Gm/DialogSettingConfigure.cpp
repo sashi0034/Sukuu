@@ -189,6 +189,7 @@ namespace
 			          getFullscreenName(editing.fullscreen), [&](bool right)
 			          {
 				          editing.fullscreen = not editing.fullscreen;
+				          editing.ApplySystems();
 			          }));
 		updateRow(1, cursorRaw, U"言語", wrapTextContentWithTabs(
 			          LanguageLabels[static_cast<int>(editing.language)],
@@ -197,6 +198,7 @@ namespace
 				          editing.language = Util::AddModuloEnum<
 					          GameLanguage, GameLanguage::Max>(
 					          editing.language, right ? 1 : -1);
+				          editing.ApplySystems();
 			          }));
 		updateRow(2, cursorRaw, U"BGM", wrapVolumeContentWithTabs(
 			          editing.bgm_volume.GetRate(),
@@ -204,6 +206,7 @@ namespace
 			          [&](bool right)
 			          {
 				          editing.bgm_volume = TenStepNumber(editing.bgm_volume + (right ? 1 : -1));
+				          editing.ApplySystems();
 			          }));
 		updateRow(3, cursorRaw, U"SE", wrapVolumeContentWithTabs(
 			          editing.se_volume.GetRate(),
@@ -211,6 +214,7 @@ namespace
 			          [&](bool right)
 			          {
 				          editing.se_volume = TenStepNumber(editing.se_volume + (right ? 1 : -1));
+				          editing.ApplySystems();
 			          }));
 		updateRow(4, cursorRaw, U"カメラ移動量", wrapVolumeContentWithTabs(
 			          editing.camera_move.GetRate(),
