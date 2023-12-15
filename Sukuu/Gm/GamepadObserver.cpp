@@ -15,7 +15,54 @@ namespace
 		bool isUsingGamepad{};
 		String currentGamepad{literal_NotUsed};
 		GamepadButtonMapping currentMap{};
+
+		void Refresh();
 	};
+
+	void ImplState::Refresh()
+	{
+		const auto gamepad = Gamepad(GamepadPlayer_0);
+		if (not gamepad)
+		{
+			// ゲームパッドを接続していない
+			isUsingGamepad = false;
+			currentGamepad = literal_NotUsed;
+			return;
+		}
+		GameConfig::Instance();
+		if (not isUsingGamepad)
+		{
+			// ゲームパッドのボタンを押したら認識する
+			isUsingGamepad = (gamepad.buttons.contains_if([](auto&& b) { return b.down(); }));
+		}
+		else
+		{
+			isUsingGamepad = not(Keyboard::GetAllInputs().contains_if([](auto&& i) { return i.down(); }));
+		}
+
+		const bool recognizedNew = isUsingGamepad && currentGamepad != gamepad.getInfo().name;
+		if (not recognizedNew) return;
+
+		// ゲームパッド名が違ったら、設定ファイルから参照
+		for (auto&& map : GameConfig::Instance().gamepad.mapping)
+		{
+			if (map.first != gamepad.getInfo().name) continue;
+			currentMap = map.second;
+			return;
+		}
+
+		// キーマップを新規設定
+		isUsingGamepad = false;
+		if (const auto newMap = DialogGamepadRegister())
+		{
+			// 更新
+			isUsingGamepad = true;
+			currentGamepad = gamepad.getInfo().name;
+			currentMap = newMap.value();
+			GameConfig::Instance().gamepad.mapping[currentGamepad] = currentMap;
+			GameConfig::Instance().RequestWrite();
+		}
+	}
 
 	ImplState* s_instance;
 }
@@ -66,6 +113,11 @@ namespace Gm
 		return {};
 	}
 
+	void RefreshGamepad()
+	{
+		s_instance->Refresh();
+	}
+
 	GamepadObserver::GamepadObserver() :
 		p_impl(std::make_shared<Impl>())
 	{
@@ -75,46 +127,6 @@ namespace Gm
 	void GamepadObserver::Update()
 	{
 		ActorBase::Update();
-		const auto gamepad = Gamepad(GamepadPlayer_0);
-		if (not gamepad)
-		{
-			// ゲームパッドを接続していない
-			p_impl->isUsingGamepad = false;
-			p_impl->currentGamepad = literal_NotUsed;
-			return;
-		}
-		GameConfig::Instance();
-		if (not p_impl->isUsingGamepad)
-		{
-			// ゲームパッドのボタンを押したら認識する
-			p_impl->isUsingGamepad = (gamepad.buttons.contains_if([](auto&& b) { return b.down(); }));
-		}
-		else
-		{
-			p_impl->isUsingGamepad = not(Keyboard::GetAllInputs().contains_if([](auto&& i) { return i.down(); }));
-		}
-
-		const bool recognizedNew = p_impl->isUsingGamepad && p_impl->currentGamepad != gamepad.getInfo().name;
-		if (not recognizedNew) return;
-
-		// ゲームパッド名が違ったら、設定ファイルから参照
-		for (auto&& map : GameConfig::Instance().gamepad.mapping)
-		{
-			if (map.first != gamepad.getInfo().name) continue;
-			p_impl->currentMap = map.second;
-			return;
-		}
-
-		// キーマップを新規設定
-		p_impl->isUsingGamepad = false;
-		if (const auto newMap = DialogGamepadRegister())
-		{
-			// 更新
-			p_impl->isUsingGamepad = true;
-			p_impl->currentGamepad = gamepad.getInfo().name;
-			p_impl->currentMap = newMap.value();
-			GameConfig::Instance().gamepad.mapping[p_impl->currentGamepad] = p_impl->currentMap;
-			GameConfig::Instance().RequestWrite();
-		}
+		p_impl->Refresh();
 	}
 }

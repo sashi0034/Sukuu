@@ -13,6 +13,8 @@ namespace Gm
 
 	Vec2 GetGamepadAxeL();
 
+	void RefreshGamepad();
+
 	class GamepadObserver : public Util::ActorBase
 	{
 	public:

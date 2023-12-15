@@ -40,6 +40,7 @@ namespace Gm::detail
 #if _DEBUG
 		Util::RefreshTomlParameters();
 #endif
+		RefreshGamepad();
 		Scene::SetBackground(DlBackground());
 
 		// 簡易遷移アニメーション
