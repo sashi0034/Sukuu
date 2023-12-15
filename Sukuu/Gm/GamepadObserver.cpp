@@ -2,7 +2,7 @@
 #include "GamepadObserver.h"
 
 #include "GameConfig.h"
-#include "GamepadRegistering.h"
+#include "DialogGamepadRegister.h"
 
 namespace
 {
@@ -99,7 +99,7 @@ namespace Gm
 		}
 
 		// キーマップを新規設定
-		if (const auto newMap = DialogGamepadRegistering())
+		if (const auto newMap = DialogGamepadRegister())
 		{
 			// 更新
 			p_impl->currentGamepad = gamepad.getInfo().name;

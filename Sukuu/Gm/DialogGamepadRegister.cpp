@@ -1,5 +1,5 @@
 ﻿#include "stdafx.h"
-#include "GamepadRegistering.h"
+#include "DialogGamepadRegister.h"
 
 #include "GamepadObserver.h"
 #include "AssetKeys.h"
@@ -291,7 +291,7 @@ namespace
 	}
 }
 
-Optional<GamepadButtonMapping> Gm::DialogGamepadRegistering()
+Optional<GamepadButtonMapping> Gm::DialogGamepadRegister()
 {
 	const auto bg = Util::ScopedBackgroundStore();
 	auto result = loopInternal();

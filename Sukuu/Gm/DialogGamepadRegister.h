@@ -4,5 +4,5 @@
 namespace Gm
 {
 	[[nodiscard]]
-	Optional<GamepadButtonMapping> DialogGamepadRegistering();
+	Optional<GamepadButtonMapping> DialogGamepadRegister();
 }
