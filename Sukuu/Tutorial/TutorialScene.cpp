@@ -46,6 +46,7 @@ struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
 	TutorialFocus m_focus{};
 	std::function<void()> m_postDraw{};
 	AudioAsset m_bgm = AudioAsset(AssetBgms::obake_dance);
+	bool m_retrying{};
 
 	void Init(ActorView self)
 	{
@@ -113,7 +114,7 @@ private:
 	void flowchartLoop(YieldExtended& yield)
 	{
 		yield();
-		performLogo(yield);
+		if (not m_retrying) performLogo(yield);
 		startPlayScene();
 		performOpening(yield);
 		tutorialHowtoMove(yield);
@@ -425,8 +426,9 @@ namespace Tutorial
 	{
 	}
 
-	void TutorialScene::Init()
+	void TutorialScene::Init(bool retrying)
 	{
+		p_impl->m_retrying = retrying;
 		p_impl->Init(*this);
 	}
 

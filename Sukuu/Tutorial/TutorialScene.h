@@ -8,7 +8,7 @@ namespace Tutorial
 	{
 	public:
 		TutorialScene();
-		void Init();
+		void Init(bool retrying);
 		bool IsFinished() const;
 		void Update() override;
 

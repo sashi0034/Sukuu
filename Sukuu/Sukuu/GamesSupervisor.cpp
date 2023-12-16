@@ -42,6 +42,7 @@ private:
 
 	void flowchartLoop(YieldExtended& yield, ActorView self)
 	{
+		bool triedTutorial{};
 		yield();
 #if _DEBUG
 		const auto entryPoint = debugToml<String>(U"entry_point");
@@ -58,8 +59,9 @@ private:
 		if (tryLoadSavedata()) goto title;
 
 	tutorial:
-		tutorialLoop(yield, self);
+		tutorialLoop(yield, self, triedTutorial);
 	title:
+		triedTutorial = true;
 		if (const bool retryTutorial = titleLoop(yield, self)) goto tutorial;
 	play:
 		if (const bool clearedPlay = playLoop(yield, self)) goto ending;
@@ -79,10 +81,10 @@ private:
 		return false;
 	}
 
-	void tutorialLoop(YieldExtended& yield, ActorView self) const
+	void tutorialLoop(YieldExtended& yield, ActorView self, bool triedTutorial) const
 	{
 		auto tutorial = self.AsParent().Birth(Tutorial::TutorialScene());
-		tutorial.Init();
+		tutorial.Init(triedTutorial);
 		yield.WaitForTrue([&]() { return tutorial.IsFinished(); });
 		tutorial.Kill();
 		SaveSavedata(m_savedata);
