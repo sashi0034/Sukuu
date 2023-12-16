@@ -20,6 +20,7 @@ namespace AssetImages
 	constexpr StringView dark_tree_16x16 = U"asset/image/dark_tree_16x16.png";
 	constexpr StringView dark_tree_48x48 = U"asset/image/dark_tree_48x48.png";
 	constexpr StringView folder_16x16 = U"asset/image/folder_16x16.png";
+	constexpr StringView gorilla_24x24 = U"asset/image/gorilla_24x24.png";
 	constexpr StringView grass_tile_64x64 = U"asset/image/grass_tile_64x64.png";
 	constexpr StringView grave_16x16 = U"asset/image/grave_16x16.png";
 	constexpr StringView heart_vessel_24x24 = U"asset/image/heart_vessel_24x24.png";
@@ -32,10 +33,12 @@ namespace AssetImages
 	constexpr StringView mine_flower_16x16 = U"asset/image/mine_flower_16x16.png";
 	constexpr StringView mixed_nature_16x16 = U"asset/image/mixed_nature_16x16.png";
 	constexpr StringView omeme_patchouli_sun_16x16 = U"asset/image/omeme_patchouli_sun_16x16.png";
+	constexpr StringView otete_32x32 = U"asset/image/otete_32x32.png";
 	constexpr StringView particle = U"asset/image/particle.png";
 	constexpr StringView phine_32x32 = U"asset/image/phine_32x32.png";
 	constexpr StringView pin_16x16 = U"asset/image/pin_16x16.png";
 	constexpr StringView punicat_24x24 = U"asset/image/punicat_24x24.png";
+	constexpr StringView rocket_16x16 = U"asset/image/rocket_16x16.png";
 	constexpr StringView rust_ferris_24x24 = U"asset/image/rust_ferris_24x24.png";
 	constexpr StringView siv3d_icon = U"asset/image/siv3d_icon.png";
 	constexpr StringView smile_mush_24x24 = U"asset/image/smile_mush_24x24.png";
@@ -47,6 +50,7 @@ namespace AssetImages
 	constexpr StringView title_logo = U"asset/image/title_logo.png";
 	constexpr StringView tree_16x16 = U"asset/image/tree_16x16.png";
 	constexpr StringView tree_48x48 = U"asset/image/tree_48x48.png";
+	constexpr StringView ura_title_logo = U"asset/image/ura_title_logo.png";
 	constexpr StringView wing_16x16 = U"asset/image/wing_16x16.png";
 
 	inline Array<StringView> GetKeys()
@@ -67,6 +71,7 @@ namespace AssetImages
 			dark_tree_16x16,
 			dark_tree_48x48,
 			folder_16x16,
+			gorilla_24x24,
 			grass_tile_64x64,
 			grave_16x16,
 			heart_vessel_24x24,
@@ -79,10 +84,12 @@ namespace AssetImages
 			mine_flower_16x16,
 			mixed_nature_16x16,
 			omeme_patchouli_sun_16x16,
+			otete_32x32,
 			particle,
 			phine_32x32,
 			pin_16x16,
 			punicat_24x24,
+			rocket_16x16,
 			rust_ferris_24x24,
 			siv3d_icon,
 			smile_mush_24x24,
@@ -94,6 +101,7 @@ namespace AssetImages
 			title_logo,
 			tree_16x16,
 			tree_48x48,
+			ura_title_logo,
 			wing_16x16,
 		};
 	}
