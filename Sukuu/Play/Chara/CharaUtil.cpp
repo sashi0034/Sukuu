@@ -149,7 +149,7 @@ namespace Play
 	static void relayTimeDamage(const CharaPosition& pos, int amount, const Color& c, bool isEnemyDamage = false)
 	{
 		auto&& timeLimiter = PlayCore::Instance().GetTimeLimiter();
-		if (timeLimiter.IsCountEnabled() == false) return;
+		// if (timeLimiter.IsCountEnabled() == false) return;
 		if (amount > 0)
 		{
 			timeLimiter.Heal(amount);

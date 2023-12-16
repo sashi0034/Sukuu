@@ -7,6 +7,7 @@
 #include "TutorialFocus.h"
 #include "TutorialMap.h"
 #include "TutorialMessenger.h"
+#include "Gm/GamepadObserver.h"
 #include "Play/PlayScene.h"
 #include "Play/Enemy/EnKnight.h"
 #include "Play/Enemy/EnSlimeCat.h"
@@ -52,7 +53,7 @@ struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
 			.tutorial = this,
 			.playerPersonal = {},
 			.timeLimiter = Play::TimeLimiterData{
-				.maxTime = 60,
+				.maxTime = 90,
 				.remainingTime = 60
 			}
 		});
@@ -60,9 +61,15 @@ struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
 		auto&& timeLimiter = m_play.GetTimeLimiter();
 		timeLimiter.SetCountEnabled(false);
 		timeLimiter.SetImmortal(true);
+
+		// チュートリアル用ギミック設置
 		auto&& gimmick = m_play.GetGimmick();
 		gimmick[m_mapData.itemSpawnPoint] = Play::GimmickKind::Item_Pin;
 		gimmick[m_mapData.stairsPoint] = Play::GimmickKind::Stairs;
+		for (auto&& p : m_mapData.hourglassPoints)
+		{
+			gimmick[p] = Play::GimmickKind::SemiItem_Hourglass;
+		}
 
 		m_messanger = m_play.AsUiContent().Birth(TutorialMessenger());
 		m_focus = m_play.AsUiContent().Birth(TutorialFocus());
@@ -160,12 +167,18 @@ private:
 			if (isRunning) runningCount++;
 			movedCount++;
 		};
-		m_messanger.ShowMessageForever(U"まずは 'W, A, S, D' か `矢印キー` で移動の確認をしてみようか");
+		m_messanger.ShowMessageForever(U"まずは {} で移動の確認をしてみようか"_fmt(
+			Gm::IsUsingGamepad()
+				? U"'十字キー'"
+				: U"'W, A, S, D' か `矢印キー`"));
 		yield.WaitForTrue([&]
 		{
 			return movedCount > 10;
 		});
-		m_messanger.ShowMessageForever(U"次に 'Shift' を押しっぱなしにして走ってもらおう");
+		m_messanger.ShowMessageForever(U"次に {} を押しっぱなしにして走ってもらおう"_fmt(
+			Gm::IsUsingGamepad()
+				? U"'B'"
+				: U"'Shift'"));
 		yield.WaitForTrue([&]
 		{
 			return runningCount > 10;
@@ -248,7 +261,10 @@ private:
 		auto scoopingMessage = StartCoro(m_play.AsMainContent(), [&](YieldExtended y)
 		{
 			waitMessage(y, U"キミ自身をマウスカーソルでスクってみるといい", messageWaitMedium);
-			m_messanger.ShowMessageForever(U"自分自身を 'ドラッグ' して\n壁の方向へ 'ドロップ' するんだ");
+			m_messanger.ShowMessageForever(
+				Gm::IsUsingGamepad()
+					? U"'RT' を押して壁方向へ向かってみるんだ"
+					: U"自分自身を 'ドラッグ' して\n壁の方向へ 'ドロップ' するんだ");
 		});
 		yield.WaitForTrueVal(hasScooped);
 		m_playerService.canScoop = false;
@@ -290,12 +306,32 @@ private:
 		m_playerService.canScoopTo = leftRegionLimit;
 
 		yield.WaitForTrueVal(nearItem);
+		m_playerService.canMove = false;
 		waitMessage(yield, U"イイものが落ちているね", messageWaitShortShort);
-		waitMessage(yield, U"これを使ってみよう", messageWaitShortShort);
+		m_playerService.canMove = true;
 
+		bool obtainedItem{};
+		m_playerService.onMoved = [&](const Play::CharaVec2& pos, bool isRunning)
+		{
+			if (pos.MapPoint() != m_mapData.itemSpawnPoint) return;
+			obtainedItem = true;
+		};
+
+		// アイテム拾うまで待機
+		yield.WaitForTrueVal(obtainedItem);
+		m_playerService.onMoved = [](auto, auto) { return; };
+
+		// 閉じ込める
+		m_play.GetMap().At(m_mapData.itemBlockPoint).kind = Play::TerrainKind::Wall;
+
+		m_messanger.ShowMessageForever(
+			Gm::IsUsingGamepad()
+				? U"'L / R' でアイテムを選んで 'A' で使ってみよう"
+				: U"アイコンを '左クリック' するか '数字キー' で使ってみよう");
+
+		// 敵をキルするまで待機
 		yield.WaitForTrue([&]() { return knight.IsDead(); });
 
-		m_playerService.onMoved = [](auto, auto) { return; };
 		m_playerService.canMoveTo = [](auto) { return true; };
 		m_playerService.canScoopTo = [](auto) { return true; };
 
@@ -307,7 +343,7 @@ private:
 		bool nearStairs1{};
 		m_playerService.onMoved = [&](const Play::CharaVec2& pos, bool isRunning)
 		{
-			if ((pos.MapPoint() - m_mapData.stairsPoint).manhattanLength() <= 4) nearStairs1 = true;
+			if ((pos.MapPoint() - m_mapData.stairsPoint).manhattanLength() <= 8) nearStairs1 = true;
 		};
 		yield.WaitForTrueVal(nearStairs1);
 		m_playerService.onMoved = [](auto, auto) { return; };
@@ -315,7 +351,7 @@ private:
 		m_playerService.canMove = false;
 		m_playerService.canScoop = false;
 		waitMessage(yield, U"最後に重要なことを話しておこう", messageWaitShort);
-		waitMessage(yield, U"実はこの迷宮でキミが生きられる\n時間は限られている", messageWaitMedium);
+		waitMessage(yield, U"実はこの迷宮でキミが生きられる時間は\n限られている", messageWaitMedium);
 
 		m_play.GetTimeLimiter().SetCountEnabled(true);
 		m_focus.Show(Rect(Scene::Size()).tr() + Size{-1, 1} * 144);

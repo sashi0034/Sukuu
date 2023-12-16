@@ -622,18 +622,23 @@ private:
 				scoopingCharge = 0;
 				continue;
 			}
+
+			const auto nextPos = m_pos.actualPos.movedBy(Dir4Type(scoopingDir).ToXY() * CellPx_24);
+			if (const auto tutorial = PlayCore::Instance().Tutorial())
+			{
+				if (not tutorial->PlayerService().canScoopTo(nextPos))
+				{
+					scoopingCharge = 0;
+					continue;
+				}
+			}
+
 			if (Gm::IsUsingGamepad() && scoopingCharge < 1.0)
 			{
 				// ゲームパッドのときは、ためが必要
 				constexpr double chargingTIme = 0.15;
 				scoopingCharge = Math::Min(1.0, scoopingCharge + Scene::DeltaTime() / chargingTIme);
 				continue;
-			}
-
-			const auto nextPos = m_pos.actualPos.movedBy(Dir4Type(scoopingDir).ToXY() * CellPx_24);
-			if (const auto tutorial = PlayCore::Instance().Tutorial())
-			{
-				if (not tutorial->PlayerService().canScoopTo(nextPos)) continue;
 			}
 
 			// 以下、移動させる処理を実行

@@ -13,13 +13,13 @@ namespace
 		U"                                                                 ",
 		U"                                                                 ",
 		U"                              -----                   -----      ",
-		U"                              -----                   -----      ",
+		U"                              -----                   --S--      ",
 		U"                            ---------               -------      ",
 		U"                            ---------               -------      ",
-		U"                C---------------I-------3K--------------S--      ",
+		U"                C----------i----I-------3K--------------g--      ",
 		U"                -           ---------               -------      ",
 		U"                -           ---------               -------      ",
-		U"                -             -----                   -----      ",
+		U"                -             -----                   --g--      ",
 		U"                -             -----                   -----      ",
 		U"                -                                                ",
 		U"                -                                                ",
@@ -105,6 +105,9 @@ namespace
 			case U'1':
 				data.sukuuEventPoint = p;
 				break;
+			case U'i':
+				data.itemBlockPoint = p;
+				break;
 			case U'I':
 				data.itemSpawnPoint = p;
 				break;
@@ -113,6 +116,9 @@ namespace
 				break;
 			case U'K':
 				data.knightSpawnPoint = p;
+				break;
+			case U'g':
+				data.hourglassPoints.push_back(p);
 				break;
 			case U'S':
 				data.stairsPoint = p;
