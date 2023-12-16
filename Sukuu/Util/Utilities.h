@@ -51,7 +51,9 @@ namespace Util
 
 	inline bool IsSceneLeftClicked(int padding = 32)
 	{
-		return MouseL.down() && Rect(Scene::Size()).stretched(-padding).intersects(Cursor::Pos());
+		if (not MouseL.down()) return false;
+		const Transformer2D transform{Mat3x2::Identity(), TransformCursor::Yes, Transformer2D::Target::SetLocal};
+		return Rect(Scene::Size()).stretched(-padding).intersects(Cursor::Pos());
 	}
 
 	inline String FormatTimeSeconds(double t)

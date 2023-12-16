@@ -249,8 +249,23 @@ private:
 
 namespace Play
 {
-	PlayCore::PlayCore() : p_impl(std::make_shared<Impl>())
+	PlayCore::PlayCore(bool empty)
 	{
+		if (empty) return;
+		if (s_instance != nullptr) System::MessageBoxOK(U"Duplicated PlayCore instance", MessageBoxStyle::Error);
+		else s_instance = this;
+	}
+
+	PlayCore PlayCore::Create()
+	{
+		auto p = PlayCore(false);
+		p.p_impl = std::make_shared<Impl>();
+		return p;
+	}
+
+	PlayCore PlayCore::Empty()
+	{
+		return PlayCore(true);
 	}
 
 	PlayCore::~PlayCore()
@@ -270,9 +285,6 @@ namespace Play
 
 	void PlayOperationCore::Init(const PlaySingletonData& data)
 	{
-		if (s_instance != nullptr) System::MessageBoxOK(U"Duplicated PlayCore instance", MessageBoxStyle::Error);
-		else s_instance = this;
-
 		p_impl->Init(data);
 	}
 
@@ -303,6 +315,7 @@ namespace Play
 
 	PlayCore& PlayCore::Instance()
 	{
+		assert(s_instance);
 		return *s_instance;
 	}
 

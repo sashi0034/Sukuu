@@ -90,7 +90,7 @@ struct Play::Player::Impl
 			m_subUpdating();
 		}
 
-		// 特殊処理してないなら、カメラのオフセットを動かす
+		// カメラのオフセットを移動
 		const auto cameraDestination = [this]
 		{
 			if (const auto tutorial = PlayCore::Instance().Tutorial())

@@ -57,7 +57,8 @@ namespace Play
 	class PlayCore
 	{
 	public:
-		PlayCore();
+		static PlayCore Create();
+		static PlayCore Empty();
 		~PlayCore();
 
 		ActorContainer& AsMainContent();
@@ -107,6 +108,8 @@ namespace Play
 		static PlayCore& Instance();
 
 	protected:
+		explicit PlayCore(bool empty);
+
 		class Impl;
 		std::shared_ptr<Impl> p_impl{};
 	};

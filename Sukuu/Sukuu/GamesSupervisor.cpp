@@ -4,7 +4,7 @@
 #include "Constants.h"
 #include "Gm/GameSavedata.h"
 #include "Ending/EndingScene.h"
-#include "..\Gm\DialogSettingConfigure.h"
+#include "Gm\DialogSettingConfigure.h"
 #include "Gm/DialogGamepadRegister.h"
 #include "Gm/DialogYesNo.h"
 #include "Play/PlayBgm.h"
@@ -127,7 +127,7 @@ private:
 
 		while (true)
 		{
-			auto playScene = self.AsParent().Birth(Play::PlayScene());
+			auto playScene = self.AsParent().Birth(Play::PlayScene::Create());
 			auto&& play = playScene.GetCore();
 
 			// フロアに合わせたBGMを再生

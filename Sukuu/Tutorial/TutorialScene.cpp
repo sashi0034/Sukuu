@@ -7,6 +7,7 @@
 #include "TutorialFocus.h"
 #include "TutorialMap.h"
 #include "TutorialMessenger.h"
+#include "Gm/GameCursor.h"
 #include "Gm/GamepadObserver.h"
 #include "Play/PlayScene.h"
 #include "Play/Enemy/EnKnight.h"
@@ -29,7 +30,8 @@ namespace
 
 struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
 {
-	Play::PlayCore m_play{};
+	Play::PlayScene m_playScene{Play::PlayScene::Empty()};
+	Play::PlayCore m_play{Play::PlayCore::Empty()};
 	TutorialMapData m_mapData{};
 	bool m_finished{};
 	Play::TutorialPlayerService m_playerService{
@@ -47,37 +49,13 @@ struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
 
 	void Init(ActorView self)
 	{
-		m_mapData = GetTutorialMap();
-		auto playScene = self.AsParent().Birth(Play::PlayScene());
-		playScene.Init({
-			.tutorial = this,
-			.playerPersonal = {},
-			.timeLimiter = Play::TimeLimiterData{
-				.maxTime = 90,
-				.remainingTime = 60
-			}
-		});
-		m_play = playScene.GetCore();
-		auto&& timeLimiter = m_play.GetTimeLimiter();
-		timeLimiter.SetCountEnabled(false);
-		timeLimiter.SetImmortal(true);
-
-		// チュートリアル用ギミック設置
-		auto&& gimmick = m_play.GetGimmick();
-		gimmick[m_mapData.itemSpawnPoint] = Play::GimmickKind::Item_Pin;
-		gimmick[m_mapData.stairsPoint] = Play::GimmickKind::Stairs;
-		for (auto&& p : m_mapData.hourglassPoints)
-		{
-			gimmick[p] = Play::GimmickKind::SemiItem_Hourglass;
-		}
-
-		m_messanger = m_play.AsUiContent().Birth(TutorialMessenger());
-		m_focus = m_play.AsUiContent().Birth(TutorialFocus());
+		m_playScene = self.AsParent().Birth(Play::PlayScene::Create());
+		m_play = m_playScene.GetCore();
 
 		// フロー開始
-		StartCoro(m_play.AsMainContent(), [this](YieldExtended yield)
+		StartCoro(m_play.AsMainContent(), [this, self](YieldExtended yield)
 		{
-			flowchartLoop(yield);
+			flowchartLoop(yield, self);
 		});
 	}
 
@@ -97,6 +75,34 @@ struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
 	}
 
 private:
+	void startPlayScene(ActorView self)
+	{
+		m_mapData = GetTutorialMap();
+		m_playScene.Init({
+			.tutorial = this,
+			.playerPersonal = {},
+			.timeLimiter = Play::TimeLimiterData{
+				.maxTime = 90,
+				.remainingTime = 60
+			}
+		});
+		auto&& timeLimiter = m_play.GetTimeLimiter();
+		timeLimiter.SetCountEnabled(false);
+		timeLimiter.SetImmortal(true);
+
+		// チュートリアル用ギミック設置
+		auto&& gimmick = m_play.GetGimmick();
+		gimmick[m_mapData.itemSpawnPoint] = Play::GimmickKind::Item_Pin;
+		gimmick[m_mapData.stairsPoint] = Play::GimmickKind::Stairs;
+		for (auto&& p : m_mapData.hourglassPoints)
+		{
+			gimmick[p] = Play::GimmickKind::SemiItem_Hourglass;
+		}
+
+		m_messanger = m_play.AsUiContent().Birth(TutorialMessenger());
+		m_focus = m_play.AsUiContent().Birth(TutorialFocus());
+	}
+
 	void waitMessage(YieldExtended& yield, const String& message, double duration)
 	{
 		m_messanger.ShowMessage(message, duration);
@@ -104,8 +110,11 @@ private:
 		yield();
 	}
 
-	void flowchartLoop(YieldExtended& yield)
+	void flowchartLoop(YieldExtended& yield, ActorView self)
 	{
+		yield();
+		performLogo(yield, self);
+		startPlayScene(self);
 		performOpening(yield);
 		tutorialHowtoMove(yield);
 		tutorialScoop(yield);
@@ -119,9 +128,44 @@ private:
 		m_finished = true;
 	}
 
+	void performLogo(YieldExtended& yield, ActorView self)
+	{
+		const auto icon = TextureAsset(AssetImages::siv3d_icon);
+		const auto font = FontAsset(AssetKeys::RocknRoll_Sdf);
+
+		double fadeTransition{};
+		m_postDraw = [&]()
+		{
+			Rect(Scene::Size()).draw(ColorF{Constants::HardDarkblue});
+			Rect(Scene::Size()).draw(ColorF(1.0, 1.0 - fadeTransition));
+
+			Transformer2D t0{
+				Mat3x2::Rotate(2 * 360_deg * EaseInBack(fadeTransition), Scene::Center()).
+				scaled(1 + 64.0 * EaseInBack(fadeTransition), Scene::Center()),
+				TransformCursor::No
+			};
+
+			Transformer2D t1{
+				Mat3x2::Translate(32 * Periodic::Sine1_1(2.0s), 8 * Periodic::Sine1_1(3.0s)),
+				TransformCursor::No
+			};
+
+			// Siv3Dロゴ
+			icon.resized(800, 800)
+			    .drawAt(Scene::Center());
+
+			font(U"左クリックかAボタンで開始")
+				.drawAt(32.0 + 8.0 * Periodic::Sine0_1(3.0s), Scene::Center().moveBy(0, 400), ColorF(U"#2591d4"));
+		};
+
+		yield.WaitForTime(0.5);
+		yield.WaitForTrue([] { return Gm::CheckConfirmSimply(); });
+		yield.WaitForExpire(AnimateEasing<EaseInLinear>(self, &fadeTransition, 1.0, 1.5));
+		m_postDraw = {};
+	}
+
 	void performOpening(YieldExtended& yield)
 	{
-		yield();
 		m_play.GetPause().SetAllowed(false);
 		m_bgm.setLoop(true);
 		m_bgm.play(Constants::BgmMixBus);
