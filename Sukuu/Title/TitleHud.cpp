@@ -2,6 +2,7 @@
 #include "TitleHud.h"
 
 #include "AssetKeys.h"
+#include "Assets.generated.h"
 #include "Constants.h"
 #include "GitRevision.h"
 #include "Gm/DialogSettingConfigure.h"
@@ -76,7 +77,7 @@ struct Title::TitleHud::Impl
 
 	void Update()
 	{
-		TextureAsset(AssetKeys::title_logo)
+		TextureAsset(AssetImages::title_logo)
 			.scaled(getToml<double>(U"logo_scale"))
 			.drawAt(Vec2{Scene::Center().x, Scene::Center().y / 2} + Vec2{
 				Periodic::Sine0_1(4.0) * getToml<double>(U"logo_move_x"),

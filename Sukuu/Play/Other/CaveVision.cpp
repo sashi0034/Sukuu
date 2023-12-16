@@ -62,8 +62,8 @@ struct Play::CaveVision::Impl
 		Graphics2D::SetPSConstantBuffer(1, m_caveVisionCb);
 		const ScopedCustomShader2D shader{PixelShaderAsset(AssetKeys::PsCaveVision)};
 
-		Graphics2D::SetPSTexture(1, TextureAsset(AssetImages::tex_aqua_noise));
-		Graphics2D::SetPSTexture(2, TextureAsset(AssetImages::tex_cosmos_noise));
+		Graphics2D::SetPSTexture(1, TextureAsset(AssetImages::aqua_noise));
+		Graphics2D::SetPSTexture(2, TextureAsset(AssetImages::cosmos_noise));
 		Graphics2D::SetPSTexture(3, m_maskTexture);
 
 		(void)m_maskTexture({0, 0}, Scene::Size()).draw(

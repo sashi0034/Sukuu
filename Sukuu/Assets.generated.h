@@ -5,6 +5,7 @@
 
 namespace AssetImages
 {
+	constexpr StringView aqua_noise = U"asset/image/aqua_noise.png";
 	constexpr StringView arrow_24x24 = U"asset/image/arrow_24x24.png";
 	constexpr StringView beatrice_32x32 = U"asset/image/beatrice_32x32.png";
 	constexpr StringView bookmark_16x16 = U"asset/image/bookmark_16x16.png";
@@ -13,6 +14,7 @@ namespace AssetImages
 	constexpr StringView bush_16x16 = U"asset/image/bush_16x16.png";
 	constexpr StringView catfish_24x24 = U"asset/image/catfish_24x24.png";
 	constexpr StringView clock_16x16 = U"asset/image/clock_16x16.png";
+	constexpr StringView cosmos_noise = U"asset/image/cosmos_noise.png";
 	constexpr StringView cursor = U"asset/image/cursor.png";
 	constexpr StringView dango_wolf_24x24 = U"asset/image/dango_wolf_24x24.png";
 	constexpr StringView dark_tree_16x16 = U"asset/image/dark_tree_16x16.png";
@@ -35,14 +37,14 @@ namespace AssetImages
 	constexpr StringView pin_16x16 = U"asset/image/pin_16x16.png";
 	constexpr StringView punicat_24x24 = U"asset/image/punicat_24x24.png";
 	constexpr StringView rust_ferris_24x24 = U"asset/image/rust_ferris_24x24.png";
+	constexpr StringView siv3d_icon = U"asset/image/siv3d_icon.png";
 	constexpr StringView smile_mush_24x24 = U"asset/image/smile_mush_24x24.png";
 	constexpr StringView solid_rock_16x16 = U"asset/image/solid_rock_16x16.png";
 	constexpr StringView solt_16x16 = U"asset/image/solt_16x16.png";
 	constexpr StringView stairs_24x24 = U"asset/image/stairs_24x24.png";
 	constexpr StringView temple_knight_side_32x32 = U"asset/image/temple_knight_side_32x32.png";
 	constexpr StringView test_tube_16x16 = U"asset/image/test_tube_16x16.png";
-	constexpr StringView tex_aqua_noise = U"asset/image/tex_aqua_noise.png";
-	constexpr StringView tex_cosmos_noise = U"asset/image/tex_cosmos_noise.png";
+	constexpr StringView title_logo = U"asset/image/title_logo.png";
 	constexpr StringView tree_16x16 = U"asset/image/tree_16x16.png";
 	constexpr StringView tree_48x48 = U"asset/image/tree_48x48.png";
 	constexpr StringView wing_16x16 = U"asset/image/wing_16x16.png";
@@ -50,6 +52,7 @@ namespace AssetImages
 	inline Array<StringView> GetKeys()
 	{
 		return {
+			aqua_noise,
 			arrow_24x24,
 			beatrice_32x32,
 			bookmark_16x16,
@@ -58,6 +61,7 @@ namespace AssetImages
 			bush_16x16,
 			catfish_24x24,
 			clock_16x16,
+			cosmos_noise,
 			cursor,
 			dango_wolf_24x24,
 			dark_tree_16x16,
@@ -80,14 +84,14 @@ namespace AssetImages
 			pin_16x16,
 			punicat_24x24,
 			rust_ferris_24x24,
+			siv3d_icon,
 			smile_mush_24x24,
 			solid_rock_16x16,
 			solt_16x16,
 			stairs_24x24,
 			temple_knight_side_32x32,
 			test_tube_16x16,
-			tex_aqua_noise,
-			tex_cosmos_noise,
+			title_logo,
 			tree_16x16,
 			tree_48x48,
 			wing_16x16,

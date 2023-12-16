@@ -15,7 +15,6 @@ namespace AssetKeys
 	constexpr AssetNameView PsGradientBlur = U"asset/shader/gradient_blur";
 	constexpr AssetNameView VsCaveVision = U"asset/shader/soft_shape";
 
-	constexpr AssetNameView title_logo = U"asset/other/title_logo.png";
 	constexpr AssetNameView gamepad = U"asset/other/gamepad.png";
 
 	inline void RegisterShader()
@@ -37,7 +36,6 @@ namespace AssetKeys
 		FontAsset::Register(
 			RocknRoll_Sdf_Bold, FontMethod::SDF, 48, U"asset/font/RocknRoll/RocknRollOne-Regular.ttf", FontStyle::Bold);
 
-		TextureAsset::Register(title_logo, title_logo, TextureDesc::Mipped);
 		TextureAsset::Register(gamepad, gamepad, TextureDesc::Mipped);
 
 		TextureAsset::Register(U"👉", U"👉"_emoji);
