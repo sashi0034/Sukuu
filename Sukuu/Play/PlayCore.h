@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "Enemy/EnemyDefinition.h"
 #include "Map/MapGrid.h"
+#include "Other/PlayingPause.h"
 #include "Other/TimeLimiter.h"
 #include "UI/UiDashKeep.h"
 #include "UI/UiMiniMap.h"
@@ -22,6 +23,7 @@ namespace Play
 		std::function<void(const CharaVec2& pos)> onScooped;
 		std::function<bool(const CharaVec2& pos)> canMoveTo;
 		std::function<bool(const CharaVec2& pos)> canScoopTo;
+		Optional<Vec2> overrideCamera;
 	};
 
 	class ITutorialSetting
@@ -59,6 +61,7 @@ namespace Play
 		~PlayCore();
 
 		ActorContainer& AsMainContent();
+		ActorContainer& AsUiContent();
 
 		ActorWeak StartTransition(int floorIndex);
 		ActorWeak EndTransition();
@@ -90,6 +93,9 @@ namespace Play
 
 		EffectWrapper& BgEffect();
 		const EffectWrapper& BgEffect() const;
+
+		PlayingPause& GetPause();
+		const PlayingPause& GetPause() const;
 
 		ITutorialSetting* Tutorial();
 		const ITutorialSetting* Tutorial() const;

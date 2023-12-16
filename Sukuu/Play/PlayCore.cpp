@@ -141,9 +141,9 @@ public:
 
 			m_uiCurrentFloor.Init(data.floorIndex);
 			m_uiGameOver.Init(data.floorIndex);
-
-			m_pause.SetAllowed(true);
 		}
+
+		m_pause.Init(not data.tutorial);
 
 		m_uiItemContainer.Init(data.itemIndexing);
 
@@ -251,8 +251,6 @@ namespace Play
 {
 	PlayCore::PlayCore() : p_impl(std::make_shared<Impl>())
 	{
-		if (s_instance != nullptr) System::MessageBoxOK(U"Duplicated PlayCore instance", MessageBoxStyle::Error);
-		else s_instance = this;
 	}
 
 	PlayCore::~PlayCore()
@@ -265,8 +263,16 @@ namespace Play
 		return p_impl->m_main;
 	}
 
+	ActorContainer& PlayCore::AsUiContent()
+	{
+		return p_impl->m_ui;
+	}
+
 	void PlayOperationCore::Init(const PlaySingletonData& data)
 	{
+		if (s_instance != nullptr) System::MessageBoxOK(U"Duplicated PlayCore instance", MessageBoxStyle::Error);
+		else s_instance = this;
+
 		p_impl->Init(data);
 	}
 
@@ -388,6 +394,16 @@ namespace Play
 	const EffectWrapper& PlayCore::BgEffect() const
 	{
 		return p_impl->m_bgEffect;
+	}
+
+	PlayingPause& PlayCore::GetPause()
+	{
+		return p_impl->m_pause;
+	}
+
+	const PlayingPause& PlayCore::GetPause() const
+	{
+		return p_impl->m_pause;
 	}
 
 	ITutorialSetting* PlayCore::Tutorial()

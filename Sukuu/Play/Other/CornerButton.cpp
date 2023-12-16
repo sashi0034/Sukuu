@@ -45,7 +45,7 @@ namespace Play
 			                     ? index == cursorIndex
 			                     : exitHover;
 		drawButton(exitRect, focused);
-		(void)FontAsset(AssetKeys::RocknRoll_24_Bitmap)(label).drawAt(exitRect.center());
+		(void)FontAsset(AssetKeys::RocknRoll_24_Bitmap)(m_label).drawAt(exitRect.center());
 
 		// 入力チェック
 		if (focused)
@@ -53,11 +53,11 @@ namespace Play
 			if (Gm::IsUsingGamepad())
 			{
 				DrawButtonFrame(exitRect);
-				if (Gm::IsGamepadUp(Gm::GamepadButton::A)) action();
+				if (Gm::IsGamepadUp(Gm::GamepadButton::A)) m_action();
 			}
 			else
 			{
-				if (MouseL.up()) action();
+				if (MouseL.up()) m_action();
 			}
 		}
 

@@ -68,6 +68,12 @@ namespace Util
 		return parent.AsParent().Birth(EasingAnimation<easing, option, T>(valuePtr, endValue, duration));
 	}
 
+	template <double easing(double), uint64 option = EaseOption::Default, typename T>
+	EasingAnimation<easing, option, T> AnimateEasing(ActorContainer& parent, T* valuePtr, T endValue, double duration)
+	{
+		return parent.Birth(EasingAnimation<easing, option, T>(valuePtr, endValue, duration));
+	}
+
 	constexpr double BoomerangParabola(double value)
 	{
 		return 1 - 4 * (value - 0.5) * (value - 0.5);

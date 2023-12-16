@@ -28,7 +28,6 @@ namespace
 
 struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
 {
-	Play::PlayScene m_playScene{};
 	Play::PlayCore m_play{};
 	TutorialMapData m_mapData{};
 	bool m_finished{};
@@ -48,8 +47,8 @@ struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
 	void Init(ActorView self)
 	{
 		m_mapData = GetTutorialMap();
-		m_playScene = self.AsParent().Birth(Play::PlayScene());
-		m_playScene.Init({
+		auto playScene = self.AsParent().Birth(Play::PlayScene());
+		playScene.Init({
 			.tutorial = this,
 			.playerPersonal = {},
 			.timeLimiter = Play::TimeLimiterData{
@@ -57,7 +56,7 @@ struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
 				.remainingTime = 60
 			}
 		});
-		m_play = m_playScene.GetCore();
+		m_play = playScene.GetCore();
 		auto&& timeLimiter = m_play.GetTimeLimiter();
 		timeLimiter.SetCountEnabled(false);
 		timeLimiter.SetImmortal(true);
@@ -65,8 +64,14 @@ struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
 		gimmick[m_mapData.itemSpawnPoint] = Play::GimmickKind::Item_Pin;
 		gimmick[m_mapData.stairsPoint] = Play::GimmickKind::Stairs;
 
-		m_messanger = self.AsParent().Birth(TutorialMessenger());
-		m_focus = self.AsParent().Birth(TutorialFocus());
+		m_messanger = m_play.AsUiContent().Birth(TutorialMessenger());
+		m_focus = m_play.AsUiContent().Birth(TutorialFocus());
+
+		// フロー開始
+		StartCoro(m_play.AsMainContent(), [this](YieldExtended yield)
+		{
+			flowchartLoop(yield);
+		});
 	}
 
 	Play::MapGrid GetMap() const override
@@ -84,14 +89,6 @@ struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
 		return m_playerService;
 	}
 
-	void StartFlowchart(ActorView self)
-	{
-		StartCoro(self, [self, this](YieldExtended yield)
-		{
-			flowchartLoop(yield, self);
-		});
-	}
-
 private:
 	void waitMessage(YieldExtended& yield, const String& message, double duration)
 	{
@@ -100,14 +97,14 @@ private:
 		yield();
 	}
 
-	void flowchartLoop(YieldExtended& yield, ActorView self)
+	void flowchartLoop(YieldExtended& yield)
 	{
-		performOpening(yield, self);
+		performOpening(yield);
 		tutorialHowtoMove(yield);
-		tutorialScoop(yield, self);
-		tutorialItem(yield, self);
+		tutorialScoop(yield);
+		tutorialItem(yield);
 		m_playerService.canMove = true;
-		tutorialFinal(yield, self);
+		tutorialFinal(yield);
 
 		yield.WaitForTrue([this]() { return m_play.GetPlayer().IsTerminated(); });
 		m_bgm.stop(3.0s);
@@ -115,23 +112,24 @@ private:
 		m_finished = true;
 	}
 
-	void performOpening(YieldExtended& yield, ActorView self)
+	void performOpening(YieldExtended& yield)
 	{
 		yield();
+		m_play.GetPause().SetAllowed(false);
 		m_bgm.setLoop(true);
 		m_bgm.play(Constants::BgmMixBus);
 
 		double prologueAlpha{};
-		auto&& prologueFont = FontAsset(AssetKeys::RocknRoll_Sdf);
+		const auto prologueFont = FontAsset(AssetKeys::RocknRoll_Sdf);
 		m_postDraw = [&]()
 		{
 			Rect(Scene::Size()).draw(ColorF{Constants::HardDarkblue});
 			prologueFont(U"ダンジョン50層先のいにしえの地を求めて...").drawAt(
 				40.0, Scene::Center(), ColorF(1.0, prologueAlpha));
 		};
-		yield.WaitForExpire(AnimateEasing<EaseInOutSine>(self, &prologueAlpha, 1.0, 2.0));
+		yield.WaitForExpire(AnimateEasing<EaseInOutSine>(m_play.AsMainContent(), &prologueAlpha, 1.0, 2.0));
 		yield.WaitForTime(3.0);
-		yield.WaitForExpire(AnimateEasing<EaseInOutSine>(self, &prologueAlpha, 0.0, 2.0));
+		yield.WaitForExpire(AnimateEasing<EaseInOutSine>(m_play.AsMainContent(), &prologueAlpha, 0.0, 2.0));
 
 		// 真っ黒な画面から徐々に明るくしていく
 		m_play.GetPlayer().PerformTutorialOpening();
@@ -141,8 +139,9 @@ private:
 			Rect(Scene::Size()).draw(ColorF{Constants::HardDarkblue, rate});
 		};
 		yield.WaitForExpire(
-			AnimateEasing<EaseInQuad>(self, &rate, 0.0, 8.0));
+			AnimateEasing<EaseInQuad>(m_play.AsMainContent(), &rate, 0.0, 8.0));
 		m_postDraw = {};
+		m_play.GetPause().SetAllowed(true);
 	}
 
 	void tutorialHowtoMove(YieldExtended& yield)
@@ -180,7 +179,7 @@ private:
 		m_playerService.onMoved = [](auto, auto) { return; };
 	}
 
-	void tutorialScoop(YieldExtended& yield, ActorView self)
+	void tutorialScoop(YieldExtended& yield)
 	{
 		m_playerService.onMoved = [&](const Play::CharaVec2& pos, auto)
 		{
@@ -193,6 +192,8 @@ private:
 		m_playerService.onMoved = [](auto, auto) { return; };
 
 		// すくう入手イベント発生
+		m_playerService.overrideCamera = {0, 0};
+
 		auto catSouth = m_play.GetEnemies().Birth(m_play.AsMainContent(), Play::EnSlimeCat());
 		catSouth.InitTutorial(m_mapData.catSpawnPoint_South * Play::CellPx_24, Dir4::Up);
 
@@ -211,7 +212,7 @@ private:
 			return catNorthDist() < Play::CellPx_24 * findableCell;
 		});
 
-		auto timescaleController = StartCoro(self, [&](YieldExtended yield1)
+		auto timescaleController = StartCoro(m_play.AsMainContent(), [&](YieldExtended yield1)
 		{
 			// ネコが近づくたびにスローになるように
 			while (true)
@@ -244,7 +245,7 @@ private:
 		};
 
 		m_focus.Show(Scene::Center());
-		auto scoopingMessage = StartCoro(self, [&](YieldExtended y)
+		auto scoopingMessage = StartCoro(m_play.AsMainContent(), [&](YieldExtended y)
 		{
 			waitMessage(y, U"キミ自身をマウスカーソルでスクってみるといい", messageWaitMedium);
 			m_messanger.ShowMessageForever(U"自分自身を 'ドラッグ' して\n壁の方向へ 'ドロップ' するんだ");
@@ -259,6 +260,8 @@ private:
 		(void)m_bgm.setVolume(1.0);
 		yield.WaitForTime(1.0);
 
+		m_playerService.overrideCamera = none;
+
 		waitMessage(yield, U"間一髪、一難過ぎ去ったね", messageWaitShort);
 		catNorth.Kill();
 		catSouth.Kill();
@@ -269,7 +272,7 @@ private:
 		waitMessage(yield, U"さて、奥へ進もうか", messageWaitShort);
 	}
 
-	void tutorialItem(YieldExtended& yield, ActorView self)
+	void tutorialItem(YieldExtended& yield)
 	{
 		auto knight = m_play.GetEnemies().Birth(m_play.AsMainContent(), Play::EnKnight());
 		knight.InitTutorial(m_mapData.knightSpawnPoint * Play::CellPx_24, Dir4::Left);
@@ -299,7 +302,7 @@ private:
 		waitMessage(yield, U"うん、いいね", messageWaitShortShort);
 	}
 
-	void tutorialFinal(YieldExtended& yield, ActorView self)
+	void tutorialFinal(YieldExtended& yield)
 	{
 		bool nearStairs1{};
 		m_playerService.onMoved = [&](const Play::CharaVec2& pos, bool isRunning)
@@ -341,7 +344,6 @@ namespace Tutorial
 	void TutorialScene::Init()
 	{
 		p_impl->Init(*this);
-		p_impl->StartFlowchart(*this);
 	}
 
 	bool TutorialScene::IsFinished() const

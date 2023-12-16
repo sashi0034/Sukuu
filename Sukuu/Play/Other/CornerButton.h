@@ -8,14 +8,14 @@ namespace Play
 	{
 	public:
 		CornerButton(const StringView& label, const std::function<void()>& action) :
-			label(label),
-			action(action) { return; }
+			m_label(label),
+			m_action(action) { return; }
 
 		using Hovered = bool;
 		Hovered Update(int index, int cursorIndex);
 
 	private:
-		StringView label;
-		std::function<void()> action;
+		StringView m_label;
+		std::function<void()> m_action;
 	};
 }

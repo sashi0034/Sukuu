@@ -2,15 +2,22 @@
 #include "PlayingPause.h"
 
 #include "AssetKeys.h"
+#include "CornerButton.h"
 #include "Gm/DialogSettingConfigure.h"
 #include "Gm/DialogYesNo.h"
 #include "Gm/GamepadObserver.h"
 #include "Play/PlayCore.h"
 #include "Util/Utilities.h"
 
-namespace Play
+struct Play::PlayingPause::Impl
 {
-	PlayingPause::PlayingPause()
+	bool m_paused{};
+	bool m_pauseAllowed{true};
+
+	Array<CornerButton> m_buttons{};
+	int m_cursorIndex{};
+
+	void Init(bool enableRetire)
 	{
 		m_buttons.push_back(CornerButton(U"閉じる"_sv, [this]()
 		{
@@ -22,15 +29,18 @@ namespace Play
 			Gm::DialogSettingConfigure();
 		}));
 
-		m_buttons.push_back(CornerButton(U"リタイア"_sv, [this]()
+		if (enableRetire)
 		{
-			if (Gm::DialogYesNo(U"本当に諦めますか") != MessageBoxResult::Yes) return;
-			PlayCore::Instance().GetTimeLimiter().ForceTerminate();
-			m_paused = false;
-		}));
+			m_buttons.push_back(CornerButton(U"リタイア"_sv, [this]()
+			{
+				if (Gm::DialogYesNo(U"本当に諦めますか") != MessageBoxResult::Yes) return;
+				PlayCore::Instance().GetTimeLimiter().ForceTerminate();
+				m_paused = false;
+			}));
+		}
 	}
 
-	void PlayingPause::Update()
+	void Update()
 	{
 		if (not m_pauseAllowed) return;
 
@@ -65,5 +75,35 @@ namespace Play
 		m_cursorIndex = Util::Mod2<int>(
 			m_cursorIndex + IsGamepadDown(Gm::GamepadButton::DUp) - IsGamepadDown(Gm::GamepadButton::DDown),
 			m_buttons.size());
+	}
+};
+
+namespace Play
+{
+	PlayingPause::PlayingPause() :
+		p_impl(std::make_shared<Impl>())
+	{
+	}
+
+
+	void PlayingPause::Init(bool enableRetire)
+	{
+		p_impl->Init(enableRetire);
+	}
+
+	bool PlayingPause::IsPaused() const
+	{
+		return p_impl->m_pauseAllowed && p_impl->m_paused;
+	}
+
+	void PlayingPause::SetAllowed(bool e)
+	{
+		p_impl->m_pauseAllowed = e;
+	}
+
+	void PlayingPause::Update()
+	{
+		ActorBase::Update();
+		p_impl->Update();
 	}
 }

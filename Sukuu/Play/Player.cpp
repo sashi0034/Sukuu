@@ -91,7 +91,13 @@ struct Play::Player::Impl
 		}
 
 		// 特殊処理してないなら、カメラのオフセットを動かす
-		m_cameraOffset += (m_cameraOffsetDestination - m_cameraOffset)
+		const auto cameraDestination = [this]
+		{
+			if (const auto tutorial = PlayCore::Instance().Tutorial())
+				if (const auto overriding = tutorial->PlayerService().overrideCamera) return overriding.value();
+			return m_cameraOffsetDestination;
+		}();
+		m_cameraOffset += (cameraDestination - m_cameraOffset)
 			* Scene::DeltaTime()
 			* getToml<double>(U"camera_offset_speed");
 
