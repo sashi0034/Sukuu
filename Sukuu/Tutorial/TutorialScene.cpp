@@ -309,7 +309,10 @@ private:
 		m_focus.Show(Scene::Center());
 		auto scoopingMessage = StartCoro(m_play.AsMainContent(), [&](YieldExtended y)
 		{
-			waitMessage(y, U"キミ自身をマウスカーソルでスクってみるといい", messageWaitMedium);
+			waitMessage(y, Gm::IsUsingGamepad()
+				               ? U"キミ自身をマウスカーソルでスクってみるといい"
+				               : U"自分自身をスクってみよう",
+			            messageWaitMedium);
 			m_messanger.ShowMessageForever(
 				Gm::IsUsingGamepad()
 					? U"'RT' を押して壁方向へ向かってみるんだ"
