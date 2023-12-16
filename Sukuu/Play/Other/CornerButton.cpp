@@ -40,7 +40,7 @@ namespace Play
 			Scene::Size().moveBy(buttonPadding - buttonSize).movedBy(0, -buttonSpace * index),
 			buttonSize);
 		const bool exitHover =
-			exitRect.intersects(RectF(Arg::center = Cursor::PosF(), Constants::CursorSize_64));
+			exitRect.intersects(RectF(Arg::center = Cursor::PosF(), Constants::CursorSize_64 / 2));
 		const bool focused = Gm::IsUsingGamepad()
 			                     ? index == cursorIndex
 			                     : exitHover;

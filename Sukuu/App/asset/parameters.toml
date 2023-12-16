@@ -206,7 +206,7 @@ tips_color = "#878787"
 tips_y = -160
 
 [play.corner_button]
-button_size = "(196, 48)"
+button_size = "(224, 48)"
 button_padding = "(-40, -20)"
 button_color = "#525467"
 button_space = 80
