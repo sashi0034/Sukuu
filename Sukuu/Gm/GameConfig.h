@@ -37,7 +37,7 @@ namespace Gm
 
 	struct GameConfig
 	{
-		bool fullscreen{};
+		bool fullscreen{true};
 		GameLanguage language{};
 
 		TenStepNumber bgm_volume{5};

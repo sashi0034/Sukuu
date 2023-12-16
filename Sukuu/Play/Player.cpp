@@ -5,6 +5,7 @@
 #include "PlayBgm.h"
 #include "Chara/CharaUtil.h"
 #include "Effect/ItemObtainEffect.h"
+#include "Gm/GameConfig.h"
 #include "Item/ItemGrave.h"
 #include "Item/ItemMagnet.h"
 #include "Item/ItemMine.h"
@@ -392,7 +393,9 @@ private:
 
 	static Vec2 getDirectionCameraOffset(Dir4Type moveDir)
 	{
-		return -moveDir.ToXY() * getToml<double>(U"camera_offset_amount");
+		const int c = Gm::GameConfig::Instance().camera_move;
+		const int move = getToml<double>(U"camera_move_min") + getToml<double>(U"camera_move_step") * c;
+		return -moveDir.ToXY() * move;
 	}
 
 	void flowchartLoop(YieldExtended& yield, ActorView self)
