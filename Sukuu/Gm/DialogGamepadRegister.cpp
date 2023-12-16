@@ -186,6 +186,16 @@ namespace
 		{
 			const auto r = [&](GamepadButton b)
 			{
+				for (int i = 0; i < static_cast<int>(b); ++i)
+				{
+					// すでに割り当てられていたボタンならキャンセル
+					if (state.registered[i] == downButton)
+					{
+						AudioAsset(AssetSes::system_no).playOneShot();
+						return;
+					}
+				}
+
 				// ボタンを割り当てる
 				state.registered[b] = downButton;
 
