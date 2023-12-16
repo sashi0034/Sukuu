@@ -210,7 +210,9 @@ struct Play::Player::Impl
 
 	bool CanUseItem(ConsumableItem item) const
 	{
+		if (m_slowMotion) return false;
 		if (PlayCore::Instance().GetTimeLimiter().GetData().remainingTime <= 0) return false;
+
 		switch (item)
 		{
 		case ConsumableItem::None:
@@ -532,8 +534,9 @@ private:
 		// マウスクリックまで待機
 		m_subUpdating = [this]
 		{
+			const auto playerRect = RectF(m_pos.actualPos, {CellPx_24, CellPx_24});
 			const bool intersectsCursor =
-				not Gm::IsUsingGamepad() && RectF(m_pos.actualPos, {CellPx_24, CellPx_24}).intersects(GetCursorRect());
+				not Gm::IsUsingGamepad() && playerRect.intersects(GetCursorRect());
 
 			if (not m_scoopRequested)
 				m_scoopRequested = CheckScoopRequestInput(intersectsCursor);
@@ -547,16 +550,22 @@ private:
 			if (not isDrawCell) return;
 
 			// セル描画
-			Polygon polygon = RectF(m_pos.actualPos.MapPoint() * CellPx_24, {CellPx_24, CellPx_24}).asPolygon();
+			constexpr double polygoneThickness = 0.5;
+			Polygon polygon = playerRect.asPolygon();
 			if (intersectsCursor)
 			{
 				// カーソルを代替表示
 				Gm::RequestHideGameCursor();
-				polygon.append(Circle(Cursor::PosF(), GetCursorSize() / 2).asPolygon());
+				const auto cursorCircle = Circle(Cursor::PosF(), GetCursorSize() / 2);
+				if (not polygon.append(cursorCircle.asPolygon()))
+				{
+					cursorCircle.draw(cellColor)
+					            .drawFrame(polygoneThickness, ColorF(cellColor.rgb() * 0.5, 1.0));
+				}
 			}
-			(void)polygon
+			(void)polygon //.movedBy(m_pos.viewPos - m_pos.actualPos)
 			      .draw(cellColor)
-			      .drawFrame(0.5, ColorF(cellColor.rgb() * 0.5, 1.0));
+			      .drawFrame(polygoneThickness, ColorF(cellColor.rgb() * 0.5, 1.0));
 		};
 
 		// すくうが要求されるまで処理を進めない
