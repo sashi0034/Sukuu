@@ -282,7 +282,7 @@ namespace
 				AudioAsset(AssetSes::system_no).playOneShot();
 			}
 
-			if (IsFinishDialog(state.passedFinished)) break;
+			if (IsDialogFinishEnd(state.passedFinished)) break;
 		}
 
 		System::Update();

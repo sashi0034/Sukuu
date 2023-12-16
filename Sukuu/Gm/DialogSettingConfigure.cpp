@@ -263,7 +263,7 @@ namespace
 
 			exitRequested = exitRequested || CheckDialogExit(exitHover, true);
 
-			if (IsFinishDialog(state.passedFinished)) break;
+			if (IsDialogFinishEnd(state.passedFinished)) break;
 		}
 
 		return state.editing;

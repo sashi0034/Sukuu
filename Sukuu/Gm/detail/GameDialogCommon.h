@@ -12,7 +12,8 @@ namespace Gm::detail
 	Vec2 DlBottom1();
 
 	Transformer2D PreUpdateDialog(double passedStarted, double passedFinished, bool enableGamepad);
-	bool IsFinishDialog(double passedFinished);
+	bool IsDialogStartEnd(double passedStarted);
+	bool IsDialogFinishEnd(double passedFinished);
 	void DrawDialogTitle(StringView title);
 	void DrawDialogBottomLine();
 	void DrawDialogExit(bool* exitHover);

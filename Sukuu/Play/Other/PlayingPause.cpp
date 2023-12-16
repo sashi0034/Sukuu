@@ -12,6 +12,11 @@ namespace Play
 {
 	PlayingPause::PlayingPause()
 	{
+		m_buttons.push_back(CornerButton(U"閉じる"_sv, [this]()
+		{
+			m_paused = false;
+		}));
+
 		m_buttons.push_back(CornerButton(U"設定"_sv, []()
 		{
 			Gm::DialogSettingConfigure();
@@ -55,7 +60,7 @@ namespace Play
 			// ボタン描画
 			buttonHovered |= m_buttons[i].Update(i, m_cursorIndex);
 		}
-		if (not Gm::IsUsingGamepad() && not buttonHovered && Util::IsSceneLeftClicked()) m_paused = false;
+		// if (not Gm::IsUsingGamepad() && not buttonHovered && IsSceneLeftClicked()) m_paused = false;
 
 		m_cursorIndex = Util::Mod2<int>(
 			m_cursorIndex + IsGamepadDown(Gm::GamepadButton::DUp) - IsGamepadDown(Gm::GamepadButton::DDown),

@@ -133,7 +133,7 @@ struct Title::TitleHud::Impl
 		}
 		else
 		{
-			if (IsSceneLeftClicked()) m_concludedPlay = true;
+			if (not buttonHovered && IsSceneLeftClicked()) m_concludedPlay = true;
 		}
 	}
 };

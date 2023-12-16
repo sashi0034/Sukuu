@@ -107,9 +107,9 @@ namespace
 			state.passedStarted += Scene::DeltaTime();
 			if (confirmed != OptionalYesNo::Unopt) state.passedFinished += Scene::DeltaTime();
 
-			updateUi(message, &confirmed, state.passedStarted > 0.5);
+			updateUi(message, &confirmed, IsDialogStartEnd(state.passedStarted));
 
-			if (IsFinishDialog(state.passedFinished)) break;
+			if (IsDialogFinishEnd(state.passedFinished)) break;
 		}
 		return confirmed == OptionalYesNo::Yes ? MessageBoxResult::Yes : MessageBoxResult::No;
 	}

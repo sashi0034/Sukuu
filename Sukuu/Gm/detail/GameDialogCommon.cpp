@@ -52,7 +52,12 @@ namespace Gm::detail
 		};
 	}
 
-	bool IsFinishDialog(double passedFinished)
+	bool IsDialogStartEnd(double passedStarted)
+	{
+		return passedStarted > transitionStart;
+	}
+
+	bool IsDialogFinishEnd(double passedFinished)
 	{
 		return passedFinished > transitionFinish;
 	}

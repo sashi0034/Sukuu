@@ -120,6 +120,7 @@ struct Play::Player::Impl
 		m_flowchart.Kill();
 		m_distField.Clear();
 		m_subUpdating = {};
+		m_slowMotion = false;
 		m_immortal.immortalStock++;
 		AnimateEasing<EaseOutCirc>(self, &m_cameraScale, 8.0, 0.5);
 		StartCoro(self, [this](YieldExtended yield)
