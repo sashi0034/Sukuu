@@ -53,9 +53,9 @@ struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
 		m_play = m_playScene.GetCore();
 
 		// フロー開始
-		StartCoro(m_play.AsMainContent(), [this, self](YieldExtended yield)
+		StartCoro(m_play.AsMainContent(), [this](YieldExtended yield)
 		{
-			flowchartLoop(yield, self);
+			flowchartLoop(yield);
 		});
 	}
 
@@ -75,7 +75,7 @@ struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
 	}
 
 private:
-	void startPlayScene(ActorView self)
+	void startPlayScene()
 	{
 		m_mapData = GetTutorialMap();
 		m_playScene.Init({
@@ -110,11 +110,11 @@ private:
 		yield();
 	}
 
-	void flowchartLoop(YieldExtended& yield, ActorView self)
+	void flowchartLoop(YieldExtended& yield)
 	{
 		yield();
-		performLogo(yield, self);
-		startPlayScene(self);
+		performLogo(yield);
+		startPlayScene();
 		performOpening(yield);
 		tutorialHowtoMove(yield);
 		tutorialScoop(yield);
@@ -128,7 +128,7 @@ private:
 		m_finished = true;
 	}
 
-	void performLogo(YieldExtended& yield, ActorView self)
+	void performLogo(YieldExtended& yield)
 	{
 		const auto icon = TextureAsset(AssetImages::siv3d_icon);
 		const auto font = FontAsset(AssetKeys::RocknRoll_Sdf);
@@ -141,7 +141,7 @@ private:
 
 			Transformer2D t0{
 				Mat3x2::Rotate(2 * 360_deg * EaseInBack(fadeTransition), Scene::Center()).
-				scaled(1 + 64.0 * EaseInBack(fadeTransition), Scene::Center()),
+				scaled(1 + 127 * EaseInBack(fadeTransition), Scene::Center()),
 				TransformCursor::No
 			};
 
@@ -160,7 +160,11 @@ private:
 
 		yield.WaitForTime(0.5);
 		yield.WaitForTrue([] { return Gm::CheckConfirmSimply(); });
-		yield.WaitForExpire(AnimateEasing<EaseInLinear>(self, &fadeTransition, 1.0, 1.5));
+
+		// 開始
+		AudioAsset(AssetSes::floor_transition).playOneShot();
+
+		yield.WaitForExpire(AnimateEasing<EaseInLinear>(m_play.AsMainContent(), &fadeTransition, 1.0, 1.5));
 		m_postDraw = {};
 	}
 
