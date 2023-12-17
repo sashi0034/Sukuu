@@ -76,6 +76,11 @@ namespace Play
 			.emoji = U"🧂",
 			.desc = U"敵に見つかりにくくなる"
 		};
+		data[static_cast<int>(c::Rocket)] = ItemProps{
+			.item = c::Rocket,
+			.emoji = U"🚀",
+			.desc = U"一定時間すくうペナルティ無し"
+		};
 
 		return data;
 	}

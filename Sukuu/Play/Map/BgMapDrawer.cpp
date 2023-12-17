@@ -135,6 +135,9 @@ struct Play::BgMapDrawer::Impl
 		case GimmickKind::Item_Solt:
 			drawGimmickAt(point, AssetImages::solt_16x16, 16, 3);
 			break;
+		case GimmickKind::Item_Rocket:
+			drawGimmickAt(point, AssetImages::rocket_16x16, 16, 4);
+			break;
 		case GimmickKind::SemiItem_Hourglass:
 			drawGimmickAt(point, AssetImages::hourglass_16x16, 16, 3);
 			break;

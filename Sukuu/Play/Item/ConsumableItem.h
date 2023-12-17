@@ -17,6 +17,7 @@ namespace Play
 		Sun,
 		Tube,
 		Solt,
+		Rocket,
 
 		Max,
 	};

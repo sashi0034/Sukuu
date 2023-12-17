@@ -63,6 +63,8 @@ struct Play::Player::Impl
 	int m_scoopContinuous{};
 	PlayerVisionState m_vision{};
 	double m_faintStealthTime{};
+	double m_scoopNoPenaltyTime{};
+	RocketSpark m_rocketSpark{};
 	bool m_isGameOver{};
 
 	void Update()
@@ -77,6 +79,8 @@ struct Play::Player::Impl
 		m_animTimer.Tick(GetDeltaTime() * (m_act == PlayerAct::Running ? 2 : 1));
 
 		m_faintStealthTime = std::max(m_faintStealthTime - GetDeltaTime(), 0.0);
+
+		m_scoopNoPenaltyTime = std::max(m_scoopNoPenaltyTime - GetDeltaTime(), 0.0);
 
 		// 描画基準点
 		const auto drawingTl = getDrawPos();
@@ -101,12 +105,19 @@ struct Play::Player::Impl
 			* Scene::DeltaTime()
 			* getToml<double>(U"camera_offset_speed");
 
+		// ロケット描画
+		if (m_scoopNoPenaltyTime > 0)
+		{
+			drawRocketSpark(drawingTl);
+		}
+
 		const ScopedRenderStates2D rs = getRenderState();
 
+		// 自分自身描画
 		(void)getPlayerTexture()
 			.draw(drawingTl, ColorF{1.0, getTextureAlpha()});
 
-		// ヘルメット
+		// ヘルメット描画
 		if (m_guardHelmet)
 		{
 			TextureAsset(AssetImages::helmet_16x16)(0, 0, 16, 16).drawAt(drawingTl + getHelmetOffset());
@@ -251,6 +262,8 @@ struct Play::Player::Impl
 		case ConsumableItem::Solt:
 			if (m_faintStealthTime > 0) return false;
 			return true;
+		case ConsumableItem::Rocket:
+			return m_scoopNoPenaltyTime == 0;
 		case ConsumableItem::Max:
 			return false;
 		default: ;
@@ -310,8 +323,12 @@ struct Play::Player::Impl
 			break;
 		}
 		case ConsumableItem::Solt: {
-			m_faintStealthTime += getToml<double>(U"solt_faint");
+			m_faintStealthTime += getToml<double>(U"solt_time");
 			refreshDistField();
+			break;
+		}
+		case ConsumableItem::Rocket: {
+			m_scoopNoPenaltyTime = getRocketTime();
 			break;
 		}
 		case ConsumableItem::Max:
@@ -362,6 +379,24 @@ private:
 				       : 0.1;
 		}
 		return 1.0;
+	}
+
+	static double getRocketTime()
+	{
+		return getToml<double>(U"rocket_time");
+	}
+
+	void drawRocketSpark(const Vec2& drawingTl)
+	{
+		const double scaling = 1.0 + 0.1 * Periodic::Sine0_1(1.0s, m_scoopNoPenaltyTime);
+
+		const auto drawCenter = drawingTl.movedBy(Vec2::One() * PlayerCellRect.size / 2);
+		const auto size = getToml<double>(U"rocket_size");
+		Circle(drawCenter, size * 2.0)
+			.drawArc(0_deg, 360_deg * (m_scoopNoPenaltyTime / getRocketTime()), 0, 0.5, RocketSpark::Yellow);
+
+		const ScopedColorAdd2D add{ColorF{0.0, 1.0}};
+		m_rocketSpark.Tick(drawCenter, scaling * size);
 	}
 
 	bool isWalking() const
@@ -673,7 +708,8 @@ private:
 		m_trailStock--;
 		m_immortal.immortalStock--;
 
-		if (PlayCore::Instance().GetMap().At(m_pos.actualPos.MapPoint()).kind == TerrainKind::Wall)
+		if (PlayCore::Instance().GetMap().At(m_pos.actualPos.MapPoint()).kind == TerrainKind::Wall
+			&& m_scoopNoPenaltyTime <= 0)
 		{
 			// ペナルティ発生
 			RelayTimeDamageAmount(m_pos, static_cast<int>(GetPlayerScoopedPenaltyDamage(m_scoopContinuous)), false);
@@ -723,7 +759,8 @@ private:
 		case GimmickKind::Item_Grave: [[fallthrough]];
 		case GimmickKind::Item_Sun: [[fallthrough]];
 		case GimmickKind::Item_Tube: [[fallthrough]];
-		case GimmickKind::Item_Solt:
+		case GimmickKind::Item_Solt: [[fallthrough]];
+		case GimmickKind::Item_Rocket:
 			obtainItemAt(newPoint, gimmickGrid);
 			break;
 		case GimmickKind::SemiItem_Hourglass: {
@@ -830,9 +867,8 @@ namespace Play
 		p_impl->StartFlowchart(*this);
 
 #if _DEBUG
-		p_impl->m_personal.items[0] = ConsumableItem::Wing;
-		p_impl->m_personal.items[1] = ConsumableItem::LightBulb;
-		// p_impl->m_personal.items[2] = ConsumableItem::Mine;
+		p_impl->m_personal.items[0] = ConsumableItem::Rocket;
+		p_impl->m_personal.items[1] = ConsumableItem::Wing;
 #endif
 	}
 

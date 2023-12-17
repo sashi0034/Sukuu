@@ -37,6 +37,9 @@ namespace Play
 	class AnimTimer
 	{
 	public:
+		AnimTimer() = default;
+		AnimTimer(double time) { m_timer = time; }
+
 		void Reset(double t = 0) { m_timer = t; }
 		void Tick(double dt = GetDeltaTime()) { m_timer += dt; }
 		int SliceFrames(uint64 milliInterval, const Array<int>& pattern) const;

@@ -22,6 +22,7 @@ namespace Play
 		Item_Sun,
 		Item_Tube,
 		Item_Solt,
+		Item_Rocket,
 		SemiItem_Hourglass,
 		SemiItem_Vessel,
 		Installed_Mine,
@@ -67,6 +68,8 @@ namespace Play
 			return ConsumableItem::Tube;
 		case GimmickKind::Item_Solt:
 			return ConsumableItem::Solt;
+		case GimmickKind::Item_Rocket:
+			return ConsumableItem::Rocket;
 		default: ;
 			return ConsumableItem::None;
 		}

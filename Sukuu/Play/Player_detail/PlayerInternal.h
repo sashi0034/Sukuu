@@ -57,4 +57,14 @@ namespace Play::Player_detail
 	void UpdatePlayerVision(PlayerVisionState& vision, PlayerAct act);
 
 	void ControlPlayerBgm(const CharaVec2& pos, const MapGrid& map);
+
+	class RocketSpark
+	{
+	public:
+		static constexpr ColorF Yellow{U"#ffbc2e"};
+		void Tick(const Vec2& center, double size);
+
+	private:
+		Array<TrailMotion> m_trails;
+	};
 }

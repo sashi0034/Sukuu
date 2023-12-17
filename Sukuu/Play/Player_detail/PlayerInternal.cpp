@@ -157,4 +157,48 @@ namespace Play::Player_detail
 		}
 		PlayBgm::Instance().SetVolumeRate(rate);
 	}
+
+	static void constructRocketSpark(Array<TrailMotion>& trails)
+	{
+		const double offsets[3] = {Random(1.0, 2.0), Random(1.0, 2.0), Random(1.0, 2.0)};
+		for (int i = 0; i < 3; ++i)
+		{
+			trails <<
+				TrailMotion{}
+				.setScaleFunction([](double t)
+				{
+					return (0.5 - AbsDiff(t, 0.5));
+				})
+				.setPositionFunction([i, &offsets](double t)
+				{
+					const double x = ((72 + i * 4)) * -Math::Cos(offsets[i] + t * (4.0 + i * (1 + offsets[i])) * 3.0);
+					const double y = ((72 + i * 4)) * Math::Sin(offsets[i] + t * (4.0 + i * (1 + offsets[i])) * 2.0);
+					return Vec2{x, y};
+				})
+				.setSizeFunction([](double t)
+				{
+					return (16.0 + Periodic::Sine0_1(0.2s, t) * 48.0);
+				})
+				.setColor(ColorF(RocketSpark::Yellow, 1.0))
+				.setFrequency(60.0);
+		}
+	}
+
+	void RocketSpark::Tick(const Vec2& center, double size)
+	{
+		if (m_trails.isEmpty()) constructRocketSpark(m_trails);
+
+		const Transformer2D transform{
+			Mat3x2::Scale(size / 80.0).translated(center).rotated(45_deg, center)
+		};
+		const ScopedRenderStates2D blend{
+			SamplerState::ClampLinear, BlendState::Default2D, RasterizerState::WireframeCullBack
+		};
+
+		for (auto& trail : m_trails)
+		{
+			trail.update(GetDeltaTime());
+			trail.draw();
+		}
+	}
 }

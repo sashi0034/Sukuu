@@ -208,6 +208,8 @@ namespace
 			return floor >= 15;
 		case ConsumableItem::Solt:
 			return floor >= 5;
+		case ConsumableItem::Rocket:
+			return floor > 0; // TODO
 		default: ;
 			return false;
 		}
@@ -260,6 +262,8 @@ namespace
 				if (RandomBool(0.5)) return GimmickKind::Item_Tube;
 			case ConsumableItem::Solt:
 				if (RandomBool(0.7)) return GimmickKind::Item_Solt;
+			case ConsumableItem::Rocket:
+				return GimmickKind::Item_Rocket;
 			default: ;
 				break;
 			}
