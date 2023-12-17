@@ -227,10 +227,10 @@ namespace Play
 
 	double EnHandMaster::OrderPriority() const
 	{
-		return p_impl->m_mimicking
-			       ? BgEffectPriority + 1
-			       : (p_impl->m_capturedPlayer
-				          ? PlayCore::Instance().GetPlayer().OrderPriority() + 1
+		return p_impl->m_capturedPlayer
+			       ? PlayCore::Instance().GetPlayer().OrderPriority() + 1
+			       : (p_impl->m_mimicking
+				          ? BgEffectPriority + 1
 				          : CharaOrderPriority(p_impl->m_pos));
 	}
 

@@ -33,6 +33,14 @@ namespace
 	}
 
 	constexpr ColorF arrowColor = ColorF(U"#ffc22b");;
+
+	enum class TerminatedStatus
+	{
+		Unterminated,
+		Stair,
+		GameOver,
+		Abduction,
+	};
 }
 
 struct Play::Player::Impl
@@ -52,7 +60,7 @@ struct Play::Player::Impl
 	AnimTimer m_animTimer{};
 	Dir4Type m_direction{Dir4::Down};
 	PlayerDistFieldInternal m_distField{};
-	bool m_terminated{};
+	TerminatedStatus m_terminated{TerminatedStatus::Unterminated};
 	PlayerImmortality m_immortal{};
 	bool m_guardHelmet{};
 	Trail m_footTrail{};
@@ -65,7 +73,7 @@ struct Play::Player::Impl
 	double m_faintStealthTime{};
 	double m_scoopNoPenaltyTime{};
 	RocketSpark m_rocketSpark{};
-	bool m_isGameOver{};
+	bool m_gameOverStarted{};
 
 	void Update()
 	{
@@ -128,13 +136,13 @@ struct Play::Player::Impl
 
 	void CheckGameOver(ActorView self)
 	{
-		if (m_isGameOver) return;
+		if (m_gameOverStarted) return;
 		if (PlayCore::Instance().GetTimeLimiter().GetData().remainingTime > 0) return;
 
 		// 以下、ゲームオーバー処理開始
 		PlayBgm::Instance().EndPlay();
 		AudioAsset(AssetSes::fall_down).playOneShot();
-		m_isGameOver = true;
+		m_gameOverStarted = true;
 		m_flowchart.Kill();
 		m_distField.Clear();
 		m_subUpdating = {};
@@ -145,7 +153,7 @@ struct Play::Player::Impl
 		{
 			yield.WaitForTime(1.0);
 			yield.WaitForExpire(PlayCore::Instance().PerformGameOver());
-			m_terminated = true;
+			m_terminated = TerminatedStatus::GameOver;
 		});
 	}
 
@@ -374,7 +382,7 @@ private:
 
 	TextureRegion getPlayerTexture() const
 	{
-		if (m_act == PlayerAct::Dead || m_isGameOver) return GetDeadPlayerTexture();
+		if (m_act == PlayerAct::Dead || m_gameOverStarted) return GetDeadPlayerTexture();
 		return GetUsualPlayerTexture(m_direction, m_animTimer, isWalking());
 	}
 
@@ -451,7 +459,7 @@ private:
 
 	void flowchartLoop(YieldExtended& yield, ActorView self)
 	{
-		while (m_isGameOver)
+		while (m_gameOverStarted)
 		{
 			yield();
 		}
@@ -758,7 +766,7 @@ private:
 			AudioAsset(AssetSes::stairs_close).playOneShot();
 			yield.WaitForExpire(
 				AnimateEasing<EaseOutCirc>(self, &m_cameraScale, 10.0, 0.5));
-			m_terminated = true;
+			m_terminated = TerminatedStatus::Stair;
 			break;
 		}
 		case GimmickKind::Item_Wing: [[fallthrough]];
@@ -874,7 +882,7 @@ private:
 		yield.WaitForTime(0.5);
 		PlayCore::Instance().EndTransition();
 		yield.WaitForTime(getToml<double>(U"abduction_intermission"));
-		m_terminated = true;
+		m_terminated = TerminatedStatus::Abduction;
 	}
 };
 
@@ -980,7 +988,12 @@ namespace Play
 
 	bool Player::IsTerminated() const
 	{
-		return p_impl->m_terminated;
+		return p_impl->m_terminated != TerminatedStatus::Unterminated;
+	}
+
+	bool Player::HasAbducted() const
+	{
+		return p_impl->m_terminated == TerminatedStatus::Abduction;
 	}
 
 	const PlayerVisionState& Player::Vision() const

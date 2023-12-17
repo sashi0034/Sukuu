@@ -156,9 +156,10 @@ public:
 		m_slowMotion.bufferTexture = RenderTexture(Scene::Size());
 	}
 
-	ActorWeak StartTransition(int floorIndex)
+	ActorWeak StartTransition(int floorIndex, bool redEnabled)
 	{
 		ensureInitializedTransition();
+		m_floorTransition.SetRed(redEnabled);
 		return m_floorTransition.PerformOpen(floorIndex);
 	}
 
@@ -296,9 +297,9 @@ namespace Play
 		p_impl->m_ui.Update();
 	}
 
-	ActorWeak PlayCore::StartTransition(int floorIndex)
+	ActorWeak PlayCore::StartTransition(int floorIndex, bool floorDown)
 	{
-		return p_impl->StartTransition(floorIndex);
+		return p_impl->StartTransition(floorIndex, floorDown);
 	}
 
 	ActorWeak PlayCore::EndTransition()

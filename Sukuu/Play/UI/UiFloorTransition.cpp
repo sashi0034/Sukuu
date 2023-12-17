@@ -17,7 +17,8 @@ namespace
 		return Util::GetTomlParameter<T>(U"play.ui_floor_transition." + key);
 	}
 
-	void drawGlyphs(const Array<OutlineGlyph>& glyphs, Vec2 penPos, double lengthRate, double period)
+	void drawGlyphs(
+		const Array<OutlineGlyph>& glyphs, Vec2 penPos, double lengthRate, double period, const ColorF& color)
 	{
 		const double t = Periodic::Sawtooth0_1(period);
 		for (const auto& glyph : glyphs)
@@ -29,7 +30,7 @@ namespace
 				const double length = ring.calculateLength(CloseRing::Yes);
 				LineString z1 = ring.extractLineString(t * length, length * lengthRate, CloseRing::Yes);
 				const LineString z2 = ring.extractLineString((t + 0.5) * length, length * lengthRate, CloseRing::Yes);
-				(void)z1.append(z2.reversed()).drawClosed(3, Palette::White);
+				(void)z1.append(z2.reversed()).drawClosed(3, color);
 			}
 
 			penPos.x += glyph.xAdvance;
@@ -53,6 +54,7 @@ struct Play::UiFloorTransition::Impl
 	String m_subheading{};
 	std::pair<double, double> m_centerLineRange{};
 	bool m_vesselMark{};
+	bool m_redEnabled;
 
 	void Init()
 	{
@@ -146,15 +148,18 @@ private:
 		else
 			(void)Rect(Scene::Size()).draw(Constants::HardDarkblue);
 
+		const auto glyphColor = m_redEnabled
+			                        ? ColorF(U"#e84b3b")
+			                        : ColorF(1);
 		Line(m_centerLineRange.first, Scene::Center().y, m_centerLineRange.second, Scene::Center().y)
-			.draw(getToml<double>(U"line_thickness"), s3d::Palette::White);
+			.draw(getToml<double>(U"line_thickness"), glyphColor);
 
 		[this]
 		{
 			const Transformer2D transform{Mat3x2::Scale(Vec2{1, m_textHeightScale} * 3.0, Scene::Center())};
 			const auto glyphPos =
 				Scene::Center().movedBy(Vec2{-m_glyphWidth, -72.0} / 2).movedBy(0, getToml<double>(U"glyph_y"));
-			drawGlyphs(m_glyphs, glyphPos, m_glyphLength, m_glyphPeriod);
+			drawGlyphs(m_glyphs, glyphPos, m_glyphLength, m_glyphPeriod, Palette::White);
 
 			if (m_vesselMark)
 			{
@@ -222,6 +227,11 @@ namespace Play
 	double UiFloorTransition::OrderPriority() const
 	{
 		return 10000.0;
+	}
+
+	void UiFloorTransition::SetRed(bool enabled)
+	{
+		p_impl->m_redEnabled = enabled;
 	}
 
 	ActorWeak UiFloorTransition::PerformOpen(int floorIndex)

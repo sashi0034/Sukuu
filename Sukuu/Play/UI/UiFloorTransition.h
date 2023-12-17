@@ -13,6 +13,8 @@ namespace Play
 		void Update() override;
 		double OrderPriority() const override;
 
+		void SetRed(bool enabled);
+
 		ActorWeak PerformOpen(int floorIndex);
 		ActorWeak PerformClose();
 

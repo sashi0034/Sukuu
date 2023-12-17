@@ -64,7 +64,7 @@ namespace Play
 		ActorContainer& AsMainContent();
 		ActorContainer& AsUiContent();
 
-		ActorWeak StartTransition(int floorIndex);
+		ActorWeak StartTransition(int floorIndex, bool floorDown);
 		ActorWeak EndTransition();
 		ActorWeak PerformGameOver();
 

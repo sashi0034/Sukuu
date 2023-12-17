@@ -6,6 +6,7 @@
 #include "Play/Enemy/EnSlimeCat.h"
 #include "Play/Enemy/EnCatfish.h"
 #include "Play/Enemy/EnCrab.h"
+#include "Play/Enemy/EnHandMaster.h"
 #include "Play/Enemy/EnKnight.h"
 #include "Play/Enemy/EnLion.h"
 #include "Play/Gimmick/GimmickInstaller.h"

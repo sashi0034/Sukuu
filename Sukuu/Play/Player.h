@@ -31,6 +31,7 @@ namespace Play
 		bool IsSlowMotion() const;
 		bool IsImmortal() const;
 		bool IsTerminated() const;
+		bool HasAbducted() const;
 		const PlayerVisionState& Vision() const;
 
 	private:

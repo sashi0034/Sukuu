@@ -127,6 +127,8 @@ private:
 		};
 #endif
 
+		bool floorDown{};
+
 		while (true)
 		{
 			auto playScene = self.AsParent().Birth(Play::PlayScene::Create());
@@ -141,7 +143,7 @@ private:
 			{
 				// 遷移演出
 				yield.WaitForExpire(
-					play.StartTransition(m_playData.floorIndex));
+					play.StartTransition(m_playData.floorIndex, floorDown));
 			}
 
 			playScene.Init(m_playData);
@@ -153,9 +155,13 @@ private:
 				return play.GetPlayer().IsTerminated();
 			});
 			if (not play.GetPlayer().IsTerminated()) yield();
+
 			m_playData = play.CopyData();
+			floorDown = play.GetPlayer().HasAbducted();
+
 			playScene.Kill();
 			yield();
+
 			if (m_playData.timeLimiter.remainingTime == 0)
 			{
 				// ゲームオーバー
@@ -169,10 +175,12 @@ private:
 				return true;
 			}
 #if _DEBUG
-			if (not debugToml<bool>(U"constant_floor")) m_playData.floorIndex++;
-#else
-			m_playData.floorIndex++;
+			if (not debugToml<bool>(U"constant_floor"))
 #endif
+			{
+				if (floorDown) m_playData.floorIndex--;
+				else m_playData.floorIndex++;
+			}
 			checkSave(m_playData, false);
 			m_playData.timeLimiter.maxTime += 3;
 			m_playData.timeLimiter.remainingTime += 3;
