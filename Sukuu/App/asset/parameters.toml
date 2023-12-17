@@ -95,6 +95,12 @@ lost_player_penalty = 1.5
 corner_pr = 0.6
 attack_duration = 0.3
 
+[play.en_hand_master]
+move_duration = 0.7
+tracking_duration = 0.5
+max_player_concern = 3
+corner_pr = 0.6
+
 [play.item_pin]
 move_duration = 0.05
 rotation_speed = 20

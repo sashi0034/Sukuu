@@ -170,6 +170,7 @@
         <ClCompile Include="Play\Enemy\EnCrab.cpp"/>
         <ClCompile Include="Play\Enemy\EnemyDefinition.cpp"/>
         <ClCompile Include="Play\Enemy\EnemyUtil.cpp"/>
+        <ClCompile Include="Play\Enemy\EnHandMaster.cpp" />
         <ClCompile Include="Play\Enemy\EnKnight.cpp"/>
         <ClCompile Include="Play\Enemy\EnLion.cpp"/>
         <ClCompile Include="Play\Enemy\EnSlimeCat.cpp"/>
@@ -449,6 +450,7 @@
         <ClInclude Include="Play\Enemy\EnCrab.h" />
         <ClInclude Include="Play\Enemy\EnemyDefinition.h" />
         <ClInclude Include="Play\Enemy\EnemyUtil.h" />
+        <ClInclude Include="Play\Enemy\EnHandMaster.h" />
         <ClInclude Include="Play\Enemy\EnKnight.h" />
         <ClInclude Include="Play\Enemy\EnLion.h" />
         <ClInclude Include="Play\Enemy\EnSlimeCat.h" />

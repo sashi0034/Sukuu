@@ -84,4 +84,18 @@ namespace Util
 	{
 		return Math::Sin(wave * Math::Pi * value);
 	}
+
+	template <double expand, double easing(double) = EaseInBack>
+	constexpr double OverextendEaseInBack(double value)
+	{
+		const auto v = easing(value);
+		return v < 0 ? v * expand : v;
+	}
+
+	template <double expand, double easing(double) = EaseOutBack>
+	constexpr double OverextendEaseOutBack(double value)
+	{
+		const auto v = easing(value);
+		return v > 1 ? v + (v - 1) * expand : v;
+	}
 }
