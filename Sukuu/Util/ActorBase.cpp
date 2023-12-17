@@ -88,6 +88,6 @@ namespace Util
 	bool ActorWeak::IsDead() const
 	{
 		if (auto&& p = p_impl.lock()) return p->IsDead();
-		return false;
+		return true;
 	}
 }
