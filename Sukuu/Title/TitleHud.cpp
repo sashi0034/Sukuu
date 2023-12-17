@@ -8,6 +8,7 @@
 #include "Gm/DialogSettingConfigure.h"
 #include "Gm/DialogYesNo.h"
 #include "Gm/GamepadObserver.h"
+#include "Play/PlayingUra.h"
 #include "Play/Other/CornerButton.h"
 #include "Util/Utilities.h"
 
@@ -77,7 +78,9 @@ struct Title::TitleHud::Impl
 
 	void Update()
 	{
-		TextureAsset(AssetImages::title_logo)
+		TextureAsset(Play::IsPlayingUra()
+			             ? AssetImages::ura_title_logo
+			             : AssetImages::title_logo)
 			.scaled(getToml<double>(U"logo_scale"))
 			.drawAt(Vec2{Scene::Center().x, Scene::Center().y / 2} + Vec2{
 				Periodic::Sine0_1(4.0) * getToml<double>(U"logo_move_x"),

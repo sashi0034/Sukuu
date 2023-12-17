@@ -3,6 +3,7 @@
 
 #include "AssetKeys.h"
 #include "Assets.generated.h"
+#include "Play/PlayingUra.h"
 #include "Play/Enemy/EnSlimeCat.h"
 #include "Play/Enemy/EnCatfish.h"
 #include "Play/Enemy/EnCrab.h"
@@ -264,7 +265,7 @@ namespace
 			case ConsumableItem::Solt:
 				if (RandomBool(0.7)) return GimmickKind::Item_Solt;
 			case ConsumableItem::Rocket:
-				return GimmickKind::Item_Rocket;
+				if (IsPlayingUra()) return GimmickKind::Item_Rocket;
 			default: ;
 				break;
 			}
@@ -306,7 +307,7 @@ namespace
 		}
 		case EnemyKind::Catfish: {
 			if (floorIndex <= 5) return false;
-			if (RandomBool(0.8)) return false;
+			if (RandomBool(0.6)) return false;
 			auto enemy = enemyContainer.Birth(enemyParent, EnCatfish());
 			enemy.Init();
 			return true;
@@ -338,6 +339,15 @@ namespace
 			auto enemy = enemyContainer.Birth(enemyParent, EnKnight());
 			enemy.Init();
 			enemy.BecomePrime();
+			return true;
+		}
+		case EnemyKind::HandMaster: {
+			if (not IsPlayingUra()) return false;
+			if (floorIndex <= 0) return false;
+			if (IsFloorExistVessel(floorIndex) || IsFloorExistVessel(floorIndex - 1)) return false;
+			if (RandomBool(0.9)) return false;
+			auto enemy = enemyContainer.Birth(enemyParent, EnHandMaster());
+			enemy.Init();
 			return true;
 		}
 		default: ;

@@ -3,8 +3,21 @@
 #include "PlayerAnimation.h"
 
 #include "Play/PlayCore.h"
+#include "Play/PlayingUra.h"
 #include "Play/Effect/FragmentTextureEffect.h"
 #include "Util/EasingAnimation.h"
+
+namespace
+{
+	using namespace Play;
+
+	TextureAsset getPlayerSheet()
+	{
+		return TextureAsset(IsPlayingUra()
+			                    ? AssetImages::phine_32x32
+			                    : AssetImages::beatrice_32x32);
+	}
+}
 
 namespace Play
 {
@@ -14,7 +27,7 @@ namespace Play
 		Dir4Type direction, AnimTimer animTimer, bool isWalking)
 	{
 		{
-			auto&& sheet = TextureAsset(AssetImages::beatrice_32x32);
+			auto&& sheet = getPlayerSheet();
 			const int animInterval = GetTomlParameter<int>(U"play.player.anim_interval");
 
 			if (isWalking)
@@ -66,7 +79,7 @@ namespace Play
 
 	TextureRegion GetDeadPlayerTexture()
 	{
-		auto&& sheet = TextureAsset(AssetImages::beatrice_32x32);
+		auto&& sheet = getPlayerSheet();
 		return sheet(playerRect.movedBy(0, playerRect.h * 6));
 	}
 

@@ -201,6 +201,7 @@
         <ClCompile Include="Play\Player_detail\PlayerAnimation.cpp"/>
         <ClCompile Include="Play\Player_detail\PlayerDistField.cpp"/>
         <ClCompile Include="Play\Player_detail\PlayerInternal.cpp"/>
+        <ClCompile Include="Play\PlayingUra.cpp" />
         <ClCompile Include="Play\PlayScene.cpp"/>
         <ClCompile Include="Play\UI\UiCurrentFloor.cpp"/>
         <ClCompile Include="Play\UI\UiDashKeep.cpp" />
@@ -484,6 +485,7 @@
         <ClInclude Include="Play\Player_detail\PlayerDistField.h" />
         <ClInclude Include="Play\Player_detail\PlayerDefinition.h" />
         <ClInclude Include="Play\Player_detail\PlayerInternal.h" />
+        <ClInclude Include="Play\PlayingUra.h" />
         <ClInclude Include="Play\PlayScene.h" />
         <ClInclude Include="Play\UI\UiCurrentFloor.h" />
         <ClInclude Include="Play\UI\UiDashKeep.h" />

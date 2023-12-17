@@ -8,6 +8,7 @@
 #include "Gm/DialogGamepadRegister.h"
 #include "Gm/DialogYesNo.h"
 #include "Play/PlayBgm.h"
+#include "Play/PlayingUra.h"
 #include "Play/PlayScene.h"
 #include "Play/Other/FloorLevelDesign.h"
 #include "Title/TitleScene.h"
@@ -45,6 +46,8 @@ private:
 		bool triedTutorial{};
 		yield();
 #if _DEBUG
+		Play::SetPlayingUra(debugToml<bool>(U"ura_enable"));
+
 		const auto entryPoint = debugToml<String>(U"entry_point");
 		if (entryPoint == U"tutorial") goto tutorial;
 		if (entryPoint == U"title") goto title;
