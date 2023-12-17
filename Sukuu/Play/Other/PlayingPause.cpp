@@ -4,7 +4,7 @@
 #include "AssetKeys.h"
 #include "CornerButton.h"
 #include "Gm/DialogSettingConfigure.h"
-#include "Gm/DialogYesNo.h"
+#include "Gm/DialogMessageBox.h"
 #include "Gm/GamepadObserver.h"
 #include "Play/PlayCore.h"
 #include "Util/Utilities.h"

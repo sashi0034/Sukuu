@@ -6,7 +6,7 @@
 #include "Ending/EndingScene.h"
 #include "Gm\DialogSettingConfigure.h"
 #include "Gm/DialogGamepadRegister.h"
-#include "Gm/DialogYesNo.h"
+#include "Gm/DialogMessageBox.h"
 #include "Play/PlayBgm.h"
 #include "Play/PlayingUra.h"
 #include "Play/PlayScene.h"
