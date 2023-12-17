@@ -43,6 +43,7 @@ struct Play::PlayingPause::Impl
 	void Update()
 	{
 		if (not m_pauseAllowed) return;
+		if (m_buttons.size() == 0) return;
 
 		const Transformer2D transform{Mat3x2::Identity(), TransformCursor::Yes, Transformer2D::Target::SetLocal};
 
