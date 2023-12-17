@@ -15,7 +15,7 @@ namespace Play
 		void Update() override;
 		double OrderPriority() const override;
 
-		void SendEnemyCollide(const RectF& rect, EnemyKind enemy);
+		bool SendEnemyCollide(const RectF& rect, EnemyKind enemy);
 
 		bool CanUseItem(int itemIndex) const;
 		void RequestUseItem(int itemIndex);
@@ -26,6 +26,7 @@ namespace Play
 		Mat3x2 CameraTransform() const;
 		const CharaPosition& CurrentPos() const;
 		Point CurrentPoint() const;
+		Vec2 GetActualViewPos() const;
 		const PlayerDistField& DistField() const;
 		bool IsSlowMotion() const;
 		bool IsImmortal() const;

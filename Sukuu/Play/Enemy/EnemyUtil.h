@@ -17,7 +17,7 @@ namespace Play
 	bool CanEnemyMoveTo(
 		const MapGrid& map, const GimmickGrid& gimmick, const CharaVec2& currentActualPos, Dir4Type dir);
 
-	void CheckSendEnemyCollide(Player& player, const EnemyTransform& transform, EnemyKind enemy);
+	bool CheckSendEnemyCollide(Player& player, const EnemyTransform& transform, EnemyKind enemy);
 
 	void DrawEnemyBasically(const IEnemyInternal& enemy, AssetNameView emotion);
 

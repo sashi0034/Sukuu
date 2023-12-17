@@ -41,7 +41,7 @@ struct Play::Player::Impl
 
 	PlayerPersonalData m_personal{};
 	CharaPosition m_pos;
-	Vec2 m_animOffset{};
+	Vec2 m_viewGapOffset{};
 	double m_moveSpeed = 1.0;
 	double m_cameraScale = DefaultCameraScale;
 	double m_focusCameraRate = 1.0;
@@ -168,7 +168,7 @@ struct Play::Player::Impl
 
 	void PerformTutorialOpening(ActorView self)
 	{
-		StartCoro(self, [this, self](YieldExtended yield) mutable
+		StartCoro(self, [this, self](YieldExtended yield)
 		{
 			// チュートリアルの最初
 			m_flowchart.Kill();
@@ -184,16 +184,16 @@ struct Play::Player::Impl
 	}
 
 	// エネミーとの衝突判定
-	void EnemyCollide(ActorView self, const RectF& rect, EnemyKind enemy)
+	bool EnemyCollide(ActorView self, const RectF& rect, EnemyKind enemy)
 	{
-		if (m_immortal.IsImmortal()) return;;
-		if (m_act == PlayerAct::Dead) return;
-		if (PlayCore::Instance().Tutorial() != nullptr) return; // チュートリアル中は無敵
+		if (m_immortal.IsImmortal()) return false;
+		if (m_act == PlayerAct::Dead) return false;
+		if (PlayCore::Instance().Tutorial() != nullptr) return false; // チュートリアル中は無敵
 
 		const auto player = RectF{m_pos.actualPos, Point::One() * CellPx_24}.stretched(
 			getToml<int>(U"collider_padding"));
 
-		if (rect.intersects(player) == false) return;
+		if (rect.intersects(player) == false) return false;
 		// 以下、当たった状態
 
 		if (m_guardHelmet)
@@ -203,7 +203,7 @@ struct Play::Player::Impl
 			m_guardHelmet = false;
 			m_immortal.immortalTime = 1.0;
 			EffectHelmetConsume(getDrawPos() + getHelmetOffset(), getPlayerTexture());
-			return;
+			return false;
 		}
 
 		AudioAsset(AssetSes::damaged).playOneShot();
@@ -211,18 +211,26 @@ struct Play::Player::Impl
 		breakFlowchart();
 		focusCameraFor<EaseOutBack>(self, getToml<double>(U"focus_scale_large"));
 
+		if (enemy == EnemyKind::HandMaster)
+		{
+			// 下の階へ連れ去られる
+			StartCoro(self, [this, self](YieldExtended yield) { startAbduction(yield, self); });
+			return true;
+		}
+
 		// ペナルティとして時間減らす
 		RelayTimeDamageAmount(m_pos, GetEnemyAttackDamage(enemy), true);
 
 		// やられた演出
 		StartCoro(self, [this, self](YieldExtended yield)
 		{
-			AnimatePlayerDie(yield, self, m_animOffset, m_cameraOffset);
+			AnimatePlayerDie(yield, self, m_viewGapOffset, m_cameraOffset);
 
 			focusCameraFor<EaseInOutBack>(self, 1.0);
 			m_immortal.immortalTime = getToml<double>(U"recover_immortal");
 			StartFlowchart(self);
 		});
+		return true;
 	}
 
 	bool CanUseItem(ConsumableItem item) const
@@ -348,7 +356,7 @@ struct Play::Player::Impl
 private:
 	Vec2 getDrawPos() const
 	{
-		return m_pos.viewPos.movedBy(GetCharacterCellPadding(PlayerCellRect.size) + m_animOffset);
+		return m_pos.viewPos.movedBy(GetCharacterCellPadding(PlayerCellRect.size) + m_viewGapOffset);
 	}
 
 	ScopedRenderStates2D getRenderState() const
@@ -701,7 +709,7 @@ private:
 		m_trailStock++;
 
 		const double animDuration = getToml<double>(U"scoop_move_duration");
-		AnimateEasing<BoomerangParabola>(self, &m_animOffset, Vec2{0, -32}, animDuration);
+		AnimateEasing<BoomerangParabola>(self, &m_viewGapOffset, Vec2{0, -32}, animDuration);
 		ProcessMoveCharaPos(yield, self, m_pos, checkingPos, animDuration);
 		refreshDistField();
 
@@ -724,6 +732,14 @@ private:
 		m_distField.Refresh(PlayCore::Instance().GetMap(), m_pos.actualPos, maxDist);
 	}
 
+	void prepareEndFloor()
+	{
+		m_cameraOffsetDestination = {0, 0};
+		m_subUpdating = {};
+		m_immortal.immortalStock++;
+		PlayCore::Instance().GetTimeLimiter().SetImmortal(true);
+	}
+
 	void checkGimmickAt(YieldExtended& yield, ActorView self, const Point newPoint)
 	{
 		const auto storedAct = m_act;
@@ -735,10 +751,7 @@ private:
 		case GimmickKind::Stairs: {
 			// ゴール到達
 			AudioAsset(AssetSes::stairs_step).playOneShot();
-			m_cameraOffsetDestination = {0, 0};
-			m_subUpdating = {};
-			m_immortal.immortalStock++;
-			PlayCore::Instance().GetTimeLimiter().SetImmortal(true);
+			prepareEndFloor();
 			PlayCore::Instance().EndTransition();
 			yield.WaitForExpire(
 				AnimateEasing<EaseInBack>(self, &m_cameraScale, 8.0, 0.5));
@@ -821,7 +834,7 @@ private:
 		AudioAsset(AssetSes::arrow_step).playOneShot();
 		const auto nextPoint =
 			GetArrowWarpPoint(PlayCore::Instance().GetMap(), PlayCore::Instance().GetGimmick(), point);
-		ProcessArrowWarpCharaPos(yield, self, m_pos, m_animOffset, nextPoint * CellPx_24);
+		ProcessArrowWarpCharaPos(yield, self, m_pos, m_viewGapOffset, nextPoint * CellPx_24);
 		refreshDistField();
 	}
 
@@ -840,9 +853,28 @@ private:
 		breakFlowchart();
 		StartCoro(self, [this, self](YieldExtended yield) mutable
 		{
-			AnimatePlayerUsingWing(yield, self, m_animOffset, m_pos);
+			AnimatePlayerUsingWing(yield, self, m_viewGapOffset, m_pos);
 			StartFlowchart(self);
 		});
+	}
+
+	void startAbduction(YieldExtended& yield, ActorView self)
+	{
+		// 連れ去られる
+		prepareEndFloor();
+		m_act = PlayerAct::Idle;
+		m_direction = Dir4::Up;
+
+		PlayCore::Instance().RequestHitstopping(0.5);
+		yield.WaitForTime(0.5, Scene::DeltaTime);
+
+		yield.WaitForExpire(
+			AnimateEasing<EaseOutCirc>(self, &m_viewGapOffset, Vec2{0, -64}, 0.3));
+		AnimateEasing<EaseInCirc>(self, &m_viewGapOffset, Vec2{0, getToml<int>(U"abduction_y")}, 1.0);
+		yield.WaitForTime(0.5);
+		PlayCore::Instance().EndTransition();
+		yield.WaitForTime(getToml<double>(U"abduction_intermission"));
+		m_terminated = true;
 	}
 };
 
@@ -884,9 +916,9 @@ namespace Play
 		return CharaOrderPriority(p_impl->m_pos);
 	}
 
-	void Player::SendEnemyCollide(const RectF& rect, EnemyKind enemy)
+	bool Player::SendEnemyCollide(const RectF& rect, EnemyKind enemy)
 	{
-		p_impl->EnemyCollide(*this, rect, enemy);
+		return p_impl->EnemyCollide(*this, rect, enemy);
 	}
 
 	bool Player::CanUseItem(int itemIndex) const
@@ -924,6 +956,11 @@ namespace Play
 	Point Player::CurrentPoint() const
 	{
 		return p_impl->m_pos.actualPos.MapPoint();
+	}
+
+	Vec2 Player::GetActualViewPos() const
+	{
+		return p_impl->m_pos.viewPos + p_impl->m_viewGapOffset;
 	}
 
 	const PlayerDistField& Player::DistField() const

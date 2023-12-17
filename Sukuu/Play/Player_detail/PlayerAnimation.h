@@ -12,9 +12,11 @@ namespace Play
 
 	TextureRegion GetDeadPlayerTexture();
 
+	SINGLETON_SIDEEFFECT
 	void AnimatePlayerDie(YieldExtended& yield, ActorView self, Vec2& animOffset, Vec2& cameraOffset);
 
 	void AnimatePlayerUsingWing(YieldExtended& yield, ActorView self, Vec2& animOffset, CharaPosition& pos);
 
+	SINGLETON_SIDEEFFECT
 	void EffectHelmetConsume(const Vec2& helmetPos, const TextureRegion& helmetTex);
 }

@@ -27,14 +27,15 @@ namespace Play
 		return CanMovePointAt(map, nextPoint);
 	}
 
-	void CheckSendEnemyCollide(Player& player, const EnemyTransform& transform, EnemyKind enemy)
+	bool CheckSendEnemyCollide(Player& player, const EnemyTransform& transform, EnemyKind enemy)
 	{
-		if (not transform.m_collideEnabled) return;
+		if (not transform.m_collideEnabled) return false;
 		auto&& pos = transform.m_pos;
 		if (player.DistField()[pos.actualPos.MapPoint()].distance != PlayerDistanceInfinity)
 		{
-			player.SendEnemyCollide({pos.actualPos, {CellPx_24, CellPx_24}}, enemy);
+			return player.SendEnemyCollide({pos.actualPos, {CellPx_24, CellPx_24}}, enemy);
 		}
+		return false;
 	}
 
 	void DrawEnemyBasically(const IEnemyInternal& enemy, AssetNameView emotion)

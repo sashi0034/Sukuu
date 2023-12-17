@@ -17,27 +17,44 @@ namespace
 	}
 
 	constexpr Rect spriteRect{0, 0, 32, 32};
+
+	using namespace Play;
+
+	Vec2 followingPlayerPos()
+	{
+		constexpr Vec2 offset{0, 0};
+		return PlayCore::Instance().GetPlayer().GetActualViewPos() + offset;
+	}
 }
 
-struct Play::EnHandMaster::Impl : EnemyTransform
+struct EnHandMaster::Impl : EnemyTransform
 {
 	bool m_mimicking{true};
 	double m_mimicTransition{};
 	bool m_capturedPlayer{};
+	ActorWeak m_flowchart{};
+	ActorWeak m_captureStartMotion{};
 
-	void Update()
+
+	void Update(ActorView self)
 	{
 		m_animTimer.Tick();
 
-		if (m_mimicking)
+		// プレイヤーとの当たり判定
+		if (CheckSendEnemyCollide(PlayCore::Instance().GetPlayer(), *this, EnemyKind::HandMaster))
 		{
-			// 擬態中
-			drawMimic();
-			return;
+			// 捕捉開始
+			m_flowchart.Kill();
+			m_capturedPlayer = true;
+			m_captureStartMotion = AnimateEasing<EaseOutBack, EaseOption::Default | EaseOption::IgnoreTimeScale>(
+				self, &m_pos.viewPos, followingPlayerPos(), 0.3);
 		}
 
-		// プレイヤーとの当たり判定
-		CheckSendEnemyCollide(PlayCore::Instance().GetPlayer(), *this, EnemyKind::HandMaster);
+		// プレイヤー補足
+		if (m_capturedPlayer && m_captureStartMotion.IsDead())
+		{
+			m_pos.viewPos = followingPlayerPos();
+		}
 
 		const AssetNameView emotion = [&]()
 		{
@@ -46,7 +63,17 @@ struct Play::EnHandMaster::Impl : EnemyTransform
 			if (m_playerTracker.IsTracking()) return U"😎";
 			return U"";
 		}();
-		DrawEnemyBasically(*this, emotion);
+
+		if (m_mimicking)
+		{
+			// 擬態中
+			drawMimic();
+			if (not emotion.empty()) DrawCharaEmotion(GetDrawPos(), emotion);
+		}
+		else
+		{
+			DrawEnemyBasically(*this, emotion);
+		}
 	}
 
 	Vec2 GetDrawPos() const override
@@ -56,7 +83,7 @@ struct Play::EnHandMaster::Impl : EnemyTransform
 
 	void StartFlowchart(ActorBase& self)
 	{
-		StartCoro(self, [this, self](YieldExtended yield)
+		m_flowchart = StartCoro(self, [this, self](YieldExtended yield)
 		{
 			while (true)
 			{
@@ -155,7 +182,7 @@ private:
 
 		// 起動
 		yield.WaitForExpire(AnimateEasing<EaseInLinear>(self, &m_mimicTransition, 1.0, 0.5));
-		yield.WaitForTime(0.5);
+		// yield.WaitForTime(0.5);
 	}
 
 	bool checkTurn(const MapGrid& map, const GimmickGrid& gimmick, TerrainKind currentTerrain, bool leftPriority)
@@ -194,7 +221,7 @@ namespace Play
 	void EnHandMaster::Update()
 	{
 		ActorBase::Update();
-		p_impl->Update();
+		p_impl->Update(*this);
 		if (p_impl->m_trapped == EnemyTrappedState::Killed) Kill();
 	}
 
@@ -202,7 +229,9 @@ namespace Play
 	{
 		return p_impl->m_mimicking
 			       ? BgEffectPriority + 1
-			       : CharaOrderPriority(p_impl->m_pos);
+			       : (p_impl->m_capturedPlayer
+				          ? PlayCore::Instance().GetPlayer().OrderPriority() + 1
+				          : CharaOrderPriority(p_impl->m_pos));
 	}
 
 	bool EnHandMaster::SendDamageCollider(const ItemAttackerAffair& attacker, const RectF& collider)
