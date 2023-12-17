@@ -36,7 +36,7 @@ struct UiGameOver::Impl
 	double m_lineWidth{};
 
 	String m_tipsMessage{};
-	double m_tipsScale{};
+	double m_tipsAlpha{};
 
 	double m_wholeScale = 1.0;
 
@@ -73,13 +73,13 @@ struct UiGameOver::Impl
 				10,
 				getToml<Color>(U"line_color"));
 		}
-		if (m_tipsScale > 0)
+		if (m_tipsAlpha > 0)
 		{
 			const auto tipsCenter = Rect(Scene::Size()).bottomCenter().moveBy(0, getToml<int>(U"tips_y"));
-			const Transformer2D t1{Mat3x2::Scale({m_tipsScale, 1}, tipsCenter)};
+			// const Transformer2D t1{Mat3x2::Scale({m_tipsScale, 1}, tipsCenter)};
 			font(m_tipsMessage).drawAt(getToml<double>(U"tips_size"),
 			                           tipsCenter,
-			                           getToml<Color>(U"tips_color"));
+			                           ColorF(getToml<Color>(U"tips_color"), m_tipsAlpha));
 		}
 	}
 
@@ -123,7 +123,7 @@ private:
 		// ヒント
 		AudioAsset(AssetSes::game_over_front).playOneShot();
 		m_tipsMessage = U"[TIPS] " + GetPlayingTips(m_floorIndex);
-		AnimateEasing<EaseOutBack>(self, &m_tipsScale, 1.0, appearDuration);
+		AnimateEasing<EaseOutCirc>(self, &m_tipsAlpha, 1.0, appearDuration);
 
 		double waitTime{};
 		while (true)
