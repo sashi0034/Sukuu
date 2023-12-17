@@ -227,6 +227,9 @@ private:
 		auto ending = self.AsParent().Birth(Ending::EndingScene());
 		ending.Init(m_playData.measuredSeconds);
 		yield.WaitForTrue([&]() { return ending.IsFinished(); });
+
+		if (m_savedata.ura.bestReached == 0) DialogOk(U"裏モードが開放されました");
+
 		ending.Kill();
 	}
 };

@@ -35,6 +35,8 @@ struct Title::TitleHud::Impl
 
 	void Init(const Gm::GameSavedata& savedata)
 	{
+		m_saved = savedata;
+
 		m_buttons.push_back(CornerButton(U"終了"_sv, []()
 		{
 			const ScopedRenderTarget2D rs{none};
@@ -65,9 +67,7 @@ struct Title::TitleHud::Impl
 
 		if (savedata.standard.completedTime > 0)
 		{
-			const auto label = Play::IsPlayingUra()
-				                   ? U"通常モードへ"_sv
-				                   : U"裏モードへ"_sv;
+			const auto label = U"裏モード切り替え";
 			m_buttons.push_back(CornerButton(label, []()
 			{
 				if (Gm::DialogYesNo(U"モードを切り替えますか?") == MessageBoxResult::Yes)
