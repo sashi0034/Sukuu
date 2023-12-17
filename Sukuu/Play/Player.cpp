@@ -3,6 +3,7 @@
 
 #include "PlayScene.h"
 #include "PlayBgm.h"
+#include "PlayingUra.h"
 #include "Chara/CharaUtil.h"
 #include "Effect/ItemObtainEffect.h"
 #include "Gm/GameConfig.h"
@@ -641,7 +642,8 @@ private:
 				// 4方向セル
 				if (i == scoopingDir) continue;
 				auto r = RectF(m_pos.actualPos.movedBy(Dir4Type(i).ToXY() * CellPx_24), {CellPx_24, CellPx_24});
-				(void)r.draw(cellColor).drawFrame(0.5, ColorF(cellColor.rgb() * 0.5, 1.0));
+				(void)r.draw(cellColor.withAlpha(cellColor.a * (m_slowMotion ? 1.0 : 0.5)))
+				       .drawFrame(0.5, ColorF(cellColor.rgb() * 0.5, 1.0));
 			}
 			if (Gm::IsUsingGamepad() && scoopingCharge > 0)
 			{
@@ -652,10 +654,18 @@ private:
 				          arrowLength);
 			}
 		};
+
+		double scoopingTime{};
 		m_slowMotion = true;
 		while (true)
 		{
 			yield();
+
+			scoopingTime += GetDeltaTime();
+			m_slowMotion = IsPlayingUra()
+				               ? scoopingTime > 0.5 // 裏のときはスロー発動が遅れる
+				               : true;
+
 			if (IsScoopCancelInput())
 			{
 				// すくう解除

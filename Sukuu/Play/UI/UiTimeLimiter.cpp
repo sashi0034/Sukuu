@@ -2,6 +2,7 @@
 #include "UiTimeLimiter.h"
 
 #include "AssetKeys.h"
+#include "Play/PlayingUra.h"
 #include "Play/Other/TimeLimiter.h"
 #include "Util/EasingAnimation.h"
 #include "Util/TomlParametersWrapper.h"
@@ -41,7 +42,9 @@ struct Play::UiTimeLimiter::Impl
 		{
 			// 実時間で時を進めることにする
 			const double dt = Scene::DeltaTime();
-			constexpr double slowCoefficient = 0.5;
+			const double slowCoefficient = IsPlayingUra()
+				                               ? 1.0
+				                               : 0.5;
 			m_data.remainingTime -= dt * slowCoefficient;
 			if (m_data.remainingTime < 0) m_data.remainingTime = 0;
 		}
