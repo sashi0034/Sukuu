@@ -25,26 +25,16 @@ namespace
 
 struct Title::TitleHud::Impl
 {
-	String m_record{};
 	bool m_showPrompt{};
 	double m_promptAnim{};
 	bool m_concludedPlay{};
 	bool m_concludedRetryTutorial{};
 	Array<CornerButton> m_buttons{};
 	int m_cursorIndex{};
+	Gm::GameSavedata m_saved{};
 
 	void Init(const Gm::GameSavedata& savedata)
 	{
-		m_record = [&]() -> String
-		{
-			if (savedata.bestReached == 0) return U"";
-			if (savedata.bestReached == Constants::MaxFloorIndex && savedata.completedTime > 0)
-			{
-				return U"踏破 {}"_fmt(FormatTimeSeconds(savedata.completedTime));
-			}
-			return U"到達 {} 層"_fmt(savedata.bestReached);
-		}();
-
 		m_buttons.push_back(CornerButton(U"終了"_sv, []()
 		{
 			const ScopedRenderTarget2D rs{none};
@@ -73,6 +63,20 @@ struct Title::TitleHud::Impl
 			Gm::DialogSettingConfigure();
 		}));
 
+		if (savedata.standard.completedTime > 0)
+		{
+			const auto label = Play::IsPlayingUra()
+				                   ? U"通常モードへ"_sv
+				                   : U"裏モードへ"_sv;
+			m_buttons.push_back(CornerButton(label, []()
+			{
+				if (Gm::DialogYesNo(U"モードを切り替えますか?") == MessageBoxResult::Yes)
+				{
+					Play::SetPlayingUra(not Play::IsPlayingUra());
+				}
+			}));
+		}
+
 		m_cursorIndex = m_buttons.size();
 	}
 
@@ -87,10 +91,11 @@ struct Title::TitleHud::Impl
 				Periodic::Sine0_1(3.0) * getToml<double>(U"logo_move_y")
 			});
 
-		if (not m_record.empty())
+		const String record = getRecordText();
+		if (not record.empty())
 		{
 			// 記録情報
-			(void)FontAsset(AssetKeys::RocknRoll_Sdf_Bold)(m_record)
+			(void)FontAsset(AssetKeys::RocknRoll_Sdf_Bold)(record)
 				.drawAt(TextStyle::Outline(getToml<double>(U"record_outline"), ColorF{0.3}),
 				        getToml<double>(U"record_font"),
 				        Scene::Center().movedBy(0, getToml<double>(U"record_y")),
@@ -139,6 +144,18 @@ struct Title::TitleHud::Impl
 		{
 			if (not buttonHovered && IsSceneLeftClicked()) m_concludedPlay = true;
 		}
+	}
+
+private:
+	String getRecordText() const
+	{
+		const auto record = m_saved.GetRecord(Play::IsPlayingUra());
+		if (record.bestReached == 0) return U"";
+		if (record.bestReached == Constants::MaxFloorIndex && record.completedTime > 0)
+		{
+			return U"踏破 {}"_fmt(FormatTimeSeconds(record.completedTime));
+		}
+		return U"到達 {} 層"_fmt(record.bestReached);
 	}
 };
 

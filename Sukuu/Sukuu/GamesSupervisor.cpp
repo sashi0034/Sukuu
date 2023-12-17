@@ -192,25 +192,34 @@ private:
 
 	void checkSave(const Play::PlaySingletonData& data, bool isCleared)
 	{
-		const auto newData = GameSavedata{
+		const auto newRecord = ReachedRecord{
 			.bestReached = data.floorIndex,
 			.completedTime = isCleared ? data.measuredSeconds.Sum() : 0
 		};
+		auto newData = GameSavedata(m_savedata);
+		getReachedRecord(newData) = newRecord;
+
+		const auto savedRecord = getReachedRecord(m_savedata);
 
 		// 到達フロア更新
-		const bool updatedReached = newData.bestReached > m_savedata.bestReached;
+		const bool updatedReached = newRecord.bestReached > savedRecord.bestReached;
 
 		// クリア時間更新
 		const bool updatedCleared =
-			newData.bestReached == 50
-			&& 0 < newData.completedTime
-			&& (m_savedata.completedTime == 0 || newData.completedTime < m_savedata.completedTime);
+			newRecord.bestReached == 50
+			&& 0 < newRecord.completedTime
+			&& (savedRecord.completedTime == 0 || newRecord.completedTime < savedRecord.completedTime);
 
 		if (updatedReached || updatedCleared)
 		{
 			SaveSavedata(newData);
 			m_savedata = newData;
 		}
+	}
+
+	static ReachedRecord& getReachedRecord(GameSavedata& data)
+	{
+		return data.GetRecord(Play::IsPlayingUra());
 	}
 
 	void endingLoop(YieldExtended& yield, ActorView self) const
