@@ -7,7 +7,7 @@
 
 ゲーム
 
-Siv3Dゲームジャム2023
+[バンダイナムコスタジオ杯 2023 入賞作品](https://siv3d.github.io/ja-jp/event/gamejam2023/)
 
 
 ## Build
