@@ -44,11 +44,17 @@ struct Play::UiItemContainer::Impl
 
 		for (int i = 0; i < m_items.size(); ++i)
 		{
+			// 上画面中央に隙間が開くようにアイテム位置を決定する
+			const int itemSizeOneMore = m_items.size() + 1;
+			const int itemIndexPadding = i >= itemSizeOneMore / 2 ? 1 : 0;
+			const auto centerOffset = Vec2{(i + itemIndexPadding - itemSizeOneMore / 2.0) * 96, 0}.asPoint();
+
+			// アイテム更新
 			m_items[i].Tick({
 				.label = m_itemLabel,
 				.index = i,
 				.gamepadIndexing = Gm::IsUsingGamepad() ? m_gamepadIndexing : -1,
-				.center = center.movedBy({(i - m_items.size() / 2) * 96, 0}),
+				.center = center.movedBy(centerOffset),
 				.item = playerItems[i],
 				.canUse = [&]() { return player.CanUseItem(i); },
 				.requestUse = [&]() { player.RequestUseItem(i); }

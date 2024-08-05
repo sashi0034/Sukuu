@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Util/ActorBase.h"
 #include "Util/Utilities.h"
@@ -26,7 +26,7 @@ namespace Play
 	constexpr double FgEffectPriority = 32767;
 	constexpr double BgEffectPriority = -32768;
 
-	constexpr double DefaultCameraScale = 4.0;
+	constexpr double DefaultCameraScale = 3.0;
 
 	struct BgmInfo
 	{
