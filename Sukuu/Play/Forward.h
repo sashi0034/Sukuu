@@ -26,7 +26,7 @@ namespace Play
 	constexpr double FgEffectPriority = 32767;
 	constexpr double BgEffectPriority = -32768;
 
-	constexpr double DefaultCameraScale = 3.0;
+	constexpr double DefaultCameraScale = 4;
 
 	struct BgmInfo
 	{
