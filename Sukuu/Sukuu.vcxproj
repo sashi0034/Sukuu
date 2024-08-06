@@ -603,6 +603,8 @@
     </ItemGroup>
     <ItemGroup>
         <Content Include="App\.gitignore" />
+        <Content Include="App\asset\debug.example.toml" />
+        <Content Include="App\asset\debug.toml" />
         <Content Include="App\asset\image\beatrice_32x32.png" />
         <Content Include="App\asset\image\bookmark_16x16.png" />
         <Content Include="App\asset\image\brick_stylish_24x24.png" />
