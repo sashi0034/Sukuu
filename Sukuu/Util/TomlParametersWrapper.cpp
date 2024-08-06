@@ -24,26 +24,38 @@ namespace
 		}
 	};
 
-	ImplState* s_instance;
+	ImplState* s_instance{};
+
+	class TomlParametersWrapperAddon : public IAddon
+	{
+	private:
+		ImplState m_state{};
+
+	public:
+		~TomlParametersWrapperAddon() override
+		{
+			if (s_instance == &m_state) s_instance = nullptr;
+		}
+
+		bool init() override
+		{
+			s_instance = &m_state;
+			return true;
+		}
+
+		bool update() override
+		{
+			m_state.Refresh();
+			return true;
+		}
+	};
 }
 
 namespace Util
 {
-	struct TomlParametersWrapper::Impl : ImplState
+	void InitTomlParametersAddon()
 	{
-	};
-
-	TomlParametersWrapper::TomlParametersWrapper() :
-		p_impl(std::make_shared<Impl>())
-	{
-		s_instance = p_impl.get();
-	}
-
-	void TomlParametersWrapper::Update()
-	{
-#if _DEBUG
-		p_impl->Refresh();
-#endif
+		Addon::Register<TomlParametersWrapperAddon>(U"TomlParametersWrapperAddon");
 	}
 
 	TOMLValue GetTomlParameters(const String& valuePath)

@@ -1,20 +1,9 @@
 ﻿#pragma once
 #include <source_location>
 
-#include "ActorBase.h"
-
 namespace Util
 {
-	class TomlParametersWrapper : public ActorBase
-	{
-	public:
-		TomlParametersWrapper();
-		void Update() override;
-
-	private:
-		struct Impl;
-		std::shared_ptr<Impl> p_impl;
-	};
+	void InitTomlParametersAddon();
 
 	TOMLValue GetTomlParameters(const String& valuePath);
 

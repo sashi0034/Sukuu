@@ -41,11 +41,15 @@ void Main()
 
 	AssetKeys::RegisterAll();
 
-	ActorContainer actorRoot{};
+	// アドオン初期化
 #if _DEBUG
-	actorRoot.Birth(AssetReloader());
+	InitAssetReloader();
 #endif
-	actorRoot.Birth(TomlParametersWrapper());
+
+	InitTomlParametersAddon();
+
+	// アクター初期化
+	ActorContainer actorRoot{};
 	actorRoot.Birth(Gm::GamepadObserver());
 	actorRoot.Birth(GamesSupervisor());
 

@@ -6,33 +6,42 @@
 
 namespace Sukuu
 {
-	struct AssetReloader::Impl
+	class AssetReloaderAddon : public IAddon
 	{
+	public:
+		bool init() override
+		{
+			return true;
+		}
+
+		bool update() override
+		{
+			if (m_imageWatch.retrieveChanges())
+			{
+				for (auto&& path : AssetImages::GetKeys())
+				{
+					TextureAsset::Unregister(path);
+					TextureAsset::Register(path, path);
+				}
+			}
+
+			if (m_shaderWatch.retrieveChanges())
+			{
+				PixelShaderAsset::UnregisterAll();
+				VertexShaderAsset::UnregisterAll();
+				AssetKeys::RegisterShader();
+			}
+
+			return true;
+		}
+
+	private:
 		DirectoryWatcher m_imageWatch{U"asset/image"};
 		DirectoryWatcher m_shaderWatch{U"asset/shader"};
 	};
 
-	AssetReloader::AssetReloader() :
-		p_impl(std::make_shared<Impl>())
+	void InitAssetReloader()
 	{
-	}
-
-	void AssetReloader::Update()
-	{
-		if (p_impl->m_imageWatch.retrieveChanges())
-		{
-			for (auto&& path : AssetImages::GetKeys())
-			{
-				TextureAsset::Unregister(path);
-				TextureAsset::Register(path, path);
-			}
-		}
-
-		if (p_impl->m_shaderWatch.retrieveChanges())
-		{
-			PixelShaderAsset::UnregisterAll();
-			VertexShaderAsset::UnregisterAll();
-			AssetKeys::RegisterShader();
-		}
+		Addon::Register<AssetReloaderAddon>(U"AssetReloaderAddon");
 	}
 }
