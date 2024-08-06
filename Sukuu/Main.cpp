@@ -8,6 +8,7 @@
 #include "Gm/GamepadObserver.h"
 #include "Sukuu/GamesSupervisor.h"
 #include "Util/ActorContainer.h"
+#include "Util/TomlDebugValueWrapper.h"
 #include "Util/TomlParametersWrapper.h"
 #include "Util/Utilities.h"
 
@@ -46,6 +47,7 @@ void Main()
 	InitAssetReloader();
 #endif
 
+	InitTomlDebugParamAddon();
 	InitTomlParametersAddon();
 
 	// アクター初期化

@@ -226,10 +226,13 @@
         <ClCompile Include="Tutorial\TutorialScene.cpp"/>
         <ClCompile Include="Util\ActorBase.cpp"/>
         <ClCompile Include="Util\ActorContainer.cpp"/>
+        <ClCompile Include="Util\Asserts.cpp" />
         <ClCompile Include="Util\CoordinateVisualizer.cpp"/>
         <ClCompile Include="Util\CoroActor.cpp"/>
         <ClCompile Include="Util\CoroUtil.cpp"/>
         <ClCompile Include="Util\EffectWrapper.cpp"/>
+        <ClCompile Include="Util\ErrorLogger.cpp" />
+        <ClCompile Include="Util\TomlDebugValueWrapper.cpp" />
         <ClCompile Include="Util\TomlParametersWrapper.cpp"/>
         <ClCompile Include="Util\Utilities.cpp"/>
     </ItemGroup>
@@ -509,6 +512,7 @@
         <ClInclude Include="Tutorial\TutorialScene.h" />
         <ClInclude Include="Util\ActorBase.h" />
         <ClInclude Include="Util\ActorContainer.h" />
+        <ClInclude Include="Util\Asserts.h" />
         <ClInclude Include="Util\CoordinateVisualizer.h" />
         <ClInclude Include="Util\CoroActor.h" />
         <ClInclude Include="Util\CoroTask.h" />
@@ -516,6 +520,8 @@
         <ClInclude Include="Util\Dir4.h" />
         <ClInclude Include="Util\EasingAnimation.h" />
         <ClInclude Include="Util\EffectWrapper.h" />
+        <ClInclude Include="Util\ErrorLogger.h" />
+        <ClInclude Include="Util\TomlDebugValueWrapper.h" />
         <ClInclude Include="Util\TomlParametersWrapper.h" />
         <ClInclude Include="Util\Utilities.h" />
     </ItemGroup>

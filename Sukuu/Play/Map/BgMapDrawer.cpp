@@ -7,7 +7,7 @@
 #include "MapGrid.h"
 #include "Play/PlayCore.h"
 #include "Play/Chara/CharaUtil.h"
-#include "Util/TomlParametersWrapper.h"
+#include "Util/TomlDebugValueWrapper.h"
 
 namespace
 {
@@ -248,7 +248,7 @@ namespace Play
 #if _DEBUG
 				const int player = scene.GetPlayer().DistField()[Point{x, y}].distance;
 				if (player < PlayerDistanceInfinity &&
-					GetTomlParameter<bool>(U"debug.visualize_player_distance"))
+					GetTomlDebugValueOf<bool>(U"visualize_player_distance"))
 					(void)FontAsset(AssetKeys::RocknRoll_24_Bitmap)(U"{}"_fmt(player))
 						.drawAt(Point{x, y} * CellPx_24 + Point{CellPx_24, CellPx_24} / 2);
 #endif

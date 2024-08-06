@@ -1,5 +1,5 @@
 ﻿#include "stdafx.h"
-#include "TomlParametersWrapper.h"
+#include "TomlDebugValueWrapper.h"
 
 #include "Asserts.h"
 #include "ErrorLogger.h"
@@ -9,39 +9,33 @@ namespace
 	struct ImplState
 	{
 		DirectoryWatcher directoryWatcher{U"asset"};
-		TOMLReader toml{
-#if _DEBUG
-			U"asset/parameters.toml"
-#else
-			Resource(U"asset/parameters.toml")
-#endif
-		};
+		TOMLReader toml{U"asset/debug.toml"};
 
 		void Refresh()
 		{
 			for (auto [path, action] : directoryWatcher.retrieveChanges())
 			{
-				if (FileSystem::FileName(path) == U"parameters.toml")
-					toml.open({U"asset/parameters.toml"});
+				if (FileSystem::FileName(path) == U"debug.toml")
+					toml.open({U"asset/debug.toml"});
 			}
 		}
 	};
 
 	ImplState* s_instance{};
 
-	class TomlParametersWrapperAddon : public IAddon
+	class TomlDebugValueWrapperAddon : public IAddon
 	{
 	private:
 		ImplState m_state{};
 
 	public:
-		TomlParametersWrapperAddon()
+		TomlDebugValueWrapperAddon()
 		{
 			if (not Util::AssertStrongly(s_instance == nullptr)) return;
 			s_instance = &m_state;
 		}
 
-		~TomlParametersWrapperAddon() override
+		~TomlDebugValueWrapperAddon() override
 		{
 			if (s_instance == &m_state) s_instance = nullptr;
 		}
@@ -61,20 +55,20 @@ namespace
 
 namespace Util
 {
-	void InitTomlParametersAddon()
+	void InitTomlDebugParamAddon()
 	{
-		Addon::Register<TomlParametersWrapperAddon>(U"TomlParametersWrapperAddon");
+		Addon::Register<TomlDebugValueWrapperAddon>(U"TomlDebugValueWrapperAddon");
 	}
 
-	TOMLValue GetTomlParameters(const String& valuePath)
+	TOMLValue GetTomlDebugValue(const String& valuePath)
 	{
 		auto&& value = s_instance->toml[valuePath];;
-#if _DEBUG
+
 		if (value.isEmpty())
 		{
 			ErrorLog(U"TOML parameter error: '{}' is missing."_fmt(valuePath));
 		}
-#endif
+
 		return value;
 	}
 }

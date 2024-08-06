@@ -1,0 +1,8 @@
+[debug]
+entry_point = ""
+skip_transition = false
+visualize_player_distance = false
+initial_timelimit = 300.0
+initial_floor = 1
+constant_floor = false
+ura_enable = false

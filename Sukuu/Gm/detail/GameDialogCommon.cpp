@@ -37,9 +37,6 @@ namespace Gm::detail
 
 	Transformer2D PreUpdateDialog(double passedStarted, double passedFinished, bool enableGamepad)
 	{
-#if _DEBUG
-		Util::RefreshTomlParameters();
-#endif
 		if (enableGamepad) RefreshGamepad();
 		Scene::SetBackground(DlBackground());
 

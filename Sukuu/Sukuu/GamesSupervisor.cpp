@@ -14,17 +14,20 @@
 #include "Title/TitleScene.h"
 #include "Tutorial/TutorialScene.h"
 #include "Util/CoroUtil.h"
+#include "Util/TomlDebugValueWrapper.h"
 
 namespace
 {
 	using namespace Util;
 	using namespace Gm;
 
+#if _DEBUG
 	template <typename T>
 	inline T debugToml(const String& key)
 	{
-		return Util::GetTomlParameter<T>(U"debug." + key);
+		return GetTomlDebugValueOf<T>(key);
 	}
+#endif
 }
 
 struct Sukuu::GamesSupervisor::Impl

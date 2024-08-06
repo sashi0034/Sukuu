@@ -1,12 +1,3 @@
-[debug]
-entry_point = "play"
-skip_transition = true
-visualize_player_distance = false
-initial_timelimit = 300.0
-initial_floor = 4
-constant_floor = false
-ura_enable = true
-
 [play.core]
 hitstopping_timescale = 0.1
 slow_timescale = 0.3
