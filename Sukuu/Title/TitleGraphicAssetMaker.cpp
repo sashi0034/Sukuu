@@ -35,9 +35,31 @@ namespace Title
 		if (key == U"920x430")
 		{
 			pictureScale = 2;
-			hud.ForceLogoData({.position = Scene::Center().movedBy(0, -196), .scale = 3});
+			hud.ForceLogoData({.position = Scene::Center().movedBy(0, -172), .scale = 2.4});
 
 			bg.SetPlayerPosition({1, 1});
+		}
+		else if (key == U"462x174")
+		{
+			pictureScale = 4;
+			hud.ForceLogoData({.position = Scene::Center().movedBy(0, -120), .scale = 3});
+			cam.focusPosition = Vec3{5, 1, 5};
+			bg.SetPlayerPosition({3, 3});
+		}
+		else if (key == U"1232x706")
+		{
+			pictureScale = 1;
+			hud.ForceLogoData({.position = Scene::Center().movedBy(0, -64), .scale = 2.2});
+			cam.focusPosition = Vec3{5, 1, 5};
+			bg.SetPlayerPosition({3, 3});
+		}
+		else if (key == U"748x896")
+		{
+			pictureScale = 1;
+			hud.ForceLogoData({.position = Scene::Center().movedBy(0, 80), .scale = 1.5});
+			cam.fov = 20_deg;
+			cam.focusPosition = Vec3{0, 1, 0};
+			bg.SetPlayerPosition({2, 2});
 		}
 
 		// Set camera
