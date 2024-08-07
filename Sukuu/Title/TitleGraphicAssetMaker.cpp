@@ -1,6 +1,11 @@
 ﻿#include "stdafx.h"
 #include "TitleGraphicAssetMaker.h"
 
+namespace
+{
+	bool s_captureRequested{};
+}
+
 namespace Title
 {
 	void ProcessTitleGraphicAsset(const TitleGraphicAssetArgs& args)
@@ -24,16 +29,18 @@ namespace Title
 			double followAngle = 45.0_deg;
 			double followDistance = 40.0;
 			double followHeight = 40.0;
-		} cam;
+		} cam{};
 
-		if (key == U"460x215")
+		// 画像サイズごとに追加の設定を行う
+		if (key == U"920x430")
 		{
-			pictureScale = 4;
+			pictureScale = 2;
 			hud.ForceLogoData({.position = Scene::Center().movedBy(0, -196), .scale = 3});
 
 			bg.SetPlayerPosition({1, 1});
 		}
 
+		// Set camera
 		const SimpleFollowCamera3D camera{
 			Scene::Size(), cam.fov, cam.focusPosition, cam.followAngle, cam.followDistance, cam.followHeight
 		};
@@ -45,5 +52,26 @@ namespace Title
 		(void)pictureRect
 		      .stretched(1)
 		      .drawFrame(1, Palette::White);
+
+		// S キーで画像保存
+		if (KeyS.down())
+		{
+			ScreenCapture::RequestCurrentFrame();
+			s_captureRequested = true;
+		}
+		else if (s_captureRequested)
+		{
+			s_captureRequested = false;
+
+			// 画像保存
+			const auto frame = ScreenCapture::GetFrame();
+			const Image clipped = frame.clipped(pictureRect.asRect());
+			const String filename = U"Screenshot/graphic_asset_{}.png"_fmt(key);
+			(void)clipped
+			      .scaled(pictureSizeX, pictureSizeY, InterpolationAlgorithm::Lanczos)
+			      .save(filename);
+
+			Console.writeln(U"Saved picture: {}"_fmt(filename));
+		}
 	}
 }
