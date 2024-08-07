@@ -7,6 +7,10 @@ namespace
 
 namespace Util
 {
+	void InitErrorLogger()
+	{
+	}
+
 	void ErrorLog(const String& message)
 	{
 		// TODO: 使い勝手の良いロガーを作成
