@@ -42,7 +42,7 @@ namespace Title
 		else if (key == U"462x174")
 		{
 			pictureScale = 4;
-			hud.ForceLogoData({.position = Scene::Center().movedBy(0, -120), .scale = 3});
+			hud.ForceLogoData({.position = Scene::Center().movedBy(0, -120), .scale = 0});
 			cam.focusPosition = Vec3{5, 1, 5};
 			bg.SetPlayerPosition({3, 3});
 		}
@@ -79,10 +79,12 @@ namespace Title
 		else if (key == U"3840x1240")
 		{
 			pictureScale = 0.5;
-			hud.ForceLogoData({.position = Scene::Center().movedBy(0, -120), .scale = 2});
+			hud.ForceLogoData({.position = Scene::Center().movedBy(0, -120), .scale = 0});
 			cam.fov = 15_deg;
-			cam.followAngle = -90_deg;
-			cam.focusPosition = Vec3{0, 1, 0};
+			cam.followHeight = 15;
+			cam.followDistance = 35;
+			cam.followAngle = 60_deg;
+			cam.focusPosition = Vec3{0, 2.5, 0};
 			bg.SetPlayerPosition({2, 0});
 		}
 
