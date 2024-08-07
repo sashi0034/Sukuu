@@ -6,22 +6,61 @@
 
 namespace
 {
+	const FilePath debugPath = U"asset/debug.toml";
+	const FilePath debugExamplePath = U"asset/debug.example.toml";
+
+	void assertCoincidenceWithExample(const TOMLValue& users, const TOMLValue& example)
+	{
+		for (auto&& v : users.tableView())
+		{
+			if (not example.hasMember(v.name))
+			{
+				Util::ErrorLog(U"TOML parameter error: '{}' is missing in example."_fmt(v.name));
+			}
+			else if (v.value.getType() != example[v.name].getType())
+			{
+				Util::ErrorLog(U"TOML parameter error: '{}' type mismatched."_fmt(v.name));
+			}
+			else if (v.value.getType() == TOMLValueType::Table)
+			{
+				assertCoincidenceWithExample(v.value, example[v.name]);
+			}
+		}
+
+		for (auto&& v : example.tableView())
+		{
+			if (not users.hasMember(v.name))
+			{
+				Util::ErrorLog(U"TOML parameter error: '{}' is reedundant in example."_fmt(v.name));
+			}
+		}
+	}
+
 	struct ImplState
 	{
 		DirectoryWatcher directoryWatcher{U"asset"};
-		TOMLReader toml{U"asset/debug.toml"};
+		TOMLReader toml{debugPath};
+		TOMLReader exampleToml{debugExamplePath};
 
 		void Refresh()
 		{
 			for (auto [path, action] : directoryWatcher.retrieveChanges())
 			{
 				if (FileSystem::FileName(path) == U"debug.toml")
-					toml.open({U"asset/debug.toml"});
+				{
+					toml.open(debugPath);
+					assertCoincidenceWithExample(toml, exampleToml);
+				}
 			}
 		}
 	};
 
 	ImplState* s_instance{};
+
+	void preInitialize()
+	{
+		FileSystem::Copy(debugExamplePath, debugPath, CopyOption::SkipExisting);
+	}
 
 	class TomlDebugValueWrapperAddon : public IAddon
 	{
@@ -42,6 +81,7 @@ namespace
 
 		bool init() override
 		{
+			assertCoincidenceWithExample(m_state.toml, m_state.exampleToml);
 			return true;
 		}
 
@@ -57,6 +97,8 @@ namespace Util
 {
 	void InitTomlDebugParamAddon()
 	{
+		preInitialize();
+
 		Addon::Register<TomlDebugValueWrapperAddon>(U"TomlDebugValueWrapperAddon");
 	}
 
