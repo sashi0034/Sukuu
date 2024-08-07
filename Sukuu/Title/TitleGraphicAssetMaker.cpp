@@ -61,6 +61,30 @@ namespace Title
 			cam.focusPosition = Vec3{0, 1, 0};
 			bg.SetPlayerPosition({2, 2});
 		}
+		else if (key == U"600x900")
+		{
+			pictureScale = 1;
+			hud.ForceLogoData({.position = Scene::Center().movedBy(0, 80), .scale = 1.2});
+			cam.fov = 22_deg;
+			cam.focusPosition = Vec3{0, 1, 0};
+			bg.SetPlayerPosition({2, 2});
+		}
+		else if (key == U"920x430")
+		{
+			pictureScale = 1;
+			hud.ForceLogoData({.position = Scene::Center().movedBy(0, -64), .scale = 2.2});
+			cam.focusPosition = Vec3{5, 1, 5};
+			bg.SetPlayerPosition({3, 3});
+		}
+		else if (key == U"3840x1240")
+		{
+			pictureScale = 0.5;
+			hud.ForceLogoData({.position = Scene::Center().movedBy(0, -120), .scale = 2});
+			cam.fov = 15_deg;
+			cam.followAngle = -90_deg;
+			cam.focusPosition = Vec3{0, 1, 0};
+			bg.SetPlayerPosition({2, 0});
+		}
 
 		// Set camera
 		const SimpleFollowCamera3D camera{
