@@ -92,11 +92,15 @@ struct Title::TitleHud::Impl
 		};
 		if (m_fixedLogoData.has_value()) logoData = m_fixedLogoData.value();
 
+		// ロゴの描画
 		(void)TextureAsset(Play::IsPlayingUra()
 			                   ? AssetImages::ura_title_logo
 			                   : AssetImages::title_logo)
 		      .scaled(logoData.scale)
 		      .drawAt(logoData.position);
+
+		// ロゴ作成時は他の UI の描画を行わない
+		if (m_fixedLogoData.has_value()) return;
 
 		const String record = getRecordText();
 		if (not record.empty())

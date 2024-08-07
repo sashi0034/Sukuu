@@ -13,7 +13,8 @@ namespace Title
 		void SetCameraTimescale(double ts);
 		void ReincarnatePlayer();
 
-		void ForceCameraModifier(const CameraModifierType& modifier);
+		void SetPlayerPosition(const Vec2& pos);
+		void ForceFixedCamera(const BasicCamera3D& camera);
 
 	private:
 		struct Impl;

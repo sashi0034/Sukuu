@@ -13,11 +13,11 @@ namespace Title
 		void Update() override;
 		double OrderPriority() const override;
 
-		void ForceLogoData(const TitleLogoData& data);
-
 		void SetShowPrompt(bool show);
 		bool IsConcludedPlay() const;
 		bool IsConcludedRetryTutorial() const;
+
+		void ForceLogoData(const TitleLogoData& data);
 
 	private:
 		struct Impl;

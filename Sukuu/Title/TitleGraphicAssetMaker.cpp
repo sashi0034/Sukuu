@@ -17,15 +17,27 @@ namespace Title
 		auto& hud = args.hud.get();
 		auto& bg = args.bg.get();
 
+		struct
+		{
+			double fov = 12_deg;
+			Vec3 focusPosition = Vec3{3.5, 1, 3.5};
+			double followAngle = 45.0_deg;
+			double followDistance = 40.0;
+			double followHeight = 40.0;
+		} cam;
+
 		if (key == U"460x215")
 		{
 			pictureScale = 4;
-			hud.ForceLogoData({.position = Scene::Center().movedBy(-120, -120), .scale = 3});
-			bg.ForceCameraModifier([](SimpleFollowCamera3D& camera)
-			{
-				camera.jumpToTarget({0, 0, 0}, 45);
-			});
+			hud.ForceLogoData({.position = Scene::Center().movedBy(0, -196), .scale = 3});
+
+			bg.SetPlayerPosition({1, 1});
 		}
+
+		const SimpleFollowCamera3D camera{
+			Scene::Size(), cam.fov, cam.focusPosition, cam.followAngle, cam.followDistance, cam.followHeight
+		};
+		bg.ForceFixedCamera(camera);
 
 		const auto pictureRect = RectF(Arg::center = pictureCenter, Size(pictureSizeX, pictureSizeY))
 			.scaled(pictureScale);

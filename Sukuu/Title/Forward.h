@@ -7,8 +7,6 @@ namespace Title
 {
 	using namespace Util;
 
-	using CameraModifierType = std::function<void(std::reference_wrapper<SimpleFollowCamera3D>)>;
-
 	struct TitleLogoData
 	{
 		Vec2 position;

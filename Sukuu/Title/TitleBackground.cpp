@@ -49,7 +49,8 @@ struct Title::TitleBackground::Impl
 	Array<Vec2> m_hourglassPoss{};
 	double m_cameraTimescale = 1.0;
 	double m_playerFallingDown{};
-	CameraModifierType m_forcedCameraModifier{};
+	Optional<BasicCamera3D> m_fixedCamera{};
+	Vec2 m_playerPosition{};
 
 	void Init()
 	{
@@ -119,12 +120,6 @@ struct Title::TitleBackground::Impl
 		m_camera.setFollowOffset(getToml<double>(U"camera_follow_distance"), getToml<double>(U"camera_follow_height"));
 		m_camera.update(2.0, GetDeltaTime() * m_cameraTimescale);
 
-		if (m_forcedCameraModifier)
-		{
-			// デバッグなどでカメラ操作を強制的に変更
-			m_forcedCameraModifier(m_camera);
-		}
-
 		m_animTimer.Tick();
 
 		if (m_playerFallingDown > 0) m_playerFallingDown -= GetDeltaTime();
@@ -149,9 +144,10 @@ private:
 
 	void draw3D() const
 	{
-		Graphics3D::SetCameraTransform(m_camera);
-		auto sunDir = m_camera.getEyePosition().normalized();
-		sunDir.y = 0.5;
+		const auto usingCamera = m_fixedCamera.has_value() ? m_fixedCamera.value() : m_camera;
+		Graphics3D::SetCameraTransform(usingCamera);
+
+		const auto sunDir = usingCamera.getEyePosition().normalized().withY(0.5);
 		Graphics3D::SetSunDirection(sunDir);
 
 		const ScopedRenderTarget3D target{m_renderTexture.clear(getToml<ColorF>(U"bg_color"))};
@@ -165,22 +161,24 @@ private:
 		const auto playerTexture =
 			m_playerFallingDown > 0
 				? Play::GetDeadPlayerTexture()
-				: Play::GetUsualPlayerTexture(Dir4::FromXY({-m_camera.getEyePosition().xz()}), m_animTimer, false);
+				: Play::GetUsualPlayerTexture(Dir4::FromXY({-usingCamera.getEyePosition().xz()}), m_animTimer, false);
 		m_billboard.draw(
-			m_camera.billboard(Vec3{0, billboardPixelartScale(32) / dotScale, 0}, billboardPixelartScale(32)),
+			usingCamera.billboard(
+				Vec3{m_playerPosition.x, billboardPixelartScale(32) / dotScale, m_playerPosition.y},
+				billboardPixelartScale(32)),
 			playerTexture,
 			Palette::Thistle);
 		for (const auto& p : m_hourglassPoss)
 		{
 			m_billboard.draw(
-				m_camera.billboard({p.x, billboardPixelartScale(16) / dotScale, p.y}, billboardPixelartScale(16)),
+				usingCamera.billboard({p.x, billboardPixelartScale(16) / dotScale, p.y}, billboardPixelartScale(16)),
 				TextureAsset(AssetImages::hourglass_16x16)(Rect(m_animTimer.SliceFrames(200, 3) * 16, 0, 16, 16)),
 				Palette::Thistle);
 		}
 		for (const auto& p : m_treePoss)
 		{
 			m_billboard.draw(
-				m_camera.billboard({p.x, billboardPixelartScale(48) / dotScale, p.y}, billboardPixelartScale(48)),
+				usingCamera.billboard({p.x, billboardPixelartScale(48) / dotScale, p.y}, billboardPixelartScale(48)),
 				TextureAsset(AssetImages::dark_tree_48x48)(Rect(m_animTimer.SliceFrames(250, 6) * 48, 0, 48, 48)),
 				Palette::Thistle);
 		}
@@ -222,8 +220,13 @@ namespace Title
 		p_impl->m_playerFallingDown = 4.0;
 	}
 
-	void TitleBackground::ForceCameraModifier(const CameraModifierType& modifier)
+	void TitleBackground::SetPlayerPosition(const Vec2& pos)
 	{
-		p_impl->m_forcedCameraModifier = modifier;
+		p_impl->m_playerPosition = pos;
+	}
+
+	void TitleBackground::ForceFixedCamera(const BasicCamera3D& camera)
+	{
+		p_impl->m_fixedCamera = camera;
 	}
 }
