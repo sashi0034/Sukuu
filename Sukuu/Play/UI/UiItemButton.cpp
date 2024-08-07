@@ -13,6 +13,8 @@ namespace
 	constexpr std::array<Input, 10> numberKeys = {
 		Key0, Key1, Key2, Key3, Key4, Key5, Key6, Key7, Key8, Key9
 	};
+
+	constexpr int d_10 = 10;
 }
 
 class Play::UiItemButton::Impl
@@ -55,7 +57,7 @@ public:
 		Circle(textPos, w / 4)
 			.drawShadow(Vec2{2, 2}, 8, 2)
 			.draw(Color{U"#404040"});
-		(void)FontAsset(AssetKeys::RocknRoll_24_Bitmap)(U"{}"_fmt(param.index + 1)).drawAt(textPos);
+		(void)FontAsset(AssetKeys::RocknRoll_24_Bitmap)(U"{}"_fmt((param.index + 1) % d_10)).drawAt(textPos);
 
 		if (isItemContaining)
 		{
@@ -68,7 +70,7 @@ public:
 			                      // ゲームパッドで選択して押したか
 			                      ? entered && IsGamepadDown(Gm::GamepadButton::A)
 			                      // オブジェクト範囲がクリックされたか、番号キーが押されたか
-			                      : (entered && MouseL.down()) || numberKeys[param.index + 1].down();
+			                      : (entered && MouseL.down()) || numberKeys[(param.index + 1) % d_10].down();
 		if (canUseItem && justUsed) param.requestUse();
 
 		if (entered && not m_enteredBefore)

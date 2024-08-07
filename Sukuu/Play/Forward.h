@@ -21,7 +21,7 @@ namespace Play
 		return {(CellPx_24 - spriteSize.x) / 2, (CellPx_24 - spriteSize.y) / 2 - CharacterPadding_4};
 	}
 
-	constexpr int MaxItemPossession = 9;
+	constexpr int MaxItemPossession = 10;
 
 	constexpr double FgEffectPriority = 32767;
 	constexpr double BgEffectPriority = -32768;
