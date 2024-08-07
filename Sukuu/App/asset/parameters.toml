@@ -216,7 +216,7 @@ button_space = 80
 [title.hud]
 logo_scale = 2.8
 logo_move_x = 24.0
-logo_move_y = 64.0
+logo_move_y = 32.0
 prompt_font = 36.0
 prompt_y = 320.0
 record_outline = 0.1
@@ -227,7 +227,7 @@ record_y = -480
 bg_color = "#313338"
 camera_fov = 15
 camera_initial_position = "(0, 20, 0)"
-camera_target_position = "(0, 1, 0)"
+camera_target_position = "(0, 2, 0)"
 camera_rotation_speed = 5
 camera_follow_distance = 40.0
 camera_follow_height = 40.0
