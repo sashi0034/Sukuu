@@ -25,6 +25,7 @@ namespace
 
 struct Title::TitleHud::Impl
 {
+	Optional<TitleLogoData> m_fixedLogoData{};
 	bool m_showPrompt{};
 	double m_promptAnim{};
 	bool m_concludedPlay{};
@@ -82,14 +83,20 @@ struct Title::TitleHud::Impl
 
 	void Update()
 	{
-		TextureAsset(Play::IsPlayingUra()
-			             ? AssetImages::ura_title_logo
-			             : AssetImages::title_logo)
-			.scaled(getToml<double>(U"logo_scale"))
-			.drawAt(Vec2{Scene::Center().x, Scene::Center().y / 2} + Vec2{
+		TitleLogoData logoData{
+			.position = Vec2{Scene::Center().x, Scene::Center().y / 2} + Vec2{
 				Periodic::Sine0_1(4.0) * getToml<double>(U"logo_move_x"),
 				Periodic::Sine0_1(3.0) * getToml<double>(U"logo_move_y")
-			});
+			},
+			.scale = getToml<double>(U"logo_scale")
+		};
+		if (m_fixedLogoData.has_value()) logoData = m_fixedLogoData.value();
+
+		(void)TextureAsset(Play::IsPlayingUra()
+			                   ? AssetImages::ura_title_logo
+			                   : AssetImages::title_logo)
+		      .scaled(logoData.scale)
+		      .drawAt(logoData.position);
 
 		const String record = getRecordText();
 		if (not record.empty())
@@ -180,6 +187,11 @@ namespace Title
 	double TitleHud::OrderPriority() const
 	{
 		return 1000.0;
+	}
+
+	void TitleHud::ForceLogoData(const TitleLogoData& data)
+	{
+		p_impl->m_fixedLogoData = data;
 	}
 
 	void TitleHud::SetShowPrompt(bool show)

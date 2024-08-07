@@ -49,6 +49,7 @@ struct Title::TitleBackground::Impl
 	Array<Vec2> m_hourglassPoss{};
 	double m_cameraTimescale = 1.0;
 	double m_playerFallingDown{};
+	CameraModifierType m_forcedCameraModifier{};
 
 	void Init()
 	{
@@ -117,6 +118,12 @@ struct Title::TitleBackground::Impl
 		m_camera.setTarget(getToml<Vec3>(U"camera_target_position"), ToRadians(m_cameraFollowDeg));
 		m_camera.setFollowOffset(getToml<double>(U"camera_follow_distance"), getToml<double>(U"camera_follow_height"));
 		m_camera.update(2.0, GetDeltaTime() * m_cameraTimescale);
+
+		if (m_forcedCameraModifier)
+		{
+			// デバッグなどでカメラ操作を強制的に変更
+			m_forcedCameraModifier(m_camera);
+		}
 
 		m_animTimer.Tick();
 
@@ -213,5 +220,10 @@ namespace Title
 	void TitleBackground::ReincarnatePlayer()
 	{
 		p_impl->m_playerFallingDown = 4.0;
+	}
+
+	void TitleBackground::ForceCameraModifier(const CameraModifierType& modifier)
+	{
+		p_impl->m_forcedCameraModifier = modifier;
 	}
 }

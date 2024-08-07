@@ -218,6 +218,7 @@
         <ClCompile Include="Sukuu\AssetReloader.cpp"/>
         <ClCompile Include="Sukuu\GamesSupervisor.cpp"/>
         <ClCompile Include="Title\TitleBackground.cpp"/>
+        <ClCompile Include="Title\TitleGraphicAssetMaker.cpp" />
         <ClCompile Include="Title\TitleHud.cpp"/>
         <ClCompile Include="Title\TitleScene.cpp"/>
         <ClCompile Include="Tutorial\TutorialFocus.cpp"/>
@@ -503,6 +504,7 @@
         <ClInclude Include="Sukuu\GamesSupervisor.h" />
         <ClInclude Include="Title\Forward.h" />
         <ClInclude Include="Title\TitleBackground.h" />
+        <ClInclude Include="Title\TitleGraphicAssetMaker.h" />
         <ClInclude Include="Title\TitleHud.h" />
         <ClInclude Include="Title\TitleScene.h" />
         <ClInclude Include="Tutorial\Forward.h" />

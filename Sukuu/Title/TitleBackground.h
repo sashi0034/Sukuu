@@ -13,6 +13,8 @@ namespace Title
 		void SetCameraTimescale(double ts);
 		void ReincarnatePlayer();
 
+		void ForceCameraModifier(const CameraModifierType& modifier);
+
 	private:
 		struct Impl;
 		std::shared_ptr<Impl> p_impl;

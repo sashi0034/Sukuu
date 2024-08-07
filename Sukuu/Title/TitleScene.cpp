@@ -5,13 +5,14 @@
 #include "Assets.generated.h"
 #include "Constants.h"
 #include "TitleBackground.h"
+#include "TitleGraphicAssetMaker.h"
 #include "TitleHud.h"
 #include "Gm/GameCursor.h"
 #include "Gm/GamepadObserver.h"
 #include "Util/ActorContainer.h"
 #include "Util/CoroUtil.h"
 #include "Util/EasingAnimation.h"
-
+#include "Util/TomlDebugValueWrapper.h"
 
 namespace
 {
@@ -27,6 +28,13 @@ namespace
 		float amplitude;
 		float freq;
 	};
+
+#if _DEBUG
+	String debugGraphicAssetMaker()
+	{
+		return Util::GetTomlDebugValueOf<String>(U"title_graphic_asset_maker");
+	}
+#endif
 }
 
 struct Title::TitleScene::Impl
@@ -59,8 +67,6 @@ struct Title::TitleScene::Impl
 
 	void Update(ActorBase& self)
 	{
-		// if (Gm::IsUsingGamepad()) Gm::MoveCursorByGamepad();
-
 		if (m_transitionAlpha > 0)
 		{
 			updateWhileTransition(self);
@@ -70,7 +76,16 @@ struct Title::TitleScene::Impl
 			self.ActorBase::Update();
 		}
 
-		// if (MouseL.down()) m_concluded = true;
+#if _DEBUG
+		if (not debugGraphicAssetMaker().empty())
+		{
+			ProcessTitleGraphicAsset({
+				.key = debugGraphicAssetMaker(),
+				.bg = m_bg,
+				.hud = m_hud
+			});
+		}
+#endif
 	}
 
 private:
@@ -122,6 +137,13 @@ private:
 
 	void openTransition(YieldExtended& yield, ActorView self)
 	{
+#if _DEBUG
+		if (not debugGraphicAssetMaker().empty())
+		{
+			yield.WaitForTrue([]() { return false; });
+		}
+#endif
+
 		constexpr double alphaDuration = 2.0;
 		m_rasterScrollCb->freq = 10;
 		m_rasterScrollCb->amplitude = 1.0;
