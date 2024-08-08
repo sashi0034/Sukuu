@@ -506,7 +506,7 @@ namespace Play
 	BgmInfo GetFloorBgm(int floor)
 	{
 		if (floor < maze_7) return {AssetBgms::tokeitou, 10.7, 179.7};
-		if (floor < maze_13) return {AssetBgms::obake_dance, 13.0, 125.7};
+		if (floor < maze_13) return {AssetBgms::obake_dance, 1.0, 125.9};
 		if (floor < maze_23) return {AssetBgms::yugata, 16.5, 101.5};
 		if (floor < maze_31) return {AssetBgms::kazegasane, 1.6, 174.2};
 		if (floor < maze_41) return {AssetBgms::shiro, 9.5, 105.5};

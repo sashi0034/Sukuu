@@ -43,14 +43,14 @@ void Main()
 
 	AssetKeys::RegisterAll();
 
+	InitErrorLogger();
+	InitTomlParametersAddon();
+
 	// アドオン初期化
 #if _DEBUG
 	InitAssetReloader();
-#endif
-
-	InitErrorLogger();
 	InitTomlDebugParamAddon();
-	InitTomlParametersAddon();
+#endif
 
 	// アクター初期化
 	ActorContainer actorRoot{};
