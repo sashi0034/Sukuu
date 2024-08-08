@@ -17,51 +17,7 @@ namespace AssetKeys
 
 	constexpr AssetNameView gamepad = U"asset/other/gamepad.png";
 
-	inline void RegisterShader()
-	{
-		PixelShaderAsset::Register(PsCaveVision, HLSL(PsCaveVision + U".hlsl"));
-		PixelShaderAsset::Register(PsMultiTextureMask, HLSL(PsMultiTextureMask + U".hlsl"));
-		PixelShaderAsset::Register(PsRasterScroll, HLSL(PsRasterScroll + U".hlsl"));
-		PixelShaderAsset::Register(PsRgbToBgr, HLSL(PsRgbToBgr + U".hlsl"));
-		PixelShaderAsset::Register(PsGrayscale, HLSL(PsGrayscale + U".hlsl"));
-		PixelShaderAsset::Register(PsGradientBlur, HLSL(PsGradientBlur + U".hlsl"));
-		VertexShaderAsset::Register(VsCaveVision, HLSL(VsCaveVision + U".hlsl"));
-	}
+	void RegisterShader();
 
-	inline void RegisterAll()
-	{
-		FontAsset::Register(RocknRoll_24_Bitmap, 24, U"asset/font/RocknRoll/RocknRollOne-Regular.ttf");
-		FontAsset::Register(RocknRoll_72_Bitmap, 72, U"asset/font/RocknRoll/RocknRollOne-Regular.ttf");
-		FontAsset::Register(RocknRoll_Sdf, FontMethod::SDF, 48, U"asset/font/RocknRoll/RocknRollOne-Regular.ttf");
-		FontAsset::Register(
-			RocknRoll_Sdf_Bold, FontMethod::SDF, 48, U"asset/font/RocknRoll/RocknRollOne-Regular.ttf", FontStyle::Bold);
-
-		TextureAsset::Register(gamepad, gamepad, TextureDesc::Mipped);
-
-		TextureAsset::Register(U"👉", U"👉"_emoji);
-		TextureAsset::Register(U"💛", U"💛"_emoji);
-
-		TextureAsset::Register(U"⏳", U"⏳"_emoji);
-		TextureAsset::Register(U"😎", U"😎"_emoji);
-		TextureAsset::Register(U"🤔", U"🤔"_emoji);
-		TextureAsset::Register(U"😴", U"😴"_emoji);
-		TextureAsset::Register(U"😬", U"😬"_emoji);
-		TextureAsset::Register(U"🤗", U"🤗"_emoji);
-
-		TextureAsset::Register(U"🪶", U"🪶"_emoji);
-		TextureAsset::Register(U"⛑️", U"⛑️"_emoji);
-		TextureAsset::Register(U"📌", U"📌"_emoji);
-		TextureAsset::Register(U"💣", U"💣"_emoji);
-		TextureAsset::Register(U"💡", U"💡"_emoji);
-		TextureAsset::Register(U"🧲", U"🧲"_emoji);
-		TextureAsset::Register(U"🔖", U"🔖"_emoji);
-		TextureAsset::Register(U"🗂️", U"🗂️"_emoji);
-		TextureAsset::Register(U"🪦", U"🪦"_emoji);
-		TextureAsset::Register(U"🌞", U"🌞"_emoji);
-		TextureAsset::Register(U"🧪", U"🧪"_emoji);
-		TextureAsset::Register(U"🧂", U"🧂"_emoji);
-		TextureAsset::Register(U"🚀", U"🚀"_emoji);
-
-		RegisterShader();
-	}
+	void RegisterAll();
 }
