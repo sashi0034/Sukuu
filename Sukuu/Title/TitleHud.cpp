@@ -8,6 +8,7 @@
 #include "Gm/DialogSettingConfigure.h"
 #include "Gm/DialogMessageBox.h"
 #include "Gm/GamepadObserver.h"
+#include "Gm/LocalizedTextDatabase.h"
 #include "Play/PlayingUra.h"
 #include "Play/Other/CornerButton.h"
 #include "Util/Utilities.h"
@@ -38,40 +39,39 @@ struct Title::TitleHud::Impl
 	{
 		m_saved = savedata;
 
-		m_buttons.push_back(CornerButton(U"終了"_sv, []()
+		m_buttons.push_back(CornerButton(U"exit"_sv, []()
 		{
 			const ScopedRenderTarget2D rs{none};
-			if (Gm::DialogYesNo(U"ゲームを終了しますか") == MessageBoxResult::Yes)
+			if (Gm::DialogYesNo(Gm::LocalizedText(U"ask_exit")) == MessageBoxResult::Yes)
 			{
 				System::Exit();
 			}
 		}));
 
-		m_buttons.push_back(CornerButton(U"クレジット"_sv, []()
+		m_buttons.push_back(CornerButton(U"credit"_sv, []()
 		{
 			System::LaunchFile(U"./credit.html");
 		}));
 
-		m_buttons.push_back(CornerButton(U"チュートリアル"_sv, [this]()
+		m_buttons.push_back(CornerButton(U"tutorial"_sv, [this]()
 		{
 			const ScopedRenderTarget2D rs{none};
-			if (Gm::DialogYesNo(U"もう一度チュートリアルをしますか") == MessageBoxResult::Yes)
+			if (Gm::DialogYesNo(U"ask_retry_tutorial") == MessageBoxResult::Yes)
 			{
 				m_concludedRetryTutorial = true;
 			}
 		}));
 
-		m_buttons.push_back(CornerButton(U"設定"_sv, []()
+		m_buttons.push_back(CornerButton(U"settings"_sv, []()
 		{
 			Gm::DialogSettingConfigure();
 		}));
 
 		if (savedata.standard.completedTime > 0)
 		{
-			const auto label = U"裏モード切り替え";
-			m_buttons.push_back(CornerButton(label, []()
+			m_buttons.push_back(CornerButton(U"ura_switch"_sv, []()
 			{
-				if (Gm::DialogYesNo(U"モードを切り替えますか?") == MessageBoxResult::Yes)
+				if (Gm::DialogYesNo(U"ask_ura_switch") == MessageBoxResult::Yes)
 				{
 					Play::SetPlayingUra(not Play::IsPlayingUra());
 				}

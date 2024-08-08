@@ -40,6 +40,12 @@ cs=""
 ct=""
 ko=""
 
+[tutorial]
+ja="チュートリアル"
+en="Tutorial"
+cs=""
+ct=""
+ko=""
 
 [ask_retry_tutorial]
 ja="もう一度チュートリアルをしますか"
@@ -48,7 +54,7 @@ cs=""
 ct=""
 ko=""
 
-[setting]
+[settings]
 ja="設定"
 en="Settings"
 cs=""

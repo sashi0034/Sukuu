@@ -4,6 +4,7 @@
 #include "AssetKeys.h"
 #include "Constants.h"
 #include "Gm/GamepadObserver.h"
+#include "Gm/LocalizedTextDatabase.h"
 #include "Util/TomlParametersWrapper.h"
 
 namespace
@@ -45,7 +46,7 @@ namespace Play
 			                     ? index == cursorIndex
 			                     : exitHover;
 		drawButton(exitRect, focused);
-		(void)FontAsset(AssetKeys::RocknRoll_24_Bitmap)(m_label).drawAt(exitRect.center());
+		(void)FontAsset(AssetKeys::RocknRoll_24_Bitmap)(Gm::LocalizedText(m_label)).drawAt(exitRect.center());
 
 		// 入力チェック
 		if (focused)

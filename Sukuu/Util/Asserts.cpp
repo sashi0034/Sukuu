@@ -37,6 +37,9 @@ bool Util::AssertStrongly(bool condition, const std::source_location& location)
 	// 1フレーム待ってからメッセージ表示
 	System::Sleep(1);
 
+	const ScopedRenderTarget2D rt{none};
+	const Transformer2D tf{Mat3x2::Identity()};
+
 	while (System::Update())
 	{
 		const String s = U"Assertion failed (Press 'Escape' to continue)\n\nlocation: {}\n\nstacktraces:\n{}"_fmt(

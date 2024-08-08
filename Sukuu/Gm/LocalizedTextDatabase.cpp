@@ -3,6 +3,7 @@
 
 #include "GameConfig.h"
 #include "Util/Asserts.h"
+#include "Util/ErrorLogger.h"
 
 namespace
 {
@@ -27,13 +28,20 @@ namespace
 		String fromToml(const String& key, Gm::GameLanguage language) const
 		{
 			auto&& node = m_toml[key];
-			if (not Util::AssertStrongly(not node.isEmpty())) return U"(undefined)";
+			if (node.isEmpty())
+			{
+				Util::ErrorLog(U"\"{}\" does not exist in localize.toml"_fmt(key));
+				return U"(undefined)";
+			}
 
 #if _DEBUG
 			// 全ての言語に対応した状態であるかを一応確認
 			for (int i = 0; i < Gm::GameLanguagesCount; ++i)
 			{
-				Util::AssertStrongly(not node[Gm::LanguageCodes[i]].isEmpty());
+				if (node[Gm::LanguageCodes[i]].isEmpty())
+				{
+					Util::ErrorLog(U"\"{}\" does not have a translation for {}"_fmt(key, Gm::LanguageCodes[i]));
+				}
 			}
 #endif
 
@@ -91,9 +99,9 @@ namespace Gm
 		Addon::Register<LocalizedTextDatabaseAddon>(U"LocalizedTextDatabaseAddon");
 	}
 
-	String LocalizedText(const String& key)
+	StringView LocalizedText(StringView key)
 	{
 		const auto currentLanguage = GameConfig::Instance().language;
-		return s_instance->GetLocalizedText(key, currentLanguage);
+		return s_instance->GetLocalizedText(key.data(), currentLanguage);
 	}
 }

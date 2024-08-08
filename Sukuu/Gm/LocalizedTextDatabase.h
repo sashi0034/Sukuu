@@ -4,5 +4,6 @@ namespace Gm
 {
 	void InitLocalizedTextDatabaseAddon();
 
-	String LocalizedText(const String& key);
+	[[nodiscard]]
+	StringView LocalizedText(StringView key);
 }
