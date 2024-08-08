@@ -310,8 +310,8 @@ private:
 		auto scoopingMessage = StartCoro(m_play.AsMainContent(), [&](YieldExtended y)
 		{
 			waitMessage(y, Gm::IsUsingGamepad()
-				               ? U"キミ自身をマウスカーソルでスクってみるといい"
-				               : U"自分自身をスクってみよう",
+				               ? U"自分自身をスクってみよう"
+				               : U"キミ自身をマウスカーソルでスクってみるといい",
 			            messageWaitMedium);
 			m_messanger.ShowMessageForever(
 				Gm::IsUsingGamepad()
