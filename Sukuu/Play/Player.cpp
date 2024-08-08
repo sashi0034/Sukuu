@@ -76,6 +76,9 @@ struct Play::Player::Impl
 	RocketSpark m_rocketSpark{};
 	bool m_gameOverStarted{};
 
+	// チュートリアルなどで行動に制限を設けるために使用
+	PlayerExportedService m_exportedService{};
+
 	void Update()
 	{
 #if _DEBUG
@@ -106,8 +109,7 @@ struct Play::Player::Impl
 		// カメラのオフセットを移動
 		const auto cameraDestination = [this]
 		{
-			if (const auto tutorial = PlayCore::Instance().Tutorial())
-				if (const auto overriding = tutorial->PlayerService().overrideCamera) return overriding.value();
+			if (const auto overriding = m_exportedService.overrideCamera) return overriding.value();
 			return m_cameraOffsetDestination;
 		}();
 		m_cameraOffset += (cameraDestination - m_cameraOffset)
@@ -195,9 +197,9 @@ struct Play::Player::Impl
 	// エネミーとの衝突判定
 	bool EnemyCollide(ActorView self, const RectF& rect, EnemyKind enemy)
 	{
+		if (m_exportedService.forcedImmortal) return false; // チュートリアル中は無敵
 		if (m_immortal.IsImmortal()) return false;
 		if (m_act == PlayerAct::Dead) return false;
-		if (PlayCore::Instance().Tutorial() != nullptr) return false; // チュートリアル中は無敵
 
 		const auto player = RectF{m_pos.actualPos, Point::One() * CellPx_24}.stretched(
 			getToml<int>(U"collider_padding"));
@@ -516,21 +518,23 @@ private:
 		const auto newPoint = CharaVec2(newPos).MapPoint();
 		checkGimmickAt(yield, self, newPoint);
 
-		if (const auto tutorial = PlayCore::Instance().Tutorial())
+		if (const auto moved = m_exportedService.onMoved)
 		{
-			tutorial->PlayerService().onMoved(newPos, m_act == PlayerAct::Running);
+			moved(newPos, m_act == PlayerAct::Running);
 		}
 	}
-
 
 	bool canMoveTo(Dir4Type dir) const
 	{
 		if (not CanMoveTo(PlayCore::Instance().GetMap(), m_pos.actualPos, dir)) return false;
-		if (const auto tutorial = PlayCore::Instance().Tutorial())
+
+		if (m_exportedService.canMove == false) return false;
+
+		if (const auto canMoveTo = m_exportedService.canMoveTo)
 		{
-			return tutorial->PlayerService().canMove &&
-				tutorial->PlayerService().canMoveTo((m_pos.actualPos + dir.ToXY() * CellPx_24));
+			return canMoveTo(m_pos.actualPos + dir.ToXY() * CellPx_24);
 		}
+
 		return true;
 	}
 
@@ -584,10 +588,7 @@ private:
 
 	void checkScoopProcess(YieldExtended& yield, ActorView self)
 	{
-		if (const auto tutorial = PlayCore::Instance().Tutorial())
-		{
-			if (not tutorial->PlayerService().canScoop) return;
-		}
+		if (not m_exportedService.canScoop) return;
 
 		// マウスクリックまで待機
 		m_subUpdating = [this]
@@ -685,9 +686,9 @@ private:
 			}
 
 			const auto nextPos = m_pos.actualPos.movedBy(Dir4Type(scoopingDir).ToXY() * CellPx_24);
-			if (const auto tutorial = PlayCore::Instance().Tutorial())
+			if (const auto canScoopTo = m_exportedService.canScoopTo)
 			{
-				if (not tutorial->PlayerService().canScoopTo(nextPos))
+				if (not canScoopTo(nextPos))
 				{
 					scoopingCharge = 0;
 					continue;
@@ -717,9 +718,9 @@ private:
 	{
 		AudioAsset(AssetSes::scoop_move).playOneShot();
 
-		if (const auto tutorial = PlayCore::Instance().Tutorial())
+		if (const auto onScooped = m_exportedService.onScooped)
 		{
-			tutorial->PlayerService().onScooped(m_pos.actualPos);
+			onScooped(checkingPos);
 		}
 
 		// 上手くすくって別の場所に移動するときの処理
@@ -910,8 +911,6 @@ namespace Play
 
 		p_impl->m_distField.Resize(PlayCore::Instance().GetMap().Data().size());
 
-		if (not PlayCore::Instance().Tutorial()) p_impl->PerformInitialCamera(*this);
-
 		p_impl->m_immortal.immortalTime = getToml<double>(U"initial_immortal");
 
 		p_impl->StartFlowchart(*this);
@@ -920,6 +919,11 @@ namespace Play
 		p_impl->m_personal.items[0] = ConsumableItem::Rocket;
 		p_impl->m_personal.items[1] = ConsumableItem::Wing;
 #endif
+	}
+
+	void Player::StartInitialCamara()
+	{
+		p_impl->PerformInitialCamera(*this);
 	}
 
 	void Player::Update()
@@ -1009,5 +1013,10 @@ namespace Play
 	const PlayerVisionState& Player::Vision() const
 	{
 		return p_impl->m_vision;
+	}
+
+	PlayerExportedService& Player::ExportedService()
+	{
+		return p_impl->m_exportedService;
 	}
 }

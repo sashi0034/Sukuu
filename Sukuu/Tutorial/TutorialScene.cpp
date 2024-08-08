@@ -28,20 +28,12 @@ namespace
 	constexpr double messageWaitMedium = 4.0;
 }
 
-struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
+struct Tutorial::TutorialScene::Impl
 {
 	Play::PlayScene m_playScene{Play::PlayScene::Empty()};
 	Play::PlayCore m_play{Play::PlayCore::Empty()};
 	TutorialMapData m_mapData{};
 	bool m_finished{};
-	Play::TutorialPlayerService m_playerService{
-		.canMove = false,
-		.canScoop = false,
-		.onMoved = [](auto, auto) { return; },
-		.onScooped = [](auto) { return; },
-		.canMoveTo = [](auto) { return true; },
-		.canScoopTo = [](auto) { return true; },
-	};
 	TutorialMessenger m_messanger{};
 	TutorialFocus m_focus{};
 	std::function<void()> m_postDraw{};
@@ -60,33 +52,35 @@ struct Tutorial::TutorialScene::Impl : Play::ITutorialSetting
 		});
 	}
 
-	Play::MapGrid GetMap() const override
-	{
-		return std::move(m_mapData.map);
-	}
-
-	Vec2 InitialPlayerPos() const override
-	{
-		return m_mapData.initialPlayerPoint * Play::CellPx_24;
-	}
-
-	const Play::TutorialPlayerService& PlayerService() const override
-	{
-		return m_playerService;
-	}
-
 private:
+	Play::PlayerExportedService& playerServices()
+	{
+		return m_playScene.GetCore().GetPlayer().ExportedService();
+	}
+
 	void startPlayScene()
 	{
 		m_mapData = GetTutorialMap();
+
+		// PlayScene 初期化
 		m_playScene.Init({
-			.tutorial = this,
+			.designatedMap = Play::DesignatedMapInfo{
+				.map = m_mapData.map,
+				.initialPlayerPos = m_mapData.initialPlayerPoint * Play::CellPx_24
+			},
 			.playerPersonal = {},
 			.timeLimiter = Play::TimeLimiterData{
 				.maxTime = 90,
 				.remainingTime = 60
 			}
 		});
+
+		// プレイヤーの設定
+		playerServices().forcedImmortal = true;
+		playerServices().canMove = false;
+		playerServices().canScoop = false;
+
+		// タイムリミットの設定
 		auto&& timeLimiter = m_play.GetTimeLimiter();
 		timeLimiter.SetCountEnabled(false);
 		timeLimiter.SetImmortal(true);
@@ -116,11 +110,17 @@ private:
 		yield();
 		if (not m_retrying) performLogo(yield);
 		startPlayScene();
+
 		performOpening(yield);
+
 		tutorialHowtoMove(yield);
+
 		tutorialScoop(yield);
+
 		tutorialItem(yield);
-		m_playerService.canMove = true;
+
+		playerServices().canMove = true;
+
 		tutorialFinal(yield);
 
 		yield.WaitForTrue([this]() { return m_play.GetPlayer().IsTerminated(); });
@@ -202,16 +202,16 @@ private:
 
 	void tutorialHowtoMove(YieldExtended& yield)
 	{
-		m_playerService.canMove = false;
+		playerServices().canMove = false;
 		m_play.GetMap().At(m_mapData.firstBlockPoint).kind = Play::TerrainKind::Wall;
 
 		yield.WaitForTime(2.0);
 		waitMessage(yield, U"目が覚めたようだね", messageWaitMedium);
 		waitMessage(yield, U"早速だがキミに動いてもらおう", messageWaitMedium);
-		m_playerService.canMove = true;
+		playerServices().canMove = true;
 		int movedCount{};
 		int runningCount{};
-		m_playerService.onMoved = [&](auto, bool isRunning)
+		playerServices().onMoved = [&](auto, bool isRunning)
 		{
 			if (isRunning) runningCount++;
 			movedCount++;
@@ -238,23 +238,23 @@ private:
 		AudioAsset(AssetSes::attack2).playOneShot();
 		m_play.GetMap().At(m_mapData.firstBlockPoint).kind = Play::TerrainKind::Floor;
 
-		m_playerService.onMoved = [](auto, auto) { return; };
+		playerServices().onMoved = {};
 	}
 
 	void tutorialScoop(YieldExtended& yield)
 	{
-		m_playerService.onMoved = [&](const Play::CharaVec2& pos, auto)
+		playerServices().onMoved = [&](const Play::CharaVec2& pos, auto)
 		{
 			if (pos.MapPoint() == m_mapData.sukuuEventPoint)
 			{
-				m_playerService.canMove = false;
+				playerServices().canMove = false;
 			}
 		};
-		yield.WaitForFalseVal(m_playerService.canMove);
-		m_playerService.onMoved = [](auto, auto) { return; };
+		yield.WaitForFalseVal(playerServices().canMove);
+		playerServices().onMoved = {};
 
 		// すくう入手イベント発生
-		m_playerService.overrideCamera = {0, 0};
+		playerServices().overrideCamera = {0, 0};
 
 		auto catSouth = m_play.GetEnemies().Birth(m_play.AsMainContent(), Play::EnSlimeCat());
 		catSouth.InitTutorial(m_mapData.catSpawnPoint_South * Play::CellPx_24, Dir4::Up);
@@ -295,13 +295,13 @@ private:
 		(void)m_bgm.setVolume(0.5);
 
 		bool hasScooped{};
-		m_playerService.canScoop = true;
-		m_playerService.canScoopTo = [&](const Play::CharaVec2& pos)
+		playerServices().canScoop = true;
+		playerServices().canScoopTo = [&](const Play::CharaVec2& pos)
 		{
 			// 左右だけすくえるようにする
 			return m_play.GetPlayer().CurrentPos().actualPos.MapPoint().y == pos.MapPoint().y;
 		};
-		m_playerService.onScooped = [&](auto)
+		playerServices().onScooped = [&](auto)
 		{
 			hasScooped = true;
 		};
@@ -319,7 +319,7 @@ private:
 					: U"自分自身を 'ドラッグ' して\n壁の方向へ 'ドロップ' するんだ");
 		});
 		yield.WaitForTrueVal(hasScooped);
-		m_playerService.canScoop = false;
+		playerServices().canScoop = false;
 
 		timescaleController.Kill();
 		scoopingMessage.Kill();
@@ -328,15 +328,15 @@ private:
 		(void)m_bgm.setVolume(1.0);
 		yield.WaitForTime(1.0);
 
-		m_playerService.overrideCamera = none;
+		playerServices().overrideCamera = none;
 
 		waitMessage(yield, U"間一髪、一難過ぎ去ったね", messageWaitShort);
 		catNorth.Kill();
 		catSouth.Kill();
-		m_playerService.canMove = true;
-		m_playerService.canScoop = true;
-		m_playerService.onScooped = [](auto) { return; };
-		m_playerService.canScoopTo = [&](auto) { return true; };
+		playerServices().canMove = true;
+		playerServices().canScoop = true;
+		playerServices().onScooped = {};
+		playerServices().canScoopTo = {};
 		waitMessage(yield, U"さて、奥へ進もうか", messageWaitShort);
 	}
 
@@ -346,7 +346,7 @@ private:
 		knight.InitTutorial(m_mapData.knightSpawnPoint * Play::CellPx_24, Dir4::Left);
 
 		bool nearItem{};
-		m_playerService.onMoved = [&](const Play::CharaVec2& pos, bool isRunning)
+		playerServices().onMoved = [&](const Play::CharaVec2& pos, bool isRunning)
 		{
 			if ((pos.MapPoint() - m_mapData.itemSpawnPoint).manhattanLength() <= 5) nearItem = true;
 		};
@@ -354,16 +354,16 @@ private:
 		{
 			return pos.MapPoint().x < m_mapData.knightBlockPoint.x;
 		};
-		m_playerService.canMoveTo = leftRegionLimit;
-		m_playerService.canScoopTo = leftRegionLimit;
+		playerServices().canMoveTo = leftRegionLimit;
+		playerServices().canScoopTo = leftRegionLimit;
 
 		yield.WaitForTrueVal(nearItem);
-		m_playerService.canMove = false;
+		playerServices().canMove = false;
 		waitMessage(yield, U"イイものが落ちているね", messageWaitShortShort);
-		m_playerService.canMove = true;
+		playerServices().canMove = true;
 
 		bool obtainedItem{};
-		m_playerService.onMoved = [&](const Play::CharaVec2& pos, bool isRunning)
+		playerServices().onMoved = [&](const Play::CharaVec2& pos, bool isRunning)
 		{
 			if (pos.MapPoint() != m_mapData.itemSpawnPoint) return;
 			obtainedItem = true;
@@ -371,7 +371,7 @@ private:
 
 		// アイテム拾うまで待機
 		yield.WaitForTrueVal(obtainedItem);
-		m_playerService.onMoved = [](auto, auto) { return; };
+		playerServices().onMoved = {};
 
 		// 閉じ込める
 		m_play.GetMap().At(m_mapData.itemBlockPoint).kind = Play::TerrainKind::Wall;
@@ -384,8 +384,8 @@ private:
 		// 敵をキルするまで待機
 		yield.WaitForTrue([&]() { return knight.IsDead(); });
 
-		m_playerService.canMoveTo = [](auto) { return true; };
-		m_playerService.canScoopTo = [](auto) { return true; };
+		playerServices().canMoveTo = {};
+		playerServices().canScoopTo = {};
 
 		waitMessage(yield, U"うん、いいね", messageWaitShortShort);
 	}
@@ -393,15 +393,15 @@ private:
 	void tutorialFinal(YieldExtended& yield)
 	{
 		bool nearStairs1{};
-		m_playerService.onMoved = [&](const Play::CharaVec2& pos, bool isRunning)
+		playerServices().onMoved = [&](const Play::CharaVec2& pos, bool isRunning)
 		{
 			if ((pos.MapPoint() - m_mapData.stairsPoint).manhattanLength() <= 8) nearStairs1 = true;
 		};
 		yield.WaitForTrueVal(nearStairs1);
-		m_playerService.onMoved = [](auto, auto) { return; };
+		playerServices().onMoved = {};
 
-		m_playerService.canMove = false;
-		m_playerService.canScoop = false;
+		playerServices().canMove = false;
+		playerServices().canScoop = false;
 		waitMessage(yield, U"最後に重要なことを話しておこう", messageWaitShort);
 		waitMessage(yield, U"実はこの迷宮でキミが生きられる時間は\n限られている", messageWaitMedium);
 
@@ -417,8 +417,8 @@ private:
 
 		m_focus.Hide();
 
-		m_playerService.canMove = true;
-		m_playerService.canScoop = true;
+		playerServices().canMove = true;
+		playerServices().canScoop = true;
 	}
 };
 

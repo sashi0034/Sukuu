@@ -15,24 +15,10 @@
 
 namespace Play
 {
-	struct TutorialPlayerService
+	struct DesignatedMapInfo
 	{
-		bool canMove;
-		bool canScoop;
-		std::function<void(const CharaVec2& pos, bool isRunning)> onMoved;
-		std::function<void(const CharaVec2& pos)> onScooped;
-		std::function<bool(const CharaVec2& pos)> canMoveTo;
-		std::function<bool(const CharaVec2& pos)> canScoopTo;
-		Optional<Vec2> overrideCamera;
-	};
-
-	class ITutorialSetting
-	{
-	public:
-		virtual ~ITutorialSetting() = default;
-		virtual MapGrid GetMap() const = 0;
-		virtual Vec2 InitialPlayerPos() const = 0;
-		virtual const TutorialPlayerService& PlayerService() const = 0;
+		MapGrid map;
+		Vec2 initialPlayerPos;
 	};
 
 	class MeasuredSecondsArray : public std::array<double, Constants::MaxFloorIndex + 1>
@@ -43,7 +29,7 @@ namespace Play
 
 	struct PlaySingletonData
 	{
-		ITutorialSetting* tutorial{};
+		Optional<DesignatedMapInfo> designatedMap{};
 		int floorIndex{};
 		MeasuredSecondsArray measuredSeconds{};
 		PlayerPersonalData playerPersonal{};
@@ -51,7 +37,7 @@ namespace Play
 		bool dashKeeping{};
 		int itemIndexing{};
 
-		bool IsTutorial() const { return tutorial != nullptr; }
+		bool IsDesignatedMap() const { return designatedMap.has_value(); }
 	};
 
 	class PlayCore
@@ -97,9 +83,6 @@ namespace Play
 
 		PlayingPause& GetPause();
 		const PlayingPause& GetPause() const;
-
-		ITutorialSetting* Tutorial();
-		const ITutorialSetting* Tutorial() const;
 
 		void RequestHitstopping(double time);
 

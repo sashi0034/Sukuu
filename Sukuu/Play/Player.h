@@ -7,6 +7,18 @@
 
 namespace Play
 {
+	struct PlayerExportedService
+	{
+		bool forcedImmortal = false;
+		bool canMove = true;
+		bool canScoop = true;
+		std::function<void(const CharaVec2& pos, bool isRunning)> onMoved{};
+		std::function<void(const CharaVec2& pos)> onScooped{};
+		std::function<bool(const CharaVec2& pos)> canMoveTo{};
+		std::function<bool(const CharaVec2& pos)> canScoopTo{};
+		Optional<Vec2> overrideCamera = none;
+	};
+
 	class Player : public ActorBase
 	{
 	public:
@@ -14,6 +26,8 @@ namespace Play
 		void Init(const PlayerPersonalData& data, const Vec2& initialPos);
 		void Update() override;
 		double OrderPriority() const override;
+
+		void StartInitialCamara();
 
 		bool SendEnemyCollide(const RectF& rect, EnemyKind enemy);
 
@@ -33,6 +47,8 @@ namespace Play
 		bool IsTerminated() const;
 		bool HasAbducted() const;
 		const PlayerVisionState& Vision() const;
+
+		PlayerExportedService& ExportedService();
 
 	private:
 		struct Impl;

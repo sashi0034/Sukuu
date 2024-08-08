@@ -73,7 +73,6 @@ public:
 	int m_hitStoppingRequested{};
 	EffectWrapper m_fgEffect{};
 	EffectWrapper m_bgEffect{};
-	ITutorialSetting* m_tutorial{};
 	UiFloorTransition m_floorTransition{};
 	UiCurrentFloor m_uiCurrentFloor{};
 	UiGameOver m_uiGameOver{};
@@ -84,13 +83,12 @@ public:
 
 	void Init(const PlaySingletonData& data)
 	{
-		m_tutorial = data.tutorial;
 		m_floorIndex = data.floorIndex;
 		m_measuredSeconds = data.measuredSeconds;
 
-		if (const auto tutorial = data.tutorial)
+		if (data.designatedMap.has_value())
 		{
-			m_map = tutorial->GetMap();
+			m_map = data.designatedMap.value().map;
 		}
 		else
 		{
@@ -130,20 +128,21 @@ public:
 		ensureInitializedTransition();
 
 		// 初期化
-		if (const auto tutorial = data.tutorial)
+		if (data.designatedMap.has_value())
 		{
-			m_player.Init(data.playerPersonal, tutorial->InitialPlayerPos());
+			m_player.Init(data.playerPersonal, data.designatedMap.value().initialPlayerPos);
 		}
 		else
 		{
 			GenerateEnemiesAndGimmicks(data.floorIndex, m_map, m_main, m_enemies, m_gimmick);
 			m_player.Init(data.playerPersonal, GetInitialPos(m_map, m_map.Category() == MapCategory::Maze));
+			m_player.StartInitialCamara();
 
 			m_uiCurrentFloor.Init(data.floorIndex);
 			m_uiGameOver.Init(data.floorIndex);
 		}
 
-		m_pause.Init(not data.tutorial);
+		m_pause.Init(not data.IsDesignatedMap());
 
 		m_uiItemContainer.Init(data.itemIndexing);
 
@@ -418,16 +417,6 @@ namespace Play
 	const PlayingPause& PlayCore::GetPause() const
 	{
 		return p_impl->m_pause;
-	}
-
-	ITutorialSetting* PlayCore::Tutorial()
-	{
-		return p_impl->m_tutorial;
-	}
-
-	const ITutorialSetting* PlayCore::Tutorial() const
-	{
-		return p_impl->m_tutorial;
 	}
 
 	void PlayCore::RequestHitstopping(double time)
