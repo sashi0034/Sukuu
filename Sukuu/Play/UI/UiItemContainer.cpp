@@ -45,9 +45,9 @@ struct Play::UiItemContainer::Impl
 		for (int i = 0; i < m_items.size(); ++i)
 		{
 			// 上画面中央に隙間が開くようにアイテム位置を決定する
-			const int itemSizeOneMore = m_items.size() + 1;
-			const int itemIndexPadding = i >= itemSizeOneMore / 2 ? 1 : 0;
-			const auto centerOffset = Vec2{(i + itemIndexPadding - itemSizeOneMore / 2.0) * 96, 0}.asPoint();
+			const int itemSize = m_items.size();
+			const int itemIndexPadding = i >= itemSize / 2 ? 1 : 0;
+			const auto centerOffset = Vec2{(i + itemIndexPadding - itemSize / 2.0) * 96, 0}.asPoint();
 
 			// アイテム更新
 			m_items[i].Tick({

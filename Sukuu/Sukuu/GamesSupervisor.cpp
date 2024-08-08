@@ -58,7 +58,7 @@ private:
 		if (entryPoint == U"ending") goto ending;
 
 		if (entryPoint == U"gamepad") (void)DialogGamepadRegister();
-		if (entryPoint == U"yesno") (void)DialogYesNo(U"ご注文はおねんねですか?");
+		if (entryPoint == U"yesno") (void)DialogYesNo(U"ねんね?");
 		if (entryPoint == U"setting") (void)DialogSettingConfigure();
 #endif
 
