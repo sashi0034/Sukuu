@@ -3,7 +3,7 @@
 namespace Util
 {
 #if _DEBUG
-	void InitTomlDebugParamAddon();
+	void InitTomlDebugValueAddon();
 
 	TOMLValue GetTomlDebugValue(const String& valuePath);
 

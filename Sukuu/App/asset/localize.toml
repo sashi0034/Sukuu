@@ -1,0 +1,70 @@
+﻿# ローカライズ文章
+
+# 言語割当は以下の通りに行う
+# - ja: 日本語
+# - en: English
+# - cs: 简体中文
+# - ct: 繁體中文
+# - ko: 한국어
+
+# 翻訳に関しての注意事項
+# - "{}" で囲まれた部分はフォーマットの際に変換を行うので、順番を変えない
+# - 「裏」は英語では 'Ura' と訳し、中国語と韓国語では「裏」のまま表記する
+
+
+[_empty]
+ja=""
+en=""
+cs=""
+ct=""
+ko=""
+
+[exit]
+ja="終了"
+en="Exit"
+cs=""
+ct=""
+ko=""
+
+[ask_exit_game]
+ja="ゲームを終了しますか"
+en="Do you want to exit the game?"
+cs=""
+ct=""
+ko=""
+
+[credit]
+ja="クレジット"
+en="credit"
+cs=""
+ct=""
+ko=""
+
+
+[ask_retry_tutorial]
+ja="もう一度チュートリアルをしますか"
+en="Do you want to retry the tutorial?"
+cs=""
+ct=""
+ko=""
+
+[setting]
+ja="設定"
+en="Settings"
+cs=""
+ct=""
+ko=""
+
+[ura_switch]
+ja="裏モード切り替え"
+en="Switch Ura Mode"
+cs=""
+ct=""
+ko=""
+
+[ask_ura_switch]
+ja="モードを切り替えますか?"
+en="Do you want to switch the mode?"
+cs=""
+ct=""
+ko=""

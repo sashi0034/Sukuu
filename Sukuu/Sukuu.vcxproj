@@ -161,6 +161,7 @@
         <ClCompile Include="Gm\GameConfig.cpp" />
         <ClCompile Include="Gm\GamepadObserver.cpp" />
         <ClCompile Include="Gm\DialogGamepadRegister.cpp" />
+        <ClCompile Include="Gm\LocalizedTextDatabase.cpp" />
         <ClCompile Include="Main.cpp"/>
         <ClCompile Include="Play\Chara\CharaUtil.cpp"/>
         <ClCompile Include="Play\Effect\DamageCounterEffect.cpp"/>
@@ -447,6 +448,7 @@
         <ClInclude Include="Gm\GamepadObserver.h" />
         <ClInclude Include="Gm\DialogGamepadRegister.h" />
         <ClInclude Include="Gm\GameSavedata.h" />
+        <ClInclude Include="Gm\LocalizedTextDatabase.h" />
         <ClInclude Include="Play\Chara\CharaUtil.h" />
         <ClInclude Include="Play\Effect\DamageCounterEffect.h" />
         <ClInclude Include="Play\Effect\FragmentTextureEffect.h" />
@@ -645,6 +647,7 @@
         <Content Include="App\asset\image\tree_16x16.png" />
         <Content Include="App\asset\image\tree_48x48.png" />
         <Content Include="App\asset\image\wing_16x16.png" />
+        <Content Include="App\asset\localize.toml" />
         <Content Include="App\asset\parameters.toml" />
         <Content Include="App\asset\se\arrow_step.mp3" />
         <Content Include="App\asset\se\attack1.mp3" />

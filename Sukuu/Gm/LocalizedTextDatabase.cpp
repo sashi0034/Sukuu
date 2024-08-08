@@ -1,0 +1,99 @@
+﻿#include "stdafx.h"
+#include "LocalizedTextDatabase.h"
+
+#include "GameConfig.h"
+#include "Util/Asserts.h"
+
+namespace
+{
+	using TranslationTuple = std::array<String, Gm::GameLanguagesCount>;
+
+	class LocalizedTextDatabaseAddon;
+	LocalizedTextDatabaseAddon* s_instance{};
+
+	class LocalizedTextDatabaseAddon : public IAddon
+	{
+		HashTable<String, TranslationTuple> m_caches{};
+
+		DirectoryWatcher m_directoryWatcher{U"asset"};
+		TOMLReader m_toml{
+#if _DEBUG
+			U"asset/localize.toml"
+#else
+			Resource(U"asset/localize.toml")
+#endif
+		};
+
+		String fromToml(const String& key, Gm::GameLanguage language) const
+		{
+			auto&& node = m_toml[key];
+			if (not Util::AssertStrongly(not node.isEmpty())) return U"(undefined)";
+
+#if _DEBUG
+			// 全ての言語に対応した状態であるかを一応確認
+			for (int i = 0; i < Gm::GameLanguagesCount; ++i)
+			{
+				Util::AssertStrongly(not node[Gm::LanguageCodes[i]].isEmpty());
+			}
+#endif
+
+			auto&& leaf = node[Gm::LanguageCodes[static_cast<int>(language)]];
+			if (leaf.isEmpty()) return U"(unknown)";
+			return leaf.getString();
+		}
+
+	public:
+		LocalizedTextDatabaseAddon()
+		{
+			if (not Util::AssertStrongly(s_instance == nullptr)) return;
+			s_instance = this;
+		}
+
+		~LocalizedTextDatabaseAddon() override
+		{
+			if (s_instance == this) s_instance = nullptr;
+		}
+
+		String GetLocalizedText(const String& key, Gm::GameLanguage currentLanguage)
+		{
+			if (not m_caches.contains(currentLanguage))
+			{
+				TranslationTuple data{};
+				data[static_cast<int>(currentLanguage)] = fromToml(key, currentLanguage);
+				m_caches[key] = data;
+			}
+
+			return m_caches[key][static_cast<int>(currentLanguage)];
+		}
+
+		bool update() override
+		{
+#if _DEBUG
+			for (auto [path, action] : m_directoryWatcher.retrieveChanges())
+			{
+				if (FileSystem::FileName(path) == U"localize.toml")
+				{
+					m_toml.open({U"asset/localize.toml"});
+					m_caches.clear();
+				}
+			}
+#endif
+
+			return true;
+		}
+	};
+}
+
+namespace Gm
+{
+	void InitLocalizedTextDatabaseAddon()
+	{
+		Addon::Register<LocalizedTextDatabaseAddon>(U"LocalizedTextDatabaseAddon");
+	}
+
+	String LocalizedText(const String& key)
+	{
+		const auto currentLanguage = GameConfig::Instance().language;
+		return s_instance->GetLocalizedText(key, currentLanguage);
+	}
+}

@@ -6,6 +6,7 @@
 #include "Sukuu/AssetReloader.h"
 #include "Gm/GameCursor.h"
 #include "Gm/GamepadObserver.h"
+#include "Gm/LocalizedTextDatabase.h"
 #include "Sukuu/GamesSupervisor.h"
 #include "Util/ActorContainer.h"
 #include "Util/ErrorLogger.h"
@@ -49,7 +50,8 @@ void Main()
 	// アドオン初期化
 #if _DEBUG
 	InitAssetReloader();
-	InitTomlDebugParamAddon();
+	InitTomlDebugValueAddon();
+	Gm::InitLocalizedTextDatabaseAddon();
 #endif
 
 	// アクター初期化

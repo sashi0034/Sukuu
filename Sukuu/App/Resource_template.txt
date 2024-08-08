@@ -130,6 +130,7 @@ Resource(engine/soundfont/GMGSx.sf2.zstdcmp)
 #if !_DEBUG
 
 Resource(asset/parameters.toml)
+Resource(asset/localize.toml)
 
 $APP_ASSET$
 #endif

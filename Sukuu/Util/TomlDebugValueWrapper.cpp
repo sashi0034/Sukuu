@@ -95,7 +95,7 @@ namespace
 
 namespace Util
 {
-	void InitTomlDebugParamAddon()
+	void InitTomlDebugValueAddon()
 	{
 		preInitialize();
 
