@@ -56,7 +56,7 @@ struct Title::TitleHud::Impl
 		m_buttons.push_back(CornerButton(U"tutorial"_sv, [this]()
 		{
 			const ScopedRenderTarget2D rs{none};
-			if (Gm::DialogYesNo(U"ask_retry_tutorial") == MessageBoxResult::Yes)
+			if (Gm::DialogYesNo(Gm::LocalizedText(U"ask_retry_tutorial")) == MessageBoxResult::Yes)
 			{
 				m_concludedRetryTutorial = true;
 			}
@@ -71,7 +71,7 @@ struct Title::TitleHud::Impl
 		{
 			m_buttons.push_back(CornerButton(U"ura_switch"_sv, []()
 			{
-				if (Gm::DialogYesNo(U"ask_ura_switch") == MessageBoxResult::Yes)
+				if (Gm::DialogYesNo(Gm::LocalizedText(U"ask_ura_switch")) == MessageBoxResult::Yes)
 				{
 					Play::SetPlayingUra(not Play::IsPlayingUra());
 				}

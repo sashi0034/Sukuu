@@ -83,17 +83,10 @@ namespace
 
 		if (messageBox == MessageBoxKind::YesNo)
 		{
-			const auto noRect = Rect(Arg::center = Scene::Center().moveBy(-buttonOffset.x, buttonOffset.y), buttonSize);
-			const auto yesRect = Rect(Arg::center = Scene::Center().moveBy(buttonOffset), buttonSize);
-
-			// いいえ
-			updateYesNoButton(
-				noRect,
-				U"いいえ {}"_fmt(IsUsingGamepad() ? U"[B]" : U"(N)"),
-				KeyN | GetGamepadInput(GamepadButton::B),
-				OptionalResponse::No,
-				confirmed,
-				allowedConfirm);
+			const auto noRect =
+				Rect(Arg::center = Scene::Center().moveBy(buttonOffset), buttonSize);
+			const auto yesRect =
+				Rect(Arg::center = Scene::Center().moveBy(-buttonOffset.x, buttonOffset.y), buttonSize);
 
 			// はい
 			updateYesNoButton(
@@ -101,6 +94,15 @@ namespace
 				U"はい {}"_fmt(IsUsingGamepad() ? U"[A]" : U"(Y)"),
 				KeyY | GetGamepadInput(GamepadButton::A),
 				OptionalResponse::Yes,
+				confirmed,
+				allowedConfirm);
+
+			// いいえ
+			updateYesNoButton(
+				noRect,
+				U"いいえ {}"_fmt(IsUsingGamepad() ? U"[B]" : U"(N)"),
+				KeyN | GetGamepadInput(GamepadButton::B),
+				OptionalResponse::No,
 				confirmed,
 				allowedConfirm);
 		}
