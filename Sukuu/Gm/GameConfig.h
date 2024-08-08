@@ -16,7 +16,7 @@ namespace Gm
 
 	constexpr int GameLanguagesCount = static_cast<int>(GameLanguage::Max);
 
-	constexpr std::array LanguageCodes{
+	const inline std::array<String, GameLanguagesCount> LanguageCodes{
 		U"ja",
 		U"en",
 		U"cs",
@@ -24,17 +24,13 @@ namespace Gm
 		U"ko",
 	};
 
-	static_assert(LanguageCodes.size() == GameLanguagesCount);
-
-	constexpr std::array LanguageLabels{
+	const inline std::array<String, GameLanguagesCount> LanguageLabels{
 		U"日本語",
 		U"English",
 		U"简体中文",
 		U"繁體中文",
 		U"한국어",
 	};
-
-	static_assert(LanguageLabels.size() == GameLanguagesCount);
 
 	static_assert(LanguageLabels.size() == static_cast<int>(GameLanguage::Max));
 

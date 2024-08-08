@@ -56,7 +56,7 @@ namespace
 
 		String GetLocalizedText(const String& key, Gm::GameLanguage currentLanguage)
 		{
-			if (not m_caches.contains(currentLanguage))
+			if (not m_caches.contains(key))
 			{
 				TranslationTuple data{};
 				data[static_cast<int>(currentLanguage)] = fromToml(key, currentLanguage);
