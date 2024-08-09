@@ -161,6 +161,8 @@
         <ClCompile Include="Gm\GamepadObserver.cpp" />
         <ClCompile Include="Gm\DialogGamepadRegister.cpp" />
         <ClCompile Include="Gm\LocalizedTextDatabase.cpp" />
+        <ClCompile Include="Lounge\LoungeMap.cpp" />
+        <ClCompile Include="Lounge\LoungeScene.cpp" />
         <ClCompile Include="Main.cpp" />
         <ClCompile Include="Play\Chara\CharaUtil.cpp" />
         <ClCompile Include="Play\Effect\DamageCounterEffect.cpp" />
@@ -446,6 +448,9 @@
         <ClInclude Include="Gm\DialogGamepadRegister.h" />
         <ClInclude Include="Gm\GameSavedata.h" />
         <ClInclude Include="Gm\LocalizedTextDatabase.h" />
+        <ClInclude Include="Lounge\Forward.h" />
+        <ClInclude Include="Lounge\LoungeMap.h" />
+        <ClInclude Include="Lounge\LoungeScene.h" />
         <ClInclude Include="Play\Chara\CharaUtil.h" />
         <ClInclude Include="Play\Effect\DamageCounterEffect.h" />
         <ClInclude Include="Play\Effect\FragmentTextureEffect.h" />

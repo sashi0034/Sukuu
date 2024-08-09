@@ -7,6 +7,7 @@
 #include "Gm\DialogSettingConfigure.h"
 #include "Gm/DialogGamepadRegister.h"
 #include "Gm/DialogMessageBox.h"
+#include "Lounge/LoungeScene.h"
 #include "Play/PlayBgm.h"
 #include "Play/PlayingUra.h"
 #include "Play/PlayScene.h"
@@ -57,6 +58,7 @@ private:
 		if (entryPoint == U"play") goto play;
 		if (entryPoint == U"ending") goto ending;
 
+		if (entryPoint == U"lounge") (void)loungeLoop(yield, self);
 		if (entryPoint == U"gamepad") (void)DialogGamepadRegister();
 		if (entryPoint == U"yesno") (void)DialogYesNo(U"ねんね?");
 		if (entryPoint == U"setting") (void)DialogSettingConfigure();
@@ -116,6 +118,7 @@ private:
 		return retryTutorial;
 	}
 
+	/// @return 50層を突破したなら true
 	bool playLoop(YieldExtended& yield, ActorView self)
 	{
 		m_playData = {};
@@ -191,6 +194,18 @@ private:
 			m_playData.timeLimiter.maxTime += 3;
 			m_playData.timeLimiter.remainingTime += 3;
 		}
+	}
+
+	/// @return タイトルに戻るなら false
+	bool loungeLoop(YieldExtended& yield, ActorView self) const
+	{
+		auto lounge = self.AsParent().Birth(Lounge::LoungeScene());
+		lounge.Init({});
+		yield.WaitForTrue([&]() { return lounge.IsConcluded(); });
+		lounge.Kill();
+		// SaveSavedata(m_savedata);
+		yield();
+		return false;
 	}
 
 	void checkSave(const Play::PlaySingletonData& data, bool isCleared)

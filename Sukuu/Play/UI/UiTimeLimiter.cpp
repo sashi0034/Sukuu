@@ -33,6 +33,9 @@ struct Play::UiTimeLimiter::Impl
 	ActorWeak m_outsider{};
 	bool m_fromEnemyDamage{};
 
+	// 見かけ上の制限時間がゼロにする
+	double m_misrepresentedAsIfZero{};
+
 	Vec2 m_pos{};
 	Vec2 m_targetPos{};
 
@@ -68,7 +71,7 @@ struct Play::UiTimeLimiter::Impl
 
 		updatePos();
 
-		drawUi();
+		drawUi(m_misrepresentedAsIfZero ? 0 : m_data.remainingTime);
 	}
 
 	void GiveDelta(ActorView self, double time, const Optional<bool>& isEnemyDamage)
@@ -106,7 +109,7 @@ private:
 		m_pos = Math::Lerp(m_pos, m_targetPos, getToml<double>(U"pos_speed") * Scene::DeltaTime());
 	}
 
-	void drawUi() const
+	void drawUi(double remainingTime) const
 	{
 		const auto center = m_pos.asPoint();
 		const auto mainColor = getToml<Color>(U"main_color");
@@ -127,7 +130,7 @@ private:
 		            .draw(getToml<Color>(U"back_color"))
 		            .drawShadow({0, 4}, 8, 2);
 
-		const double arcRate = Math::Clamp((m_data.remainingTime - m_outsideDelta) / arcAreaSeconds, 0.0, 1.0);
+		const double arcRate = Math::Clamp((remainingTime - m_outsideDelta) / arcAreaSeconds, 0.0, 1.0);
 		const double arcAmount = 270_deg * arcRate;
 
 		// 空部分
@@ -135,23 +138,23 @@ private:
 		if (m_outsideDelta > 0)
 		{
 			// ダメージ部分
-			const double damageArcAmount = 270_deg * Math::Clamp(m_data.remainingTime / arcAreaSeconds, 0.0, 1.0);
+			const double damageArcAmount = 270_deg * Math::Clamp(remainingTime / arcAreaSeconds, 0.0, 1.0);
 			(void)circle.drawArc(270_deg - damageArcAmount, damageArcAmount, 0, circleOuter, damageColor);
 		}
 		// 残量
 		(void)circle.drawArc(270_deg - arcAmount, arcAmount, 0, circleOuter, mainColor);
-		if (m_outsideDelta < 0 && m_data.remainingTime <= arcAreaSeconds)
+		if (m_outsideDelta < 0 && remainingTime <= arcAreaSeconds)
 		{
 			// 回復部分
 			const double healArcAmount = 270_deg * Math::Clamp(
-				std::min(-m_outsideDelta, arcAreaSeconds - m_data.remainingTime) / arcAreaSeconds, 0.0, 1.0);
+				std::min(-m_outsideDelta, arcAreaSeconds - remainingTime) / arcAreaSeconds, 0.0, 1.0);
 			(void)circle.drawArc(270_deg - arcAmount, healArcAmount, 0, circleOuter, healColor);
 		}
 
 		// アイコン描画
 		(void)TextureAsset(U"⏳").resized(getToml<int>(U"icon_size")).drawAt(center);
 
-		FontAsset(AssetKeys::RocknRoll_24_Bitmap)(U"のこり {}"_fmt(static_cast<int>(m_data.remainingTime)))
+		FontAsset(AssetKeys::RocknRoll_24_Bitmap)(U"のこり {}"_fmt(static_cast<int>(remainingTime)))
 			.draw(Arg::rightCenter = center.movedBy(getToml<Vec2>(U"text_offset")));
 
 		// 長方形部分描画
@@ -160,17 +163,17 @@ private:
 		const double rectUnit = getToml<double>(U"rect_unit_width");
 		const double rectMaxRate = (m_data.maxTime - arcAreaSeconds) / arcAreaSeconds;
 		const double rectRate =
-			(std::min(m_data.maxTime, m_data.remainingTime - m_outsideDelta) - arcAreaSeconds) / arcAreaSeconds;
+			(std::min(m_data.maxTime, remainingTime - m_outsideDelta) - arcAreaSeconds) / arcAreaSeconds;
 		const auto rectMaxW = rectUnit * rectMaxRate;
 		const auto rectW = rectUnit * rectRate;
 		if (rectMaxRate > 0)
 			// 空部分
 			(void)Rect(rectTr.movedBy(-rectMaxW, -emptyThickness), SizeF{rectMaxW, rectH}.asPoint())
 				.draw(emptyColor);
-		if (m_outsideDelta > 0 && m_data.remainingTime > arcAreaSeconds)
+		if (m_outsideDelta > 0 && remainingTime > arcAreaSeconds)
 		{
 			// ダメージ部分X
-			const auto damageW = rectUnit * (m_data.remainingTime - arcAreaSeconds) / arcAreaSeconds;
+			const auto damageW = rectUnit * (remainingTime - arcAreaSeconds) / arcAreaSeconds;
 			(void)Rect(rectTr.movedBy(-damageW, 0), SizeF{damageW, rectH}.asPoint())
 				.draw(damageColor);
 		}
@@ -182,7 +185,7 @@ private:
 		{
 			// 回復部分
 			const auto healW =
-				rectUnit * std::min(-m_outsideDelta, m_data.maxTime - m_data.remainingTime) / arcAreaSeconds;
+				rectUnit * std::min(-m_outsideDelta, m_data.maxTime - remainingTime) / arcAreaSeconds;
 			(void)Rect(rectTr.movedBy(-rectW, 0), SizeF{std::min(healW, rectW), rectH}.asPoint())
 				.draw(healColor);
 		}
@@ -242,6 +245,11 @@ namespace Play
 	void UiTimeLimiter::SetImmortal(bool immortal)
 	{
 		p_impl->m_immortal = immortal;
+	}
+
+	void UiTimeLimiter::MisrepresentedAsIfZero()
+	{
+		p_impl->m_misrepresentedAsIfZero = true;
 	}
 
 	const TimeLimiterData& UiTimeLimiter::GetData() const

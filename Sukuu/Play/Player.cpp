@@ -177,16 +177,15 @@ struct Play::Player::Impl
 		AnimateEasing<EaseOutBack>(self, &m_cameraScale, DefaultCameraScale, 0.5);
 	}
 
-	void PerformTutorialOpening(ActorView self)
+	void PerformTutorialOpening(ActorView self, double duration)
 	{
-		StartCoro(self, [this, self](YieldExtended yield)
+		StartCoro(self, [this, self, duration](YieldExtended yield)
 		{
 			// チュートリアルの最初
 			m_flowchart.Kill();
 			m_act = PlayerAct::Dead;
 			m_cameraScale = 10.0;
 			m_cameraOffset = {0, 1200};
-			constexpr double duration = 8.0;
 			AnimateEasing<EaseOutCubic>(self, &m_cameraOffset, {0, 0}, duration);
 			yield.WaitForExpire(
 				AnimateEasing<EaseInOutBack>(self, &m_cameraScale, DefaultCameraScale, duration));
@@ -955,9 +954,9 @@ namespace Play
 		p_impl->m_personal.items[itemIndex] = ConsumableItem::None;
 	}
 
-	void Player::PerformTutorialOpening()
+	void Player::PerformTutorialOpening(double duration)
 	{
-		p_impl->PerformTutorialOpening(*this);
+		p_impl->PerformTutorialOpening(*this, duration);
 	}
 
 	const PlayerPersonalData& Player::PersonalData() const

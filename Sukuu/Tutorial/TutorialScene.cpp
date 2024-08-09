@@ -108,7 +108,11 @@ private:
 	void flowchartLoop(YieldExtended& yield)
 	{
 		yield();
+
+		// 初回起動時は、Siv3D のロゴを表示させる
+		// このときに、ゲームパッドでボタン入力が行われたら、ゲームパッド設定画面に入る
 		if (not m_retrying) performLogo(yield);
+
 		startPlayScene();
 
 		performOpening(yield);
@@ -187,8 +191,10 @@ private:
 		yield.WaitForTime(3.0);
 		yield.WaitForExpire(AnimateEasing<EaseInOutSine>(m_play.AsMainContent(), &prologueAlpha, 0.0, 2.0));
 
+		// プレイヤーのカメラ移動
+		m_play.GetPlayer().PerformTutorialOpening(8.0);
+
 		// 真っ黒な画面から徐々に明るくしていく
-		m_play.GetPlayer().PerformTutorialOpening();
 		double rate = 1.0;
 		m_postDraw = [&]()
 		{
@@ -197,6 +203,7 @@ private:
 		yield.WaitForExpire(
 			AnimateEasing<EaseInQuad>(m_play.AsMainContent(), &rate, 0.0, 8.0));
 		m_postDraw = {};
+
 		m_play.GetPause().SetAllowed(true);
 	}
 

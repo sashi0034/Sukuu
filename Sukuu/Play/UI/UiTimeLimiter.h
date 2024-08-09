@@ -24,6 +24,7 @@ namespace Play
 		void SetCountEnabled(bool enabled);
 		bool IsCountEnabled() const;
 		void SetImmortal(bool immortal);
+		void MisrepresentedAsIfZero();
 
 		const TimeLimiterData& GetData() const;
 
