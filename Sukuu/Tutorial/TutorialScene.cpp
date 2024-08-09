@@ -192,7 +192,7 @@ private:
 		yield.WaitForExpire(AnimateEasing<EaseInOutSine>(m_play.AsMainContent(), &prologueAlpha, 0.0, 2.0));
 
 		// プレイヤーのカメラ移動
-		m_play.GetPlayer().PerformTutorialOpening(8.0);
+		m_play.GetPlayer().PerformCinematicOpening(8.0);
 
 		// 真っ黒な画面から徐々に明るくしていく
 		double rate = 1.0;

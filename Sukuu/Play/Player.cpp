@@ -177,11 +177,12 @@ struct Play::Player::Impl
 		AnimateEasing<EaseOutBack>(self, &m_cameraScale, DefaultCameraScale, 0.5);
 	}
 
-	void PerformTutorialOpening(ActorView self, double duration)
+	void PerformCinematicOpening(ActorView self, double duration)
 	{
 		StartCoro(self, [this, self, duration](YieldExtended yield)
 		{
-			// チュートリアルの最初
+			// チュートリアルの最初などの特殊なカメラ移動
+			m_immortal.immortalTime = 0;
 			m_flowchart.Kill();
 			m_act = PlayerAct::Dead;
 			m_cameraScale = 10.0;
@@ -954,9 +955,9 @@ namespace Play
 		p_impl->m_personal.items[itemIndex] = ConsumableItem::None;
 	}
 
-	void Player::PerformTutorialOpening(double duration)
+	void Player::PerformCinematicOpening(double duration)
 	{
-		p_impl->PerformTutorialOpening(*this, duration);
+		p_impl->PerformCinematicOpening(*this, duration);
 	}
 
 	const PlayerPersonalData& Player::PersonalData() const

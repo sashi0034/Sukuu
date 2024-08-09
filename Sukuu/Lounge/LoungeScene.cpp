@@ -81,7 +81,7 @@ private:
 		yield();
 
 		// プレイヤーのカメラ移動
-		m_play.GetPlayer().PerformTutorialOpening(1.0);
+		m_play.GetPlayer().PerformCinematicOpening(1.0);
 
 		// 真っ黒な画面から徐々に明るくしていく
 		double rate = 1.0;

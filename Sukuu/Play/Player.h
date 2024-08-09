@@ -34,7 +34,7 @@ namespace Play
 		bool CanUseItem(int itemIndex) const;
 		void RequestUseItem(int itemIndex);
 
-		void PerformTutorialOpening(double duration);
+		void PerformCinematicOpening(double duration);
 
 		const PlayerPersonalData& PersonalData() const;
 		Mat3x2 CameraTransform() const;
