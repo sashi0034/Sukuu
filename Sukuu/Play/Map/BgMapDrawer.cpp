@@ -87,6 +87,9 @@ struct Play::BgMapDrawer::Impl
 	Array<std::function<void()>> m_postDraws{};
 	std::function<ScopedCustomShader2D(double t)> m_bgShader = [](auto) { return ScopedCustomShader2D{}; };
 
+	// デフォルトの描画システムではなく、外部で描画処理を行う際に使用 (LoungeScene で使用)
+	BgCustomDrawer m_customDrawer{};
+
 	void DrawGimmickAt(
 		const GimmickGrid& gimmickGrid,
 		const Point& point,
@@ -213,7 +216,12 @@ namespace Play
 		const auto mapBr = inversed.transformPoint(Scene::Size()).asPoint() / CellPx_24;
 		auto&& map = scene.GetMap();
 
-		[&]()
+		if (p_impl->m_customDrawer.backDrawer)
+		{
+			// BG描画 (外部にて)
+			p_impl->m_customDrawer.backDrawer(Rect::FromPoints(mapTl * CellPx_24, mapBr * CellPx_24));
+		}
+		else
 		{
 			// BG描画
 			const ScopedCustomShader2D shader{p_impl->m_bgShader(p_impl->m_animTimer.Time())};
@@ -232,7 +240,7 @@ namespace Play
 					DrawBgMapTileAt(map, x, y);
 				}
 			}
-		}();
+		}
 
 		auto&& gimmick = scene.GetGimmick();;
 		// 木の描画のため縦方向は若干余裕がある
@@ -263,10 +271,17 @@ namespace Play
 			d();
 		}
 		p_impl->m_postDraws.clear();
+
+		if (p_impl->m_customDrawer.frontDrawer) p_impl->m_customDrawer.frontDrawer();
 	}
 
 	void BgMapDrawer::SetBgShader(const std::function<ScopedCustomShader2D(double t)>& shader)
 	{
 		p_impl->m_bgShader = shader;
+	}
+
+	void BgMapDrawer::SetCustomDrawer(const BgCustomDrawer& drawer)
+	{
+		p_impl->m_customDrawer = drawer;
 	}
 }

@@ -15,6 +15,8 @@
 
 namespace Play
 {
+	struct BgCustomDrawer;
+
 	struct DesignatedMapInfo
 	{
 		MapGrid map;
@@ -83,6 +85,8 @@ namespace Play
 
 		PlayingPause& GetPause();
 		const PlayingPause& GetPause() const;
+
+		void SetBgCustomDrawer(const BgCustomDrawer& drawer);
 
 		void RequestHitstopping(double time);
 

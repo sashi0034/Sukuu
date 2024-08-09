@@ -1,8 +1,10 @@
 ﻿#include "stdafx.h"
 #include "LoungeScene.h"
 
+#include "LoungeBgDrawer.h"
 #include "LoungeMap.h"
 #include "Play/PlayScene.h"
+#include "Play/Map/BgMapDrawer.h"
 #include "Util/EasingAnimation.h"
 
 namespace
@@ -15,6 +17,7 @@ struct LoungeScene::Impl
 	Play::PlayScene m_playScene{Play::PlayScene::Empty()};
 	Play::PlayCore m_play{Play::PlayCore::Empty()};
 	LoungeMapData m_mapData{};
+	LoungeBgDrawer m_bgDrawer{};
 
 	// PlayScene などのあとに描画する
 	std::function<void()> m_postDraw{};
@@ -61,10 +64,16 @@ private:
 		playerServices().canScoop = false;
 
 		// タイムリミットの設定
-		auto&& timeLimiter = m_play.GetTimeLimiter();
+		auto& timeLimiter = m_play.GetTimeLimiter();
 		timeLimiter.SetCountEnabled(false);
 		timeLimiter.SetImmortal(true);
 		timeLimiter.MisrepresentedAsIfZero();
+
+		// 背景描画の設定
+		m_play.SetBgCustomDrawer(Play::BgCustomDrawer{
+			.backDrawer = [&](Rect r) { m_bgDrawer.DrawBack(m_mapData, r); },
+			.frontDrawer = [&]() { m_bgDrawer.DrawFront(m_mapData); }
+		});
 	}
 
 	void flowchartLoop(YieldExtended& yield)

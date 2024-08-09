@@ -7,7 +7,7 @@ namespace Lounge
 	{
 		Play::MapGrid map{};
 		Point initialPlayerPoint{};
-		Array<Point> manjiRegionPoints{};
+		Array<Vec2> manjiRegionPositions{};
 	};
 
 	LoungeMapData GetLoungeMap();

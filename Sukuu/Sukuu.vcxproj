@@ -161,6 +161,7 @@
         <ClCompile Include="Gm\GamepadObserver.cpp" />
         <ClCompile Include="Gm\DialogGamepadRegister.cpp" />
         <ClCompile Include="Gm\LocalizedTextDatabase.cpp" />
+        <ClCompile Include="Lounge\LoungeBgDrawer.cpp" />
         <ClCompile Include="Lounge\LoungeMap.cpp" />
         <ClCompile Include="Lounge\LoungeScene.cpp" />
         <ClCompile Include="Main.cpp" />
@@ -449,6 +450,7 @@
         <ClInclude Include="Gm\GameSavedata.h" />
         <ClInclude Include="Gm\LocalizedTextDatabase.h" />
         <ClInclude Include="Lounge\Forward.h" />
+        <ClInclude Include="Lounge\LoungeBgDrawer.h" />
         <ClInclude Include="Lounge\LoungeMap.h" />
         <ClInclude Include="Lounge\LoungeScene.h" />
         <ClInclude Include="Play\Chara\CharaUtil.h" />

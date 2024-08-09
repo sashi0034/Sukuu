@@ -419,6 +419,11 @@ namespace Play
 		return p_impl->m_pause;
 	}
 
+	void PlayCore::SetBgCustomDrawer(const BgCustomDrawer& drawer)
+	{
+		p_impl->m_bgMapDrawer.SetCustomDrawer(drawer);
+	}
+
 	void PlayCore::RequestHitstopping(double time)
 	{
 		p_impl->m_hitStoppingRequested++;

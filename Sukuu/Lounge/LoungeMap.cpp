@@ -1,6 +1,8 @@
 ﻿#include "stdafx.h"
 #include "LoungeMap.h"
 
+#include "Play/Forward.h"
+
 namespace
 {
 	// 45x45
@@ -91,6 +93,8 @@ namespace
 		for (const auto p : step(mapStrSize))
 			mapGrid.At(p).kind = Play::TerrainKind::Wall;
 
+		Array<Point> manjiList{};
+
 		for (const auto p : step(mapStrSize))
 		{
 			mapGrid.At(p).kind = Play::TerrainKind::Floor;
@@ -99,9 +103,11 @@ namespace
 			{
 			case U'P':
 				data.initialPlayerPoint = p;
-				[[fallthrough]];
+				manjiList.push_back(p);
+				break;
 			case U'M':
-				data.manjiRegionPoints.push_back(p);
+				data.manjiRegionPositions.push_back(p);
+				manjiList.push_back(p);
 				break;
 			case ' ':
 				mapGrid.At(p).kind = Play::TerrainKind::Wall;
@@ -111,9 +117,10 @@ namespace
 			}
 		}
 
-		for (const auto& p : data.manjiRegionPoints)
+		for (const auto& p : manjiList)
 		{
 			applyManjiWallAt(mapGrid, p);
+			data.manjiRegionPositions.push_back(p * Play::CellPx_24);
 		}
 
 		data.map = std::move(mapGrid);
