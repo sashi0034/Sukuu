@@ -5,7 +5,7 @@
 
 namespace
 {
-	constexpr Size mapSize{65, 65};
+	constexpr Size mapSize{45, 45};
 
 	void changeCharBy(Grid<char32_t>& cells, Point p, bool mirror, char32_t c)
 	{
@@ -17,8 +17,19 @@ namespace
 	void changeAt(Grid<char32_t>& cells, Point p, bool mirror)
 	{
 		if (KeySpace.pressed()) changeCharBy(cells, p, mirror, U' ');
+		if (KeyColon_JIS.pressed()) changeCharBy(cells, p, mirror, U'*');
 		if (KeyMinus.pressed()) changeCharBy(cells, p, mirror, U'-');
-		if (KeyA.pressed()) changeCharBy(cells, p, mirror, U'A');
+		if (KeyBackslash_US.pressed()) changeCharBy(cells, p, mirror, U'|');
+
+		for (auto&& input : Keyboard::GetAllInputs())
+		{
+			const auto inputName = input.name();
+			if (inputName.isEmpty()) continue;
+			if (U'A' <= inputName[0] && inputName[0] <= U'Z')
+			{
+				if (input.pressed()) changeCharBy(cells, p, mirror, inputName[0]);
+			}
+		}
 	}
 
 	LONG_PTR g_baseProc = 0;

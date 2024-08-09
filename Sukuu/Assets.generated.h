@@ -11,6 +11,7 @@ namespace AssetImages
 	constexpr StringView bookmark_16x16 = U"asset/image/bookmark_16x16.png";
 	constexpr StringView brick_stylish_24x24 = U"asset/image/brick_stylish_24x24.png";
 	constexpr StringView brick_stylish_light_24x24 = U"asset/image/brick_stylish_light_24x24.png";
+	constexpr StringView bridge_tiles_24x24 = U"asset/image/bridge_tiles_24x24.png";
 	constexpr StringView bush_16x16 = U"asset/image/bush_16x16.png";
 	constexpr StringView catfish_24x24 = U"asset/image/catfish_24x24.png";
 	constexpr StringView clock_16x16 = U"asset/image/clock_16x16.png";
@@ -30,6 +31,7 @@ namespace AssetImages
 	constexpr StringView lion_32x32 = U"asset/image/lion_32x32.png";
 	constexpr StringView magma_tile_24x24 = U"asset/image/magma_tile_24x24.png";
 	constexpr StringView magnet_16x16 = U"asset/image/magnet_16x16.png";
+	constexpr StringView manji_region = U"asset/image/manji_region.png";
 	constexpr StringView mine_flower_16x16 = U"asset/image/mine_flower_16x16.png";
 	constexpr StringView mixed_nature_16x16 = U"asset/image/mixed_nature_16x16.png";
 	constexpr StringView omeme_patchouli_sun_16x16 = U"asset/image/omeme_patchouli_sun_16x16.png";
@@ -48,6 +50,8 @@ namespace AssetImages
 	constexpr StringView temple_knight_side_32x32 = U"asset/image/temple_knight_side_32x32.png";
 	constexpr StringView test_tube_16x16 = U"asset/image/test_tube_16x16.png";
 	constexpr StringView title_logo = U"asset/image/title_logo.png";
+	constexpr StringView torii_120x120 = U"asset/image/torii_120x120.png";
+	constexpr StringView tourou_24x48 = U"asset/image/tourou_24x48.png";
 	constexpr StringView tree_16x16 = U"asset/image/tree_16x16.png";
 	constexpr StringView tree_48x48 = U"asset/image/tree_48x48.png";
 	constexpr StringView ura_title_logo = U"asset/image/ura_title_logo.png";
@@ -62,6 +66,7 @@ namespace AssetImages
 			bookmark_16x16,
 			brick_stylish_24x24,
 			brick_stylish_light_24x24,
+			bridge_tiles_24x24,
 			bush_16x16,
 			catfish_24x24,
 			clock_16x16,
@@ -81,6 +86,7 @@ namespace AssetImages
 			lion_32x32,
 			magma_tile_24x24,
 			magnet_16x16,
+			manji_region,
 			mine_flower_16x16,
 			mixed_nature_16x16,
 			omeme_patchouli_sun_16x16,
@@ -99,6 +105,8 @@ namespace AssetImages
 			temple_knight_side_32x32,
 			test_tube_16x16,
 			title_logo,
+			torii_120x120,
+			tourou_24x48,
 			tree_16x16,
 			tree_48x48,
 			ura_title_logo,

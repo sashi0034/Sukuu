@@ -5,8 +5,9 @@ namespace Lounge
 {
 	struct LoungeMapData
 	{
-		Play::MapGrid map;
-		Point initialPlayerPoint;
+		Play::MapGrid map{};
+		Point initialPlayerPoint{};
+		Array<Point> manjiRegionPoints{};
 	};
 
 	LoungeMapData GetLoungeMap();

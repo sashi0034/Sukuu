@@ -19,9 +19,6 @@ struct LoungeScene::Impl
 	// PlayScene などのあとに描画する
 	std::function<void()> m_postDraw{};
 
-	// シーン終了フラグ
-	bool m_concluded{};
-
 	void Init(ActorView self, const LoungeEnterArgs& args)
 	{
 		m_playScene = self.AsParent().Birth(Play::PlayScene::Create());
