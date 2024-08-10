@@ -37,7 +37,6 @@ cbuffer PSConstants2D : register(b0)
 cbuffer CaveVisionCb : register(b1)
 {
     float g_animRate;
-    bool g_masked;
     float2 g_positionOffset;
 }
 
@@ -94,7 +93,7 @@ float4 PS(s3d::PSInput input) : SV_TARGET
     float4 color2 = g_texture2.Sample(g_sampler2, uv2);
 
     color0.rgb = (color0.rgb * 0.2 + color1.rgb * 0.4 + color2.rgb * 0.4);
-    if (g_masked) color0.a = 1 - g_maskTexture.Sample(g_maskSampler, input.uv).g;
+    color0.a = 1 - g_maskTexture.Sample(g_maskSampler, input.uv).g;
 
     return (color0 * input.color) + g_colorAdd;
 }

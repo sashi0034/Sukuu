@@ -5,11 +5,12 @@
 
 namespace Play
 {
+	// cave_vision は 96-px ごとに周期発生
+
 	struct CaveVisionCb
 	{
 		float animRate = 0;
-		bool masked{true};
-		Float2 positionOffset{};
+		Float2 positionOffset{0, 12}; // 12 = (1080 % 96) / 2
 	};
 
 	[[nodiscard]] inline ScopedCustomShader2D PrepareCaveVision(const ConstantBuffer<CaveVisionCb>& cb)
