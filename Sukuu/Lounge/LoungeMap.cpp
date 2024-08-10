@@ -14,40 +14,40 @@ namespace
 			U"                                             ",
 			U"                                             ",
 			U"                                             ",
-			U"                                             ",
-			U"                                             ",
-			U"                                T       T    ",
-			U"                               2    T    3   ",
-			U"                                 *******     ",
-			U"                                 *******     ",
-			U"                                 *******     ",
-			U"                      T     T    ***M***     ",
-			U"                         T   R   *******     ",
-			U"    R                      R   R *******     ",
-			U"     *******  0    *******-------*******     ",
-			U"     *******    1  *******                   ",
-			U" 0   *******       *******                   ",
-			U"     ***M***-------***M***  3        1       ",
-			U"  0  ******* T   T ******* 2       0   1     ",
+			U"                         T   T   T   T   T   ",
+			U"                       T   T   T   T   T   T ",
+			U"                         T   T   T   T   T   ",
+			U"                       T   T   T   T   T     ",
+			U"  T                      T   T   *******     ",
+			U"    T                            ******* R   ",
+			U"  T       T   T                  *******   R ",
+			U"        T   T   T     T     T    ***M*** R   ",
+			U"   R R    T   T   T      T   R   *******     ",
+			U"    R       T   T   T      R   R *******     ",
+			U"     *******       *******-------*******  T  ",
+			U"     *******       *******              T    ",
+			U" T   ******* R   R ******* T   T          T  ",
+			U"     ***M***-------***M***   T       T       ",
+			U"  T  ******* T   T *******         T   T     ",
 			U"     *******   T   *******                   ",
-			U"     *******       *******-------*******     ",
-			U"     U U U U          |          *******     ",
-			U"    U U U U U         |          *******     ",
-			U"                 T    |    T     ***M***     ",
-			U"                  U   |   U      *******     ",
-			U"                T     |     T    *******     ",
-			U"                      S          *******     ",
+			U" T   *******       *******-------******* T   ",
+			U"    R                 |          *******  T  ",
+			U"      R            R  |  R       ******* T   ",
+			U"    R            T    |    T     ***M***  T  ",
+			U" T   T       T        |       T  ******* T   ",
+			U"   T   T        T  R  |  R  T    *******     ",
+			U"     T   T            S          *******     ",
 			U"                 R ******* R                 ",
 			U"                   *******          T     T  ",
-			U"               U   *******             T     ",
-			U"             U     ***P***                   ",
-			U"               U   *******   1               ",
-			U"                   ******* 0                 ",
-			U"                0  *******                   ",
-			U"                 1                           ",
+			U"               T   *******             T     ",
+			U"             T     ***P***                   ",
+			U"           T   T   *******   T   T           ",
+			U"             T     ******* T   T   T         ",
+			U"           T       *******                   ",
 			U"                                             ",
-			U"                                             ",
-			U"                                             ",
+			U"              T   T   T   T   T   T          ",
+			U"                T   T   T   T   T   T        ",
+			U"                  T   T   T   T   T   T      ",
 			U"                                             ",
 			U"                                             ",
 			U"                                             ",
@@ -136,14 +136,8 @@ namespace
 				data.tourouPositions.push_back(p * Play::CellPx_24);
 				break;
 			case 'T':
-				data.bigTreePositions.push_back(p * Play::CellPx_24);
+				data.treePositions.push_back(p * Play::CellPx_24);
 				break;
-			case 'U':
-				data.smallTreePositions.push_back(p * Play::CellPx_24);
-				break;
-			// case ' ':
-			// 	mapGrid.At(p).kind = Play::TerrainKind::Wall;
-			// 	break;
 			default:
 				break;
 			}

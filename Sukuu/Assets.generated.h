@@ -39,6 +39,7 @@ namespace AssetImages
 	constexpr StringView otete_32x32 = U"asset/image/otete_32x32.png";
 	constexpr StringView particle = U"asset/image/particle.png";
 	constexpr StringView phine_32x32 = U"asset/image/phine_32x32.png";
+	constexpr StringView pink_tree_48x48 = U"asset/image/pink_tree_48x48.png";
 	constexpr StringView pin_16x16 = U"asset/image/pin_16x16.png";
 	constexpr StringView punicat_24x24 = U"asset/image/punicat_24x24.png";
 	constexpr StringView rocket_16x16 = U"asset/image/rocket_16x16.png";
@@ -95,6 +96,7 @@ namespace AssetImages
 			otete_32x32,
 			particle,
 			phine_32x32,
+			pink_tree_48x48,
 			pin_16x16,
 			punicat_24x24,
 			rocket_16x16,

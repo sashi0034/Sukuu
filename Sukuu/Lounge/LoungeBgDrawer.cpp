@@ -70,7 +70,7 @@ struct LoungeBgDrawer::Impl
 					(void)weedsTexture(Point{3, 0} * 16, Size::One() * 16).draw(pos);
 					break;
 				case 4:
-					(void)weedsTexture(  Point{f4, 1} * 16, Size::One() * 16).draw(pos);
+					(void)weedsTexture(Point{f4, 1} * 16, Size::One() * 16).draw(pos);
 					break;
 				case 5:
 					(void)weedsTexture(Point{f4, 2} * 16, Size::One() * 16).draw(pos);
@@ -88,7 +88,7 @@ struct LoungeBgDrawer::Impl
 		{
 			// 背景色
 			Transformer2D t2d{Mat3x2::Identity(), Transformer2D::Target::SetLocal};
-			Rect(Scene::Size()).draw(ColorF{0.3, 0.4, 0.5});
+			Rect(Scene::Size()).draw(ColorF{0.10, 0.175, 0.25});
 		}
 
 		// 雑草
@@ -151,20 +151,13 @@ struct LoungeBgDrawer::Impl
 		for (auto& t : data.tourouPositions)
 		{
 			TextureAsset(AssetImages::tourou_24x48)
-				.draw(Arg::bottomCenter = t.movedBy(Play::CellPx_24 / 2, Play::CellPx_24 / 2));
-		}
-
-		// 小さな木
-		for (auto& t : data.smallTreePositions)
-		{
-			(void)TextureAsset(AssetImages::dark_tree_16x16)(m_animTimer.SliceFrames(300, 4) * 16, 0, Size::One() * 16)
-				.drawAt(t.movedBy(Point::One() * Play::CellPx_24 / 2));
+				.draw(Arg::bottomCenter = t.movedBy(Play::CellPx_24 / 2, Play::CellPx_24 * 3 / 4));
 		}
 
 		// 大きな木
-		for (auto& t : data.bigTreePositions)
+		for (auto& t : data.treePositions)
 		{
-			(void)TextureAsset(AssetImages::dark_tree_48x48)(m_animTimer.SliceFrames(200, 6) * 48, 0, Size::One() * 48)
+			(void)TextureAsset(AssetImages::pink_tree_48x48)(m_animTimer.SliceFrames(200, 6) * 48, 0, Size::One() * 48)
 				.draw(Arg::bottomCenter = t.movedBy(Play::CellPx_24 / 2, Play::CellPx_24 / 2));
 		}
 	}

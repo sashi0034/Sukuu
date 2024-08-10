@@ -32,8 +32,7 @@ namespace Lounge
 		Array<Vec2> toriiPositions{};
 		Array<Vec2> tourouPositions{};
 
-		Array<Vec2> bigTreePositions{};
-		Array<Vec2> smallTreePositions{};
+		Array<Vec2> treePositions{};
 	};
 
 	LoungeMapData GetLoungeMap();
