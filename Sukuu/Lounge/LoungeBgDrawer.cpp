@@ -160,6 +160,18 @@ struct LoungeBgDrawer::Impl
 			(void)TextureAsset(AssetImages::pink_tree_48x48)(m_animTimer.SliceFrames(200, 6) * 48, 0, Size::One() * 48)
 				.draw(Arg::bottomCenter = t.movedBy(Play::CellPx_24 / 2, Play::CellPx_24 / 2));
 		}
+
+		{
+			// 視界を暗めにする
+			Transformer2D t2d{Mat3x2::Identity(), Transformer2D::Target::SetLocal};
+			// double root2 = std::sqrt(2.0);
+			// Ellipse(Scene::Center(), Scene::Center().x * root2, Scene::Center().y * root2)
+			// 	.draw(ColorF{0, 0, 0, 0}, ColorF{0.11, 0.19, 0.27});
+
+			// ユークリッド距離のほうが半径として正しいが、暗すぎたのであえてマンハッタン距離を採用
+			Circle(Scene::Center(), Scene::Center().manhattanLength())
+				.draw(ColorF{0, 0, 0, 0}, ColorF{0.11, 0.19, 0.27});
+		}
 	}
 };
 
