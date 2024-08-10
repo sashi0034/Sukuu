@@ -121,7 +121,6 @@ namespace Lounge
 		if (IsVisualStudioHotReloaded())
 		{
 			p_impl->m_mapData = GetLoungeMap();
-			Print << U"Hot reloaded";
 		}
 #endif
 	}

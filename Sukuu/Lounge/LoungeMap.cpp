@@ -16,33 +16,33 @@ namespace
 			U"                                             ",
 			U"                                             ",
 			U"                                             ",
-			U"                                             ",
-			U"                                             ",
+			U"                                T       T    ",
+			U"                               2    T    3   ",
 			U"                                 *******     ",
 			U"                                 *******     ",
 			U"                                 *******     ",
-			U"                                 ***M***     ",
-			U"                                 *******     ",
-			U"                           R     *******     ",
+			U"                      T     T    ***M***     ",
+			U"                         T   R   *******     ",
+			U"    R                      R   R *******     ",
+			U"     *******  0    *******-------*******     ",
+			U"     *******    1  *******                   ",
+			U" 0   *******       *******                   ",
+			U"     ***M***-------***M***  3        1       ",
+			U"  0  ******* T   T ******* 2       0   1     ",
+			U"     *******   T   *******                   ",
 			U"     *******       *******-------*******     ",
-			U"     *******       ******* R                 ",
-			U"     ******* U U U *******                   ",
-			U"     ***M***-------***M***                   ",
-			U"     *******       *******                   ",
-			U"     *******       ******* R                 ",
-			U"     *******       *******-------*******     ",
-			U"        T    T    T   |    R     *******     ",
-			U"           T   T      |          *******     ",
-			U"                      |          ***M***     ",
-			U"                      |          *******     ",
+			U"     U U U U          |          *******     ",
+			U"    U U U U U         |          *******     ",
+			U"                 T    |    T     ***M***     ",
+			U"                  U   |   U      *******     ",
+			U"                T     |     T    *******     ",
 			U"                      S          *******     ",
-			U"                R     |    R     *******     ",
-			U"                   *******                   ",
-			U"                   *******                   ",
-			U"                   *******                   ",
-			U"                   ***P***                   ",
-			U"                   *******   3               ",
-			U"                   ******* 2                 ",
+			U"                 R ******* R                 ",
+			U"                   *******          T     T  ",
+			U"               U   *******             T     ",
+			U"             U     ***P***                   ",
+			U"               U   *******   1               ",
+			U"                   ******* 0                 ",
 			U"                0  *******                   ",
 			U"                 1                           ",
 			U"                                             ",
@@ -59,8 +59,16 @@ namespace
 
 	using namespace Lounge;
 
-	void applyManjiWallAt(Play::MapGrid& grid, const Point& p)
+	void applyManjiFloorAt(Play::MapGrid& grid, const Point& p)
 	{
+		for (int x = -3; x <= 3; ++x)
+		{
+			for (int y = -3; y <= 3; ++y)
+			{
+				grid.At(p.movedBy(x, y)).kind = Play::TerrainKind::Floor;
+			}
+		}
+
 		/* 「卍」の形に壁を配置する
 		 * 0000100
 		 * 0000100
@@ -103,7 +111,7 @@ namespace
 
 		for (const auto p : step(mapStrSize))
 		{
-			mapGrid.At(p).kind = Play::TerrainKind::Floor;
+			mapGrid.At(p).kind = Play::TerrainKind::Wall;
 
 			switch (mapStrData[p.y][p.x])
 			{
@@ -112,12 +120,11 @@ namespace
 				manjiList.push_back(p);
 				break;
 			case U'M':
-				data.manjiRegionPositions.push_back(p);
 				manjiList.push_back(p);
 				break;
 			case U'S':
 				data.toriiPositions.push_back(p * Play::CellPx_24);
-				horizontalBridgeList.push_back(p);
+				verticalBridgeList.push_back(p);
 				break;
 			case U'-':
 				horizontalBridgeList.push_back(p);
@@ -146,9 +153,9 @@ namespace
 			case'3':
 				data.mixedNaturePositions.push_back({Point{1, 1} * 16, p * Play::CellPx_24});
 				break;
-			case ' ':
-				mapGrid.At(p).kind = Play::TerrainKind::Wall;
-				break;
+			// case ' ':
+			// 	mapGrid.At(p).kind = Play::TerrainKind::Wall;
+			// 	break;
 			default:
 				break;
 			}
@@ -156,12 +163,14 @@ namespace
 
 		for (const auto& p : manjiList)
 		{
-			applyManjiWallAt(mapGrid, p);
+			applyManjiFloorAt(mapGrid, p);
 			data.manjiRegionPositions.push_back(p * Play::CellPx_24);
 		}
 
 		for (const auto& p : horizontalBridgeList)
 		{
+			mapGrid.At(p).kind = Play::TerrainKind::Floor;
+
 			if (not horizontalBridgeList.includes({p.movedBy(-1, 0)}))
 			{
 				data.bridgePositions.push_back({LoungeBridgeKind::Hl, p * Play::CellPx_24});
@@ -178,6 +187,8 @@ namespace
 
 		for (const auto& p : verticalBridgeList)
 		{
+			mapGrid.At(p).kind = Play::TerrainKind::Floor;
+
 			if (not verticalBridgeList.includes({p.movedBy(0, -1)}))
 			{
 				data.bridgePositions.push_back({LoungeBridgeKind::Vt, p * Play::CellPx_24});

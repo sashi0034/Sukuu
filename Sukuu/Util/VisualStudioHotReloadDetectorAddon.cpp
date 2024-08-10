@@ -1,5 +1,10 @@
 ﻿#include "stdafx.h"
+
+#if _DEBUG
+
 #include "VisualStudioHotReloadDetectorAddon.h"
+
+#include <Windows.h>
 
 namespace
 {
@@ -50,6 +55,9 @@ namespace
 				{
 					s_visualStudioHotReloaded = true;
 					m_reloadedBuffer = false;
+
+					// ホットリロードを検出したら、ウィンドウをアクティブにしておきたい
+					::SetForegroundWindow(static_cast<HWND>(Platform::Windows::Window::GetHWND()));
 				}
 			}
 
@@ -70,3 +78,4 @@ namespace Util
 		return s_visualStudioHotReloaded;
 	}
 }
+#endif
