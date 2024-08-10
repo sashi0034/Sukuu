@@ -588,7 +588,11 @@ private:
 
 	void checkScoopProcess(YieldExtended& yield, ActorView self)
 	{
-		if (not m_exportedService.canScoop) return;
+		if (not m_exportedService.canScoop)
+		{
+			m_subUpdating = {};
+			return;
+		}
 
 		// マウスクリックまで待機
 		m_subUpdating = [this]
