@@ -131,6 +131,8 @@
         </PreBuildEvent>
     </ItemDefinitionGroup>
     <ItemGroup>
+        <ClCompile Include="Util\VisualStudioHotReloadDetectorAddon.cpp" />
+        <ClInclude Include="Util\VisualStudioHotReloadDetectorAddon.h" />
         <None Include="App\asset\font\RocknRoll\README-JP.md" />
         <None Include="App\asset\font\RocknRoll\README.md" />
         <None Include="App\asset\shader\cave_vision.hlsl" />

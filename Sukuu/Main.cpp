@@ -13,6 +13,7 @@
 #include "Util/TomlDebugValueWrapper.h"
 #include "Util/TomlParametersWrapper.h"
 #include "Util/Utilities.h"
+#include "Util/VisualStudioHotReloadDetectorAddon.h"
 
 using namespace Util;
 using namespace Sukuu;
@@ -51,6 +52,7 @@ void Main()
 #if _DEBUG
 	InitAssetReloader();
 	InitTomlDebugValueAddon();
+	InitVisualStudioHotReloadDetectorAddon();
 	Gm::InitLocalizedTextDatabaseAddon();
 #endif
 

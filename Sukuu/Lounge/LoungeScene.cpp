@@ -6,6 +6,7 @@
 #include "Play/PlayScene.h"
 #include "Play/Map/BgMapDrawer.h"
 #include "Util/EasingAnimation.h"
+#include "Util/VisualStudioHotReloadDetectorAddon.h"
 
 namespace
 {
@@ -115,6 +116,14 @@ namespace Lounge
 	{
 		ActorBase::Update();
 		if (p_impl->m_postDraw) p_impl->m_postDraw();
+
+#if _DEBUG
+		if (IsVisualStudioHotReloaded())
+		{
+			p_impl->m_mapData = GetLoungeMap();
+			Print << U"Hot reloaded";
+		}
+#endif
 	}
 
 	bool LoungeScene::IsConcluded()
