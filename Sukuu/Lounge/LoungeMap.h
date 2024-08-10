@@ -19,6 +19,7 @@ namespace Lounge
 	{
 		LoungeBridgeKind kind;
 		Vec2 position;
+		int hash;
 	};
 
 	struct LoungeMixedNatureTuple

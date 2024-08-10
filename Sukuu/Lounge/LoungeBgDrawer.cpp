@@ -14,9 +14,20 @@ struct LoungeBgDrawer::Impl
 {
 	Play::AnimTimer m_animTimer{};
 
+	std::array<double, 8> m_bridgeSwayOffsets{};
+
 	void Tick()
 	{
 		m_animTimer.Tick();
+
+		// 橋の揺れのテーブル更新
+		constexpr double swayPeriod = 1.0;
+		for (int i = 0; i < m_bridgeSwayOffsets.size(); ++i)
+		{
+			m_bridgeSwayOffsets[i] =
+				1 * Periodic::Sine1_1(
+					swayPeriod, m_animTimer.Time() + swayPeriod * i / (m_bridgeSwayOffsets.size() / 2));
+		}
 	}
 
 	void DrawBack(const LoungeMapData& data, const Rect& region)
@@ -43,7 +54,27 @@ struct LoungeBgDrawer::Impl
 			else if (b.kind == LoungeBridgeKind::Vb) uv = Point{2, 1};
 			uv *= Play::CellPx_24;
 
-			(void)TextureAsset(AssetImages::bridge_tiles_24x24)(uv, Point::One() * Play::CellPx_24).draw(b.position);
+			const int index0 = (b.hash * 2);
+			if (uv.y == 0)
+			{
+				// Horizontal
+				const Vec2 offset0 = Vec2{0, 1} * m_bridgeSwayOffsets[index0 % m_bridgeSwayOffsets.size()];
+				const Vec2 offset1 = Vec2{0, 1} * m_bridgeSwayOffsets[(index0 + 1) % m_bridgeSwayOffsets.size()];
+				(void)TextureAsset(AssetImages::bridge_tiles_24x24)(uv, {12, 24})
+					.draw(b.position.movedBy(offset0));
+				(void)TextureAsset(AssetImages::bridge_tiles_24x24)(uv.movedBy(12, 0), {12, 24})
+					.draw(b.position.movedBy(12, 0).movedBy(offset1));
+			}
+			else
+			{
+				// Vertical
+				const Vec2 offset0 = Vec2{1, 0} * m_bridgeSwayOffsets[index0 % m_bridgeSwayOffsets.size()];
+				const Vec2 offset1 = Vec2{1, 0} * m_bridgeSwayOffsets[(index0 + 1) % m_bridgeSwayOffsets.size()];
+				(void)TextureAsset(AssetImages::bridge_tiles_24x24)(uv, {24, 12})
+					.draw(b.position.movedBy(offset0));
+				(void)TextureAsset(AssetImages::bridge_tiles_24x24)(uv.movedBy(0, 12), {24, 12})
+					.draw(b.position.movedBy(0, 12).movedBy(offset1));
+			}
 		}
 	}
 
@@ -74,7 +105,7 @@ struct LoungeBgDrawer::Impl
 		for (auto& t : data.bigTreePositions)
 		{
 			(void)TextureAsset(AssetImages::dark_tree_48x48)(m_animTimer.SliceFrames(200, 6) * 48, 0, Size::One() * 48)
-				.draw(Arg::bottomCenter = t.movedBy(Play::CellPx_24 / 2, Play::CellPx_24/2));
+				.draw(Arg::bottomCenter = t.movedBy(Play::CellPx_24 / 2, Play::CellPx_24 / 2));
 		}
 
 		// 混合植物

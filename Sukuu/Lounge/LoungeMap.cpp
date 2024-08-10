@@ -142,16 +142,16 @@ namespace
 				data.smallTreePositions.push_back(p * Play::CellPx_24);
 				break;
 			case'0':
-				data.mixedNaturePositions.push_back({Point{0, 0} * 16, p * Play::CellPx_24});
+				data.mixedNaturePositions.push_back({Point{2, 0} * 16, p * Play::CellPx_24});
 				break;
 			case'1':
-				data.mixedNaturePositions.push_back({Point{1, 0} * 16, p * Play::CellPx_24});
+				data.mixedNaturePositions.push_back({Point{3, 0} * 16, p * Play::CellPx_24});
 				break;
 			case'2':
-				data.mixedNaturePositions.push_back({Point{0, 1} * 16, p * Play::CellPx_24});
+				data.mixedNaturePositions.push_back({Point{2, 1} * 16, p * Play::CellPx_24});
 				break;
 			case'3':
-				data.mixedNaturePositions.push_back({Point{1, 1} * 16, p * Play::CellPx_24});
+				data.mixedNaturePositions.push_back({Point{3, 1} * 16, p * Play::CellPx_24});
 				break;
 			// case ' ':
 			// 	mapGrid.At(p).kind = Play::TerrainKind::Wall;
@@ -170,36 +170,38 @@ namespace
 		for (const auto& p : horizontalBridgeList)
 		{
 			mapGrid.At(p).kind = Play::TerrainKind::Floor;
+			const int hash = p.x + p.y;
 
 			if (not horizontalBridgeList.includes({p.movedBy(-1, 0)}))
 			{
-				data.bridgePositions.push_back({LoungeBridgeKind::Hl, p * Play::CellPx_24});
+				data.bridgePositions.push_back({LoungeBridgeKind::Hl, p * Play::CellPx_24, hash});
 			}
 			else if (not horizontalBridgeList.includes({p.movedBy(1, 0)}))
 			{
-				data.bridgePositions.push_back({LoungeBridgeKind::Hr, p * Play::CellPx_24});
+				data.bridgePositions.push_back({LoungeBridgeKind::Hr, p * Play::CellPx_24, hash});
 			}
 			else
 			{
-				data.bridgePositions.push_back({LoungeBridgeKind::Hc, p * Play::CellPx_24});
+				data.bridgePositions.push_back({LoungeBridgeKind::Hc, p * Play::CellPx_24, hash});
 			}
 		}
 
 		for (const auto& p : verticalBridgeList)
 		{
 			mapGrid.At(p).kind = Play::TerrainKind::Floor;
+			const int hash = p.x + p.y;
 
 			if (not verticalBridgeList.includes({p.movedBy(0, -1)}))
 			{
-				data.bridgePositions.push_back({LoungeBridgeKind::Vt, p * Play::CellPx_24});
+				data.bridgePositions.push_back({LoungeBridgeKind::Vt, p * Play::CellPx_24, hash});
 			}
 			else if (not verticalBridgeList.includes({p.movedBy(0, 1)}))
 			{
-				data.bridgePositions.push_back({LoungeBridgeKind::Vb, p * Play::CellPx_24});
+				data.bridgePositions.push_back({LoungeBridgeKind::Vb, p * Play::CellPx_24, hash});
 			}
 			else
 			{
-				data.bridgePositions.push_back({LoungeBridgeKind::Vm, p * Play::CellPx_24});
+				data.bridgePositions.push_back({LoungeBridgeKind::Vm, p * Play::CellPx_24, hash});
 			}
 		}
 
