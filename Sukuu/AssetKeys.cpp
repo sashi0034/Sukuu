@@ -79,7 +79,7 @@ namespace AssetKeys
 		TextureAsset::Register(U"😎", U"😎"_emoji);
 		TextureAsset::Register(U"🤔", U"🤔"_emoji);
 		TextureAsset::Register(U"😴", U"😴"_emoji);
-		TextureAsset::Register(U"😬", U"😬"_emoji);
+		TextureAsset::Register(U"😵", U"😵"_emoji);
 		TextureAsset::Register(U"🤗", U"🤗"_emoji);
 
 		TextureAsset::Register(U"🪶", U"🪶"_emoji);

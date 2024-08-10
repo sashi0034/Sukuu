@@ -12,6 +12,7 @@ namespace
 
 struct LoungeBgDrawer::Impl
 {
+
 	Play::AnimTimer m_animTimer{};
 
 	std::array<double, 8> m_bridgeSwayOffsets{};

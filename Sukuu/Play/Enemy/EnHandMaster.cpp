@@ -59,7 +59,7 @@ struct EnHandMaster::Impl : EnemyTransform
 		const AssetNameView emotion = [&]()
 		{
 			if (m_capturedPlayer) return U"🤗";
-			if (m_trapped == EnemyTrappedState::Captured) return U"😬";
+			if (m_trapped == EnemyTrappedState::Captured) return U"😵";
 			if (m_playerTracker.IsTracking()) return U"😎";
 			return U"";
 		}();

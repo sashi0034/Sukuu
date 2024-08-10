@@ -32,7 +32,7 @@ struct Play::EnCrab::Impl : EnemyTransform
 
 		const AssetNameView emotion = [&]()
 		{
-			if (m_trapped == EnemyTrappedState::Captured) return U"😬";
+			if (m_trapped == EnemyTrappedState::Captured) return U"😵";
 			if (m_playerTracker.IsTracking()) return U"😎";
 			if (m_doingLostPenalty) return U"🤔";
 			return U"";

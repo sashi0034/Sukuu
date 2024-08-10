@@ -131,7 +131,9 @@
         </PreBuildEvent>
     </ItemDefinitionGroup>
     <ItemGroup>
+        <ClCompile Include="Lounge\LoungeWaterSurface.cpp" />
         <ClCompile Include="Util\VisualStudioHotReloadDetectorAddon.cpp" />
+        <ClInclude Include="Lounge\LoungeWaterSurface.h" />
         <ClInclude Include="Util\VisualStudioHotReloadDetectorAddon.h" />
         <None Include="App\asset\font\RocknRoll\README-JP.md" />
         <None Include="App\asset\font\RocknRoll\README.md" />
@@ -681,6 +683,7 @@
         <Content Include="App\generate_constexpr.py" />
         <Content Include="App\make_distribution.py" />
         <Content Include="App\Resource_template.txt" />
+        <Content Include="Play\Other\CaveVisionCb.h" />
     </ItemGroup>
     <ItemGroup>
       <Folder Include="App\asset\bgm\" />

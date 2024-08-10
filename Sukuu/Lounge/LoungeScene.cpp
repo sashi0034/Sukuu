@@ -3,6 +3,7 @@
 
 #include "LoungeBgDrawer.h"
 #include "LoungeMap.h"
+#include "LoungeWaterSurface.h"
 #include "Play/PlayScene.h"
 #include "Play/Map/BgMapDrawer.h"
 #include "Util/EasingAnimation.h"
@@ -19,6 +20,7 @@ struct LoungeScene::Impl
 	Play::PlayCore m_play{Play::PlayCore::Empty()};
 	LoungeMapData m_mapData{};
 	LoungeBgDrawer m_bgDrawer{};
+	LoungeWaterSurface m_waterSurface{};
 
 	// PlayScene などのあとに描画する
 	std::function<void()> m_postDraw{};
@@ -72,7 +74,11 @@ private:
 
 		// 背景描画の設定
 		m_play.SetBgCustomDrawer(Play::BgCustomDrawer{
-			.backDrawer = [&](Rect r) { m_bgDrawer.DrawBack(m_mapData, r); },
+			.backDrawer = [&](Rect r)
+			{
+				m_waterSurface.Render({.cameraPos = -m_play.GetPlayer().CameraTransform().transformPoint(Vec2{})});
+				m_bgDrawer.DrawBack(m_mapData, r);
+			},
 			.frontDrawer = [&]() { m_bgDrawer.DrawFront(m_mapData); }
 		});
 

@@ -2,17 +2,12 @@
 #include "CaveVision.h"
 
 #include "AssetKeys.h"
-#include "Assets.generated.h"
+#include "CaveVisionCb.h"
 #include "Play/PlayCore.h"
 #include "Util/TomlParametersWrapper.h"
 
 namespace
 {
-	struct CaveVisionCb
-	{
-		float animRate = 0;
-	};
-
 	struct SoftShapeCb
 	{
 		float time = 0;
@@ -69,12 +64,8 @@ struct Play::CaveVision::Impl
 		// スクリーン描画
 		constexpr float animSpeed = 0.3f;
 		m_caveVisionCb->animRate += GetDeltaTime() * animSpeed;
-		Graphics2D::SetPSConstantBuffer(1, m_caveVisionCb);
-		const ScopedCustomShader2D shader{PixelShaderAsset(AssetKeys::PsCaveVision)};
 
-		Graphics2D::SetPSTexture(1, TextureAsset(AssetImages::aqua_noise));
-		Graphics2D::SetPSTexture(2, TextureAsset(AssetImages::cosmos_noise));
-		Graphics2D::SetPSTexture(3, m_maskTexture);
+		const auto shader = PrepareCaveVision(m_caveVisionCb);
 
 		(void)m_maskTexture({0, 0}, Scene::Size()).draw(
 			GetTomlParameter<Color>(U"play.cave_vision.dark_color"));

@@ -37,13 +37,15 @@ cbuffer PSConstants2D : register(b0)
 cbuffer CaveVisionCb : register(b1)
 {
     float g_animRate;
+    bool g_masked;
+    float2 g_positionOffset;
 }
 
 float2 calcUvTex1(s3d::PSInput input)
 {
     const float2 vecOne = {1.0f, 1.0f};
     const float uvStep = 96.0;
-    const float2 xy = input.position.xy;
+    const float2 xy = g_positionOffset + input.position.xy;
 
     const float scrollSpeed = 2.0;
     float2 uv = ((xy % uvStep) / uvStep) + ((scrollSpeed * g_animRate) % 1.0) * vecOne;
@@ -63,7 +65,7 @@ float2 calcUvTex2(s3d::PSInput input)
 {
     const float2 vecOne = {1.0f, 1.0f};
     const float uvStep = 96.0 * 2;
-    const float2 xy = input.position.xy;
+    const float2 xy = g_positionOffset + input.position.xy;
 
     float2 uv = ((xy % uvStep) / uvStep);
 
@@ -92,7 +94,7 @@ float4 PS(s3d::PSInput input) : SV_TARGET
     float4 color2 = g_texture2.Sample(g_sampler2, uv2);
 
     color0.rgb = (color0.rgb * 0.2 + color1.rgb * 0.4 + color2.rgb * 0.4);
-    color0.a = 1 - g_maskTexture.Sample(g_maskSampler, input.uv).g;
+    if (g_masked) color0.a = 1 - g_maskTexture.Sample(g_maskSampler, input.uv).g;
 
     return (color0 * input.color) + g_colorAdd;
 }
