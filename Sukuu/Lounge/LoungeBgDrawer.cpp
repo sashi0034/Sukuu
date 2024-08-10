@@ -12,7 +12,6 @@ namespace
 
 struct LoungeBgDrawer::Impl
 {
-
 	Play::AnimTimer m_animTimer{};
 
 	std::array<double, 8> m_bridgeSwayOffsets{};
@@ -24,16 +23,76 @@ struct LoungeBgDrawer::Impl
 		// 橋の揺れのテーブル更新
 		for (int i = 0; i < m_bridgeSwayOffsets.size(); ++i)
 		{
-			constexpr double swayPeriod = 1.0;
+			constexpr double swayPeriod = 2.0;
 			m_bridgeSwayOffsets[i] =
 				1 * Periodic::Sine1_1(
 					swayPeriod, m_animTimer.Time() + swayPeriod * i / (m_bridgeSwayOffsets.size() / 2));
 		}
 	}
 
+	void renderWeeds(const Rect& region)
+	{
+		// 雑草
+		constexpr std::array<int, 25> weedsPatterns = {
+			1, 2, 3, 4, 3,
+			2, 0, 2, 1, 4,
+			4, 2, 0, 3, 5,
+			5, 4, 2, 4, 3,
+			2, 5, 4, 3, 5,
+		};
+
+		const auto weedsTexture = TextureAsset(AssetImages::dark_weeds_16x16);
+		const int s4 = m_animTimer.SliceFrames(250, 4);
+
+		for (int x = region.x; x < region.x + region.w; ++x)
+		{
+			for (int y = region.y; y < region.y + region.h; ++y)
+			{
+				const int modX = ((x % 5) + 5) % 5;
+				const int modY = ((y % 5) + 5) % 5;
+				const int index = modX + modY * 5;
+				const int pattern = weedsPatterns[index];
+				const int f4 = (x + y + 4 + s4) % 4;
+
+				const Vec2 pos = (Vec2{x, y} * Play::CellPx_24).movedBy(4, 4);
+				switch (pattern)
+				{
+				case 0:
+					(void)weedsTexture(Point{0, 0} * 16, Size::One() * 16).draw(pos);
+					break;
+				case 1:
+					(void)weedsTexture(Point{1, 0} * 16, Size::One() * 16).draw(pos);
+					break;
+				case 2:
+					(void)weedsTexture(Point{2, 0} * 16, Size::One() * 16).draw(pos);
+					break;
+				case 3:
+					(void)weedsTexture(Point{3, 0} * 16, Size::One() * 16).draw(pos);
+					break;
+				case 4:
+					(void)weedsTexture(  Point{f4, 1} * 16, Size::One() * 16).draw(pos);
+					break;
+				case 5:
+					(void)weedsTexture(Point{f4, 2} * 16, Size::One() * 16).draw(pos);
+					break;
+				default: break;
+				}
+			}
+		}
+	}
+
 	void DrawBack(const LoungeMapData& data, const Rect& region)
 	{
 		Tick();
+
+		{
+			// 背景色
+			Transformer2D t2d{Mat3x2::Identity(), Transformer2D::Target::SetLocal};
+			Rect(Scene::Size()).draw(ColorF{0.3, 0.4, 0.5});
+		}
+
+		// 雑草
+		renderWeeds(region);
 
 		// TODO: 本当は region から最適化したほうがいい
 
@@ -107,13 +166,6 @@ struct LoungeBgDrawer::Impl
 		{
 			(void)TextureAsset(AssetImages::dark_tree_48x48)(m_animTimer.SliceFrames(200, 6) * 48, 0, Size::One() * 48)
 				.draw(Arg::bottomCenter = t.movedBy(Play::CellPx_24 / 2, Play::CellPx_24 / 2));
-		}
-
-		// 混合植物
-		for (auto& t : data.mixedNaturePositions)
-		{
-			(void)TextureAsset(AssetImages::mixed_nature_16x16)(t.uv, Point::One() * 16)
-				.drawAt(t.position.movedBy(Point::One() * Play::CellPx_24 / 2));
 		}
 	}
 };

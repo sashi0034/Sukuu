@@ -22,13 +22,6 @@ namespace Lounge
 		int hash;
 	};
 
-	struct LoungeMixedNatureTuple
-	{
-		// size: 16x16
-		Point uv;
-		Vec2 position;
-	};
-
 	struct LoungeMapData
 	{
 		Play::MapGrid map{};
@@ -41,7 +34,6 @@ namespace Lounge
 
 		Array<Vec2> bigTreePositions{};
 		Array<Vec2> smallTreePositions{};
-		Array<LoungeMixedNatureTuple> mixedNaturePositions{};
 	};
 
 	LoungeMapData GetLoungeMap();

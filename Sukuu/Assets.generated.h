@@ -20,6 +20,7 @@ namespace AssetImages
 	constexpr StringView dango_wolf_24x24 = U"asset/image/dango_wolf_24x24.png";
 	constexpr StringView dark_tree_16x16 = U"asset/image/dark_tree_16x16.png";
 	constexpr StringView dark_tree_48x48 = U"asset/image/dark_tree_48x48.png";
+	constexpr StringView dark_weeds_16x16 = U"asset/image/dark_weeds_16x16.png";
 	constexpr StringView folder_16x16 = U"asset/image/folder_16x16.png";
 	constexpr StringView gorilla_24x24 = U"asset/image/gorilla_24x24.png";
 	constexpr StringView grass_tile_64x64 = U"asset/image/grass_tile_64x64.png";
@@ -75,6 +76,7 @@ namespace AssetImages
 			dango_wolf_24x24,
 			dark_tree_16x16,
 			dark_tree_48x48,
+			dark_weeds_16x16,
 			folder_16x16,
 			gorilla_24x24,
 			grass_tile_64x64,

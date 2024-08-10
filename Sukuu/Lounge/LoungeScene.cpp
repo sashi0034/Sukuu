@@ -76,7 +76,7 @@ private:
 		m_play.SetBgCustomDrawer(Play::BgCustomDrawer{
 			.backDrawer = [&](Rect r)
 			{
-				m_waterSurface.Render({.cameraPos = -m_play.GetPlayer().CameraTransform().transformPoint(Vec2{})});
+				// m_waterSurface.Render({.cameraPos = -m_play.GetPlayer().CameraTransform().transformPoint(Vec2{})});
 				m_bgDrawer.DrawBack(m_mapData, r);
 			},
 			.frontDrawer = [&]() { m_bgDrawer.DrawFront(m_mapData); }

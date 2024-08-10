@@ -219,7 +219,7 @@ namespace Play
 		if (p_impl->m_customDrawer.backDrawer)
 		{
 			// BG描画 (外部にて)
-			p_impl->m_customDrawer.backDrawer(Rect::FromPoints(mapTl * CellPx_24, mapBr * CellPx_24));
+			p_impl->m_customDrawer.backDrawer(Rect::FromPoints(mapTl.movedBy(-1, -1), mapBr.movedBy(1, 1)));
 		}
 		else
 		{

@@ -653,8 +653,6 @@
         <Content Include="App\asset\image\stairs_24x24.png" />
         <Content Include="App\asset\image\temple_knight_side_32x32.png" />
         <Content Include="App\asset\image\test_tube_16x16.png" />
-        <Content Include="App\asset\image\tex_aqua_noise.png" />
-        <Content Include="App\asset\image\tex_cosmos_noise.png" />
         <Content Include="App\asset\image\tree_16x16.png" />
         <Content Include="App\asset\image\tree_48x48.png" />
         <Content Include="App\asset\image\wing_16x16.png" />

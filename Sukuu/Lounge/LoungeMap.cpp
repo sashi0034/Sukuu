@@ -141,18 +141,6 @@ namespace
 			case 'U':
 				data.smallTreePositions.push_back(p * Play::CellPx_24);
 				break;
-			case'0':
-				data.mixedNaturePositions.push_back({Point{2, 0} * 16, p * Play::CellPx_24});
-				break;
-			case'1':
-				data.mixedNaturePositions.push_back({Point{3, 0} * 16, p * Play::CellPx_24});
-				break;
-			case'2':
-				data.mixedNaturePositions.push_back({Point{2, 1} * 16, p * Play::CellPx_24});
-				break;
-			case'3':
-				data.mixedNaturePositions.push_back({Point{3, 1} * 16, p * Play::CellPx_24});
-				break;
 			// case ' ':
 			// 	mapGrid.At(p).kind = Play::TerrainKind::Wall;
 			// 	break;
