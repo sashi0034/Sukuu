@@ -88,6 +88,8 @@ namespace Play
 
 		void SetBgCustomDrawer(const BgCustomDrawer& drawer);
 
+		void EnableCaveVision(bool enabled);
+
 		void RequestHitstopping(double time);
 
 		PlaySingletonData CopyData() const;

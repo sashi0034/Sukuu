@@ -75,6 +75,8 @@ private:
 			.backDrawer = [&](Rect r) { m_bgDrawer.DrawBack(m_mapData, r); },
 			.frontDrawer = [&]() { m_bgDrawer.DrawFront(m_mapData); }
 		});
+
+		m_play.EnableCaveVision(false);
 	}
 
 	void flowchartLoop(YieldExtended& yield)

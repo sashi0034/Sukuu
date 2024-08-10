@@ -10,6 +10,7 @@ namespace Play
 		CaveVision();
 		void UpdateMask(const Vec2& pos);
 		void UpdateScreen();
+		void SetEnabled(bool enabled);
 
 	private:
 		struct Impl;

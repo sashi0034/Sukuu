@@ -424,6 +424,11 @@ namespace Play
 		p_impl->m_bgMapDrawer.SetCustomDrawer(drawer);
 	}
 
+	void PlayCore::EnableCaveVision(bool enabled)
+	{
+		p_impl->m_caveVision.SetEnabled(enabled);
+	}
+
 	void PlayCore::RequestHitstopping(double time)
 	{
 		p_impl->m_hitStoppingRequested++;

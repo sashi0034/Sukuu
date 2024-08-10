@@ -24,10 +24,18 @@ struct Play::CaveVision::Impl
 {
 	ConstantBuffer<CaveVisionCb> m_caveVisionCb{};
 	ConstantBuffer<SoftShapeCb> m_softShapeCb{};
-	RenderTexture m_maskTexture{Scene::Size(), ColorF{1.0}};
+	RenderTexture m_maskTexture{};
+	bool m_enabled{true};
 
 	void UpdateMask(const Vec2& pos)
 	{
+		if (not m_enabled) return;
+
+		if (m_maskTexture.isEmpty())
+		{
+			m_maskTexture = RenderTexture{Scene::Size(), ColorF{1.0}};
+		}
+
 		auto&& vision = PlayCore::Instance().GetPlayer().Vision();
 
 		// 霧払い済み
@@ -56,6 +64,8 @@ struct Play::CaveVision::Impl
 
 	void UpdateScreen()
 	{
+		if (not m_enabled || m_maskTexture.isEmpty()) return;
+
 		// スクリーン描画
 		constexpr float animSpeed = 0.3f;
 		m_caveVisionCb->animRate += GetDeltaTime() * animSpeed;
@@ -86,5 +96,14 @@ namespace Play
 	void CaveVision::UpdateScreen()
 	{
 		p_impl->UpdateScreen();
+	}
+
+	void CaveVision::SetEnabled(bool enabled)
+	{
+		p_impl->m_enabled = enabled;
+		if (not enabled)
+		{
+			p_impl->m_maskTexture = {};
+		}
 	}
 }

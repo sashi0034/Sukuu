@@ -21,9 +21,9 @@ struct LoungeBgDrawer::Impl
 		m_animTimer.Tick();
 
 		// 橋の揺れのテーブル更新
-		constexpr double swayPeriod = 1.0;
 		for (int i = 0; i < m_bridgeSwayOffsets.size(); ++i)
 		{
+			constexpr double swayPeriod = 1.0;
 			m_bridgeSwayOffsets[i] =
 				1 * Periodic::Sine1_1(
 					swayPeriod, m_animTimer.Time() + swayPeriod * i / (m_bridgeSwayOffsets.size() / 2));
