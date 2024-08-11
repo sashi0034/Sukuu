@@ -7,6 +7,26 @@
 namespace
 {
 	using namespace Play;
+
+	void applyArrowFromDirection(GimmickGrid& gimmick, const Point p, Dir4Type dir, bool isDemi)
+	{
+		switch (dir)
+		{
+		case Dir4::Right:
+			gimmick[p] = isDemi ? GimmickKind::DemiArrow_right : GimmickKind::Arrow_right;
+			break;
+		case Dir4::Up:
+			gimmick[p] = isDemi ? GimmickKind::DemiArrow_up : GimmickKind::Arrow_up;
+			break;
+		case Dir4::Left:
+			gimmick[p] = isDemi ? GimmickKind::DemiArrow_left : GimmickKind::Arrow_left;
+			break;
+		case Dir4::Down:
+			gimmick[p] = isDemi ? GimmickKind::DemiArrow_down : GimmickKind::Arrow_down;
+			break;
+		default: break;
+		}
+	}
 }
 
 namespace Play
@@ -26,21 +46,42 @@ namespace Play
 			}
 			if (wallCount != 3) continue;
 
-			switch (movableDir.Reversed())
+			applyArrowFromDirection(gimmick, p, movableDir.Reversed(), false);
+		}
+	}
+
+	void InstallArrowsInDungeon(GimmickGrid& gimmick, const MapGrid& map)
+	{
+		const int w0 = std::min(map.Data().size().x, map.Data().size().y);
+		constexpr int w_81 = 81;
+		if (w0 <= w_81) return;
+
+		// 矢印の最大個数
+		const int arrow = Random(0, 1 + (w0 - w_81) / 4);
+
+		for (const auto a : step(arrow))
+		{
+			const auto dirs = Array<Dir4Type>{Dir4::Right, Dir4::Up, Dir4::Left, Dir4::Down}.shuffled();
+
+			for (const auto i : step(Constants::BigValue_100000))
 			{
-			case Dir4::Right:
-				gimmick[p] = GimmickKind::Arrow_right;
+				const Point r = map.Rooms().RandomRoomPoint(false);
+
+				// 床でないなら弾く
+				if (map.At(r).kind != TerrainKind::Floor) continue;
+
+				// マップぎりぎりを弾く
+				if (r.x <= 0 || r.y <= 0 || r.x >= map.Data().size().x - 1 || r.y >= map.Data().size().y - 1) continue;
+
+				// 壁がある方向に向かって矢印を設置
+				for (auto dir : dirs)
+				{
+					const auto directedPoint = r.movedBy(dir.ToXY().asPoint());
+					if (map.At(directedPoint).kind != TerrainKind::Wall) continue;
+					applyArrowFromDirection(gimmick, r, dir, true);
+					break;
+				}
 				break;
-			case Dir4::Up:
-				gimmick[p] = GimmickKind::Arrow_up;
-				break;
-			case Dir4::Left:
-				gimmick[p] = GimmickKind::Arrow_left;
-				break;
-			case Dir4::Down:
-				gimmick[p] = GimmickKind::Arrow_down;
-				break;
-			default: break;
 			}
 		}
 	}

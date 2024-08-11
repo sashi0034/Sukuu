@@ -355,7 +355,6 @@ namespace
 		};
 	}
 
-
 	void installEnemies(ActorContainer& enemyParent, EnemyContainer& enemyContainer, int floorIndex)
 	{
 		const int enemyCount = getRoomEnemyCount(floorIndex);
@@ -441,6 +440,10 @@ namespace Play
 		if (map.Category() == MapCategory::Maze)
 		{
 			InstallArrowsInMaze(gimmick, map);
+		}
+		else if (map.Category() == MapCategory::Dungeon)
+		{
+			InstallArrowsInDungeon(gimmick, map);
 		}
 
 		gimmick[map.Rooms().RandomRoomPoint(true)] = GimmickKind::Stairs;

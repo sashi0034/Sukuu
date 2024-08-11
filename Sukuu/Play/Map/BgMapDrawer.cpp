@@ -162,6 +162,18 @@ struct Play::BgMapDrawer::Impl
 		case GimmickKind::Arrow_down:
 			(void)TextureAsset(AssetImages::arrow_24x24)(Point{2, 0} * 24, 24, 24).draw(point * CellPx_24);
 			break;
+		case GimmickKind::DemiArrow_right:
+			(void)TextureAsset(AssetImages::arrow_24x24)(Point{1, 1} * 24, 24, 24).draw(point * CellPx_24);
+			break;
+		case GimmickKind::DemiArrow_up:
+			(void)TextureAsset(AssetImages::arrow_24x24)(Point{0, 1} * 24, 24, 24).draw(point * CellPx_24);
+			break;
+		case GimmickKind::DemiArrow_left:
+			(void)TextureAsset(AssetImages::arrow_24x24)(Point{3, 1} * 24, 24, 24).draw(point * CellPx_24);
+			break;
+		case GimmickKind::DemiArrow_down:
+			(void)TextureAsset(AssetImages::arrow_24x24)(Point{2, 1} * 24, 24, 24).draw(point * CellPx_24);
+			break;
 		case GimmickKind::Tree_small:
 			(void)TextureAsset(AssetImages::dark_tree_16x16)(Point{m_animTimer.SliceFrames(250, 4), 0} * 16, {16, 16})
 				.draw(point * CellPx_24 + GetCharacterCellPadding({16, 16}));
@@ -180,7 +192,8 @@ struct Play::BgMapDrawer::Impl
 
 private:
 	void drawGimmickAt(
-		const Point& point, AssetNameView name, int cellSize, int numFrames, const Point& cellOffset = {}, int period = 250) const
+		const Point& point, AssetNameView name, int cellSize, int numFrames,
+		const Point& cellOffset = {}, int period = 250) const
 	{
 		(void)TextureAsset(name)(
 				Rect{

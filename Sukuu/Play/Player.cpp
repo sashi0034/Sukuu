@@ -862,8 +862,18 @@ private:
 		case GimmickKind::Arrow_left: [[fallthrough]];
 		case GimmickKind::Arrow_down:
 			m_immortal.immortalStock++;
-			moveArrowWarp(yield, self, newPoint);
+			moveArrowWarp(yield, self, newPoint, false);
 			m_immortal.immortalStock--;
+			break;
+		case GimmickKind::DemiArrow_right: [[fallthrough]];
+		case GimmickKind::DemiArrow_up: [[fallthrough]];
+		case GimmickKind::DemiArrow_left: [[fallthrough]];
+		case GimmickKind::DemiArrow_down:
+			m_immortal.immortalStock++;
+			moveArrowWarp(yield, self, newPoint, true);
+			m_immortal.immortalStock--;
+
+			m_immortal.immortalTime += 0.5;
 			break;
 		default: ;
 			m_act = storedAct;
@@ -892,12 +902,21 @@ private:
 		PlayCore::Instance().BgEffect().add(MakeItemObtainEffect(m_pos.viewPos.movedBy(CellPx_24 / 2, CellPx_24 / 2)));
 	}
 
-	void moveArrowWarp(YieldExtended& yield, ActorView self, const Point point)
+	void moveArrowWarp(YieldExtended& yield, ActorView self, const Point point, bool isDemi)
 	{
 		AudioAsset(AssetSes::arrow_step).playOneShot();
 		const auto nextPoint =
 			GetArrowWarpPoint(PlayCore::Instance().GetMap(), PlayCore::Instance().GetGimmick(), point);
-		ProcessArrowWarpCharaPos(yield, self, m_pos, m_viewGapOffset, nextPoint * CellPx_24);
+
+		if (isDemi)
+		{
+			ProcessDemiArrowWarpCharaPos(yield, self, m_pos, m_viewGapOffset, nextPoint * CellPx_24);
+		}
+		else
+		{
+			ProcessArrowWarpCharaPos(yield, self, m_pos, m_viewGapOffset, nextPoint * CellPx_24);
+		}
+
 		refreshDistField();
 	}
 

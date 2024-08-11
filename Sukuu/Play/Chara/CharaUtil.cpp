@@ -101,9 +101,25 @@ namespace Play
 
 		Util::AnimateEasing<EaseInLinear>(
 			self, &pos.actualPos, CharaVec2(nextPos), moveDuration);
-		// 通常移動とは違い、微小時間の慣性を無視
+		// 通常移動とは違い、微小時間の慣性を無視 (つまり、終点では pos.viewPos = nexPos になる)
 		yield.WaitForExpire(
 			Util::AnimateEasing<EaseInLinear>(self, &pos.viewPos, nextPos, moveDuration)
+		);
+	}
+
+	void ProcessDemiArrowWarpCharaPos(
+		YieldExtended& yield, ActorView self, CharaPosition& pos, Vec2& jumpOffset, const Vec2& nextPos)
+	{
+		constexpr double moveDuration = 1.5;
+
+		// ジャンプ表現
+		Util::AnimateEasing<BoomerangParabola>(self, &jumpOffset, Vec2{0, -96.0}, moveDuration);
+
+		Util::AnimateEasing<EaseInLinear>(
+			self, &pos.actualPos, CharaVec2(nextPos), moveDuration);
+		// 通常移動とは違い、微小時間の慣性を無視 (つまり、終点では pos.viewPos = nexPos になる)
+		yield.WaitForExpire(
+			Util::AnimateEasing<EaseInOutSine>(self, &pos.viewPos, nextPos, moveDuration)
 		);
 	}
 

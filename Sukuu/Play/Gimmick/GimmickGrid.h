@@ -33,6 +33,10 @@ namespace Play
 		Arrow_up,
 		Arrow_left,
 		Arrow_down,
+		DemiArrow_right,
+		DemiArrow_up,
+		DemiArrow_left,
+		DemiArrow_down,
 		Tree_small,
 		Tree_large,
 
@@ -95,6 +99,14 @@ namespace Play
 		case GimmickKind::Arrow_left:
 			return Dir4::Left;
 		case GimmickKind::Arrow_down:
+			return Dir4::Down;
+		case GimmickKind::DemiArrow_right:
+			return Dir4::Right;
+		case GimmickKind::DemiArrow_up:
+			return Dir4::Up;
+		case GimmickKind::DemiArrow_left:
+			return Dir4::Left;
+		case GimmickKind::DemiArrow_down:
 			return Dir4::Down;
 		default:
 			return Dir4::Invalid;
