@@ -53,7 +53,7 @@ struct Play::PlayingPause::Impl
 
 		const bool requestDown = Gm::IsUsingGamepad()
 			                         ? IsGamepadDown(Gm::GamepadButton::Menu)
-			                         : KeyEscape.down();
+			                         : (KeyEscape.down() || KeyTab.down());
 		if (requestDown) m_paused = not m_paused;
 
 		if (not m_paused) return;
