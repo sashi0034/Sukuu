@@ -245,6 +245,21 @@ struct Play::Player::Impl
 		return true;
 	}
 
+	bool isCurrentPointWall() const
+	{
+		const auto& map = PlayCore::Instance().GetMap().Data();
+		const auto p0 = m_pos.actualPos.MapPoint();
+		return (map[p0].kind == TerrainKind::Wall);
+	}
+
+	bool isNextPointWall() const
+	{
+		const auto& map = PlayCore::Instance().GetMap().Data();
+		const auto p0 = m_pos.actualPos.MapPoint();
+		const auto p1 = p0 + m_direction.ToXY().asPoint();
+		return (not map.inBounds(p1) || map[p1].kind == TerrainKind::Wall);
+	}
+
 	bool CanUseItem(ConsumableItem item) const
 	{
 		if (m_slowMotion) return false;
@@ -260,6 +275,7 @@ struct Play::Player::Impl
 			return not m_guardHelmet;
 		case ConsumableItem::Pin:
 			if (m_act != PlayerAct::Idle) return false;
+			if (isCurrentPointWall() && isNextPointWall()) return false;
 			return true;
 		case ConsumableItem::Mine:
 			if (canInstallGimmickNow() == false) return false;
@@ -700,6 +716,13 @@ private:
 				}
 			}
 
+			const auto nextPoint = (nextPos / CellPx_24).asPoint();
+			if (not PlayCore::Instance().GetMap().Data().inBounds(nextPoint))
+			{
+				// 画面外に進まないように
+				continue;
+			}
+
 			if (Gm::IsUsingGamepad() && scoopingCharge < 1.0)
 			{
 				// ゲームパッドのときは、ためが必要
@@ -719,7 +742,7 @@ private:
 		}
 	}
 
-	void succeedScoop(YieldExtended& yield, ActorView self, const Vector2D<double> checkingPos)
+	void succeedScoop(YieldExtended& yield, ActorView self, const Vec2& checkingPos)
 	{
 		AudioAsset(AssetSes::scoop_move).playOneShot();
 
