@@ -24,7 +24,7 @@ namespace
 			U"        T   T   T     T     T    ***2*** R   ",
 			U"   R R    T   T   T      T   R   *******     ",
 			U"    R       T   T   T      R   R *******     ",
-			U"     *******       *******-------*******  T  ",
+			U"     *******       *******?------*******  T  ",
 			U"     *******       *******              T    ",
 			U" T   ******* R   R ******* T   T          T  ",
 			U"     ***0***-------***B***   T       T       ",
@@ -139,6 +139,9 @@ namespace
 				data.toriiPositions.push_back(p * Play::CellPx_24);
 				verticalBridgeList.push_back(p);
 				break;
+			case U'?':
+				data.bridgeEntranceForMiddlePoint = p;
+				[[fallthrough]];
 			case U'-':
 				horizontalBridgeList.push_back(p);
 				break;
@@ -207,6 +210,32 @@ namespace
 
 namespace Lounge
 {
+	void LoungeMapData::RemoveBridgeEntranceForMiddle()
+	{
+		for (int i = 0; i < bridgePositions.size(); ++i)
+		{
+			if (bridgePositions[i].position / Play::CellPx_24 == bridgeEntranceForMiddlePoint)
+			{
+				// 入口削除
+				bridgePositions.erase(bridgePositions.begin() + i);
+				map.At(bridgeEntranceForMiddlePoint).kind = Play::TerrainKind::Wall;
+
+				// その隣を入口にする
+				for (int j = 0; j < bridgePositions.size(); ++j)
+				{
+					if (bridgePositions[j].position / Play::CellPx_24 == bridgeEntranceForMiddlePoint.movedBy(1, 0))
+					{
+						bridgePositions[j].kind = LoungeBridgeKind::Hl;
+					}
+				}
+
+				break;
+			}
+		}
+
+		// FIXME: ちょっと実装が雑すぎるかも、まあいいや
+	}
+
 	LoungeMapData GetLoungeMap()
 	{
 		return getData();

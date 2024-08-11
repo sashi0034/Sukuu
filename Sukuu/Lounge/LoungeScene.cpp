@@ -13,6 +13,8 @@
 namespace
 {
 	using namespace Lounge;
+
+	constexpr int floorAllowedToContinueFromMiddle = 10;
 }
 
 struct LoungeScene::Impl
@@ -23,6 +25,9 @@ struct LoungeScene::Impl
 	Play::UiMessenger m_messenger{};
 	LoungeMapData m_mapData{};
 	LoungeBgDrawer m_bgDrawer{};
+
+	// 途中からコンティニューする際のフロア
+	int m_middleFloor{};
 
 	// PlayScene などのあとに描画する
 	std::function<void()> m_postDraw{};
@@ -56,6 +61,16 @@ private:
 	void startPlayScene()
 	{
 		m_mapData = GetLoungeMap();
+		if (m_args.reachedFloor < floorAllowedToContinueFromMiddle)
+		{
+			// 10階未満の場合は中間地点から始められない
+			m_mapData.RemoveBridgeEntranceForMiddle();
+		}
+		else
+		{
+			m_middleFloor = m_args.reachedFloor / 2;
+			m_bgDrawer.SetContinueFromMiddle(m_middleFloor);
+		}
 
 		// PlayScene 初期化
 		m_playScene.Init({

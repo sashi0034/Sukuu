@@ -195,6 +195,7 @@ struct LoungeBgDrawer::Impl
 	}
 
 private:
+	// 階段などに吹き出しを付ける
 	void drawBalloonDesctiption(const String& message, Point mapPoint)
 	{
 		const auto bottomCenter = (mapPoint * Play::CellPx_24).moveBy(Play::CellPx_24 / 2, 2);

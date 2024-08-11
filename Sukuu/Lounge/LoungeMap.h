@@ -32,12 +32,16 @@ namespace Lounge
 		Point stairsToContinueFromBeginningPoint{};
 		Point stairsToContinueFromMiddlePoint{};
 
+		Point bridgeEntranceForMiddlePoint{};
+
 		Array<Vec2> manjiRegionPositions{};
 		Array<LoungeBridgeTuple> bridgePositions{};
 		Array<Vec2> toriiPositions{};
 		Array<Vec2> tourouPositions{};
 
 		Array<Vec2> treePositions{};
+
+		void RemoveBridgeEntranceForMiddle();
 	};
 
 	LoungeMapData GetLoungeMap();
