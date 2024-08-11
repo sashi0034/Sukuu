@@ -119,8 +119,9 @@ private:
 		AnimateEasing<EaseOutCubic>(self, &m_lineWidth, lineWidth, appearDuration);
 		yield.WaitForTime(1.0);
 
+		AudioAsset(AssetSes::game_over_front).playOneShot();
+
 		// ヒント
-		// AudioAsset(AssetSes::game_over_front).playOneShot();
 		// m_tipsMessage = U"[TIPS] " + GetPlayingTips(m_floorIndex);
 		// AnimateEasing<EaseOutCirc>(self, &m_tipsAlpha, 1.0, appearDuration);
 
