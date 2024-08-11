@@ -35,8 +35,8 @@ struct UiGameOver::Impl
 
 	double m_lineWidth{};
 
-	String m_tipsMessage{};
-	double m_tipsAlpha{};
+	// String m_tipsMessage{};
+	// double m_tipsAlpha{};
 
 	double m_wholeScale = 1.0;
 
@@ -73,14 +73,13 @@ struct UiGameOver::Impl
 				10,
 				getToml<Color>(U"line_color"));
 		}
-		if (m_tipsAlpha > 0)
-		{
-			const auto tipsCenter = Rect(Scene::Size()).bottomCenter().moveBy(0, getToml<int>(U"tips_y"));
-			// const Transformer2D t1{Mat3x2::Scale({m_tipsScale, 1}, tipsCenter)};
-			font(m_tipsMessage).drawAt(getToml<double>(U"tips_size"),
-			                           tipsCenter,
-			                           ColorF(getToml<Color>(U"tips_color"), m_tipsAlpha));
-		}
+		// if (m_tipsAlpha > 0)
+		// {
+		// 	const auto tipsCenter = Rect(Scene::Size()).bottomCenter().moveBy(0, getToml<int>(U"tips_y"));
+		// 	font(m_tipsMessage).drawAt(getToml<double>(U"tips_size"),
+		// 	                           tipsCenter,
+		// 	                           ColorF(getToml<Color>(U"tips_color"), m_tipsAlpha));
+		// }
 	}
 
 	ActorWeak StartPerform(ActorView self)
@@ -121,9 +120,9 @@ private:
 		yield.WaitForTime(1.0);
 
 		// ヒント
-		AudioAsset(AssetSes::game_over_front).playOneShot();
-		m_tipsMessage = U"[TIPS] " + GetPlayingTips(m_floorIndex);
-		AnimateEasing<EaseOutCirc>(self, &m_tipsAlpha, 1.0, appearDuration);
+		// AudioAsset(AssetSes::game_over_front).playOneShot();
+		// m_tipsMessage = U"[TIPS] " + GetPlayingTips(m_floorIndex);
+		// AnimateEasing<EaseOutCirc>(self, &m_tipsAlpha, 1.0, appearDuration);
 
 		double waitTime{};
 		while (true)

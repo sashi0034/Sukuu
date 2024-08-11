@@ -48,6 +48,8 @@ private:
 	void flowchartLoop(YieldExtended& yield, ActorView self)
 	{
 		bool triedTutorial{};
+		int initialFloor = 1;
+
 		yield();
 #if _DEBUG
 		Play::SetPlayingUra(debugToml<bool>(U"ura_enable"));
@@ -57,8 +59,8 @@ private:
 		if (entryPoint == U"title") goto title;
 		if (entryPoint == U"play") goto play;
 		if (entryPoint == U"ending") goto ending;
+		if (entryPoint == U"lounge") goto lounge;
 
-		if (entryPoint == U"lounge") (void)loungeLoop(yield, self);
 		if (entryPoint == U"gamepad") (void)DialogGamepadRegister();
 		if (entryPoint == U"yesno") (void)DialogYesNo(U"ねんね?");
 		if (entryPoint == U"setting") (void)DialogSettingConfigure();
@@ -71,13 +73,19 @@ private:
 	title:
 		triedTutorial = true;
 		if (const bool retryTutorial = titleLoop(yield, self)) goto tutorial;
+		initialFloor = 1;
 	play:
-		if (const bool clearedPlay = playLoop(yield, self)) goto ending;
-		goto title;
+		if (const bool clearedPlay = playLoop(yield, self, initialFloor)) goto ending;
+	lounge:
+		if (not loungeLoop(yield, self, &initialFloor)) goto title;
+		goto play;
 	ending:
 		endingLoop(yield, self);
 		goto title;
 	}
+
+	// 反省: コルーチンにおける goto シーケンス管理でシーン遷移の可読性の向上を図ったか、思ったほど効果が得られなかった
+	// 次回作からはイベントループ式シーン遷移に戻す
 
 	bool tryLoadSavedata()
 	{
@@ -119,17 +127,18 @@ private:
 	}
 
 	/// @return 50層を突破したなら true
-	bool playLoop(YieldExtended& yield, ActorView self)
+	bool playLoop(YieldExtended& yield, ActorView self, int initialFloor)
 	{
 		m_playData = {};
 #if _DEBUG
 		m_playData.floorIndex = debugToml<int>(U"initial_floor");
+		if (m_playData.floorIndex <= 0) m_playData.floorIndex = initialFloor;
 		m_playData.timeLimiter = Play::TimeLimiterData{
 			.maxTime = debugToml<double>(U"initial_timelimit"),
 			.remainingTime = debugToml<double>(U"initial_timelimit"),
 		};
 #else
-		m_playData.floorIndex = 1;
+		m_playData.floorIndex = initialFloor;
 		m_playData.timeLimiter = {
 			.maxTime = 90.0,
 			.remainingTime = 90.0,
@@ -173,14 +182,15 @@ private:
 
 			if (m_playData.timeLimiter.remainingTime == 0)
 			{
-				// ゲームオーバー
+				// 回生の回廊
+				checkSave(m_playData, false);
 				return false;
 			}
 			if (m_playData.floorIndex == Constants::MaxFloorIndex)
 			{
 				// エンディング
-				Play::PlayBgm::Instance().EndPlay();
 				checkSave(m_playData, true);
+				Play::PlayBgm::Instance().EndPlay();
 				return true;
 			}
 #if _DEBUG
@@ -197,15 +207,20 @@ private:
 	}
 
 	/// @return タイトルに戻るなら false
-	bool loungeLoop(YieldExtended& yield, ActorView self) const
+	bool loungeLoop(YieldExtended& yield, ActorView self, int* initialFloor)
 	{
 		auto lounge = self.AsParent().Birth(Lounge::LoungeScene());
-		lounge.Init({});
+		lounge.Init({.reachedFloor = m_playData.floorIndex});
 		yield.WaitForTrue([&]() { return lounge.IsConcluded(); });
 		lounge.Kill();
-		// SaveSavedata(m_savedata);
 		yield();
-		return false;
+
+		// タイトルに戻る
+		if (lounge.IsReturnToTitle()) return false;
+
+		// コンティニュー
+		*initialFloor = lounge.NextFloor();
+		return true;
 	}
 
 	void checkSave(const Play::PlaySingletonData& data, bool isCleared)

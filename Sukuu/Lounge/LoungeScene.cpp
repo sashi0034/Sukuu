@@ -15,6 +15,13 @@ namespace
 	using namespace Lounge;
 
 	constexpr int floorAllowedToContinueFromMiddle = 10;
+
+	enum class LoungeStairs
+	{
+		ToTitle,
+		ToContinueFromBeginning,
+		ToContinueFromMiddle,
+	};
 }
 
 struct LoungeScene::Impl
@@ -27,7 +34,10 @@ struct LoungeScene::Impl
 	LoungeBgDrawer m_bgDrawer{};
 
 	// 途中からコンティニューする際のフロア
-	int m_middleFloor{};
+	int m_floorForContinueFromMiddle{};
+
+	// 階段に乗ったときに移動する次の階層
+	int m_nextFloor{};
 
 	// PlayScene などのあとに描画する
 	std::function<void()> m_postDraw{};
@@ -35,7 +45,7 @@ struct LoungeScene::Impl
 	struct
 	{
 		bool hasBook{};
-		LoungeStairs stairs{};
+		LoungeStairs steppedStairs{};
 	} m_event;
 
 	void Init(ActorView self, const LoungeEnterArgs& args)
@@ -68,8 +78,8 @@ private:
 		}
 		else
 		{
-			m_middleFloor = m_args.reachedFloor / 2;
-			m_bgDrawer.SetContinueFromMiddle(m_middleFloor);
+			m_floorForContinueFromMiddle = m_args.reachedFloor / 2;
+			m_bgDrawer.SetContinueFromMiddle(m_floorForContinueFromMiddle);
 		}
 
 		// PlayScene 初期化
@@ -126,15 +136,17 @@ private:
 		}
 		else if (playerPoint == m_mapData.stairsToTitlePoint)
 		{
-			m_event.stairs = LoungeStairs::ToTitle;
+			m_event.steppedStairs = LoungeStairs::ToTitle;
 		}
 		else if (playerPoint == m_mapData.stairsToContinueFromBeginningPoint)
 		{
-			m_event.stairs = LoungeStairs::ToContinueFromBeginning;
+			m_event.steppedStairs = LoungeStairs::ToContinueFromBeginning;
+			m_nextFloor = 1;
 		}
 		else if (playerPoint == m_mapData.stairsToContinueFromMiddlePoint)
 		{
-			m_event.stairs = LoungeStairs::ToContinueFromMiddle;
+			m_event.steppedStairs = LoungeStairs::ToContinueFromMiddle;
+			m_nextFloor = m_floorForContinueFromMiddle;
 		}
 	}
 
@@ -189,5 +201,15 @@ namespace Lounge
 	bool LoungeScene::IsConcluded()
 	{
 		return p_impl->m_play.GetPlayer().IsTerminated();
+	}
+
+	bool LoungeScene::IsReturnToTitle() const
+	{
+		return p_impl->m_event.steppedStairs == LoungeStairs::ToTitle;
+	}
+
+	int LoungeScene::NextFloor() const
+	{
+		return p_impl->m_nextFloor;
 	}
 }

@@ -3,13 +3,6 @@
 
 namespace Lounge
 {
-	enum class LoungeStairs
-	{
-		ToTitle,
-		ToContinueFromBeginning,
-		ToContinueFromMiddle,
-	};
-
 	struct LoungeEnterArgs
 	{
 		int reachedFloor;
@@ -25,6 +18,9 @@ namespace Lounge
 		void Update() override;
 
 		bool IsConcluded();
+
+		bool IsReturnToTitle() const;
+		int NextFloor() const;
 
 	private:
 		struct Impl;

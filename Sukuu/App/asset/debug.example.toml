@@ -3,7 +3,10 @@ entry_point = ""
 skip_transition = false
 visualize_player_distance = false
 initial_timelimit = 300.0
-initial_floor = 1
+
+# 初期フロア (0: 無効)
+initial_floor = 0
+
 constant_floor = false
 ura_enable = false
 

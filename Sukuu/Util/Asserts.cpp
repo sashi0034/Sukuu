@@ -19,7 +19,14 @@ bool Util::AssertStrongly(bool condition, const std::source_location& location)
 	for (int i = 0; i < stacktraces.size(); ++i)
 	{
 		const int atIndex = stacktraces[i].indexOf(U" at ");
-		stMessage += stacktraces[i].substr(0, atIndex) + U"\n\t" + stacktraces[i].substr(atIndex) + U"\n";
+		if (atIndex != String::npos)
+		{
+			stMessage += stacktraces[i].substr(0, atIndex) + U"\n\t" + stacktraces[i].substr(atIndex) + U"\n";
+		}
+		else
+		{
+			stMessage += stacktraces[i];
+		}
 
 		// エントリーポイント Main まで取得する
 		if (stacktraces[i].includes(U"# Main")) break;

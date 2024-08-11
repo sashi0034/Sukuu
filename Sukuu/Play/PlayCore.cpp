@@ -18,6 +18,7 @@
 #include "UI/UiMiniMap.h"
 #include "UI/UiTimeLimiter.h"
 #include "Util/ActorContainer.h"
+#include "Util/Asserts.h"
 #include "Util/TomlParametersWrapper.h"
 
 namespace
@@ -252,8 +253,10 @@ namespace Play
 	PlayCore::PlayCore(bool empty)
 	{
 		if (empty) return;
-		if (s_instance != nullptr) System::MessageBoxOK(U"Duplicated PlayCore instance", MessageBoxStyle::Error);
-		else s_instance = this;
+
+		if (not AssertStrongly(s_instance == nullptr)) return;
+
+		s_instance = this;
 	}
 
 	PlayCore PlayCore::Create()
