@@ -52,7 +52,8 @@ namespace Gm
 
 		TenStepNumber bgm_volume{5};
 		TenStepNumber se_volume{5};
-		TenStepNumber camera_move{2};
+		TenStepNumber camera_move_x{2};
+		TenStepNumber camera_move_y{2};
 
 		HashTable<String, GamepadButtonMapping> gamepad_mapping{};
 

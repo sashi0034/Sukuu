@@ -216,14 +216,21 @@ namespace
 				          editing.se_volume = TenStepNumber(editing.se_volume + (right ? 1 : -1));
 				          editing.ApplySystems();
 			          }));
-		updateRow(4, cursorRaw, U"カメラ移動量", wrapVolumeContentWithTabs(
-			          editing.camera_move.GetRate(),
-			          defaultConfig.camera_move.GetRate(),
+		updateRow(4, cursorRaw, U"X軸カメラ移動量", wrapVolumeContentWithTabs(
+			          editing.camera_move_x.GetRate(),
+			          defaultConfig.camera_move_x.GetRate(),
 			          [&](bool right)
 			          {
-				          editing.camera_move = TenStepNumber(editing.camera_move + (right ? 1 : -1));
+				          editing.camera_move_x = TenStepNumber(editing.camera_move_x + (right ? 1 : -1));
 			          }));
-		updateRow(5, cursorRaw, U"", wrapTextContentWithAction(U"ゲームパッド設定", [&]
+		updateRow(5, cursorRaw, U"Y軸カメラ移動量", wrapVolumeContentWithTabs(
+			          editing.camera_move_y.GetRate(),
+			          defaultConfig.camera_move_y.GetRate(),
+			          [&](bool right)
+			          {
+				          editing.camera_move_y = TenStepNumber(editing.camera_move_y + (right ? 1 : -1));
+			          }));
+		updateRow(6, cursorRaw, U"", wrapTextContentWithAction(U"ゲームパッド設定", [&]
 		{
 			const auto gamepad = Gamepad(GamepadPlayer_0);
 			if (not gamepad) return;

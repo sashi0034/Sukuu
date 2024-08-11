@@ -28,7 +28,9 @@ namespace
 
 		json[U"se_volume"] = config.se_volume.value();
 
-		json[U"camera_move"] = config.camera_move.value();
+		json[U"camera_move_x"] = config.camera_move_x.value();
+
+		json[U"camera_move_y"] = config.camera_move_y.value();
 
 		json[U"language"] = static_cast<int>(config.language);
 
@@ -94,7 +96,9 @@ namespace
 
 		tryRead(U"se_volume", [&] { config.se_volume = json[U"se_volume"].get<int>(); });
 
-		tryRead(U"camera_move", [&] { config.camera_move = json[U"camera_move"].get<int>(); });
+		tryRead(U"camera_move_x", [&] { config.camera_move_x = json[U"camera_move_x"].get<int>(); });
+
+		tryRead(U"camera_move_y", [&] { config.camera_move_y = json[U"camera_move_y"].get<int>(); });
 
 		tryRead(U"language", [&] { config.language = static_cast<GameLanguage>(json[U"language"].get<int>()); });
 

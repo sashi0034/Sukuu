@@ -472,8 +472,8 @@ private:
 
 	static Vec2 getDirectionCameraOffset(Dir4Type moveDir)
 	{
-		const int c = Gm::GameConfig::Instance().camera_move;
-		const int move = getToml<double>(U"camera_move_min") + getToml<double>(U"camera_move_step") * c;
+		const auto c = Vec2{Gm::GameConfig::Instance().camera_move_x, Gm::GameConfig::Instance().camera_move_y};
+		const Vec2 move = getToml<double>(U"camera_move_min") * Vec2::One() + getToml<double>(U"camera_move_step") * c;
 		return -moveDir.ToXY() * move;
 	}
 
