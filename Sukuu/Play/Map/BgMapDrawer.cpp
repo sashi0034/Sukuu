@@ -148,7 +148,7 @@ struct Play::BgMapDrawer::Impl
 			drawGimmickAt(point, AssetImages::heart_vessel_24x24, 24, 3);
 			break;
 		case GimmickKind::SemiItem_Book:
-			drawGimmickAt(point, AssetImages::opening_book_16x16, 16, 6);
+			drawGimmickAt(point, AssetImages::opening_book_16x16, 16, 8, {}, 100);
 			break;
 		case GimmickKind::Arrow_right:
 			(void)TextureAsset(AssetImages::arrow_24x24)(Point{1, 0} * 24, 24, 24).draw(point * CellPx_24);
@@ -180,11 +180,11 @@ struct Play::BgMapDrawer::Impl
 
 private:
 	void drawGimmickAt(
-		const Point& point, AssetNameView name, int cellSize, int numFrames, const Point& cellOffset = {}) const
+		const Point& point, AssetNameView name, int cellSize, int numFrames, const Point& cellOffset = {}, int period = 250) const
 	{
 		(void)TextureAsset(name)(
 				Rect{
-					Point{cellSize, 0} * m_animTimer.SliceFrames(250, numFrames) + cellOffset * cellSize,
+					Point{cellSize, 0} * m_animTimer.SliceFrames(period, numFrames) + cellOffset * cellSize,
 					{cellSize, cellSize}
 				})
 			.draw(point * CellPx_24 + GetItemCellPadding({cellSize, cellSize}));

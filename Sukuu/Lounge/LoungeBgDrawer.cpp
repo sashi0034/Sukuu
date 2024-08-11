@@ -4,6 +4,9 @@
 #include "Assets.generated.h"
 #include "Play/Forward.h"
 #include "Play/Chara/CharaUtil.h"
+#include "Util/Asserts.h"
+#include "AssetKeys.h"
+#include "Gm/LocalizedTextDatabase.h"
 
 namespace
 {
@@ -15,6 +18,8 @@ struct LoungeBgDrawer::Impl
 	Play::AnimTimer m_animTimer{};
 
 	std::array<double, 8> m_bridgeSwayOffsets{};
+
+	int m_continueFromMiddle = 0;
 
 	void Tick()
 	{
@@ -161,8 +166,23 @@ struct LoungeBgDrawer::Impl
 				.draw(Arg::bottomCenter = t.movedBy(Play::CellPx_24 / 2, Play::CellPx_24 / 2));
 		}
 
+		// 階段に吹き出しで説明を付ける
 		{
-			// 視界を暗めにする
+			ScopedRenderStates2D sampler{SamplerState::ClampLinear};
+			drawBalloonDesctiption(
+				Gm::LocalizedText(U"return_to_title"), data.stairsToTitlePoint);
+			drawBalloonDesctiption(
+				Gm::LocalizedText(U"continue_from_beginning"), data.stairsToContinueFromBeginningPoint);
+			if (m_continueFromMiddle > 0)
+			{
+				drawBalloonDesctiption(
+					fmt::format(Gm::LocalizedText(U"continue_from_middle").data(), m_continueFromMiddle),
+					data.stairsToContinueFromMiddlePoint);
+			}
+		}
+
+		// 視界を暗めにする
+		{
 			Transformer2D t2d{Mat3x2::Identity(), Transformer2D::Target::SetLocal};
 			// double root2 = std::sqrt(2.0);
 			// Ellipse(Scene::Center(), Scene::Center().x * root2, Scene::Center().y * root2)
@@ -173,6 +193,38 @@ struct LoungeBgDrawer::Impl
 				.draw(ColorF{0, 0, 0, 0}, ColorF{0.11, 0.19, 0.27});
 		}
 	}
+
+private:
+	void drawBalloonDesctiption(const String& message, Point mapPoint)
+	{
+		const auto bottomCenter = (mapPoint * Play::CellPx_24).moveBy(Play::CellPx_24 / 2, 2);
+		const auto rectCenter = bottomCenter.movedBy(0, -16);
+
+		static HashTable<Point, Polygon> cache{};
+		if (not cache.contains(mapPoint))
+		{
+			constexpr SizeF rectSize{128, 20};
+
+			const auto rect = RectF(Arg::center = rectCenter, rectSize).rounded(8);
+			constexpr int triW = 8;
+			const auto tri = Triangle::FromPoints(
+				bottomCenter,
+				rect.bottomCenter().moveBy(-triW / 2, 0),
+				rect.bottomCenter().moveBy(triW / 2, 0));
+			Polygon p = rect.asPolygon();
+			Util::AssertStrongly(p.append(tri.asPolygon()));
+			cache[mapPoint] = p;
+		}
+		const Polygon poly = cache[mapPoint];
+
+		auto sineOffset = Vec2(0, Periodic::Sine1_1(2.0s) * 2);
+		constexpr auto darkColor = ColorF{0.11, 0.19, 0.27};
+		(void)poly.movedBy(sineOffset)
+		          .draw(darkColor.withA(0.5))
+		          .drawFrame(1, darkColor);
+		(void)FontAsset(AssetKeys::RocknRoll_Sdf)(message)
+			.drawAt(8, rectCenter.movedBy(sineOffset), ColorF{1, 0.5, 0.07});
+	}
 };
 
 namespace Lounge
@@ -180,6 +232,11 @@ namespace Lounge
 	LoungeBgDrawer::LoungeBgDrawer() :
 		p_impl(std::make_shared<Impl>())
 	{
+	}
+
+	void LoungeBgDrawer::SetContinueFromMiddle(int continueFromMiddle)
+	{
+		p_impl->m_continueFromMiddle = continueFromMiddle;
 	}
 
 	void LoungeBgDrawer::DrawBack(const LoungeMapData& data, const Rect& region)

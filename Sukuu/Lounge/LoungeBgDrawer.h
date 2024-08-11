@@ -8,6 +8,7 @@ namespace Lounge
 	public:
 		LoungeBgDrawer();
 
+		void SetContinueFromMiddle(int continueFromMiddle);
 		void DrawBack(const LoungeMapData& data, const Rect& region);
 		void DrawFront(const LoungeMapData& data);
 
