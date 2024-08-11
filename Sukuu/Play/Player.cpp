@@ -21,6 +21,7 @@
 #include "Util/CoroUtil.h"
 #include "Util/Dir4.h"
 #include "Util/EasingAnimation.h"
+#include "Util/TomlDebugValueWrapper.h"
 #include "Util/TomlParametersWrapper.h"
 
 namespace
@@ -926,8 +927,11 @@ namespace Play
 		p_impl->StartFlowchart(*this);
 
 #if _DEBUG
-		p_impl->m_personal.items[0] = ConsumableItem::Rocket;
-		p_impl->m_personal.items[1] = ConsumableItem::Wing;
+		const auto fixedItems = GetTomlDebugArrayOf<int>(U"player_fixed_items");
+		for (auto i : step(fixedItems.size()))
+		{
+			p_impl->m_personal.items[i] = static_cast<ConsumableItem>(fixedItems[i]);
+		}
 #endif
 	}
 

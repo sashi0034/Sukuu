@@ -10,3 +10,7 @@ ura_enable = false
 # Steam ストア用のグラフィックアセットをタイトル画面から作成する
 # 例: "460x215"
 title_graphic_asset_maker = ""
+
+# プレイヤーの固定アイテム
+# 例: [1, 13]
+player_fixed_items = []
