@@ -27,6 +27,11 @@ namespace Lounge
 		Play::MapGrid map{};
 		Point initialPlayerPoint{};
 
+		Point bookPoint{};
+		Point stairsToTitlePoint{};
+		Point stairsToContinueFromBeginningPoint{};
+		Point stairsToContinueFromMiddlePoint{};
+
 		Array<Vec2> manjiRegionPositions{};
 		Array<LoungeBridgeTuple> bridgePositions{};
 		Array<Vec2> toriiPositions{};

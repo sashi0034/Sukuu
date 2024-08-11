@@ -429,6 +429,11 @@ namespace Play
 		p_impl->m_caveVision.SetEnabled(enabled);
 	}
 
+	UiMessenger PlayCore::BirthUiMessenger()
+	{
+		return AsUiContent().Birth(UiMessenger());
+	}
+
 	void PlayCore::RequestHitstopping(double time)
 	{
 		p_impl->m_hitStoppingRequested++;

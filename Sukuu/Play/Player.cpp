@@ -805,6 +805,12 @@ private:
 			gimmickGrid[newPoint] = GimmickKind::None;
 			break;
 		}
+		case GimmickKind::SemiItem_Book:
+			// この後 Lounge 側で TIPS が表示されるはず
+			AudioAsset(AssetSes::take_item).playOneShot(1.0, 0, 0.5);
+			itemObtainEffect();
+			gimmickGrid[newPoint] = GimmickKind::None;
+			break;
 		case GimmickKind::SemiItem_Vessel: {
 			AudioAsset(AssetSes::take_item).playOneShot();
 			focusCameraFor<EaseOutBack>(self, getToml<double>(U"focus_scale_large"));

@@ -1,10 +1,12 @@
 ﻿#include "stdafx.h"
 #include "LoungeScene.h"
 
+#include "Assets.generated.h"
 #include "LoungeBgDrawer.h"
 #include "LoungeMap.h"
 #include "Play/PlayScene.h"
 #include "Play/Map/BgMapDrawer.h"
+#include "Play/Other/PlayingTips.h"
 #include "Util/EasingAnimation.h"
 #include "Util/VisualStudioHotReloadDetectorAddon.h"
 
@@ -15,16 +17,25 @@ namespace
 
 struct LoungeScene::Impl
 {
+	LoungeEnterArgs m_args{};
 	Play::PlayScene m_playScene{Play::PlayScene::Empty()};
 	Play::PlayCore m_play{Play::PlayCore::Empty()};
+	Play::UiMessenger m_messenger{};
 	LoungeMapData m_mapData{};
 	LoungeBgDrawer m_bgDrawer{};
 
 	// PlayScene などのあとに描画する
 	std::function<void()> m_postDraw{};
 
+	struct
+	{
+		bool hasBook{};
+		LoungeStairs stairs{};
+	} m_event;
+
 	void Init(ActorView self, const LoungeEnterArgs& args)
 	{
+		m_args = args;
 		m_playScene = self.AsParent().Birth(Play::PlayScene::Create());
 		m_play = m_playScene.GetCore();
 		startPlayScene();
@@ -54,15 +65,25 @@ private:
 			},
 			.playerPersonal = {},
 			.timeLimiter = Play::TimeLimiterData{
-				.maxTime = 90, // TODO: プレイヤーの最後の maxTime から取得したいかも
-				.remainingTime = 90
+				.maxTime = 60, // TODO: プレイヤーの最後の maxTime から取得したいかも?
+				.remainingTime = 60
 			}
 		});
+
+		// ギミック反映
+		auto& gimmick = m_play.GetGimmick();
+		gimmick[m_mapData.bookPoint] = Play::GimmickKind::SemiItem_Book;
+		gimmick[m_mapData.stairsToTitlePoint] = Play::GimmickKind::Stairs;
+		gimmick[m_mapData.stairsToContinueFromBeginningPoint] = Play::GimmickKind::Stairs;
+		gimmick[m_mapData.stairsToContinueFromMiddlePoint] = Play::GimmickKind::Stairs;
+
+		m_messenger = m_play.BirthUiMessenger();
 
 		// プレイヤーの設定
 		playerServices().forcedImmortal = true;
 		playerServices().canMove = false;
 		playerServices().canScoop = false;
+		playerServices().onMoved = [this](const Vec2& pos, bool) { onPlayerMoved(pos); };
 
 		// タイムリミットの設定
 		auto& timeLimiter = m_play.GetTimeLimiter();
@@ -77,6 +98,29 @@ private:
 		});
 
 		m_play.EnableCaveVision(false);
+	}
+
+	void onPlayerMoved(Vec2 pos)
+	{
+		const auto playerPoint = m_play.GetPlayer().CurrentPoint();
+		if (playerPoint == m_mapData.bookPoint && not m_event.hasBook)
+		{
+			// TIPS を表示
+			m_event.hasBook = true;
+			m_messenger.ShowMessage(Play::GetPlayingTips(m_args.reachedFloor).data(), 5.0);
+		}
+		else if (playerPoint == m_mapData.stairsToTitlePoint)
+		{
+			m_event.stairs = LoungeStairs::ToTitle;
+		}
+		else if (playerPoint == m_mapData.stairsToContinueFromBeginningPoint)
+		{
+			m_event.stairs = LoungeStairs::ToContinueFromBeginning;
+		}
+		else if (playerPoint == m_mapData.stairsToContinueFromMiddlePoint)
+		{
+			m_event.stairs = LoungeStairs::ToContinueFromMiddle;
+		}
 	}
 
 	void flowchartLoop(YieldExtended& yield)

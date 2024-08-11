@@ -63,6 +63,9 @@ void Main()
 
 	while (System::Update())
 	{
+#if _DEBUG
+		if (KeyEnd.pressed()) SetTimeScale(10.0);
+#endif
 		RefreshDeltaTime();
 
 		actorRoot.Update();

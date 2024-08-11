@@ -25,6 +25,7 @@ namespace Play
 		Item_Rocket,
 		SemiItem_Hourglass,
 		SemiItem_Vessel,
+		SemiItem_Book,
 		Installed_Mine,
 		Installed_Magnet,
 		Installed_Grave,
@@ -79,7 +80,8 @@ namespace Play
 	{
 		return
 			gimmick == GimmickKind::SemiItem_Hourglass ||
-			gimmick == GimmickKind::SemiItem_Vessel;
+			gimmick == GimmickKind::SemiItem_Vessel ||
+			gimmick == GimmickKind::SemiItem_Book;
 	}
 
 	inline Dir4Type GimmickArrowToDir(GimmickKind gimmick)

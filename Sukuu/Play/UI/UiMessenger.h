@@ -1,13 +1,13 @@
 ﻿#pragma once
 
-#include "Forward.h"
+#include "../Forward.h"
 
-namespace Tutorial
+namespace Play
 {
-	class TutorialMessenger : public ActorBase
+	class UiMessenger : public ActorBase
 	{
 	public:
-		TutorialMessenger();
+		UiMessenger();
 		void Update() override;
 		double OrderPriority() const override;
 

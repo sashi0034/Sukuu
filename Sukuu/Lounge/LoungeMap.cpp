@@ -21,19 +21,19 @@ namespace
 			U"  T                      T   T   *******     ",
 			U"    T                            ******* R   ",
 			U"  T       T   T                  *******   R ",
-			U"        T   T   T     T     T    ***M*** R   ",
+			U"        T   T   T     T     T    ***2*** R   ",
 			U"   R R    T   T   T      T   R   *******     ",
 			U"    R       T   T   T      R   R *******     ",
 			U"     *******       *******-------*******  T  ",
 			U"     *******       *******              T    ",
 			U" T   ******* R   R ******* T   T          T  ",
-			U"     ***M***-------***M***   T       T       ",
+			U"     ***0***-------***B***   T       T       ",
 			U"  T  ******* T   T *******         T   T     ",
 			U"     *******   T   *******                   ",
 			U" T   *******       *******-------******* T   ",
 			U"    R                 |          *******     ",
 			U"      R            R  |  R       *******  T  ",
-			U"    R            T    |    T     ***M***     ",
+			U"    R            T    |    T     ***1***     ",
 			U" T   T       T        |       T  ******* T   ",
 			U"   T   T        T  R  |  R  T    *******     ",
 			U"     T   T            S          *******     ",
@@ -119,7 +119,20 @@ namespace
 				data.initialPlayerPoint = p;
 				manjiList.push_back(p);
 				break;
-			case U'M':
+			case U'B':
+				data.bookPoint = p;
+				manjiList.push_back(p);
+				break;
+			case U'0':
+				data.stairsToTitlePoint = p;
+				manjiList.push_back(p);
+				break;
+			case U'1':
+				data.stairsToContinueFromBeginningPoint = p;
+				manjiList.push_back(p);
+				break;
+			case U'2':
+				data.stairsToContinueFromMiddlePoint = p;
 				manjiList.push_back(p);
 				break;
 			case U'S':

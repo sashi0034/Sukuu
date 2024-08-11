@@ -9,6 +9,7 @@
 #include "Other/PlayingPause.h"
 #include "Other/TimeLimiter.h"
 #include "UI/UiDashKeep.h"
+#include "UI/UiMessenger.h"
 #include "UI/UiMiniMap.h"
 #include "UI/UiTimeLimiter.h"
 #include "Util/EffectWrapper.h"
@@ -89,6 +90,8 @@ namespace Play
 		void SetBgCustomDrawer(const BgCustomDrawer& drawer);
 
 		void EnableCaveVision(bool enabled);
+
+		UiMessenger BirthUiMessenger();
 
 		void RequestHitstopping(double time);
 

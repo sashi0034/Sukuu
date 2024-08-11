@@ -207,6 +207,11 @@ tips_size = 32
 tips_color = "#878787"
 tips_y = -160
 
+[play.ui_messenger]
+bottom = 200
+font_size = 42
+fade_duration = 0.3
+
 [play.corner_button]
 button_size = "(224, 48)"
 button_padding = "(-40, -20)"
@@ -241,11 +246,6 @@ margin_y = 120
 text_size = 40
 final_y = 120
 final_size = 80
-
-[tutorial.messenger]
-bottom = 200
-font_size = 42
-fade_duration = 0.3
 
 [tutorial.focus]
 icon_scale = 1.5

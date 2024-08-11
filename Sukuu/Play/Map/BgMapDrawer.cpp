@@ -147,6 +147,9 @@ struct Play::BgMapDrawer::Impl
 		case GimmickKind::SemiItem_Vessel:
 			drawGimmickAt(point, AssetImages::heart_vessel_24x24, 24, 3);
 			break;
+		case GimmickKind::SemiItem_Book:
+			drawGimmickAt(point, AssetImages::opening_book_16x16, 16, 6);
+			break;
 		case GimmickKind::Arrow_right:
 			(void)TextureAsset(AssetImages::arrow_24x24)(Point{1, 0} * 24, 24, 24).draw(point * CellPx_24);
 			break;

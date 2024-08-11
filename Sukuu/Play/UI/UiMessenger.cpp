@@ -1,5 +1,5 @@
 ﻿#include "stdafx.h"
-#include "TutorialMessenger.h"
+#include "UiMessenger.h"
 
 #include "AssetKeys.h"
 #include "Util/CoroUtil.h"
@@ -11,16 +11,17 @@ namespace
 	template <typename T>
 	inline T getToml(const String& key)
 	{
-		return Util::GetTomlParameter<T>(U"tutorial.messenger." + key);
+		return Util::GetTomlParameter<T>(U"play.ui_messenger." + key);
 	}
 }
 
-struct Tutorial::TutorialMessenger::Impl
+struct Play::UiMessenger::Impl
 {
 	double m_time{};
 	String m_message{};
 	double m_alpha{};
 	ActorWeak m_startedCoro{};
+	double m_characterPerSecond{0.1}; // TODO: ゲーム言語に応じて速度変更をする
 
 	void Update()
 	{
@@ -62,8 +63,8 @@ struct Tutorial::TutorialMessenger::Impl
 
 private:
 	// 参考: // https://zenn.dev/reputeless/books/siv3d-documentation/viewer/sample-visual
-	static void drawText(
-		const Font& font, double fontSize, const String& text, const Vec2& pos, const ColorF& color, double t)
+	void drawText(
+		const Font& font, double fontSize, const String& text, const Vec2& pos, const ColorF& color, double t) const
 	{
 		const double scale = (fontSize / font.fontSize());
 		Vec2 penPos = pos;
@@ -78,7 +79,7 @@ private:
 				continue;
 			}
 
-			constexpr double characterPerSec = 0.1;
+			const double characterPerSec = m_characterPerSecond;
 			const double targetTime = (i * characterPerSec);
 
 			if (t < targetTime)
@@ -101,35 +102,35 @@ private:
 	}
 };
 
-namespace Tutorial
+namespace Play
 {
-	TutorialMessenger::TutorialMessenger() :
+	UiMessenger::UiMessenger() :
 		p_impl(std::make_shared<Impl>())
 	{
 	}
 
-	void TutorialMessenger::Update()
+	void UiMessenger::Update()
 	{
 		ActorBase::Update();
 		p_impl->Update();
 	}
 
-	double TutorialMessenger::OrderPriority() const
+	double UiMessenger::OrderPriority() const
 	{
 		return 1000.0;
 	}
 
-	void TutorialMessenger::ShowMessage(const String& message, double duration)
+	void UiMessenger::ShowMessage(const String& message, double duration)
 	{
 		p_impl->StartMessage(*this, message, duration);
 	}
 
-	void TutorialMessenger::ShowMessageForever(const String& message)
+	void UiMessenger::ShowMessageForever(const String& message)
 	{
 		p_impl->StartMessage(*this, message, -1);
 	}
 
-	void TutorialMessenger::HideMessage()
+	void UiMessenger::HideMessage()
 	{
 		p_impl->HideMessage(*this);
 	}

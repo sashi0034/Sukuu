@@ -6,7 +6,6 @@
 #include "Constants.h"
 #include "TutorialFocus.h"
 #include "TutorialMap.h"
-#include "TutorialMessenger.h"
 #include "Gm/GameCursor.h"
 #include "Gm/GamepadObserver.h"
 #include "Play/PlayScene.h"
@@ -23,9 +22,9 @@ namespace
 		return Util::GetTomlParameter<T>(U"tutorial.scene." + key);
 	}
 
-	constexpr double messageWaitShortShort = 2.0;
-	constexpr double messageWaitShort = 3.0;
-	constexpr double messageWaitMedium = 4.0;
+	constexpr double messageWaitShortShort = 1.5;
+	constexpr double messageWaitShort = 2.0;
+	constexpr double messageWaitMedium = 3.0;
 }
 
 struct Tutorial::TutorialScene::Impl
@@ -34,7 +33,7 @@ struct Tutorial::TutorialScene::Impl
 	Play::PlayCore m_play{Play::PlayCore::Empty()};
 	TutorialMapData m_mapData{};
 	bool m_finished{};
-	TutorialMessenger m_messanger{};
+	Play::UiMessenger m_messanger{};
 	TutorialFocus m_focus{};
 	std::function<void()> m_postDraw{};
 	AudioAsset m_bgm = AudioAsset(AssetBgms::obake_dance);
@@ -94,7 +93,7 @@ private:
 			gimmick[p] = Play::GimmickKind::SemiItem_Hourglass;
 		}
 
-		m_messanger = m_play.AsUiContent().Birth(TutorialMessenger());
+		m_messanger = m_play.BirthUiMessenger();
 		m_focus = m_play.AsUiContent().Birth(TutorialFocus());
 	}
 

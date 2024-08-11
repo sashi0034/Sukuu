@@ -3,8 +3,16 @@
 
 namespace Lounge
 {
+	enum class LoungeStairs
+	{
+		ToTitle,
+		ToContinueFromBeginning,
+		ToContinueFromMiddle,
+	};
+
 	struct LoungeEnterArgs
 	{
+		int reachedFloor;
 	};
 
 	class LoungeScene : public ActorBase
