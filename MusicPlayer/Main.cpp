@@ -78,6 +78,8 @@ namespace
 
 void Main()
 {
+	Window::SetTitle(U"MusicPlayer");
+
 	Scene::SetBackground(ColorF{0.3, 0.3, 0.3});
 
 	while (System::Update())

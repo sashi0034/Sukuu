@@ -73,7 +73,7 @@ struct Play::Player::Impl
 	int m_scoopContinuous{};
 	PlayerVisionState m_vision{};
 	double m_faintStealthTime{};
-	double m_scoopNoPenaltyTime{};
+	double m_rocketTime{};
 	RocketSpark m_rocketSpark{};
 	bool m_gameOverStarted{};
 
@@ -93,7 +93,7 @@ struct Play::Player::Impl
 
 		m_faintStealthTime = std::max(m_faintStealthTime - GetDeltaTime(), 0.0);
 
-		m_scoopNoPenaltyTime = std::max(m_scoopNoPenaltyTime - GetDeltaTime(), 0.0);
+		m_rocketTime = std::max(m_rocketTime - GetDeltaTime(), 0.0);
 
 		// 描画基準点
 		const auto drawingTl = getDrawPos();
@@ -118,7 +118,7 @@ struct Play::Player::Impl
 			* getToml<double>(U"camera_offset_speed");
 
 		// ロケット描画
-		if (m_scoopNoPenaltyTime > 0)
+		if (m_rocketTime > 0)
 		{
 			drawRocketSpark(drawingTl);
 		}
@@ -299,7 +299,7 @@ struct Play::Player::Impl
 			if (m_faintStealthTime > 0) return false;
 			return true;
 		case ConsumableItem::Rocket:
-			return m_scoopNoPenaltyTime == 0;
+			return m_rocketTime == 0;
 		case ConsumableItem::Max:
 			return false;
 		default: ;
@@ -342,7 +342,7 @@ struct Play::Player::Impl
 			PlayCore::Instance().GetMiniMap().SpotStairsAndAllItems();
 			break;
 		case ConsumableItem::Explorer:
-			CheckUseItemExplorer(self);
+			UseItemExplorer(self);
 			break;
 		case ConsumableItem::Grave: {
 			auto grave = PlayCore::Instance().AsMainContent().Birth(ItemGrave());
@@ -364,7 +364,7 @@ struct Play::Player::Impl
 			break;
 		}
 		case ConsumableItem::Rocket: {
-			m_scoopNoPenaltyTime = getRocketTime();
+			m_rocketTime = getRocketTime();
 			break;
 		}
 		case ConsumableItem::Max:
@@ -424,12 +424,12 @@ private:
 
 	void drawRocketSpark(const Vec2& drawingTl)
 	{
-		const double scaling = 1.0 + 0.1 * Periodic::Sine0_1(1.0s, m_scoopNoPenaltyTime);
+		const double scaling = 1.0 + 0.1 * Periodic::Sine0_1(1.0s, m_rocketTime);
 
 		const auto drawCenter = drawingTl.movedBy(Vec2::One() * PlayerCellRect.size / 2);
 		const auto size = getToml<double>(U"rocket_size");
 		Circle(drawCenter, size * 2.0)
-			.drawArc(0_deg, 360_deg * (m_scoopNoPenaltyTime / getRocketTime()), 0, 0.5, RocketSpark::Yellow);
+			.drawArc(0_deg, 360_deg * (m_rocketTime / getRocketTime()), 0, 0.5, RocketSpark::Yellow);
 
 		const ScopedColorAdd2D add{ColorF{0.0, 1.0}};
 		m_rocketSpark.Tick(drawCenter, scaling * size);
@@ -543,7 +543,18 @@ private:
 
 	bool canMoveTo(Dir4Type dir) const
 	{
-		if (not CanMoveTo(PlayCore::Instance().GetMap(), m_pos.actualPos, dir)) return false;
+		const auto& map = PlayCore::Instance().GetMap();
+		if (m_rocketTime > 0)
+		{
+			// ロケット使用中は壁を無視するが、マップ外には行けない
+			const auto p0 = m_pos.actualPos.MapPoint();
+			if (not map.Data().inBounds(p0.movedBy(dir.ToXY().asPoint()))) return false;
+		}
+		else
+		{
+			// 平時は壁に進めないようにする
+			if (not CanMoveTo(map, m_pos.actualPos, dir)) return false;
+		}
 
 		if (m_exportedService.canMove == false) return false;
 
@@ -763,8 +774,7 @@ private:
 		m_trailStock--;
 		m_immortal.immortalStock--;
 
-		if (PlayCore::Instance().GetMap().At(m_pos.actualPos.MapPoint()).kind == TerrainKind::Wall
-			&& m_scoopNoPenaltyTime <= 0)
+		if (PlayCore::Instance().GetMap().At(m_pos.actualPos.MapPoint()).kind == TerrainKind::Wall)
 		{
 			// ペナルティ発生
 			RelayTimeDamageAmount(m_pos, static_cast<int>(GetPlayerScoopedPenaltyDamage(m_scoopContinuous)), false);

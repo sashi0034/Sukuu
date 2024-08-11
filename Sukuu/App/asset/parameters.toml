@@ -31,10 +31,10 @@ recover_immortal = 1.5
 helmet_offset = "(0, -10)"
 helmet_animation = 200
 light_bulb_duration = 12.0
-explorer_enemies_duration = 15.0
+explorer_enemies_duration = 45.0
 tube_heal_amount = 90
 solt_time = 15.0
-rocket_time = 20.0
+rocket_time = 5.0
 rocket_size = 32.0
 
 [play.chara]

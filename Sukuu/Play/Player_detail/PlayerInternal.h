@@ -52,7 +52,7 @@ namespace Play::Player_detail
 
 	void UseItemLightBulb(ActorView self, PlayerVisionState& vision);
 
-	void CheckUseItemExplorer(ActorView self);
+	void UseItemExplorer(ActorView self);
 
 	void UpdatePlayerVision(PlayerVisionState& vision, PlayerAct act);
 

@@ -113,7 +113,7 @@ namespace Play::Player_detail
 		});
 	}
 
-	void CheckUseItemExplorer(ActorView self)
+	void UseItemExplorer(ActorView self)
 	{
 		// エネミーを一定時間全表示
 		auto&& minimap = PlayCore::Instance().GetMiniMap();
