@@ -53,8 +53,8 @@ void Main()
 	InitAssetReloader();
 	InitTomlDebugValueAddon();
 	InitVisualStudioHotReloadDetectorAddon();
-	Gm::InitLocalizedTextDatabaseAddon();
 #endif
+	Gm::InitLocalizedTextDatabaseAddon();
 
 	// アクター初期化
 	ActorContainer actorRoot{};

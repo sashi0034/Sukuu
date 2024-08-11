@@ -111,6 +111,8 @@ namespace Gm
 
 	const String& LocalizedText(StringView key)
 	{
+		if (not Util::AssertStrongly(s_instance != nullptr)) return {};
+
 		const auto currentLanguage = GameConfig::Instance().language;
 		return s_instance->GetLocalizedText(key.data(), currentLanguage);
 	}

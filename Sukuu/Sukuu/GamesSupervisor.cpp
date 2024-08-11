@@ -29,12 +29,16 @@ namespace
 		return GetTomlDebugValueOf<T>(key);
 	}
 #endif
+
+	constexpr double initialTimeLimit = 90.0;
 }
 
 struct Sukuu::GamesSupervisor::Impl
 {
 	void FlowchartAsync(YieldExtended& yield, ActorView self)
 	{
+		initPlayData();
+
 		while (true)
 		{
 			flowchartLoop(yield, self);
@@ -48,7 +52,6 @@ private:
 	void flowchartLoop(YieldExtended& yield, ActorView self)
 	{
 		bool triedTutorial{};
-		int initialFloor = 1;
 
 		yield();
 #if _DEBUG
@@ -73,11 +76,10 @@ private:
 	title:
 		triedTutorial = true;
 		if (const bool retryTutorial = titleLoop(yield, self)) goto tutorial;
-		initialFloor = 1;
 	play:
-		if (const bool clearedPlay = playLoop(yield, self, initialFloor)) goto ending;
+		if (const bool clearedPlay = playLoop(yield, self)) goto ending;
 	lounge:
-		if (not loungeLoop(yield, self, &initialFloor)) goto title;
+		if (not loungeLoop(yield, self)) goto title;
 		goto play;
 	ending:
 		endingLoop(yield, self);
@@ -107,7 +109,7 @@ private:
 		yield();
 	}
 
-	bool titleLoop(YieldExtended& yield, ActorView self) const
+	bool titleLoop(YieldExtended& yield, ActorView self)
 	{
 		auto title = self.AsParent().Birth(Title::TitleScene());
 		title.Init(m_savedata);
@@ -121,30 +123,37 @@ private:
 			return title.IsConcludedPlay() || title.IsConcludedRetryTutorial();
 		});
 		const bool retryTutorial = title.IsConcludedRetryTutorial();
+
 		title.Kill();
 		yield();
+
+		initPlayData();
+
 		return retryTutorial;
 	}
 
-	/// @return 50層を突破したなら true
-	bool playLoop(YieldExtended& yield, ActorView self, int initialFloor)
+	void initPlayData()
 	{
 		m_playData = {};
 #if _DEBUG
 		m_playData.floorIndex = debugToml<int>(U"initial_floor");
-		if (m_playData.floorIndex <= 0) m_playData.floorIndex = initialFloor;
+		if (m_playData.floorIndex <= 0) m_playData.floorIndex = 1;
 		m_playData.timeLimiter = Play::TimeLimiterData{
 			.maxTime = debugToml<double>(U"initial_timelimit"),
 			.remainingTime = debugToml<double>(U"initial_timelimit"),
 		};
 #else
-		m_playData.floorIndex = initialFloor;
+		m_playData.floorIndex = 1;
 		m_playData.timeLimiter = {
-			.maxTime = 90.0,
-			.remainingTime = 90.0,
+			.maxTime = initialTimeLimit,
+			.remainingTime = initialTimeLimit
 		};
 #endif
+	}
 
+	/// @return 50層を突破したなら true
+	bool playLoop(YieldExtended& yield, ActorView self)
+	{
 		bool floorDown{};
 
 		while (true)
@@ -182,13 +191,13 @@ private:
 
 			if (m_playData.timeLimiter.remainingTime == 0)
 			{
-				// 回生の回廊
+				// 回生の回廊へ
 				checkSave(m_playData, false);
 				return false;
 			}
 			if (m_playData.floorIndex == Constants::MaxFloorIndex)
 			{
-				// エンディング
+				// エンディングへ
 				checkSave(m_playData, true);
 				Play::PlayBgm::Instance().EndPlay();
 				return true;
@@ -207,7 +216,7 @@ private:
 	}
 
 	/// @return タイトルに戻るなら false
-	bool loungeLoop(YieldExtended& yield, ActorView self, int* initialFloor)
+	bool loungeLoop(YieldExtended& yield, ActorView self)
 	{
 		auto lounge = self.AsParent().Birth(Lounge::LoungeScene());
 		lounge.Init({.reachedFloor = m_playData.floorIndex});
@@ -219,7 +228,10 @@ private:
 		if (lounge.IsReturnToTitle()) return false;
 
 		// コンティニュー
-		*initialFloor = lounge.NextFloor();
+		m_playData.floorIndex = lounge.NextFloor();
+		m_playData.playerPersonal = {};
+		m_playData.timeLimiter = {.maxTime = initialTimeLimit, .remainingTime = initialTimeLimit};
+		m_playData.itemIndexing = {};
 		return true;
 	}
 

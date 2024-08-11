@@ -3,6 +3,7 @@
 
 #include "GameConfig.h"
 #include "DialogGamepadRegister.h"
+#include "Util/Asserts.h"
 
 namespace
 {
@@ -82,6 +83,8 @@ namespace Gm
 
 	Input GetGamepadInput(GamepadButton button)
 	{
+		if (not Util::AssertStrongly(s_instance != nullptr)) return {};
+
 		if (const auto gamepad = Gamepad(GamepadPlayer_0))
 			return gamepad.buttons[s_instance->currentMap[button]];
 		return {};
@@ -89,6 +92,8 @@ namespace Gm
 
 	bool IsGamepadPressed(GamepadButton button)
 	{
+		if (not Util::AssertStrongly(s_instance != nullptr)) return {};
+
 		if (const auto gamepad = Gamepad(GamepadPlayer_0))
 			return gamepad.buttons[s_instance->currentMap[button]].pressed();
 		return false;
@@ -96,6 +101,8 @@ namespace Gm
 
 	bool IsGamepadUp(GamepadButton button)
 	{
+		if (not Util::AssertStrongly(s_instance != nullptr)) return {};
+
 		if (const auto gamepad = Gamepad(GamepadPlayer_0))
 			return gamepad.buttons[s_instance->currentMap[button]].up();
 		return false;
