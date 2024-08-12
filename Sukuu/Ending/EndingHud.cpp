@@ -38,6 +38,7 @@ struct EndingHud::Impl
 	String m_finalInfo{};
 	double m_closeAlpha{};
 	double m_closeCloseAlpha{1.0};
+	double m_staffsAlpha{};
 	double m_sashiAlpha{};
 
 	void Init(ActorView self, const Play::MeasuredSecondsArray& measured)
@@ -98,6 +99,13 @@ struct EndingHud::Impl
 			                         ColorF(Palette::White, m_finalAlpha * m_closeCloseAlpha));
 		}
 
+		if (m_staffsAlpha > 0)
+		{
+			auto&& font = FontAsset(AssetKeys::RocknRoll_Sdf_Bold);
+			font(U"Music Composer\n- bu\n\nProgrammer and Graphic Artist\n- sashi")
+				.drawAt(textSize, Scene::Center(), ColorF(1.0, m_staffsAlpha));
+		}
+
 		if (m_sashiAlpha > 0)
 		{
 			auto&& font = FontAsset(AssetKeys::RocknRoll_Sdf_Bold);
@@ -114,6 +122,8 @@ private:
 		bgm.setLoop(true);
 		bgm.play();
 
+#if 0
+#endif
 		m_effect.add(CreateEndingOpenTransition({.basicDuration = 1.0, .fg = Constants::HardDarkblue}));
 		yield.WaitForTime(3.0);
 
@@ -129,6 +139,7 @@ private:
 			m_slideTexts.push_back(SlideText());
 		}
 		constexpr int slideSteps_5 = Constants::MaxFloorIndex / numLines;
+
 		// 50層すべての記録を表示
 		for (const auto d : step(slideSteps_5))
 		{
@@ -148,19 +159,25 @@ private:
 			}
 		}
 
+		// スタッフ表示
+		yield.WaitForExpire(AnimateEasing<EaseOutSine>(self, &m_staffsAlpha, 1.0, 0.5));
+		yield.WaitForExpire(AnimateEasing<EaseOutSine>(self, &m_closeAlpha, 1.0, 2.0));
+		yield.WaitForTime(3.0);
+		yield.WaitForExpire(AnimateEasing<EaseOutSine>(self, &m_staffsAlpha, 0.0, 0.5));
+
+		// 累計時間表示
 		yield.WaitForTime(1.0);
 		AnimateEasing<EaseOutCirc>(self, &m_finalAlpha, 1.0, 0.5);
-		m_finalInfo = U"踏破時間 {}"_fmt(FormatTimeSeconds(measured.Sum()));
+		m_finalInfo = U"累計踏破時間 {}"_fmt(FormatTimeSeconds(measured.Sum()));
 
-		yield.WaitForTime(3.0);
-
-		yield.WaitForExpire(AnimateEasing<EaseOutSine>(self, &m_closeAlpha, 1.0, 2.0));
+		yield.WaitForTime(2.0);
 
 		yield.WaitForTrue([]() { return Gm::CheckConfirmSimply(); });
 
-		bgm.stop(5.0s);
-		yield.WaitForExpire(AnimateEasing<EaseOutSine>(self, &m_closeCloseAlpha, 0.0, 5.0));
+		bgm.stop(3.0s);
+		yield.WaitForExpire(AnimateEasing<EaseOutSine>(self, &m_closeCloseAlpha, 0.0, 3.0));
 
+		// Presented by sashi
 		yield.WaitForExpire(AnimateEasing<EaseOutSine>(self, &m_sashiAlpha, 1.0, 1.0));
 		yield.WaitForTime(3.0);
 		yield.WaitForExpire(AnimateEasing<EaseOutSine>(self, &m_sashiAlpha, 0.0, 1.0));
