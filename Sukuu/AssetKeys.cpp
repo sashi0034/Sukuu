@@ -19,6 +19,18 @@ namespace
 	{
 		auto&& targetFont = FontAsset(target);
 
+		// 絵文字のフォールバックを追加
+		if (not FontAsset::IsRegistered(U"ColorEmoji"))
+		{
+			FontAsset::Register(U"ColorEmoji", 32, Typeface::ColorEmoji);
+		}
+		auto&& emojiFont = FontAsset(U"ColorEmoji");
+		if (not targetFont.addFallback(emojiFont))
+		{
+			Util::ErrorLog(U"Failed to add fallback font: {} <- ColorEmoji"_fmt(target));
+		}
+
+		// 外国語のフォールバックを追加
 		for (int i = 0; i < fallbackFontPaths.size(); ++i)
 		{
 			const auto& path = fallbackFontPaths[i];
