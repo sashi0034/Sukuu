@@ -5,8 +5,8 @@
 #include "Assets.generated.h"
 #include "Constants.h"
 #include "Gm/GameCursor.h"
+#include "Gm/LocalizedTextDatabase.h"
 #include "Play/PlayCore.h"
-#include "Play/Other/PlayingTips.h"
 #include "Util/CoroUtil.h"
 #include "Util/EasingAnimation.h"
 #include "Util/TomlParametersWrapper.h"
@@ -52,7 +52,7 @@ struct UiGameOver::Impl
 		const Color redColor = getToml<Color>(U"red_color");
 		if (m_mainTextAlpha > 0)
 		{
-			font(U"ゲームオーバー").drawAt(
+			font(U"game_over"_localize).drawAt(
 				TextStyle::Outline(0.2, borderColor),
 				getToml<double>(U"main_size"),
 				m_mainTextPos,
@@ -60,7 +60,7 @@ struct UiGameOver::Impl
 		}
 		if (m_subTextAlpha > 0)
 		{
-			font(U"第 {} 層で死んでしまった"_fmt(m_floorIndex))
+			font(U"died_at"_localizef(Gm::LocalizeOrdinals(m_floorIndex)))
 				.drawAt(TextStyle::Outline(0.1, borderColor),
 				        getToml<double>(U"sub_size"),
 				        m_subTextPos,

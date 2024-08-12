@@ -121,4 +121,17 @@ namespace Gm
 		const auto currentLanguage = GameConfig::Instance().language;
 		return s_instance->GetLocalizedText(key.data(), currentLanguage);
 	}
+
+	String LocalizeOrdinals(int number)
+	{
+		switch (GameConfig::Instance().language)
+		{
+		case GameLanguage::En:
+			if (number % 10 == 1) return Format(number) + U"st";
+			if (number % 10 == 2) return Format(number) + U"nd";
+			if (number % 10 == 3) return Format(number) + U"rd";
+			return Format(number) + U"th";
+		default: return Format(number);
+		}
+	}
 }

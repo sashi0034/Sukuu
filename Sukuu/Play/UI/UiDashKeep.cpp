@@ -3,6 +3,7 @@
 
 #include "AssetKeys.h"
 #include "Gm/GamepadObserver.h"
+#include "Gm/LocalizedTextDatabase.h"
 #include "Util/TomlParametersWrapper.h"
 
 namespace
@@ -47,10 +48,10 @@ struct Play::UiDashKeep::Impl
 
 		if (m_keeping)
 		{
-			FontAsset(AssetKeys::RocknRoll_24_Bitmap)(U"ダッシュ")
+			FontAsset(AssetKeys::RocknRoll_24_Bitmap)(U"dash"_localize)
 				.regionAt(center).stretched(4.0).shearedX(12.0).rotatedAt(center, 3.0).draw(ColorF(0.3, 0.7));
 		}
-		(void)FontAsset(AssetKeys::RocknRoll_24_Bitmap)(U"ダッシュ")
+		(void)FontAsset(AssetKeys::RocknRoll_24_Bitmap)(U"dash"_localize)
 			.drawAt(center, Palette::White);
 	}
 };

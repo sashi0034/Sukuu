@@ -19,6 +19,8 @@ namespace Gm
 			return detail::FormatHelper{LocalizedText(StringView(s, length)).data()};
 		}
 	}
+
+	String LocalizeOrdinals(int number);
 }
 
 using namespace Gm::Literals;

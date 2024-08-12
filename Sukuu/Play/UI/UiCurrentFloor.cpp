@@ -2,6 +2,7 @@
 #include "UiCurrentFloor.h"
 
 #include "AssetKeys.h"
+#include "Gm/LocalizedTextDatabase.h"
 #include "Util/TomlParametersWrapper.h"
 
 namespace
@@ -15,12 +16,13 @@ namespace
 
 struct Play::UiCurrentFloor::Impl
 {
-	String m_text{};
+	int m_floorIndex{};
 
 	void Update()
 	{
-		if (m_text.empty()) return;
-		FontAsset(AssetKeys::RocknRoll_24_Bitmap)(m_text)
+		const String text = U"layer_name"_localizef(Gm::LocalizeOrdinals(m_floorIndex));
+		if (text.empty()) return;
+		FontAsset(AssetKeys::RocknRoll_24_Bitmap)(text)
 			.draw(Arg::bottomLeft = Rect(Scene::Size()).bl() + getToml<Point>(U"padding"), Palette::Lavender);
 	}
 };
@@ -34,7 +36,7 @@ namespace Play
 
 	void UiCurrentFloor::Init(int floorIndex)
 	{
-		p_impl->m_text = U"第 {} 層"_fmt(floorIndex);
+		p_impl->m_floorIndex = floorIndex;
 	}
 
 	void UiCurrentFloor::Update()

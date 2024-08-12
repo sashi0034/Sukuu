@@ -4,6 +4,7 @@
 #include "AssetKeys.h"
 #include "Assets.generated.h"
 #include "Constants.h"
+#include "Gm/LocalizedTextDatabase.h"
 #include "Play/Other/FloorLevelDesign.h"
 #include "Util/CoroUtil.h"
 #include "Util/EasingAnimation.h"
@@ -108,10 +109,11 @@ private:
 		AnimateEasing<EaseOutBack>(self, &m_textHeightScale, 1.0, 0.5);
 
 		m_subheading = Constants::MaxFloorIndex == floorIndex
-			               ? U"最後の層"
-			               : U"最奥部まで あと {} 層"_fmt(Constants::MaxFloorIndex - floorIndex + 1);
+			               ? U"last_layer_name"_localize
+			               : U"remaining_layers"_localizef(Constants::MaxFloorIndex - floorIndex + 1);
 
-		m_glyphs = FontAsset(AssetKeys::RocknRoll_72_Bitmap).renderOutlines(U"第 {} 層"_fmt(floorIndex));
+		m_glyphs = FontAsset(AssetKeys::RocknRoll_72_Bitmap)
+			.renderOutlines(U"layer_name"_localizef(Gm::LocalizeOrdinals(floorIndex)));
 		m_glyphWidth = 0;
 		for (auto&& g : m_glyphs)
 		{
