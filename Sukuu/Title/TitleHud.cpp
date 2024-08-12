@@ -62,7 +62,7 @@ struct Title::TitleHud::Impl
 			}
 		}));
 
-		m_buttons.push_back(CornerButton(U"settings"_sv, []()
+		m_buttons.push_back(CornerButton(U"settings_with_emoji"_sv, []()
 		{
 			Gm::DialogSettingConfigure();
 		}));

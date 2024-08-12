@@ -25,7 +25,7 @@ struct Play::PlayingPause::Impl
 			m_paused = false;
 		}));
 
-		m_buttons.push_back(CornerButton(U"pause_setting"_sv, []()
+		m_buttons.push_back(CornerButton(U"settings_with_emoji"_sv, []()
 		{
 			Gm::DialogSettingConfigure();
 		}));
