@@ -149,7 +149,7 @@ private:
 
 		m_playerPos.x += 6.0 * Scene::DeltaTime();
 
-		constexpr int mapCenterY = (mapSize.y * Px_16 / 2) - Px_16 / 2;
+		constexpr int mapCenterY = (mapSize.y * Px_16 / 2);
 		const auto cameraPos = Vec2{m_cameraX, mapCenterY};
 		const double cameraScale = 4.5 + 0.5 * Periodic::Sine1_1(12.0s);
 		const auto center = Vec2{0, Scene::Center().y};

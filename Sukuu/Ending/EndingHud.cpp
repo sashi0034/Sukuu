@@ -4,6 +4,7 @@
 #include "AssetKeys.h"
 #include "Assets.generated.h"
 #include "Constants.h"
+#include "EndingOpenTransition.h"
 #include "Gm/GameCursor.h"
 #include "Play/PlayCore.h"
 #include "Util/CoroUtil.h"
@@ -29,7 +30,7 @@ namespace
 
 struct EndingHud::Impl
 {
-	double m_openW{};
+	Effect m_effect{};
 	bool m_finished{};
 	double m_initialMessageAlpha{};
 	Array<SlideText> m_slideTexts{};
@@ -49,11 +50,6 @@ struct EndingHud::Impl
 
 	void Update()
 	{
-		if (m_openW > 0)
-		{
-			Rect(Size{static_cast<int>(m_openW), Scene::Height()}).draw(ColorF(Constants::HardDarkblue));
-		}
-
 		const int marginY = getToml<int>(U"margin_y");
 		const int availableY = Scene::Size().y - marginY * 2;
 
@@ -91,9 +87,9 @@ struct EndingHud::Impl
 			const int finalY = getToml<int>(U"final_y");
 			auto&& font = FontAsset(AssetKeys::RocknRoll_Sdf_Bold);
 			const int finalSize = getToml<int>(U"final_size");
-			font(U"よくぞここまでたどり着きましたね\nお疲れ様でした")
+			font(U"迷宮の完全攻略を達成")
 				.drawAt(TextStyle::Outline(0.3, ColorF(0.4, m_closeCloseAlpha)),
-				        textSize,
+				        finalSize,
 				        Scene::Center().movedBy(0, -finalY),
 				        ColorF(Palette::White, m_finalAlpha * m_closeCloseAlpha));
 			font(m_finalInfo).drawAt(TextStyle::Outline(0.3, ColorF(0.4, m_closeCloseAlpha)),
@@ -107,6 +103,8 @@ struct EndingHud::Impl
 			auto&& font = FontAsset(AssetKeys::RocknRoll_Sdf_Bold);
 			font(U"Presented by sashi").drawAt(textSize, Scene::Center(), ColorF(1.0, m_sashiAlpha));
 		}
+
+		m_effect.update();
 	}
 
 private:
@@ -115,8 +113,9 @@ private:
 		const auto bgm = AudioAsset(AssetBgms::dear_my_rabbit);
 		bgm.setLoop(true);
 		bgm.play();
-		m_openW = Scene::Size().x;
-		yield.WaitForExpire(AnimateEasing<EaseOutCirc>(self, &m_openW, 0.0, 2.0));
+
+		m_effect.add(CreateEndingOpenTransition({.basicDuration = 1.0, .fg = Constants::HardDarkblue}));
+		yield.WaitForTime(3.0);
 
 		yield.WaitForExpire(
 			AnimateEasing<EaseOutSine>(self, &m_initialMessageAlpha, 1.0, 0.5));
@@ -151,7 +150,7 @@ private:
 
 		yield.WaitForTime(1.0);
 		AnimateEasing<EaseOutCirc>(self, &m_finalAlpha, 1.0, 0.5);
-		m_finalInfo = U"迷宮踏破記録 {}"_fmt(FormatTimeSeconds(measured.Sum()));
+		m_finalInfo = U"踏破時間 {}"_fmt(FormatTimeSeconds(measured.Sum()));
 
 		yield.WaitForTime(3.0);
 
