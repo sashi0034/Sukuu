@@ -170,13 +170,13 @@ struct LoungeBgDrawer::Impl
 		{
 			ScopedRenderStates2D sampler{SamplerState::ClampLinear};
 			drawBalloonDesctiption(
-				Gm::LocalizedText(U"return_to_title"), data.stairsToTitlePoint);
+				U"return_to_title"_localize, data.stairsToTitlePoint);
 			drawBalloonDesctiption(
-				Gm::LocalizedText(U"continue_from_beginning"), data.stairsToContinueFromBeginningPoint);
+				U"continue_from_beginning"_localize, data.stairsToContinueFromBeginningPoint);
 			if (m_continueFromMiddle > 0)
 			{
 				drawBalloonDesctiption(
-					fmt::format(Gm::LocalizedText(U"continue_from_middle").data(), m_continueFromMiddle),
+					U"continue_from_middle"_localizef(Gm::LocalizeOrdinals(m_continueFromMiddle)),
 					data.stairsToContinueFromMiddlePoint);
 			}
 		}

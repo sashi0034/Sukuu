@@ -20,8 +20,10 @@ struct Play::UiCurrentFloor::Impl
 
 	void Update()
 	{
+		if (m_floorIndex == 0) return;
+
 		const String text = U"layer_name"_localizef(Gm::LocalizeOrdinals(m_floorIndex));
-		if (text.empty()) return;
+
 		FontAsset(AssetKeys::RocknRoll_24_Bitmap)(text)
 			.draw(Arg::bottomLeft = Rect(Scene::Size()).bl() + getToml<Point>(U"padding"), Palette::Lavender);
 	}
