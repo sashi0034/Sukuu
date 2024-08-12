@@ -31,6 +31,7 @@ struct EndingHud::Impl
 {
 	double m_openW{};
 	bool m_finished{};
+	double m_initialMessageAlpha{};
 	Array<SlideText> m_slideTexts{};
 	double m_finalAlpha{};
 	String m_finalInfo{};
@@ -70,6 +71,16 @@ struct EndingHud::Impl
 			                       Palette::White);
 		}
 
+		if (m_initialMessageAlpha > 0)
+		{
+			auto&& font = FontAsset(AssetKeys::RocknRoll_Sdf_Bold);
+			font(U"第 50 層を踏破した")
+				.drawAt(TextStyle::Outline(0.3, ColorF(0.4, m_initialMessageAlpha)),
+				        textSize * 2,
+				        Scene::Center(),
+				        ColorF(Palette::Azure, m_initialMessageAlpha));
+		}
+
 		if (m_closeAlpha > 0)
 		{
 			Rect(Scene::Size()).draw(ColorF(Constants::HardDarkblue, m_closeAlpha));
@@ -106,6 +117,12 @@ private:
 		bgm.play();
 		m_openW = Scene::Size().x;
 		yield.WaitForExpire(AnimateEasing<EaseOutCirc>(self, &m_openW, 0.0, 2.0));
+
+		yield.WaitForExpire(
+			AnimateEasing<EaseOutSine>(self, &m_initialMessageAlpha, 1.0, 0.5));
+		yield.WaitForTime(2.0);
+		yield.WaitForExpire(
+			AnimateEasing<EaseOutSine>(self, &m_initialMessageAlpha, 0.0, 0.5));
 
 		constexpr int numLines = 10;
 		for (int i = 0; i < numLines; ++i)
