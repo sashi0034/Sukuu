@@ -96,6 +96,13 @@ private:
 
 		m_messanger = m_play.BirthUiMessenger();
 		m_focus = m_play.AsUiContent().Birth(TutorialFocus());
+
+		// ポーズ画面にチュートリアル終了ボタンを追加
+		m_play.GetPause().AddButtonCancelTutorial([&]()
+		{
+			m_bgm.stop();
+			m_finished = true;
+		});
 	}
 
 	void waitMessage(YieldExtended& yield, const String& message, double duration)

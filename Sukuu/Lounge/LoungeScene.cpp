@@ -123,6 +123,8 @@ private:
 		});
 
 		m_play.EnableCaveVision(false);
+
+		m_play.GetPause().AddButtonExitGame();
 	}
 
 	void onPlayerMoved(Vec2 pos)

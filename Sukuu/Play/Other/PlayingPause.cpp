@@ -8,6 +8,7 @@
 #include "Gm/GamepadObserver.h"
 #include "Play/PlayCore.h"
 #include "Util/Utilities.h"
+#include "Gm/LocalizedTextDatabase.h"
 
 struct Play::PlayingPause::Impl
 {
@@ -19,21 +20,21 @@ struct Play::PlayingPause::Impl
 
 	void Init(bool enableRetire)
 	{
-		m_buttons.push_back(CornerButton(U"閉じる"_sv, [this]()
+		m_buttons.push_back(CornerButton(U"pause_close"_sv, [this]()
 		{
 			m_paused = false;
 		}));
 
-		m_buttons.push_back(CornerButton(U"設定"_sv, []()
+		m_buttons.push_back(CornerButton(U"pause_setting"_sv, []()
 		{
 			Gm::DialogSettingConfigure();
 		}));
 
 		if (enableRetire)
 		{
-			m_buttons.push_back(CornerButton(U"リタイア"_sv, [this]()
+			m_buttons.push_back(CornerButton(U"pause_retire"_sv, [this]()
 			{
-				if (Gm::DialogYesNo(U"本当に諦めますか") != MessageBoxResult::Yes) return;
+				if (Gm::DialogYesNo(U"pause_confirm_retire"_localize) != MessageBoxResult::Yes) return;
 				PlayCore::Instance().GetTimeLimiter().ForceTerminate();
 				m_paused = false;
 			}));
@@ -62,7 +63,7 @@ struct Play::PlayingPause::Impl
 
 		Rect(Scene::Size()).draw(ColorF{ColorF(Palette::Darkslateblue) * 0.7, 0.5});
 
-		FontAsset(AssetKeys::RocknRoll_Sdf_Bold)(U"ポーズ中")
+		FontAsset(AssetKeys::RocknRoll_Sdf_Bold)(U"pause_title"_localize)
 			.drawAt(TextStyle::Outline(0.3, ColorF(0.2)), 96, Scene::Center(), Palette::White);
 
 		bool buttonHovered{};
@@ -86,7 +87,6 @@ namespace Play
 	{
 	}
 
-
 	void PlayingPause::Init(bool enableRetire)
 	{
 		p_impl->Init(enableRetire);
@@ -106,5 +106,23 @@ namespace Play
 	{
 		ActorBase::Update();
 		p_impl->Update();
+	}
+
+	void PlayingPause::AddButtonCancelTutorial(const std::function<void()>& callback)
+	{
+		p_impl->m_buttons.push_back(CornerButton(U"pause_cancel_tutorial"_sv, [this, callback]()
+		{
+			if (Gm::DialogYesNo(U"pause_confirm_cancel_tutorial"_localize) != MessageBoxResult::Yes) return;
+			callback();
+		}));
+	}
+
+	void PlayingPause::AddButtonExitGame()
+	{
+		p_impl->m_buttons.push_back(CornerButton(U"pause_exit_game"_sv, [this]()
+		{
+			if (Gm::DialogYesNo(U"pause_confirm_exit_game"_localize) != MessageBoxResult::Yes) return;
+			System::Exit();
+		}));
 	}
 }
