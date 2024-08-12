@@ -46,10 +46,15 @@ namespace
 
 			if (m_ini.hasValue(key, Gm::LanguageCodes[static_cast<int>(language)]))
 			{
-				return m_ini.getValue(key, Gm::LanguageCodes[static_cast<int>(language)]);
+				return preprocessText(m_ini.getValue(key, Gm::LanguageCodes[static_cast<int>(language)]));
 			}
 
 			return U"$" + key;
+		}
+
+		static String preprocessText(const String& message)
+		{
+			return message.replaced(U"\\n", U"\n");
 		}
 
 	public:

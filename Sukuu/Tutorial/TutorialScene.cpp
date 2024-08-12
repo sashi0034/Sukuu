@@ -8,6 +8,7 @@
 #include "TutorialMap.h"
 #include "Gm/GameCursor.h"
 #include "Gm/GamepadObserver.h"
+#include "Gm/LocalizedTextDatabase.h"
 #include "Play/PlayScene.h"
 #include "Play/Enemy/EnKnight.h"
 #include "Play/Enemy/EnSlimeCat.h"
@@ -22,9 +23,9 @@ namespace
 		return Util::GetTomlParameter<T>(U"tutorial.scene." + key);
 	}
 
-	constexpr double messageWaitShortShort = 1.5;
-	constexpr double messageWaitShort = 2.0;
-	constexpr double messageWaitMedium = 3.0;
+	// constexpr double messageWaitShortShort = 2.0;
+	constexpr double messageWaitShort = 3.0;
+	constexpr double messageWaitMedium = 4.0;
 }
 
 struct Tutorial::TutorialScene::Impl
@@ -158,7 +159,7 @@ private:
 			icon.resized(800, 800)
 			    .drawAt(Scene::Center());
 
-			font(U"左クリックかAボタンで開始")
+			font(Gm::LocalizedText(U"tutorial_start"))
 				.drawAt(32.0 + 8.0 * Periodic::Sine0_1(3.0s), Scene::Center().moveBy(0, 400), ColorF(U"#2591d4"));
 		};
 
@@ -183,7 +184,7 @@ private:
 		m_postDraw = [&]()
 		{
 			Rect(Scene::Size()).draw(ColorF{Constants::HardDarkblue});
-			prologueFont(U"ダンジョン50層先のいにしえの地を求めて...").drawAt(
+			prologueFont(Gm::LocalizedText(U"tutorial_open")).drawAt(
 				40.0, Scene::Center(), ColorF(1.0, prologueAlpha));
 		};
 		yield.WaitForExpire(AnimateEasing<EaseInOutSine>(m_play.AsMainContent(), &prologueAlpha, 1.0, 2.0));
@@ -212,8 +213,8 @@ private:
 		m_play.GetMap().At(m_mapData.firstBlockPoint).kind = Play::TerrainKind::Wall;
 
 		yield.WaitForTime(2.0);
-		waitMessage(yield, U"目が覚めたようだね", messageWaitMedium);
-		waitMessage(yield, U"早速だがキミに動いてもらおう", messageWaitMedium);
+		waitMessage(yield, Gm::LocalizedText(U"tutorial_welcome"), messageWaitMedium);
+		waitMessage(yield, Gm::LocalizedText(U"tutorial_lets_start_description"), messageWaitMedium);
 		playerServices().canMove = true;
 		int movedCount{};
 		int runningCount{};
@@ -222,23 +223,25 @@ private:
 			if (isRunning) runningCount++;
 			movedCount++;
 		};
-		m_messanger.ShowMessageForever(U"まずは {} で移動の確認をしてみようか"_fmt(
-			Gm::IsUsingGamepad()
-				? U"'十字キー'"
-				: U"'W, A, S, D' か `矢印キー`"));
+		m_messanger.ShowMessageForever(
+			fmt::format(
+				Gm::LocalizedText(U"tutorial_how_to_move").data(),
+				Gm::LocalizedText(Gm::IsUsingGamepad() ? U"button_d_pad" : U"button_wasd_or_arrow").data()));
+
 		yield.WaitForTrue([&]
 		{
 			return movedCount > 10;
 		});
-		m_messanger.ShowMessageForever(U"次に {} を押しっぱなしにして走ってもらおう"_fmt(
-			Gm::IsUsingGamepad()
-				? U"'B'"
-				: U"'Shift'"));
+		m_messanger.ShowMessageForever(
+			fmt::format(
+				Gm::LocalizedText(U"tutorial_how_to_run").data(),
+				Gm::IsUsingGamepad() ? U"'B'" : U"'Shift'"));
+
 		yield.WaitForTrue([&]
 		{
 			return runningCount > 10;
 		});
-		waitMessage(yield, U"よし、では奥に進もうか", messageWaitMedium);
+		waitMessage(yield, Gm::LocalizedText(U"tutorial_go_depth"), messageWaitMedium);
 
 		// とうせんぼうしてたブロックを除去
 		AudioAsset(AssetSes::attack2).playOneShot();
@@ -296,8 +299,8 @@ private:
 		});
 
 		(void)m_bgm.setVolume(0.7);
-		waitMessage(yield, U"おや、怪物に囲まれてしまったね", messageWaitMedium);
-		waitMessage(yield, U"では、キミに運命を 'スクう' チカラを与えよう", messageWaitMedium);
+		waitMessage(yield, Gm::LocalizedText(U"tutorial_surrounded_monsters"), messageWaitMedium);
+		waitMessage(yield, Gm::LocalizedText(U"tutorial_introduce_sukuu"), messageWaitMedium);
 		(void)m_bgm.setVolume(0.5);
 
 		bool hasScooped{};
@@ -313,22 +316,12 @@ private:
 		};
 
 		m_focus.Show(Scene::Center());
-		auto scoopingMessage = StartCoro(m_play.AsMainContent(), [&](YieldExtended y)
-		{
-			waitMessage(y, Gm::IsUsingGamepad()
-				               ? U"自分自身をスクってみよう"
-				               : U"キミ自身をマウスカーソルでスクってみるといい",
-			            messageWaitMedium);
-			m_messanger.ShowMessageForever(
-				Gm::IsUsingGamepad()
-					? U"'RT' を押して壁方向へ向かってみるんだ"
-					: U"自分自身を 'ドラッグ' して\n壁の方向へ 'ドロップ' するんだ");
-		});
+		m_messanger.ShowMessageForever(
+			Gm::LocalizedText(Gm::IsUsingGamepad() ? U"tutorial_sukuu_by_gp" : U"tutorial_sukuu_by_km"));
 		yield.WaitForTrueVal(hasScooped);
 		playerServices().canScoop = false;
 
 		timescaleController.Kill();
-		scoopingMessage.Kill();
 		m_focus.Hide();
 		SetTimeScale(1.0);
 		(void)m_bgm.setVolume(1.0);
@@ -336,14 +329,14 @@ private:
 
 		playerServices().overrideCamera = none;
 
-		waitMessage(yield, U"間一髪、一難過ぎ去ったね", messageWaitShort);
+		waitMessage(yield, Gm::LocalizedText(U"tutorial_succeed_sukuu"), messageWaitShort);
 		catNorth.Kill();
 		catSouth.Kill();
 		playerServices().canMove = true;
 		playerServices().canScoop = true;
 		playerServices().onScooped = {};
 		playerServices().canScoopTo = {};
-		waitMessage(yield, U"さて、奥へ進もうか", messageWaitShort);
+		waitMessage(yield, Gm::LocalizedText(U"tutorial_go_depth"), messageWaitShort);
 	}
 
 	void tutorialItem(YieldExtended& yield)
@@ -365,7 +358,7 @@ private:
 
 		yield.WaitForTrueVal(nearItem);
 		playerServices().canMove = false;
-		waitMessage(yield, U"イイものが落ちているね", messageWaitShortShort);
+		waitMessage(yield, Gm::LocalizedText(U"tutorial_introduce_item"), messageWaitMedium);
 		playerServices().canMove = true;
 
 		bool obtainedItem{};
@@ -383,9 +376,7 @@ private:
 		m_play.GetMap().At(m_mapData.itemBlockPoint).kind = Play::TerrainKind::Wall;
 
 		m_messanger.ShowMessageForever(
-			Gm::IsUsingGamepad()
-				? U"'L / R' でアイテムを選んで 'A' で使ってみよう"
-				: U"アイコンを '左クリック' するか '数字キー' で使ってみよう");
+			Gm::LocalizedText(Gm::IsUsingGamepad() ? U"tutorial_use_item_by_gp" : U"tutorial_use_item_by_km"));
 
 		// 敵をキルするまで待機
 		yield.WaitForTrue([&]() { return knight.IsDead(); });
@@ -393,7 +384,7 @@ private:
 		playerServices().canMoveTo = {};
 		playerServices().canScoopTo = {};
 
-		waitMessage(yield, U"うん、いいね", messageWaitShortShort);
+		waitMessage(yield, Gm::LocalizedText(U"tutorial_kill_enemy"), messageWaitShort);
 	}
 
 	void tutorialFinal(YieldExtended& yield)
@@ -408,18 +399,18 @@ private:
 
 		playerServices().canMove = false;
 		playerServices().canScoop = false;
-		waitMessage(yield, U"最後に重要なことを話しておこう", messageWaitShort);
-		waitMessage(yield, U"実はこの迷宮でキミが生きられる時間は\n限られている", messageWaitMedium);
+		waitMessage(yield, Gm::LocalizedText(U"tutorial_introduce_limit"), messageWaitShort);
+		waitMessage(yield, Gm::LocalizedText(U"tutorial_whats_limit"), messageWaitMedium);
 
 		m_play.GetTimeLimiter().SetCountEnabled(true);
 		m_focus.Show(Rect(Scene::Size()).tr() + Size{-1, 1} * 144);
 
-		waitMessage(yield, U"砂時計を見てもらいたい", messageWaitShort);
+		waitMessage(yield, Gm::LocalizedText(U"tutorial_see_clock"), messageWaitShort);
 
-		waitMessage(yield, U"これが0になるとキミは死を迎えるだろう", messageWaitShort);
-		waitMessage(yield, U"これは怪物を倒したり、アイテムで回復が可能だ", messageWaitMedium);
+		waitMessage(yield, Gm::LocalizedText(U"tutorial_when_time_up"), messageWaitShort);
+		waitMessage(yield, Gm::LocalizedText(U"tutorial_heal_time"), messageWaitMedium);
 
-		waitMessage(yield, U"では、キミの健闘を祈っているよ", messageWaitShortShort);
+		waitMessage(yield, Gm::LocalizedText(U"tutorial_finish"), messageWaitShort);
 
 		m_focus.Hide();
 
