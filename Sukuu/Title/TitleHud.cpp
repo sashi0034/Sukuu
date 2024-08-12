@@ -42,7 +42,7 @@ struct Title::TitleHud::Impl
 		m_buttons.push_back(CornerButton(U"exit"_sv, []()
 		{
 			const ScopedRenderTarget2D rs{none};
-			if (Gm::DialogYesNo(Gm::LocalizedText(U"ask_exit")) == MessageBoxResult::Yes)
+			if (Gm::DialogYesNo(U"ask_exit_game"_localize) == MessageBoxResult::Yes)
 			{
 				System::Exit();
 			}
@@ -56,7 +56,7 @@ struct Title::TitleHud::Impl
 		m_buttons.push_back(CornerButton(U"tutorial"_sv, [this]()
 		{
 			const ScopedRenderTarget2D rs{none};
-			if (Gm::DialogYesNo(Gm::LocalizedText(U"ask_retry_tutorial")) == MessageBoxResult::Yes)
+			if (Gm::DialogYesNo(U"ask_retry_tutorial"_localize) == MessageBoxResult::Yes)
 			{
 				m_concludedRetryTutorial = true;
 			}
@@ -71,7 +71,7 @@ struct Title::TitleHud::Impl
 		{
 			m_buttons.push_back(CornerButton(U"ura_switch"_sv, []()
 			{
-				if (Gm::DialogYesNo(Gm::LocalizedText(U"ask_ura_switch")) == MessageBoxResult::Yes)
+				if (Gm::DialogYesNo(U"ask_ura_switch"_localize) == MessageBoxResult::Yes)
 				{
 					Play::SetPlayingUra(not Play::IsPlayingUra());
 				}
@@ -130,8 +130,8 @@ struct Title::TitleHud::Impl
 		// 開始プロンプト
 		m_promptAnim += 2.0 * Scene::DeltaTime();
 		const auto promptMessage = Gm::IsUsingGamepad()
-			                           ? U"ダンジョンに潜る"_sv
-			                           : U"左クリックでダンジョンに潜る"_sv;
+			                           ? U"title_start_play_by_gp"_localize
+			                           : U"title_start_play_by_km"_localize;
 		const auto promptRegion = FontAsset(AssetKeys::RocknRoll_Sdf_Bold)(promptMessage)
 			.drawAt(getToml<double>(U"prompt_font"),
 			        Scene::Center().movedBy(0, getToml<double>(U"prompt_y")),
@@ -160,13 +160,13 @@ struct Title::TitleHud::Impl
 private:
 	String getRecordText() const
 	{
-		const auto record = m_saved.GetRecord(Play::IsPlayingUra());
+		const auto& record = m_saved.GetRecord(Play::IsPlayingUra());
 		if (record.bestReached == 0) return U"";
 		if (record.bestReached == Constants::MaxFloorIndex && record.completedTime > 0)
 		{
-			return U"踏破 {}"_fmt(FormatTimeSeconds(record.completedTime));
+			return U"title_record_on_50"_localizef(FormatTimeSeconds(record.completedTime));
 		}
-		return U"到達 {} 層"_fmt(record.bestReached);
+		return U"title_record_achieved"_localizef(record.bestReached);
 	}
 };
 
