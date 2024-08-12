@@ -6,6 +6,7 @@
 #include "DialogGamepadRegister.h"
 #include "GameConfig.h"
 #include "GamepadObserver.h"
+#include "LocalizedTextDatabase.h"
 #include "detail/GameDialogCommon.h"
 #include "Util/TomlParametersWrapper.h"
 
@@ -176,22 +177,22 @@ namespace
 
 	StringView getFullscreenName(bool fullscreen)
 	{
-		return fullscreen ? U"フルスクリーン" : U"ウィンドウ";
+		return fullscreen ? U"window_fullscreen"_localize : U"window_default"_localize;
 	}
 
 	void updateUi(GameConfig& editing, bool* exitHover, int* cursorRaw)
 	{
 		static const auto defaultConfig = GameConfig();
 
-		DrawDialogTitle(U"設定");
+		DrawDialogTitle(U"settings_with_emoji"_localize);
 
-		updateRow(0, cursorRaw, U"画面モード", wrapTextContentWithTabs(
+		updateRow(0, cursorRaw, U"config_window_mode"_localize, wrapTextContentWithTabs(
 			          getFullscreenName(editing.fullscreen), [&](bool right)
 			          {
 				          editing.fullscreen = not editing.fullscreen;
 				          editing.ApplySystems();
 			          }));
-		updateRow(1, cursorRaw, U"言語", wrapTextContentWithTabs(
+		updateRow(1, cursorRaw, U"config_language"_localize, wrapTextContentWithTabs(
 			          LanguageLabels[static_cast<int>(editing.language)],
 			          [&](bool right)
 			          {
@@ -199,6 +200,9 @@ namespace
 					          GameLanguage, GameLanguage::Max>(
 					          editing.language, right ? 1 : -1);
 				          editing.ApplySystems();
+
+				          // ここで書き換えないと反映されないため、あまり良くないが仕方ないので直接インスタンスを書き換える
+				          GameConfig::Instance().language = editing.language;
 			          }));
 		updateRow(2, cursorRaw, U"BGM", wrapVolumeContentWithTabs(
 			          editing.bgm_volume.GetRate(),
@@ -216,21 +220,21 @@ namespace
 				          editing.se_volume = TenStepNumber(editing.se_volume + (right ? 1 : -1));
 				          editing.ApplySystems();
 			          }));
-		updateRow(4, cursorRaw, U"X軸カメラ移動量", wrapVolumeContentWithTabs(
+		updateRow(4, cursorRaw, U"config_camera_move"_localizef(U"X"), wrapVolumeContentWithTabs(
 			          editing.camera_move_x.GetRate(),
 			          defaultConfig.camera_move_x.GetRate(),
 			          [&](bool right)
 			          {
 				          editing.camera_move_x = TenStepNumber(editing.camera_move_x + (right ? 1 : -1));
 			          }));
-		updateRow(5, cursorRaw, U"Y軸カメラ移動量", wrapVolumeContentWithTabs(
+		updateRow(5, cursorRaw, U"config_camera_move"_localizef(U"Y"), wrapVolumeContentWithTabs(
 			          editing.camera_move_y.GetRate(),
 			          defaultConfig.camera_move_y.GetRate(),
 			          [&](bool right)
 			          {
 				          editing.camera_move_y = TenStepNumber(editing.camera_move_y + (right ? 1 : -1));
 			          }));
-		updateRow(6, cursorRaw, U"", wrapTextContentWithAction(U"ゲームパッド設定", [&]
+		updateRow(6, cursorRaw, U"", wrapTextContentWithAction(U"config_gamepad"_localize, [&]
 		{
 			const auto gamepad = Gamepad(GamepadPlayer_0);
 			if (not gamepad) return;
