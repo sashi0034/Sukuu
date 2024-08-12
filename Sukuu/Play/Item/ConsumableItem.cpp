@@ -19,67 +19,67 @@ namespace Play
 		data[static_cast<int>(c::Wing)] = ItemProps{
 			.item = c::Wing,
 			.emoji = U"🪶",
-			.desc = U"階段へワープ"
+			.desc = U"item_desc_wing"
 		};
 		data[static_cast<int>(c::Helmet)] = ItemProps{
 			.item = c::Helmet,
 			.emoji = U"⛑️",
-			.desc = U"ダメージを防ぐ"
+			.desc = U"item_desc_helmet"
 		};
 		data[static_cast<int>(c::Pin)] = ItemProps{
 			.item = c::Pin,
 			.emoji = U"📌",
-			.desc = U"敵をやっつける"
+			.desc = U"item_desc_pin"
 		};
 		data[static_cast<int>(c::Mine)] = ItemProps{
 			.item = c::Mine,
 			.emoji = U"💣",
-			.desc = U"地雷を置く"
+			.desc = U"item_desc_mine"
 		};
 		data[static_cast<int>(c::LightBulb)] = ItemProps{
 			.item = c::LightBulb,
 			.emoji = U"💡",
-			.desc = U"霧払いをする"
+			.desc = U"item_desc_bulb"
 		};
 		data[static_cast<int>(c::Magnet)] = ItemProps{
 			.item = c::Magnet,
 			.emoji = U"🧲",
-			.desc = U"敵を足止める"
+			.desc = U"item_desc_magnet"
 		};
 		data[static_cast<int>(c::Bookmark)] = ItemProps{
 			.item = c::Bookmark,
 			.emoji = U"🔖",
-			.desc = U"マップに階段とアイテム位置表示"
+			.desc = U"item_desc_bookmark"
 		};
 		data[static_cast<int>(c::Explorer)] = ItemProps{
 			.item = c::Explorer,
 			.emoji = U"🗂️",
-			.desc = U"一定時間マップに敵の位置を表示"
+			.desc = U"item_desc_explorer"
 		};
 		data[static_cast<int>(c::Grave)] = ItemProps{
 			.item = c::Grave,
 			.emoji = U"🪦",
-			.desc = U"敵の進路をふさぐ"
+			.desc = U"item_desc_grave"
 		};
 		data[static_cast<int>(c::Sun)] = ItemProps{
 			.item = c::Sun,
 			.emoji = U"🌞",
-			.desc = U"炎で敵を焼き尽くす"
+			.desc = U"item_desc_sun"
 		};
 		data[static_cast<int>(c::Tube)] = ItemProps{
 			.item = c::Tube,
 			.emoji = U"🧪",
-			.desc = U"体力を回復する"
+			.desc = U"item_desc_tube"
 		};
 		data[static_cast<int>(c::Solt)] = ItemProps{
 			.item = c::Solt,
 			.emoji = U"🧂",
-			.desc = U"敵に見つかりにくくなる"
+			.desc = U"item_desc_solt"
 		};
 		data[static_cast<int>(c::Rocket)] = ItemProps{
 			.item = c::Rocket,
 			.emoji = U"🚀",
-			.desc = U"一定時間壁をすり抜けて移動可能"
+			.desc = U"item_desc_rocket"
 		};
 
 		return data;

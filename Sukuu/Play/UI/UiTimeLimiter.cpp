@@ -2,6 +2,7 @@
 #include "UiTimeLimiter.h"
 
 #include "AssetKeys.h"
+#include "Gm/LocalizedTextDatabase.h"
 #include "Play/PlayingUra.h"
 #include "Play/Other/TimeLimiter.h"
 #include "Util/EasingAnimation.h"
@@ -154,7 +155,7 @@ private:
 		// アイコン描画
 		(void)TextureAsset(U"⏳").resized(getToml<int>(U"icon_size")).drawAt(center);
 
-		FontAsset(AssetKeys::RocknRoll_24_Bitmap)(U"のこり {}"_fmt(static_cast<int>(remainingTime)))
+		FontAsset(AssetKeys::RocknRoll_24_Bitmap)(U"ui_remaining_time"_localizef(static_cast<int>(remainingTime)))
 			.draw(Arg::rightCenter = center.movedBy(getToml<Vec2>(U"text_offset")));
 
 		// 長方形部分描画

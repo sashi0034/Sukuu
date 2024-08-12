@@ -4,6 +4,7 @@
 #include "AssetKeys.h"
 #include "Assets.generated.h"
 #include "Gm/GamepadObserver.h"
+#include "Gm/LocalizedTextDatabase.h"
 #include "Util/CoroActor.h"
 #include "Util/CoroUtil.h"
 #include "Util/EasingAnimation.h"
@@ -78,7 +79,10 @@ public:
 			if (isItemContaining) AudioAsset(AssetSes::item_enter).playOneShot();
 			m_scale = 1;
 			AnimateEasing<BoomerangParabola>(self, &m_scale, 1.1, 0.2);
-			if (isItemContaining) param.label.ShowMessage(FontAsset(AssetKeys::RocknRoll_24_Bitmap)(itemProps.desc));
+			if (isItemContaining)
+			{
+				param.label.ShowMessage(FontAsset(AssetKeys::RocknRoll_24_Bitmap)(Gm::LocalizedText(itemProps.desc)));
+			}
 		}
 		else if ((not entered && m_enteredBefore) || justUsed)
 		{

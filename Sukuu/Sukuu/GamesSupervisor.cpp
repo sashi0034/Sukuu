@@ -7,6 +7,7 @@
 #include "Gm\DialogSettingConfigure.h"
 #include "Gm/DialogGamepadRegister.h"
 #include "Gm/DialogMessageBox.h"
+#include "Gm/LocalizedTextDatabase.h"
 #include "Lounge/LoungeScene.h"
 #include "Play/PlayBgm.h"
 #include "Play/PlayingUra.h"
@@ -273,7 +274,7 @@ private:
 		ending.Init(m_playData.measuredSeconds);
 		yield.WaitForTrue([&]() { return ending.IsFinished(); });
 
-		if (m_savedata.ura.bestReached == 0) DialogOk(U"裏モードが開放されました");
+		if (m_savedata.ura.bestReached == 0) DialogOk(U"announce_release_ura"_localize);
 
 		ending.Kill();
 	}
