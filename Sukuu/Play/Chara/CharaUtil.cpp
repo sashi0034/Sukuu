@@ -21,6 +21,11 @@ namespace Play
 		return (t % (milliInterval * numFrames)) / milliInterval;
 	}
 
+	int AnimTimer::SliceFramesWithOffset(uint64 milliInterval, uint32 numFrames, uint32 offset) const
+	{
+		return (SliceFrames(milliInterval, numFrames) + offset) % numFrames;
+	}
+
 	TerrainKind GetTerrainAt(const MapGrid& map, const CharaVec2& pos)
 	{
 		const Point p = pos.MapPoint();

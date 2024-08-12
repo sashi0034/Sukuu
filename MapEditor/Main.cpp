@@ -5,7 +5,7 @@
 
 namespace
 {
-	constexpr Size mapSize{45, 45};
+	constexpr Size mapSize{15, 25};
 
 	void changeCharBy(Grid<char32_t>& cells, Point p, bool mirror, char32_t c)
 	{
@@ -16,10 +16,26 @@ namespace
 
 	void changeAt(Grid<char32_t>& cells, Point p, bool mirror)
 	{
-		if (KeySpace.pressed()) changeCharBy(cells, p, mirror, U' ');
-		if (KeyColon_JIS.pressed()) changeCharBy(cells, p, mirror, U'*');
-		if (KeyMinus.pressed()) changeCharBy(cells, p, mirror, U'-');
-		if (KeyBackslash_US.pressed()) changeCharBy(cells, p, mirror, U'|');
+		if (KeySpace.pressed())
+		{
+			changeCharBy(cells, p, mirror, U' ');
+			return;
+		}
+		if (KeyColon_JIS.pressed())
+		{
+			changeCharBy(cells, p, mirror, U'*');
+			return;
+		}
+		if (KeyMinus.pressed())
+		{
+			changeCharBy(cells, p, mirror, U'-');
+			return;
+		}
+		if (KeyBackslash_US.pressed())
+		{
+			changeCharBy(cells, p, mirror, U'|');
+			return;
+		}
 
 		for (auto&& input : Keyboard::GetAllInputs())
 		{
@@ -82,7 +98,6 @@ void Main()
 		g_receivedMessage = false;
 		// Console.writeln(Scene::Time());
 
-		[&]
 		{
 			// 内容更新
 			camera2D.update();
@@ -133,8 +148,9 @@ void Main()
 				}
 			}
 			// 位置情報
-			(void)posMessage.draw(posPoint, Palette::Yellow);
-		}();
+			(void)posMessage.draw(posPoint, ColorF(0.7, 0.7, 0.3));
+			(void)Rect(posPoint, cellSize).drawFrame(0, 1, Palette::Yellow);
+		};
 
 		if (SimpleGUI::Button(U"Copy", Vec2{10, 10}))
 		{

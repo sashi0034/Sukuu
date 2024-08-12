@@ -12,30 +12,53 @@ namespace
 {
 	using namespace Ending;
 
-	constexpr Size mapSize{64, 20};
+	constexpr Size mapSize{75, 25};
 	constexpr int maxPlantSize = 48;
 
-	struct RgbShiftCb
+	// 15x25
+	Array<String> mapStringPattern()
 	{
-		float amount{};
+		return {
+			U"---------------",
+			U"---------------",
+			U"---------------",
+			U"FFFFFFFFFFFFFFF",
+			U"FFFFFFFFFFFFFFF",
+			U"               ",
+			U" T   T   T   T ",
+			U"   T       T   ",
+			U" T   T   T   T ",
+			U"  U U     U U  ",
+			U" F F F F F F F ",
+			U"FFFFFFFFFFFFFFF",
+			U"---------------",
+			U"FFFFFFFFFFFFFFF",
+			U" F F F F F F F ",
+			U"  U U     U U  ",
+			U"   T  FFF  T   ",
+			U" T   FFFFF   T ",
+			U"   T  FFF  T   ",
+			U"               ",
+			U"FFFFFFFFFFFFFFF",
+			U"FFFFFFFFFFFFFFF",
+			U"---------------",
+			U"---------------",
+			U"---------------",
+		};
+	}
+
+	struct PlantLocation
+	{
+		Vec2 pos;
+		int hash;
 	};
 
-	enum class PlantKind
+	struct VegetationData
 	{
-		NoPlant,
-		Bush1,
-		Bush2,
-		TreeS,
-		TreeL,
-		Stone1,
-		Stone2,
-		Moss1,
-		Moss2,
-	};
-
-	struct BgPlant
-	{
-		PlantKind kind = PlantKind::NoPlant;
+		Array<PlantLocation> flowers;
+		Array<PlantLocation> bigTrees;
+		Array<PlantLocation> smallTrees;
+		Array<PlantLocation> mixed;
 	};
 
 	constexpr Point getPlantPadding(const Size& size)
@@ -58,14 +81,12 @@ namespace
 struct Ending::EndingBackground::Impl
 {
 	RenderTexture m_rt{};
-	// PixelShader m_rgbShifter{};
-	ConstantBuffer<RgbShiftCb> m_cb{};
 
 	Play::AnimTimer m_animTimer{};
 	Vec2 m_playerPos{};
 	double m_cameraX{};
 
-	Grid<BgPlant> m_plants{};
+	VegetationData m_vegetation{};
 
 	void Init()
 	{
@@ -73,80 +94,43 @@ struct Ending::EndingBackground::Impl
 		m_rt = RenderTexture(Scene::Size());
 
 		m_playerPos = {-32.0, mapSize.y * Px_16 / 2 - Play::CellPx_24};
-		m_plants.resize(mapSize);
 
-		addPlant(PlantKind::Bush1, 96, 1, {
-			         {1, 0, 1, 0},
-			         {0, 1, 0, 0},
-			         {1, 0, 1, 0},
-			         {0, 0, 0, 0}
-		         });
-		addPlant(PlantKind::Bush2, 96, 1, {
-			         {0, 1, 0, 0},
-			         {1, 0, 1, 0},
-			         {0, 1, 0, 0},
-			         {0, 0, 0, 0}
-		         });
-		addPlant(PlantKind::TreeL, 64, 1, {
-			         {0, 0, 0, 0},
-			         {0, 1, 0, 0},
-			         {0, 0, 0, 1},
-			         {0, 1, 0, 0}
-		         });
-		addPlant(PlantKind::TreeS, 64, 2, {
-			         {0, 0, 0, 1},
-			         {0, 0, 1, 0},
-			         {0, 1, 0, 1},
-			         {1, 0, 1, 0}
-		         });
-		addPlant(PlantKind::Stone1, 64, 0, {
-			         {1, 0, 1, 0},
-			         {0, 1, 0, 1},
-			         {1, 0, 1, 0},
-			         {0, 1, 0, 1},
-		         });
-		addPlant(PlantKind::Stone2, 64, 0, {
-			         {0, 1, 0, 1},
-			         {1, 0, 1, 0},
-			         {0, 1, 0, 1},
-			         {1, 0, 1, 0},
-		         });
-		addPlant(PlantKind::Moss1, 96, 0, {
-			         {1, 0, 1, 0},
-			         {0, 1, 0, 1},
-			         {1, 0, 1, 0},
-			         {0, 1, 0, 1},
-		         });
-		addPlant(PlantKind::Moss2, 96, 0, {
-			         {0, 1, 0, 1},
-			         {1, 0, 1, 0},
-			         {0, 1, 0, 1},
-			         {1, 0, 1, 0},
-		         });
+		// 植生データ
+		const auto mapData = mapStringPattern();
+		for (int y = 0; y < mapSize.y; ++y)
+		{
+			for (int x = 0; x < mapSize.x; ++x)
+			{
+				const auto c = mapData[y][x % mapData[0].size()];
+				const auto pos = Vec2{x, y} * Px_16;
+				const auto location = PlantLocation{pos, x + y};
+				switch (c)
+				{
+				case U'F':
+					m_vegetation.flowers.push_back(location);
+					break;
+				case U'T':
+					m_vegetation.bigTrees.push_back(location);
+					break;
+				case U'U':
+					m_vegetation.smallTrees.push_back(location);
+					break;
+				case U' ':
+					m_vegetation.mixed.push_back(location);
+					break;
+				default: ;
+				}
+			}
+		}
 	}
 
 	void Update()
 	{
 		m_animTimer.Tick();
 
-#if 0
-		// 色収差なんか微妙なので没
-		[&]
-		{
-			const ScopedRenderTarget2D target{m_rt};
-			updateBg();
-		};
-
-		[&]
-		{
-			m_cb->amount = 0.005 * Periodic::Sine0_1(12.0s);
-			const ScopedCustomShader2D shader{m_rgbShifter};
-			Graphics2D::SetPSConstantBuffer(1, m_cb);
-			(void)m_rt.draw();
-		}();
-#endif
 		updateBg();
 
+		// 手前のエフェクト
 		[&]
 		{
 			const int h = getToml<int>(U"grad_height") + Periodic::Sine1_1(4.0) * 20.0;
@@ -159,32 +143,6 @@ struct Ending::EndingBackground::Impl
 	}
 
 private:
-	void addPlant(PlantKind kind, int n, int duDy, const Grid<uint8>& pattern)
-	{
-		const int pw = (m_plants.size().x / pattern.size().x) * pattern.size().x;
-		const auto patternOk = [&](const Point& p) -> bool
-		{
-			const int y1 = p.y / pattern.size().y;
-			const int u = y1 * duDy;
-			const auto p1 = Point((p.x - u + pw) % pattern.size().x, (p.y) % pattern.size().y);
-			return pattern[p1] != 0;
-		};
-
-		for (size_t i = 0; i < n; ++i)
-		{
-			for (const auto s : step(Constants::BigValue_100000))
-			{
-				Point pos = RandomPoint(Rect(m_plants.size()));
-				if (m_plants[pos].kind != PlantKind::NoPlant) continue;
-				if (not patternOk(pos)) continue;
-				m_plants[pos] = {
-					.kind = kind,
-				};
-				break;
-			}
-		}
-	}
-
 	void updateBg()
 	{
 		m_cameraX += Scene::DeltaTime() * 4.0;
@@ -199,82 +157,108 @@ private:
 			Mat3x2::Translate(center).translated(-cameraPos).scaled(cameraScale, center)
 		};
 
+		drawBg();
+	}
+
+	void drawBg() const
+	{
 		const ScopedRenderStates2D state{SamplerState::BorderNearest};
 
-		for (const auto p : step({}, mapSize / 4, {4, 4}))
+		// 原っぱのプレーン
 		{
-			(void)TextureAsset(AssetImages::grass_tile_64x64).draw(Vec2{p * Px_16});
+			Rect(Scene::Size()).draw(ColorF{0.38, 0.6, 0});
+
+			for (const auto p : step({}, mapSize / 4, {4, 4}))
+			{
+				(void)TextureAsset(AssetImages::grass_tile_64x64).draw(Vec2{p * Px_16});
+			}
 		}
 
-		drawPlants();
-	}
-
-	void drawPlants()
-	{
 		const auto inversed = (Graphics2D::GetCameraTransform() * Graphics2D::GetLocalTransform()).inverse();
-		const auto mapTl = inversed.transformPoint(Vec2{0, 0}).asPoint() / Px_16;
-		const auto mapBr = inversed.transformPoint(Scene::Size()).asPoint() / Px_16;
+		const auto mapTl = inversed.transformPoint(Vec2{0, 0});
+		const auto mapBr = inversed.transformPoint(Scene::Size());
 		constexpr int subSpace = (maxPlantSize / Px_16) - 1;
 
-		bool renderedPlayer{};
-		for (int y = mapTl.y - 1; y < mapBr.y + 1 + subSpace; ++y)
+		// 花描画
 		{
-			bool playerLine{};
-			if (not renderedPlayer && (y - 1) * Px_16 > m_playerPos.y)
+			for (const auto& l : m_vegetation.flowers)
 			{
-				// プレイヤー描画
-				(void)Play::GetUsualPlayerTexture(Dir4::Right, m_animTimer, true).draw(m_playerPos);
-				renderedPlayer = true;
-				playerLine = true;
-			}
-			for (int x = mapTl.x - 1; x < mapBr.x + subSpace; ++x)
-			{
-				auto point = Point{x, y};
-				if (m_plants.inBounds(point) == false) continue;
-				if (playerLine && m_plants[point].kind == PlantKind::Moss2) continue;
-				drawPlantOf(m_plants[point], point * Px_16);
+				if (not InRange<double>(l.pos.x, mapTl.x - 16, mapBr.x)) continue;
+
+				const int v = 16 * (l.hash % 3);
+				TextureAsset(AssetImages::flowers_16x16)(
+						m_animTimer.SliceFramesWithOffset(200, 4, l.hash) * 16, v, Size::One() * 16)
+					.draw(l.pos + getPlantPadding(16));
 			}
 		}
-	}
 
-	void drawPlantOf(const BgPlant& p, const Vec2& pos)
-	{
-		switch (p.kind)
+		// プレイヤー描画
+		(void)GetUsualPlayerTexture(Dir4::Right, m_animTimer, true)
+			.draw(m_playerPos.movedBy(0, -Play::CharacterPadding_4));
+
+		// いろいろ描画
 		{
-		case PlantKind::Bush1:
-			TextureAsset(AssetImages::bush_16x16)(m_animTimer.SliceFrames(500, 2) * 16, 0, Size::One() * 16)
-				.draw(pos + getPlantPadding(16));
-			break;
-		case PlantKind::Bush2:
-			TextureAsset(AssetImages::bush_16x16)(m_animTimer.SliceFrames(500, 2) * 16, 16, Size::One() * 16)
-				.draw(pos + getPlantPadding(16));
-			break;
-		case PlantKind::TreeS:
-			TextureAsset(AssetImages::tree_16x16)(m_animTimer.SliceFrames(300, 4) * 16, 0, Size::One() * 16)
-				.draw(pos + getPlantPadding(16));
-			break;
-		case PlantKind::TreeL:
-			TextureAsset(AssetImages::tree_48x48)(m_animTimer.SliceFrames(200, 6) * 48, 0, Size::One() * 48)
-				.draw(pos + getPlantPadding(48));
-			break;
-		case PlantKind::Stone1:
-			TextureAsset(AssetImages::mixed_nature_16x16)(Point(0, 0) * 16, Size::One() * 16)
-				.draw(pos + getPlantPadding(16));
-			break;
-		case PlantKind::Stone2:
-			TextureAsset(AssetImages::mixed_nature_16x16)(Point(1, 0) * 16, Size::One() * 16)
-				.draw(pos + getPlantPadding(16));
-			break;
-		case PlantKind::Moss1:
-			TextureAsset(AssetImages::mixed_nature_16x16)(Point(0, 1) * 16, Size::One() * 16)
-				.draw(pos + getPlantPadding(16));
-			break;
-			break;
-		case PlantKind::Moss2:
-			TextureAsset(AssetImages::mixed_nature_16x16)(Point(1, 1) * 16, Size::One() * 16)
-				.draw(pos + getPlantPadding(16));
-			break;
-		default: ;
+			for (const auto& l : m_vegetation.mixed)
+			{
+				if (not InRange<double>(l.pos.x, mapTl.x - 16, mapBr.x)) continue;
+
+				const int v = 16 * (l.hash % 6);
+				switch (l.hash % 6)
+				{
+				case 0:
+					TextureAsset(AssetImages::mixed_nature_16x16)(0, 0, Size::One() * 16).draw(
+						l.pos + getPlantPadding(16));
+					break;
+				case 1:
+					TextureAsset(AssetImages::mixed_nature_16x16)(Point{0, 1} * 16, Size::One() * 16).draw(
+						l.pos + getPlantPadding(16));
+					break;
+				case 2:
+					TextureAsset(AssetImages::bush_16x16)(
+							Point{m_animTimer.SliceFramesWithOffset(250, 2, l.hash), 0} * 16, Size::One() * 16)
+						.draw(l.pos + getPlantPadding(16));
+					break;
+				case 3:
+					TextureAsset(AssetImages::mixed_nature_16x16)(1, 0, Size::One() * 16).draw(
+						l.pos + getPlantPadding(16));
+					break;
+				case 4:
+					TextureAsset(AssetImages::mixed_nature_16x16)(1, 1, Size::One() * 16).draw(
+						l.pos + getPlantPadding(16));
+					break;
+				case 5:
+					TextureAsset(AssetImages::bush_16x16)(
+							Point{m_animTimer.SliceFramesWithOffset(250, 2, l.hash), 1} * 16, Size::One() * 16)
+						.draw(l.pos + getPlantPadding(16));
+					break;
+				default:
+					break;
+				}
+			}
+		}
+
+		// 小さい木描画
+		{
+			for (const auto& l : m_vegetation.smallTrees)
+			{
+				if (not InRange<double>(l.pos.x, mapTl.x - 16, mapBr.x)) continue;
+
+				TextureAsset(AssetImages::tree_16x16)(
+						m_animTimer.SliceFramesWithOffset(150, 4, l.hash) * 16, 0, Size::One() * 16)
+					.draw(l.pos + getPlantPadding(16));
+			}
+		}
+
+		// 大きい木描画
+		{
+			for (const auto& l : m_vegetation.bigTrees)
+			{
+				if (not InRange<double>(l.pos.x, mapTl.x - 48, mapBr.x)) continue;
+
+				TextureAsset(AssetImages::tree_48x48)(
+						m_animTimer.SliceFramesWithOffset(200, 6, l.hash) * 48, 0, Size::One() * 48)
+					.draw(l.pos + getPlantPadding(48));
+			}
 		}
 	}
 };
