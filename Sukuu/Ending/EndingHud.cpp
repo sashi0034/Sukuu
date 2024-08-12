@@ -6,6 +6,7 @@
 #include "Constants.h"
 #include "EndingOpenTransition.h"
 #include "Gm/GameCursor.h"
+#include "Gm/LocalizedTextDatabase.h"
 #include "Play/PlayCore.h"
 #include "Util/CoroUtil.h"
 #include "Util/EasingAnimation.h"
@@ -71,7 +72,7 @@ struct EndingHud::Impl
 		if (m_initialMessageAlpha > 0)
 		{
 			auto&& font = FontAsset(AssetKeys::RocknRoll_Sdf_Bold);
-			font(U"第 50 層を踏破した")
+			font(U"achieved_last_50"_localize)
 				.drawAt(TextStyle::Outline(0.3, ColorF(0.4, m_initialMessageAlpha)),
 				        textSize * 2,
 				        Scene::Center(),
@@ -88,7 +89,7 @@ struct EndingHud::Impl
 			const int finalY = getToml<int>(U"final_y");
 			auto&& font = FontAsset(AssetKeys::RocknRoll_Sdf_Bold);
 			const int finalSize = getToml<int>(U"final_size");
-			font(U"迷宮の完全攻略を達成")
+			font(U"completed_whole_dungeon"_localize)
 				.drawAt(TextStyle::Outline(0.3, ColorF(0.4, m_closeCloseAlpha)),
 				        finalSize,
 				        Scene::Center().movedBy(0, -finalY),
@@ -146,7 +147,9 @@ private:
 			for (int i = 0; i < numLines; ++i)
 			{
 				const int floorIndex = i + 1 + d * 10;
-				m_slideTexts[i].text = U"第 {} 層    - {} -"_fmt(floorIndex, FormatTimeSeconds(measured[floorIndex]));
+				m_slideTexts[i].text = U"{}    - {} -"_fmt(
+					U"layer_name"_localizef(Gm::LocalizeOrdinals(floorIndex)),
+					FormatTimeSeconds(measured[floorIndex]));
 				m_slideTexts[i].x = Scene::Center().x * 3;
 				AnimateEasing<EaseOutCubic>(self, &m_slideTexts[i].x, static_cast<double>(Scene::Center().x), 0.5);
 				yield.WaitForTime(0.15);
@@ -168,7 +171,7 @@ private:
 		// 累計時間表示
 		yield.WaitForTime(1.0);
 		AnimateEasing<EaseOutCirc>(self, &m_finalAlpha, 1.0, 0.5);
-		m_finalInfo = U"累計踏破時間 {}"_fmt(FormatTimeSeconds(measured.Sum()));
+		m_finalInfo = U"{} {}"_fmt(Gm::LocalizedText(U"total_cleared_time"), FormatTimeSeconds(measured.Sum()));
 
 		yield.WaitForTime(2.0);
 
