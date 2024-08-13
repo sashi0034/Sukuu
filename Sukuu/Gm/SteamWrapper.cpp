@@ -3,6 +3,8 @@
 #include "steam_api.h"
 #include <isteamgameserverstats.h>
 
+#include "Util/ErrorLogger.h"
+
 namespace
 {
 	constexpr int steamAppId = 3147480;
@@ -11,29 +13,17 @@ namespace
 	{
 		bool init() override
 		{
-			if (SteamAPI_RestartAppIfNecessary(steamAppId))
-			{
-				Console.writeln(U"SteamAPI_RestartAppIfNecessary() true");
-			}
-			else
-			{
-				Console.writeln(U"SteamAPI_RestartAppIfNecessary() false");
-			}
+			// if (SteamAPI_RestartAppIfNecessary(steamAppId)) // TODO
 
-			SteamErrMsg err{};
-			const auto initRes = SteamAPI_InitEx(&err);
-			if (initRes == k_ESteamAPIInitResult_OK)
-			{
-				// FIXME: This is a temporary implementation.
-				Console.writeln(U"SteamAPI_Init() succeeded.");
-			}
-			else
-			{
-				Console.writeln(U"SteamAPI_Init() failed. {}"_fmt(static_cast<int>(initRes)));
-				Console.writeln(Unicode::Widen(err));
-			}
+			SteamErrMsg error{};
+			const auto initResult = SteamAPI_InitEx(&error);
+			if (initResult == k_ESteamAPIInitResult_OK) return true;
 
-			return true;
+			Util::ErrorLog(U"Steam API Initialization failed: {}.\n{}"_fmt(
+				static_cast<int>(initResult),
+				Unicode::Widen(error)));
+
+			return false;
 		}
 
 		~SteamWrapperAddon() override
@@ -48,5 +38,24 @@ namespace Gm
 	void InitSteamWrapperAddon()
 	{
 		Addon::Register<SteamWrapperAddon>(U"SteamWrapperAddon");
+	}
+
+	// https://partner.steamgames.com/doc/sdk/api
+
+	// 思ったより微妙なので System::DefaultLanguage() を使うほうがいいかも...
+	GameLanguage GetSteamLanguage()
+	{
+		const auto steamApps = SteamApps();
+		if (not steamApps) return GameLanguage::Ja;
+
+		// https://partner.steamgames.com/doc/api/ISteamApps?l=japanese#GetCurrentGameLanguage
+		const auto c = SteamApps()->GetCurrentGameLanguage();
+
+		if (c == "japanese") return GameLanguage::Ja;
+		if (c == "koreana") return GameLanguage::Ko;
+		if (c == "schinese") return GameLanguage::Cs;
+		if (c == "tchinese") return GameLanguage::Ct;
+
+		return GameLanguage::En;
 	}
 }
