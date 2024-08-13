@@ -2,7 +2,7 @@
 import shutil
 import zipfile
 
-target_dir_name = "Mutant"
+target_dir_name = "Mutable50"
 
 folders_to_copy = [
     "asset/font",
@@ -18,7 +18,7 @@ files_to_copy = [
 
 def _rename_file(dest_file, file):
     if file == "Sukuu.exe":
-        os.rename(dest_file, os.path.join(target_dir_name, "Mutant.exe"))
+        os.rename(dest_file, os.path.join(target_dir_name, "Mutable50.exe"))
 
 
 def main():

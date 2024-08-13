@@ -2,7 +2,7 @@
 
 namespace Constants
 {
-	constexpr StringView GameIdentityTitleName = U"Mutant 50";
+	constexpr StringView GameIdentityTitleName = U"Mutable 50";
 
 	constexpr int CursorSize_64 = 64;
 
