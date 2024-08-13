@@ -3,6 +3,8 @@
 
 #include <iso646.h>
 
+#include "AchievementIconMaker.h"
+
 namespace
 {
 	constexpr Size mapSize{15, 25};
@@ -60,6 +62,16 @@ namespace
 
 void Main()
 {
+	const auto programArgs = System::GetCommandLineArgs();
+
+	// 雑すぎるが、コマンドライン引数で違うプログラムを実行
+	if (programArgs.size() > 1 && programArgs[1] == U"-i")
+	{
+		// Steam 実績アイコン
+		MakeAchievementIcon();
+		return;
+	}
+
 	// 自前ウィンドウ処理
 	const auto hWnd = static_cast<HWND>(s3d::Platform::Windows::Window::GetHWND());
 	g_baseProc = ::SetWindowLongPtr(hWnd, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(::CustomWindowProc));
