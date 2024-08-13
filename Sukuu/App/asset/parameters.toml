@@ -1,3 +1,6 @@
+# Legacy Parameters File
+# In the future, we will embed parameters directly into the source file to use Visual Studio hot reload.
+
 [play.core]
 hitstopping_timescale = 0.1
 slow_timescale = 0.3
