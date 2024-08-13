@@ -1,32 +1,50 @@
 ﻿#include "stdafx.h"
 #include "PlayingTips.h"
 
+#include "Gm/GamepadObserver.h"
+
 namespace
 {
-	StringView randomBasicTips()
-	{
-		const static Array<StringView> tips{
-			U"「スクう」動作は連続して使うと多くのペナルティがつく",
-			U"移動中は「スクう」動作が出来ない",
-			U"フロアを1つクリアするたびに生存時間が少し回復し、最大値が増える",
-			U"アイテムで敵を倒すと生存時間が回復する",
-			U"歩きに比べて走る動作は視界が不安定になりやすい",
-			U"砂時計を取ると生存時間が少し回復する",
-			U"生存時間の最大値を大幅に上げるアイテムは出現階層が固定されている",
-			U"部屋の中より通路のほうが敵の追跡を逃れやすい",
-			U"迷路階層ではレアアイテムが多く入手しやすい",
-			U"移動中に使えるアイテムと使えないアイテムがある",
-			U"アイテムを拾える数には限りがある",
-			U"止まった状態で右クリックをドラッグすると自身の向きを変えられる",
-		};
-		return tips[Random(0, static_cast<int>(tips.size()) - 1)];
-	}
+	const Array<StringView> basicTips{
+		U"tips_item_helmet",
+		U"tips_item_pin_1",
+		U"tips_item_pin_2",
+		U"tips_item_magnet",
+		U"tips_use_sukuu",
+		U"tips_effective_sukuu",
+		U"tips_clear_floor",
+		U"tips_heart_appears",
+		U"tips_about_maze",
+		U"tips_use_item_while_moving",
+
+	};
+
+	const Array<StringView> advancedTips{
+		U"tips_item_grave",
+		U"tips_item_sun",
+		U"tips_camera_movement_settings",
+		U"tips_running_sideeffect"
+	};
+
+	const Array<StringView> keyboardAndMouseTips{
+		U"tips_turn_by_mouse",
+	};
 }
 
 namespace Play
 {
 	StringView GetPlayingTips(int floorIndex)
 	{
-		return randomBasicTips();
+		Array<StringView> candidates{};
+		candidates.append(basicTips);
+
+		if (floorIndex >= 15)
+		{
+			candidates.append(advancedTips);
+
+			if (Gm::IsUsingGamepad()) candidates.append(keyboardAndMouseTips);
+		}
+
+		return candidates[Random(0, static_cast<int>(candidates.size()) - 1)];
 	}
 }

@@ -1,5 +1,7 @@
 [debug]
+# title, lounge, play など
 entry_point = ""
+
 skip_transition = false
 visualize_player_distance = false
 initial_timelimit = 300.0

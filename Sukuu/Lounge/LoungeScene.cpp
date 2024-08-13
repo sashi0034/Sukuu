@@ -4,6 +4,7 @@
 #include "Assets.generated.h"
 #include "LoungeBgDrawer.h"
 #include "LoungeMap.h"
+#include "Gm/LocalizedTextDatabase.h"
 #include "Play/PlayScene.h"
 #include "Play/Map/BgMapDrawer.h"
 #include "Play/Other/PlayingTips.h"
@@ -134,7 +135,7 @@ private:
 		{
 			// TIPS を表示
 			m_event.hasBook = true;
-			m_messenger.ShowMessage(Play::GetPlayingTips(m_args.reachedFloor).data(), 5.0);
+			m_messenger.ShowMessage(Gm::LocalizedText(Play::GetPlayingTips(m_args.reachedFloor)), 8.0);
 		}
 		else if (playerPoint == m_mapData.stairsToTitlePoint)
 		{

@@ -62,7 +62,7 @@ struct Play::UiMessenger::Impl
 	}
 
 private:
-	// 参考: // https://zenn.dev/reputeless/books/siv3d-documentation/viewer/sample-visual
+	// 参考: https://zenn.dev/reputeless/books/siv3d-documentation/viewer/sample-visual
 	void drawText(
 		const Font& font, double fontSize, const String& text, const Vec2& pos, const ColorF& color, double t) const
 	{
@@ -87,9 +87,21 @@ private:
 				break;
 			}
 
-			textEffect1(penPos, scale, glyph, color, (t - targetTime));
-
-			penPos.x += (glyph.xAdvance * scale);
+			if (not font.hasGlyph(glyph.codePoint))
+			{
+				// フォールバックになったときうまく動作しなかったため対応
+				// TODO: これは一時的な対応に過ぎないので修正が必要
+				const double y = EaseInQuad(Saturate(1 - t / 0.3)) * -20.0;
+				const double a = color.a * Min(t / 0.3, 1.0);
+				auto t0 = font(glyph.codePoint);
+				(void)t0.draw(fontSize, penPos + Vec2{0, y}, ColorF{color, a});
+				penPos.x += t0.region().w * scale;
+			}
+			else
+			{
+				textEffect1(penPos, scale, glyph, color, (t - targetTime));
+				penPos.x += (glyph.xAdvance * scale);
+			}
 		}
 	}
 
