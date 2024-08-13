@@ -115,7 +115,7 @@ struct Title::TitleHud::Impl
 		}
 
 		// バージョン
-		FontAsset(AssetKeys::RocknRoll_24_Bitmap)(U"v{} ({})"_fmt(
+		FontAsset(AssetKeys::RocknRoll_24_Bitmap)(U"v{}-{}"_fmt(
 				BuildInformation::GetRecord().version.ToString(), GitRevisionLiteral))
 			.draw(Arg::bottomLeft = Scene::Size().y0().yx());
 
