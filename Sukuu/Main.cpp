@@ -7,6 +7,7 @@
 #include "Gm/GameCursor.h"
 #include "Gm/GamepadObserver.h"
 #include "Gm/LocalizedTextDatabase.h"
+#include "Gm/SteamWrapper.h"
 #include "Sukuu/GamesSupervisor.h"
 #include "Util/ActorContainer.h"
 #include "Util/ErrorLogger.h"
@@ -55,6 +56,7 @@ void Main()
 	InitVisualStudioHotReloadDetectorAddon();
 #endif
 	Gm::InitLocalizedTextDatabaseAddon();
+	Gm::InitSteamWrapperAddon();
 
 	// アクター初期化
 	ActorContainer actorRoot{};

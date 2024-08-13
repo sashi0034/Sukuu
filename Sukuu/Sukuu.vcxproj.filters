@@ -192,6 +192,231 @@
     <ClCompile Include="Util\TomlParametersWrapper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="BuildInformation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ending\EndingOpenTransition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\UI\UiMessenger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\VisualStudioHotReloadDetectorAddon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AssetKeys.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ending\EndingBackground.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ending\EndingHud.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Ending\EndingScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GitRevision.generated.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Gm/GameCursor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Gm/GameSavedata.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Gm\detail\GameDialogCommon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Gm\DialogSettingConfigure.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Gm\DialogMessageBox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Gm\GameConfig.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Gm\GamepadObserver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Gm\DialogGamepadRegister.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Gm\LocalizedTextDatabase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Lounge\LoungeBgDrawer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Lounge\LoungeMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Lounge\LoungeScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\Effect\DamageCounterEffect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\Effect\FragmentTextureEffect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\Effect\ItemObtainEffect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\Enemy\EnCatfish.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\Enemy\EnCrab.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\Enemy\EnemyDefinition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\Enemy\EnemyUtil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\Enemy\EnHandMaster.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\Enemy\EnKnight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\Enemy\EnLion.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\Gimmick\GimmickGrid.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\Gimmick\GimmickInstaller.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\Item\ConsumableItem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\Item\detail\ItemUtil.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\Item\ItemGrave.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\Item\ItemMagnet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\Item\ItemMine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\Item\ItemPin.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\Item\ItemSun.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\Other\CaveSnowfall.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\Other\CaveVision.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\Other\CornerButton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\Other\FloorLevelDesign.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\Other\PlayingPause.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\Other\PlayPenaltyBonus.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\Other\PlayingTips.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\PlayBgm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\PlayCore.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\Player_detail\PlayerAnimation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\Player_detail\PlayerInternal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\PlayingUra.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\UI\UiCurrentFloor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\UI\UiDashKeep.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\UI\UiFloorTransition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\UI\UiGameOver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\UI\UiItemButton.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\UI\UiItemContainer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\UI\UiMiniMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\UI\UiTimeLimiter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sukuu\AssetReloader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sukuu\GamesSupervisor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Title\TitleBackground.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Title\TitleGraphicAssetMaker.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Title\TitleHud.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Title\TitleScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tutorial\TutorialFocus.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tutorial\TutorialMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Tutorial\TutorialScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Asserts.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\EffectWrapper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\ErrorLogger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\TomlDebugValueWrapper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\Utilities.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Gm\SteamWrapper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="App\icon.ico">
@@ -266,6 +491,9 @@
     <Image Include="App\example\obj\siv3d-kun-eye.png">
       <Filter>Resource Files\example\obj</Filter>
     </Image>
+    <Image Include="App\asset\image\particle.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="App\Resource.rc">
@@ -321,6 +549,7 @@
     <Text Include="App\example\LICENSE.txt">
       <Filter>Resource Files\example</Filter>
     </Text>
+    <Text Include="App\asset\font\RocknRoll\OFL.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App\dll\soundtouch\SoundTouch_x64.dll">
@@ -780,6 +1009,16 @@
     <None Include="App\engine\font\min\siv3d-min.woff">
       <Filter>Resource Files\engine\font\min</Filter>
     </None>
+    <None Include="App\asset\font\RocknRoll\README-JP.md" />
+    <None Include="App\asset\font\RocknRoll\README.md" />
+    <None Include="App\asset\shader\cave_vision.hlsl" />
+    <None Include="App\asset\shader\gradient_blur.hlsl" />
+    <None Include="App\asset\shader\grayscale.hlsl" />
+    <None Include="App\asset\shader\multi_texture_mask.hlsl" />
+    <None Include="App\asset\shader\raster_scroll.hlsl" />
+    <None Include="App\asset\shader\rgb_shift.hlsl" />
+    <None Include="App\asset\shader\rgb_to_bgr.hlsl" />
+    <None Include="App\asset\shader\soft_shape.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <Media Include="App\example\test.mp3">
@@ -799,6 +1038,7 @@
     <Font Include="App\example\font\RocknRoll\RocknRollOne-Regular.ttf">
       <Filter>Resource Files\example\font\RocknRoll</Filter>
     </Font>
+    <Font Include="App\asset\font\RocknRoll\RocknRollOne-Regular.ttf" />
   </ItemGroup>
   <ItemGroup>
     <Xml Include="App\example\objdetect\haarcascade\face_anime.xml">
@@ -825,9 +1065,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AssetKeys.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="AssetsGenerated.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Play\Chara\CharaUtil.h">
@@ -896,7 +1133,247 @@
     <ClInclude Include="Util\TomlParametersWrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Util\Utils.h">
+    <ClInclude Include="BuildInformation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ending\EndingOpenTransition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\UI\UiMessenger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\VisualStudioHotReloadDetectorAddon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Constants.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ending\EndingBackground.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ending\EndingHud.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ending\EndingScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Ending\Forward.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GitRevision.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Assets.generated.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Gm\detail\GameDialogCommon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Gm\DialogSettingConfigure.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Gm\DialogMessageBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Gm\GameConfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Gm\GameCursor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Gm\GamepadButton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Gm\GamepadObserver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Gm\DialogGamepadRegister.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Gm\GameSavedata.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Gm\LocalizedTextDatabase.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Lounge\Forward.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Lounge\LoungeBgDrawer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Lounge\LoungeMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Lounge\LoungeScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\Effect\DamageCounterEffect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\Effect\FragmentTextureEffect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\Effect\ItemObtainEffect.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\Enemy\EnCatfish.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\Enemy\EnCrab.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\Enemy\EnemyDefinition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\Enemy\EnemyUtil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\Enemy\EnHandMaster.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\Enemy\EnKnight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\Enemy\EnLion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\Gimmick\GimmickGrid.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\Gimmick\GimmickInstaller.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\Item\ConsumableItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\Item\detail\ItemUtil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\Item\ItemGrave.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\Item\ItemMagnet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\Item\ItemMine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\Item\ItemPin.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\Item\ItemSun.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\Other\CaveSnowfall.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\Other\CaveVision.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\Other\CornerButton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\Other\FloorLevelDesign.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\Other\PlayingPause.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\Other\PlayPenaltyBonus.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\Other\PlayingTips.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\Other\TimeLimiter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\PlayBgm.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\PlayCore.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\Player_detail\PlayerInternal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\PlayingUra.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\UI\UiCurrentFloor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\UI\UiDashKeep.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\UI\UiFloorTransition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\UI\UiGameOver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\UI\UiItemButton.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\UI\UiItemContainer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\UI\UiMiniMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\UI\UiTimeLimiter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sukuu\AssetReloader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sukuu\GamesSupervisor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Title\Forward.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Title\TitleBackground.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Title\TitleGraphicAssetMaker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Title\TitleHud.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Title\TitleScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Tutorial\Forward.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Tutorial\TutorialFocus.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Tutorial\TutorialMap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Tutorial\TutorialScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Asserts.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\EffectWrapper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\ErrorLogger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\TomlDebugValueWrapper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\Utilities.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Gm\SteamWrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
