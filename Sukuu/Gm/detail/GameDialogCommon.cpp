@@ -4,6 +4,7 @@
 #include "AssetKeys.h"
 #include "Assets.generated.h"
 #include "Gm/GamepadObserver.h"
+#include "Gm/LocalizedTextDatabase.h"
 #include "Util/TomlParametersWrapper.h"
 
 namespace
@@ -78,7 +79,7 @@ namespace Gm::detail
 	void DrawDialogExit(bool* exitHover)
 	{
 		const auto exitPoint = Vec2(getToml<int>(U"exit_left"), DlBottom1().y);
-		const auto exitText = FontAsset(AssetKeys::RocknRoll_Sdf)(U"戻る");
+		const auto exitText = FontAsset(AssetKeys::RocknRoll_Sdf)(U"dialog_back"_localize);
 
 		const int fontSize = DlFontSize();
 		const auto exitRect = exitText.region(fontSize, Arg::leftCenter = exitPoint).stretched(32, 4);

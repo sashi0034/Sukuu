@@ -1,6 +1,6 @@
 [debug]
 # title, lounge, play など
-entry_point = ""
+entry_point = "title"
 
 skip_transition = false
 visualize_player_distance = false

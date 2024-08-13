@@ -4,6 +4,7 @@
 #include "AssetKeys.h"
 #include "Assets.generated.h"
 #include "GamepadObserver.h"
+#include "LocalizedTextDatabase.h"
 #include "detail/GameDialogCommon.h"
 #include "Util/TomlParametersWrapper.h"
 #include "Util/Utilities.h"
@@ -91,7 +92,7 @@ namespace
 			// はい
 			updateYesNoButton(
 				yesRect,
-				U"はい {}"_fmt(IsUsingGamepad() ? U"[A]" : U"(Y)"),
+				U"dialogue_yes"_localize + U" {}"_fmt(IsUsingGamepad() ? U"[A]" : U"(Y)"),
 				KeyY | GetGamepadInput(GamepadButton::A),
 				OptionalResponse::Yes,
 				confirmed,
@@ -100,7 +101,7 @@ namespace
 			// いいえ
 			updateYesNoButton(
 				noRect,
-				U"いいえ {}"_fmt(IsUsingGamepad() ? U"[B]" : U"(N)"),
+				U"dialogue_no"_localize + U" {}"_fmt(IsUsingGamepad() ? U"[B]" : U"(N)"),
 				KeyN | GetGamepadInput(GamepadButton::B),
 				OptionalResponse::No,
 				confirmed,
@@ -112,7 +113,7 @@ namespace
 			const auto okRect = Rect(Arg::center = Scene::Center().moveBy(0, buttonOffset.y), buttonSize);
 			updateYesNoButton(
 				okRect,
-				U"了解 {}"_fmt(IsUsingGamepad() ? U"[A]" : U"(Y)"),
+				U"dialogue_ok"_localize + U" {}"_fmt(IsUsingGamepad() ? U"[A]" : U"(Y)"),
 				KeyY | GetGamepadInput(GamepadButton::A),
 				OptionalResponse::Ok,
 				confirmed,

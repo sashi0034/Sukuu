@@ -246,7 +246,7 @@ namespace
 		{
 			*cursorRaw =
 				Util::Mod2(*cursorRaw + (IsGamepadDown(GamepadButton::DDown) - IsGamepadDown(GamepadButton::DUp)),
-				           5 + 1);
+				           6 + 1);
 		}
 
 		DrawDialogBottomLine();

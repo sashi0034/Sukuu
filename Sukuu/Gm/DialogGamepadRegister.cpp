@@ -4,6 +4,7 @@
 #include "GamepadObserver.h"
 #include "AssetKeys.h"
 #include "Assets.generated.h"
+#include "LocalizedTextDatabase.h"
 #include "detail/GameDialogCommon.h"
 #include "Util/TomlParametersWrapper.h"
 #include "Util/Utilities.h"
@@ -39,21 +40,22 @@ namespace
 		Finished,
 	};
 
-	constexpr std::array<StringView, static_cast<int>(RegisterStage::Finished) + 1> stageDescription = {
-		U"[ A ] アイテム",
-		U"[ B ] ダッシュ",
-		U"[ X ] ?",
-		U"[ Y ] ?",
-		U"[ Right ] 移動",
-		U"[ Up ] 移動",
-		U"[ Left ] 移動",
-		U"[ Down ] 移動",
-		U"[ LB ] アイテム変更",
-		U"[ RB ] アイテム変更",
-		U"[ LT ] 方向転換",
-		U"[ RT ] すくう",
-		U"[ Menu ] ポーズ",
-		U"終了"
+	String stageDescription(RegisterStage r)
+	{
+		if (r == RegisterStage::Register_A)return U"[ A ] " + U"register_bt_item"_localize;
+		if (r == RegisterStage::Register_B)return U"[ B ] " + U"register_bt_dash"_localize;
+		if (r == RegisterStage::Register_X)return U"[ X ] ?";
+		if (r == RegisterStage::Register_Y)return U"[ Y ] ?";
+		if (r == RegisterStage::Register_DRight)return U"[ Right ] " + U"register_bt_move"_localize;
+		if (r == RegisterStage::Register_DUp)return U"[ Up ] " + U"register_bt_move"_localize;
+		if (r == RegisterStage::Register_DLeft)return U"[ Left ] " + U"register_bt_move"_localize;
+		if (r == RegisterStage::Register_DDown)return U"[ Down ] " + U"register_bt_move"_localize;
+		if (r == RegisterStage::Register_LB)return U"[ LB ] " + U"register_bt_change_item"_localize;
+		if (r == RegisterStage::Register_RB)return U"[ RB ] " + U"register_bt_change_item"_localize;;
+		if (r == RegisterStage::Register_LT)return U"[ LT ] " + U"register_bt_turn_direction"_localize;
+		if (r == RegisterStage::Register_RT)return U"[ RT ] " + U"register_bt_scoop"_localize;
+		if (r == RegisterStage::Register_Menu)return U"[ Menu ] " + U"register_bt_pause"_localize;
+		return U"registration_finish"_localize;
 	};
 
 	struct InternalState
@@ -70,18 +72,18 @@ namespace
 	{
 		const auto fontSize = DlFontSize();
 
-		DrawDialogTitle(U"コントローラー登録\n" + gamepad.name);
+		DrawDialogTitle(U"controller_registration"_localize + U"\n" + gamepad.name);
 
 		const auto bottom = Vec2{Scene::Center().x, Scene::Size().y};
 		const auto bottom1 = DlBottom1();
 
 		DrawDialogExit(exitHover);
 
-		const auto rollbackArea = FontAsset(AssetKeys::RocknRoll_Sdf)(U"Backspace やり直し").drawAt(
-			fontSize, bottom1, DlBlack);
-		FontAsset(AssetKeys::RocknRoll_Sdf)(U"設定したいボタンを押してください").drawAt(
+		const auto rollbackArea = FontAsset(AssetKeys::RocknRoll_Sdf)(U"Backspace " + U"register_reset"_localize)
+			.drawAt(fontSize, bottom1, DlBlack);
+		FontAsset(AssetKeys::RocknRoll_Sdf)(U"register_target_button"_localize).drawAt(
 			fontSize, bottom.movedBy(0, -getToml<int>(U"bottom2")), DlBlack);
-		const auto buttDesc = FontAsset(AssetKeys::RocknRoll_Sdf)(stageDescription[static_cast<int>(state.stage)]);
+		const auto buttDesc = FontAsset(AssetKeys::RocknRoll_Sdf)(stageDescription(state.stage));
 		const auto bottom3 = bottom.movedBy(0, -getToml<int>(U"bottom3"));
 		(void)buttDesc.regionAt(fontSize, bottom3)
 		              .stretched(getToml<Point>(U"desc_padding"))

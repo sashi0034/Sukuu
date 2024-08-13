@@ -14,9 +14,9 @@ namespace Gm
 			return LocalizedText(StringView(s, length));
 		}
 
-		inline detail::FormatHelper operator ""_localizef(const char32* s, const size_t length)
+		inline s3d::detail::FormatHelper operator ""_localizef(const char32* s, const size_t length)
 		{
-			return detail::FormatHelper{LocalizedText(StringView(s, length)).data()};
+			return s3d::detail::FormatHelper{LocalizedText(StringView(s, length)).data()};
 		}
 	}
 
