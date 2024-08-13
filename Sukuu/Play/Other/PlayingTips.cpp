@@ -47,4 +47,13 @@ namespace Play
 
 		return candidates[Random(0, static_cast<int>(candidates.size()) - 1)];
 	}
+
+	Array<StringView> GetAllPlayingTips()
+	{
+		Array<StringView> tips{};
+		tips.append(basicTips);
+		tips.append(advancedTips);
+		tips.append(keyboardAndMouseTips);
+		return tips;
+	}
 }

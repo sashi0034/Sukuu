@@ -9,6 +9,7 @@
 #include "Play/Map/BgMapDrawer.h"
 #include "Play/Other/PlayingTips.h"
 #include "Util/EasingAnimation.h"
+#include "Util/TomlDebugValueWrapper.h"
 #include "Util/VisualStudioHotReloadDetectorAddon.h"
 
 namespace
@@ -173,6 +174,20 @@ private:
 		// 行動可能にする
 		m_play.GetPause().SetAllowed(true);
 		playerServices().canMove = true;
+
+#if _DEBUG
+		if (GetTomlDebugValueOf<bool>(U"tips_test"))
+		{
+			// TIPS テスト表示 (Space で次の TIPS へ)
+			const auto tips = Play::GetAllPlayingTips();
+			for (const auto& t : tips)
+			{
+				yield();
+				m_messenger.ShowMessage(Gm::LocalizedText(t), 5.0);
+				yield.WaitForTrue([]() { return KeySpace.down(); });
+			}
+		}
+#endif
 	}
 };
 

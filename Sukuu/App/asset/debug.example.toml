@@ -19,3 +19,6 @@ title_graphic_asset_maker = ""
 # プレイヤーの固定アイテム
 # 例: [1, 13]
 player_fixed_items = []
+
+# TIPS のテスト表示
+tips_test = false
