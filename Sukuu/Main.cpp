@@ -45,7 +45,7 @@ void Main()
 
 	AssetKeys::RegisterAll();
 
-	InitErrorLogger();
+	InitErrorLoggerAddon();
 	InitTomlParametersAddon();
 
 	// アドオン初期化

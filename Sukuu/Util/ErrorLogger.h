@@ -2,7 +2,7 @@
 
 namespace Util
 {
-	void InitErrorLogger();
+	void InitErrorLoggerAddon();
 
 	void ErrorLog(const String& message);
 }

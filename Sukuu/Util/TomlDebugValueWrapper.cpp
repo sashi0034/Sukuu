@@ -104,6 +104,7 @@ namespace Util
 
 	TOMLValue GetTomlDebugValue(const String& valuePath)
 	{
+		if (not AssertStrongly(s_instance != nullptr)) return {};
 		auto&& value = s_instance->toml[valuePath];;
 
 		if (value.isEmpty())
