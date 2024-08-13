@@ -25,6 +25,13 @@ namespace Gm
 		if (not reader) return none;
 		ReservedSavedata d;
 		reader.read(d);
+
+		/*
+		 * もし、バージョン互換性の変換処理を挟むならここに記述
+		 */
+
+		d.version = BuildInformation::GetRecord().version;
+
 		return GameSavedata(d);
 	}
 

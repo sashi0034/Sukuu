@@ -42,14 +42,13 @@ namespace Gm
 
 	// https://partner.steamgames.com/doc/sdk/api
 
-	// 思ったより微妙なので System::DefaultLanguage() を使うほうがいいかも...
 	GameLanguage GetSteamLanguage()
 	{
 		const auto steamApps = SteamApps();
 		if (not steamApps) return GameLanguage::Ja;
 
 		// https://partner.steamgames.com/doc/api/ISteamApps?l=japanese#GetCurrentGameLanguage
-		const auto c = SteamApps()->GetCurrentGameLanguage();
+		const std::string c = SteamApps()->GetCurrentGameLanguage();
 
 		if (c == "japanese") return GameLanguage::Ja;
 		if (c == "koreana") return GameLanguage::Ko;

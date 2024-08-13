@@ -8,6 +8,7 @@
 #include "Gm/DialogGamepadRegister.h"
 #include "Gm/DialogMessageBox.h"
 #include "Gm/LocalizedTextDatabase.h"
+#include "Gm/SteamWrapper.h"
 #include "Lounge/LoungeScene.h"
 #include "Play/PlayBgm.h"
 #include "Play/PlayingUra.h"
@@ -53,6 +54,7 @@ private:
 	void flowchartLoop(YieldExtended& yield, ActorView self)
 	{
 		bool triedTutorial{};
+		bool fromTitle{};
 
 		yield();
 #if _DEBUG
@@ -70,7 +72,9 @@ private:
 		if (entryPoint == U"setting") (void)DialogSettingConfigure();
 #endif
 
-		if (tryLoadSavedata()) goto title;
+		fromTitle = tryLoadSavedata(); // セーブデータが存在するならタイトルから
+		checkApplySteamLanguage(); // Steam 言語の変更を反映
+		if (fromTitle) goto title;
 
 	tutorial:
 		tutorialLoop(yield, self, triedTutorial);
@@ -98,6 +102,19 @@ private:
 			return true;
 		}
 		return false;
+	}
+
+	// Steam のクライアント言語を確認し、変更があれば反映する
+	void checkApplySteamLanguage()
+	{
+		const auto currentLanguage = GetSteamLanguage();
+		if (currentLanguage == m_savedata.steamLanguage) return; // 変更なし
+
+		GameConfig::Instance().language = currentLanguage;
+		GameConfig::Instance().RequestWrite();
+
+		m_savedata.steamLanguage = currentLanguage;
+		SaveSavedata(m_savedata);
 	}
 
 	void tutorialLoop(YieldExtended& yield, ActorView self, bool triedTutorial) const
@@ -230,6 +247,11 @@ private:
 
 		// コンティニュー
 		m_playData.floorIndex = lounge.NextFloor();
+		if (m_playData.floorIndex == 1)
+		{
+			// 最初からのときは時間計測も初期化
+			m_playData.measuredSeconds = {};
+		}
 		m_playData.playerPersonal = {};
 		m_playData.timeLimiter = {.maxTime = initialTimeLimit, .remainingTime = initialTimeLimit};
 		m_playData.itemIndexing = {};
