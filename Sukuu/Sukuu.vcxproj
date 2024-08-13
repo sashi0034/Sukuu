@@ -687,6 +687,7 @@
         <Content Include="App\generate_constexpr.py"/>
         <Content Include="App\make_distribution.py"/>
         <Content Include="App\Resource_template.txt"/>
+        <Content Include="App\steam_appid.txt" />
         <Content Include="Play\Other\CaveVisionCb.h"/>
     </ItemGroup>
     <ItemGroup>
