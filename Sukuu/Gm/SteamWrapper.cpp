@@ -19,9 +19,18 @@ namespace
 {
 	constexpr int steamAppId = 3147480;
 
-	struct SteamWrapperAddon : IAddon
+	// ---------------------------------------------------------
+	// https://partner.steamgames.com/doc/features/overlay
+	// OpenGL/D3Dデバイスを初期化する前に、必ずSteamAPI_Initを呼び出すようにしてください。呼び出しが無いと、この関数がデバイスの作成をフックできなくなります。
+	// ---------------------------------------------------------
+	// OpenSiv3D は Main の中に入る時点でデバイスを初期化しているため、上記の条件を満たさない
+	// そのため、Hack 的になるがグローバルオブジェクトのコンストラクタを利用して Main の前に SteamAPI_InitEx を行う
+	class SteamInitializer
 	{
-		bool init() override
+	public:
+		bool initialized{};
+
+		SteamInitializer()
 		{
 			// if (SteamAPI_RestartAppIfNecessary(steamAppId)) // TODO
 
@@ -29,10 +38,27 @@ namespace
 			const auto initResult = SteamAPI_InitEx(&error);
 			if (initResult != k_ESteamAPIInitResult_OK)
 			{
-				Util::ErrorLog(U"[Steam] Failed to initialize: {}\n{}"_fmt(
-					static_cast<int>(initResult),
-					Unicode::Widen(error)));
+				std::cout
+					<< fmt::format(
+						"[Steam] Failed to initialize: {}\n{}",
+						static_cast<int>(initResult),
+						error)
+					<< std::endl;
+				return;
+			}
 
+			initialized = true;
+		}
+	};
+
+	SteamInitializer s_initializer{};
+
+	struct SteamWrapperAddon : IAddon
+	{
+		bool init() override
+		{
+			if (not s_initializer.initialized)
+			{
 				return false;
 			}
 
