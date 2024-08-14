@@ -207,16 +207,16 @@ private:
 			playScene.Kill();
 			yield();
 
+			checkSave(m_playData, false);
+
 			if (m_playData.timeLimiter.remainingTime == 0)
 			{
 				// 回生の回廊へ
-				checkSave(m_playData, false);
 				return false;
 			}
 			if (m_playData.floorIndex == Constants::MaxFloorIndex)
 			{
 				// エンディングへ
-				checkSave(m_playData, true);
 				Play::PlayBgm::Instance().EndPlay();
 				return true;
 			}
@@ -280,9 +280,13 @@ private:
 
 		if (updatedReached || updatedCleared)
 		{
+			// セーブデータ更新
 			SaveSavedata(newData);
 			m_savedata = newData;
 		}
+
+		// Steam に送信
+		CheckStoreSteamStatOfReach(Play::IsPlayingUra(), newRecord.bestReached);
 	}
 
 	static ReachedRecord& getReachedRecord(GameSavedata& data)

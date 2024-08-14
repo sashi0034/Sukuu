@@ -22,3 +22,6 @@ player_fixed_items = []
 
 # TIPS のテスト表示
 tips_test = false
+
+# 起動時に Steam の Stat のリセットを行う
+steam_stat_reset = false

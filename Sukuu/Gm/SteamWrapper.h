@@ -6,4 +6,6 @@ namespace Gm
 	void InitSteamWrapperAddon();
 
 	GameLanguage GetSteamLanguage();
+
+	void CheckStoreSteamStatOfReach(bool isUra, int floor);
 }
