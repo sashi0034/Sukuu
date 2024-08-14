@@ -73,7 +73,7 @@ private:
 #endif
 
 		fromTitle = tryLoadSavedata(); // セーブデータが存在するならタイトルから
-		checkApplySteamLanguage(); // Steam 言語の変更を反映
+		checkApplySteamLanguage(fromTitle); // Steam 言語の変更を反映 (初回起動時はセーブデータの書き込みは行わない)
 		if (fromTitle) goto title;
 
 	tutorial:
@@ -105,7 +105,7 @@ private:
 	}
 
 	// Steam のクライアント言語を確認し、変更があれば反映する
-	void checkApplySteamLanguage()
+	void checkApplySteamLanguage(bool canStoreSaveData)
 	{
 		const auto currentLanguage = GetSteamLanguage();
 		if (currentLanguage == m_savedata.steamLanguage) return; // 変更なし
@@ -114,7 +114,7 @@ private:
 		GameConfig::Instance().RequestWrite();
 
 		m_savedata.steamLanguage = currentLanguage;
-		SaveSavedata(m_savedata);
+		if (canStoreSaveData) StoreSavedata(m_savedata);
 	}
 
 	void tutorialLoop(YieldExtended& yield, ActorView self, bool triedTutorial) const
@@ -123,7 +123,7 @@ private:
 		tutorial.Init(triedTutorial);
 		yield.WaitForTrue([&]() { return tutorial.IsFinished(); });
 		tutorial.Kill();
-		SaveSavedata(m_savedata);
+		StoreSavedata(m_savedata);
 		yield();
 	}
 
@@ -281,7 +281,7 @@ private:
 		if (updatedReached || updatedCleared)
 		{
 			// セーブデータ更新
-			SaveSavedata(newData);
+			StoreSavedata(newData);
 			m_savedata = newData;
 		}
 

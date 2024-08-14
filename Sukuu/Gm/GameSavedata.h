@@ -31,5 +31,5 @@ namespace Gm
 	};
 
 	Optional<GameSavedata> LoadSavedata();
-	void SaveSavedata(const GameSavedata& data);
+	void StoreSavedata(const GameSavedata& data);
 }

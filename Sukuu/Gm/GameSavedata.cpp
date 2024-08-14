@@ -35,7 +35,7 @@ namespace Gm
 		return GameSavedata(d);
 	}
 
-	void SaveSavedata(const GameSavedata& data)
+	void StoreSavedata(const GameSavedata& data)
 	{
 		BinaryWriter writer{dataPath};
 		if (not writer) return;
