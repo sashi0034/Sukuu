@@ -69,7 +69,7 @@ namespace
 	template <MessageBoxKind messageBox>
 	void updateUi(StringView message, OptionalResponse* confirmed, bool allowedConfirm)
 	{
-		DrawDialogTitle(U"確認");
+		DrawDialogTitle(U"confirm"_localize);
 
 		const int areaWidth = getToml<int>(U"area_width");
 		(void)Line(Scene::Center().moveBy(-areaWidth / 2, 0), Scene::Center().moveBy(areaWidth / 2, 0))

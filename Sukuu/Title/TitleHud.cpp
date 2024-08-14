@@ -168,7 +168,7 @@ private:
 		{
 			return U"title_record_on_50"_localizef(FormatTimeSeconds(record.completedTime));
 		}
-		return U"title_record_achieved"_localizef(record.bestReached);
+		return U"title_record_achieved"_localizef(Gm::LocalizeOrdinals(record.bestReached));
 	}
 };
 

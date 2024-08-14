@@ -2,6 +2,7 @@
 #include "UiMessenger.h"
 
 #include "AssetKeys.h"
+#include "Gm/GameConfig.h"
 #include "Util/CoroUtil.h"
 #include "Util/EasingAnimation.h"
 #include "Util/TomlParametersWrapper.h"
@@ -12,6 +13,20 @@ namespace
 	inline T getToml(const String& key)
 	{
 		return Util::GetTomlParameter<T>(U"play.ui_messenger." + key);
+	}
+
+	double getCharacterPerSecond()
+	{
+		using namespace Gm;
+		const auto language = GameConfig::Instance().language;
+
+		if (language == GameLanguage::Ja) return 0.05;
+		if (language == GameLanguage::Cs) return 0.05;
+		if (language == GameLanguage::Ct) return 0.05;
+
+		if (language == GameLanguage::Ko) return 0.0375;
+
+		return 0.025;
 	}
 }
 
@@ -42,6 +57,7 @@ struct Play::UiMessenger::Impl
 	void StartMessage(ActorView self, const String& message, double duration)
 	{
 		m_message = message;
+		m_characterPerSecond = getCharacterPerSecond();
 		m_time = 0;
 		m_alpha = 1.0;
 		if (duration < 0) return;
