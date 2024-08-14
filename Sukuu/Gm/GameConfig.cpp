@@ -18,6 +18,18 @@ namespace
 		return a;
 	}
 
+	bool isValidGamepadMapping(const GamepadButtonMapping& mapping)
+	{
+		int zeroCount{};
+		for (int i = 0; i < mapping.size(); ++i)
+		{
+			if (mapping[i] == 0) zeroCount++;
+		}
+
+		// 0 が 2 つ以上存在する状況は、2 つめ以降の 0 が未定義ということになるので false にする
+		return zeroCount <= 1;
+	}
+
 	void writeJson(const GameConfig& config)
 	{
 		JSON json{};
@@ -37,6 +49,8 @@ namespace
 		Array<JSON> gamepadMapping{};
 		for (auto&& map : config.gamepad_mapping)
 		{
+			if (isValidGamepadMapping(map.second) == false) continue;
+
 			auto e = JSON();
 			e[U"key"] = map.first;
 			e[U"value"] = map.second;
