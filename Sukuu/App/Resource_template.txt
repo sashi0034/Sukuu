@@ -100,7 +100,7 @@ Resource(engine/font/mplus/mplus-1p-medium.ttf.zstdcmp)
 Resource(engine/font/mplus/mplus-1p-bold.ttf.zstdcmp)
 Resource(engine/font/mplus/mplus-1p-heavy.ttf.zstdcmp)
 Resource(engine/font/mplus/mplus-1p-black.ttf.zstdcmp)
-Resource(engine/font/noto-cjk/NotoSansCJK-Regular.ttc.zstdcmp)
+//Resource(engine/font/noto-cjk/NotoSansCJK-Regular.ttc.zstdcmp)
 //Resource(engine/font/noto-cjk/NotoSansJP-Regular.otf.zstdcmp)
 
 //
@@ -131,6 +131,22 @@ Resource(engine/soundfont/GMGSx.sf2.zstdcmp)
 
 Resource(asset/parameters.toml)
 Resource(asset/localize.ini)
+
+Resource(asset/font/NotoSans/NotoSansMonoCJKsc-Bold.otf)
+Resource(asset/font/NotoSans/NotoSansMonoCJKtc-Bold.otf)
+Resource(asset/font/NotoSans/NotoSansMonoCJKkr-Bold.otf)
+
+Resource(asset/font/RocknRoll/RocknRollOne-Regular.ttf)
+
+Resource(asset/other/gamepad.png)
+
+Resource(asset/shader/cave_vision.hlsl)
+Resource(asset/shader/multi_texture_mask.hlsl)
+Resource(asset/shader/raster_scroll.hlsl)
+Resource(asset/shader/rgb_to_bgr.hlsl)
+Resource(asset/shader/grayscale.hlsl)
+Resource(asset/shader/gradient_blur.hlsl)
+Resource(asset/shader/soft_shape.hlsl)
 
 $APP_ASSET$
 #endif

@@ -52,7 +52,7 @@ struct Play::CaveVision::Impl
 		m_softShapeCb->time += GetDeltaTime() * vision.heartbeatRate;
 		m_softShapeCb->radius = GetTomlParameter<float>(U"play.cave_vision.default_vision_radius") * vision.radiusRate;
 		Graphics2D::SetVSConstantBuffer(1, m_softShapeCb);
-		const ScopedCustomShader2D shader{VertexShaderAsset(AssetKeys::VsCaveVision)};
+		const ScopedCustomShader2D shader{VertexShaderAsset(AssetKeys::VsSoftShape)};
 
 		Graphics2D::DrawTriangles(360);
 	}

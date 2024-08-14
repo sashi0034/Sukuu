@@ -5,14 +5,16 @@ import zipfile
 target_dir_name = "Mutable50"
 
 folders_to_copy = [
-    "asset/font",
-    "asset/other",
-    "asset/shader",
-    "dll",
+    # "asset/font",
+    # "asset/other",
+    # "asset/shader",
+    # "dll",
 ]
 files_to_copy = [
     "credit.html",
-    "Sukuu.exe"
+    "Sukuu.exe",
+    "steam_api64.dll",
+    # "steam_appid.txt",
 ]
 
 

@@ -8,6 +8,3 @@
 /asset/debug.toml
 /error_log.txt
 /steam_api64.dll
-
-# FIXME: Is this really necessary?
-/sdkencryptedappticket64.dll

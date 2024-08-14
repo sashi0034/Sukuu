@@ -2,6 +2,12 @@
 
 #include "Util/ErrorLogger.h"
 
+#if _DEBUG
+#define ASSET_PATH(path) path
+#else
+#define ASSET_PATH(path) Resource(path)
+#endif
+
 namespace
 {
 	constexpr std::array fallbackFontPaths{
@@ -37,7 +43,11 @@ namespace
 
 			// フォールバック用のフォントを登録
 			const bool registered = FontAsset::Register(
-				getFallbackKey(target, path), targetFont.method(), targetFont.fontSize(), path, targetFont.style());
+				getFallbackKey(target, path),
+				targetFont.method(),
+				targetFont.fontSize(),
+				ASSET_PATH(path),
+				targetFont.style());
 			if (not registered) Util::ErrorLog(U"Failed to register fallback font: {} <- {}"_fmt(target, path));
 
 			// ターゲットにフォールバックを追加
@@ -56,33 +66,39 @@ namespace AssetKeys
 {
 	void RegisterShader()
 	{
-		PixelShaderAsset::Register(PsCaveVision, HLSL(PsCaveVision + U".hlsl"));
-		PixelShaderAsset::Register(PsMultiTextureMask, HLSL(PsMultiTextureMask + U".hlsl"));
-		PixelShaderAsset::Register(PsRasterScroll, HLSL(PsRasterScroll + U".hlsl"));
-		PixelShaderAsset::Register(PsRgbToBgr, HLSL(PsRgbToBgr + U".hlsl"));
-		PixelShaderAsset::Register(PsGrayscale, HLSL(PsGrayscale + U".hlsl"));
-		PixelShaderAsset::Register(PsGradientBlur, HLSL(PsGradientBlur + U".hlsl"));
-		VertexShaderAsset::Register(VsCaveVision, HLSL(VsCaveVision + U".hlsl"));
+		PixelShaderAsset::Register(PsCaveVision, HLSL(ASSET_PATH(PsCaveVision + U".hlsl")));
+		PixelShaderAsset::Register(PsMultiTextureMask, HLSL(ASSET_PATH(PsMultiTextureMask + U".hlsl")));
+		PixelShaderAsset::Register(PsRasterScroll, HLSL(ASSET_PATH(PsRasterScroll + U".hlsl")));
+		PixelShaderAsset::Register(PsRgbToBgr, HLSL(ASSET_PATH(PsRgbToBgr + U".hlsl")));
+		PixelShaderAsset::Register(PsGrayscale, HLSL(ASSET_PATH(PsGrayscale + U".hlsl")));
+		PixelShaderAsset::Register(PsGradientBlur, HLSL(ASSET_PATH(PsGradientBlur + U".hlsl")));
+		VertexShaderAsset::Register(VsSoftShape, HLSL(ASSET_PATH(VsSoftShape + U".hlsl")));
 	}
+
+	// 反省: 今後はシェーダーの Resource.rc も自動生成を行う
 
 	void RegisterAll()
 	{
 		// フォント登録
-		FontAsset::Register(RocknRoll_24_Bitmap, 24, U"asset/font/RocknRoll/RocknRollOne-Regular.ttf");
+		FontAsset::Register(
+			RocknRoll_24_Bitmap, 24, ASSET_PATH(U"asset/font/RocknRoll/RocknRollOne-Regular.ttf"));
 		registerFallbackTo(RocknRoll_24_Bitmap);
 
-		FontAsset::Register(RocknRoll_72_Bitmap, 72, U"asset/font/RocknRoll/RocknRollOne-Regular.ttf");
+		FontAsset::Register(
+			RocknRoll_72_Bitmap, 72, ASSET_PATH(U"asset/font/RocknRoll/RocknRollOne-Regular.ttf"));
 		registerFallbackTo(RocknRoll_72_Bitmap);
 
-		FontAsset::Register(RocknRoll_Sdf, FontMethod::SDF, 48, U"asset/font/RocknRoll/RocknRollOne-Regular.ttf");
+		FontAsset::Register(
+			RocknRoll_Sdf, FontMethod::SDF, 48, ASSET_PATH(U"asset/font/RocknRoll/RocknRollOne-Regular.ttf"));
 		registerFallbackTo(RocknRoll_Sdf);
 
 		FontAsset::Register(
-			RocknRoll_Sdf_Bold, FontMethod::SDF, 48, U"asset/font/RocknRoll/RocknRollOne-Regular.ttf", FontStyle::Bold);
+			RocknRoll_Sdf_Bold, FontMethod::SDF, 48, ASSET_PATH(U"asset/font/RocknRoll/RocknRollOne-Regular.ttf"),
+			FontStyle::Bold);
 		registerFallbackTo(RocknRoll_Sdf_Bold);
 
 		// その他の登録
-		TextureAsset::Register(gamepad, gamepad, TextureDesc::Mipped);
+		TextureAsset::Register(gamepad, ASSET_PATH(gamepad), TextureDesc::Mipped);
 
 		TextureAsset::Register(U"👉", U"👉"_emoji);
 		TextureAsset::Register(U"💛", U"💛"_emoji);
