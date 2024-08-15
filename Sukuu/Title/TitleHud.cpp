@@ -51,7 +51,11 @@ struct Title::TitleHud::Impl
 
 		m_buttons.push_back(CornerButton(U"credit"_sv, []()
 		{
-			System::LaunchFile(U"./credit.html");
+			if (Gm::DialogYesNo(U"ask_launch_credit"_localize) == MessageBoxResult::Yes)
+			{
+				System::LaunchFile(U"./credit.html");
+				Window::Minimize();
+			}
 		}));
 
 		m_buttons.push_back(CornerButton(U"tutorial"_sv, [this]()
