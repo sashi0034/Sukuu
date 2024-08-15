@@ -93,7 +93,7 @@ private:
 		else
 		{
 			// 第 10 層以上の場合はその半分の地点から始められる
-			m_floorForContinueFromMiddle = m_args.reachedFloor / 2;
+			m_floorForContinueFromMiddle = (m_args.reachedFloor + 1) / 2;
 			m_bgDrawer.SetContinueFromMiddle(m_floorForContinueFromMiddle);
 		}
 
