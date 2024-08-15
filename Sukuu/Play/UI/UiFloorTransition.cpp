@@ -8,6 +8,7 @@
 #include "Play/Other/FloorLevelDesign.h"
 #include "Util/CoroUtil.h"
 #include "Util/EasingAnimation.h"
+#include "Util/GlyphWithFallbacks.h"
 #include "Util/TomlParametersWrapper.h"
 
 namespace
@@ -112,8 +113,9 @@ private:
 			               ? U"last_layer_name"_localize
 			               : U"remaining_layers"_localizef(Constants::MaxFloorIndex - floorIndex + 1);
 
-		m_glyphs = FontAsset(AssetKeys::RocknRoll_72_Bitmap)
-			.renderOutlines(U"layer_name"_localizef(Gm::LocalizeOrdinals(floorIndex)));
+		m_glyphs = RenderOutlineGlyphWithFallbacks(
+			AssetKeys::RocknRoll_72_Bitmap, U"layer_name"_localizef(Gm::LocalizeOrdinals(floorIndex)));
+
 		m_glyphWidth = 0;
 		for (auto&& g : m_glyphs)
 		{
