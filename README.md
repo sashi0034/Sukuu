@@ -2,29 +2,38 @@
 
 ![image](https://github.com/sashi0034/Sukuu/assets/82739042/e412a320-106f-4471-8537-75701a368077)
 
-
 ## About
 
-ゲーム
+本リポジトリは Windows
+向けに開発されたゲームのソースコードです。このゲームは、[バンダイナムコスタジオ杯 2023](https://siv3d.github.io/ja-jp/event/gamejam2023/)
+に提出する目的を持って開発されたものです。本作は最優秀賞を受賞しています。
 
-[バンダイナムコスタジオ杯 2023 入賞作品](https://siv3d.github.io/ja-jp/event/gamejam2023/)
+最新版については、ゲームジャムで提出した内容から発展させたものが『Mutable 50』というタイトルで Steam にてリリースされています。
 
+ストアページは以下のリンクからアクセスできます。
+
+https://store.steampowered.com/app/3147480/Mutable_50/
 
 ## Build
 
-- [Siv3D 0.6.12](https://github.com/Siv3D/OpenSiv3D)
+1. 本プロジェクトは [Siv3D 0.6.15](https://github.com/Siv3D/OpenSiv3D) を利用しています。ビルドには、適切なバージョンの
+   Visual Studio 2022 をインストールする必要があります。
 
-- Boost 1.79.0 [boost/coroutine2](https://github.com/boostorg/coroutine2) を使用しています。`BOOST_INCLUDEDIR` に `include` ディレクトリ、 `BOOST_LIBRARYDIR` に `lib` ディレクトリを環境変数に設定してください。
+1. コルーチン機能 [boost/coroutine2](https://github.com/boostorg/coroutine2) やスタックトレース取得機能 boost/stacktrace
+   などを利用するために、 Boost 1.79.0 を使用しています。
+   `BOOST_INCLUDEDIR` に `include` ディレクトリ、 `BOOST_LIBRARYDIR` に `lib` ディレクトリを環境変数に設定してください。
 
+1. 本作を Steam でリリースするに伴い、Steamworks SDK を利用しています。ビルドするには、`STEAMWORKS_SDK` に Steamworks SDK
+   のパスを環境変数に設定する必要があります。
 
-開発環境 (参考)
+- 本作の開発には Jetbrains Rider を使用しています。`.idea` に本プロジェクト用の設定ファイルが含まれています。
 
-- Windows 11 Pro 10.0.22621
+## Credits
 
-- MSBuild version 17.7.2.37605
+以下のファイルに本作に関わるクレジット情報が含まれています。
 
-- JetBrains Rider 2023.2.2
+- [`Sukuu/App/credit.html`](Sukuu/App/credit.html)
 
-- Intel Core i9-12900
+## Bug Report
 
-- NVIDIA GeForce RTX 3080
+[Issues](https://github.com/sashi0034/Sukuu) にて、本作に関するバグ報告を歓迎しています。
