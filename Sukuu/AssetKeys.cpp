@@ -10,11 +10,22 @@
 
 namespace
 {
-	constexpr std::array fallbackFontPaths{
+	HashTable<AssetName, Array<Font>> s_fontWithFallbacks{};
+
+	constexpr std::array<StringView, 3> fallbackFontPaths{
 		U"asset/font/NotoSans/NotoSansMonoCJKsc-Bold.otf"_sv,
 		U"asset/font/NotoSans/NotoSansMonoCJKtc-Bold.otf"_sv,
 		U"asset/font/NotoSans/NotoSansMonoCJKkr-Bold.otf"_sv,
 	};
+
+	bool addFallbackTo(AssetNameView target, const Font& fallbackFont)
+	{
+		auto&& targetFont = FontAsset(target);
+		if (not targetFont.addFallback(fallbackFont)) return false;
+
+		s_fontWithFallbacks[target].push_back(fallbackFont);
+		return true;
+	}
 
 	String getFallbackKey(AssetNameView target, AssetNameView fallback)
 	{
@@ -24,6 +35,7 @@ namespace
 	void registerFallbackTo(AssetNameView target)
 	{
 		auto&& targetFont = FontAsset(target);
+		s_fontWithFallbacks[target] = {Font(targetFont)};
 
 		// 絵文字のフォールバックを追加
 		if (not FontAsset::IsRegistered(U"ColorEmoji"))
@@ -31,7 +43,7 @@ namespace
 			FontAsset::Register(U"ColorEmoji", 32, Typeface::ColorEmoji);
 		}
 		auto&& emojiFont = FontAsset(U"ColorEmoji");
-		if (not targetFont.addFallback(emojiFont))
+		if (not addFallbackTo(target, emojiFont))
 		{
 			Util::ErrorLog(U"Failed to add fallback font: {} <- ColorEmoji"_fmt(target));
 		}
@@ -54,7 +66,7 @@ namespace
 			const auto fb = FontAsset(getFallbackKey(target, path));
 			if (fb.isEmpty()) Util::ErrorLog(U"Failed to load fallback font: {} <- {}"_fmt(target, path));
 
-			if (not targetFont.addFallback(fb))
+			if (not addFallbackTo(target, fb))
 			{
 				Util::ErrorLog(U"Failed to add fallback font: {} <- {}"_fmt(target, path));
 			}
@@ -79,6 +91,8 @@ namespace AssetKeys
 
 	void RegisterAll()
 	{
+		s_fontWithFallbacks.clear();
+
 		// フォント登録
 		FontAsset::Register(
 			RocknRoll_24_Bitmap, 24, ASSET_PATH(U"asset/font/RocknRoll/RocknRollOne-Regular.ttf"));
@@ -125,5 +139,10 @@ namespace AssetKeys
 		TextureAsset::Register(U"🚀", U"🚀"_emoji);
 
 		RegisterShader();
+	}
+
+	Array<Font> GetFontWithFallbacks(AssetNameView name)
+	{
+		return s_fontWithFallbacks[name];
 	}
 }

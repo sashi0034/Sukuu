@@ -20,4 +20,6 @@ namespace AssetKeys
 	void RegisterShader();
 
 	void RegisterAll();
+
+	Array<Font> GetFontWithFallbacks(AssetNameView name);
 }

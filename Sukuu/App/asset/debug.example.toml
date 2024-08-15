@@ -12,6 +12,9 @@ initial_floor = 0
 constant_floor = false
 ura_enable = false
 
+# チュートリアル: 移動方法から
+tutorial_from_how_to_move = true
+
 # Steam ストア用のグラフィックアセットをタイトル画面から作成する
 # 例: "460x215"
 title_graphic_asset_maker = ""

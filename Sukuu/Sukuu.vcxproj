@@ -137,11 +137,13 @@
         <ClCompile Include="Ending\EndingOpenTransition.cpp"/>
         <ClCompile Include="Gm\SteamWrapper.cpp"/>
         <ClCompile Include="Play\UI\UiMessenger.cpp"/>
+        <ClCompile Include="Util\GlyphWithFallbacks.cpp" />
         <ClCompile Include="Util\VisualStudioHotReloadDetectorAddon.cpp"/>
         <ClInclude Include="BuildInformation.h"/>
         <ClInclude Include="Ending\EndingOpenTransition.h"/>
         <ClInclude Include="Gm\SteamWrapper.h"/>
         <ClInclude Include="Play\UI\UiMessenger.h"/>
+        <ClInclude Include="Util\GlyphWithFallbacks.h" />
         <ClInclude Include="Util\VisualStudioHotReloadDetectorAddon.h"/>
         <None Include="App\asset\font\RocknRoll\README-JP.md"/>
         <None Include="App\asset\font\RocknRoll\README.md"/>

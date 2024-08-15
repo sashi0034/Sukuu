@@ -13,6 +13,7 @@
 #include "Play/Enemy/EnKnight.h"
 #include "Play/Enemy/EnSlimeCat.h"
 #include "Util/EasingAnimation.h"
+#include "Util/TomlDebugValueWrapper.h"
 #include "Util/TomlParametersWrapper.h"
 
 namespace
@@ -142,6 +143,10 @@ private:
 
 	void performLogo(YieldExtended& yield)
 	{
+#if _DEBUG
+		if (GetTomlDebugValueOf<bool>(U"tutorial_from_how_to_move")) return;
+#endif
+
 		const auto icon = TextureAsset(AssetImages::siv3d_icon);
 		const auto font = FontAsset(AssetKeys::RocknRoll_Sdf);
 
@@ -182,6 +187,10 @@ private:
 
 	void performOpening(YieldExtended& yield)
 	{
+#if _DEBUG
+		if (GetTomlDebugValueOf<bool>(U"tutorial_from_how_to_move")) return;
+#endif
+
 		m_play.GetPause().SetAllowed(false);
 		m_bgm.setLoop(true);
 		m_bgm.play(Constants::BgmMixBus);

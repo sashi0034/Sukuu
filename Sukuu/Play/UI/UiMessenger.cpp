@@ -5,6 +5,7 @@
 #include "Gm/GameConfig.h"
 #include "Util/CoroUtil.h"
 #include "Util/EasingAnimation.h"
+#include "Util/GlyphWithFallbacks.h"
 #include "Util/TomlParametersWrapper.h"
 
 namespace
@@ -43,10 +44,12 @@ struct Play::UiMessenger::Impl
 		if (m_message.empty()) return;
 
 		m_time += Scene::DeltaTime();
-		const auto&& font = FontAsset(AssetKeys::RocknRoll_Sdf);
+
+		const auto& fontKey = AssetKeys::RocknRoll_Sdf;
+		const auto& font = FontAsset(fontKey);
 		const double fontSize = getToml<int>(U"font_size");
 		const Vec2 textSize = font(m_message).region().scaled((fontSize / font.fontSize())).size;
-		drawText(font,
+		drawText(fontKey,
 		         fontSize,
 		         m_message,
 		         Rect{{0, 0}, Scene::Size()}.bottomCenter() - textSize / 2 + Vec2{0, -getToml<int>(U"bottom")},
@@ -80,13 +83,20 @@ struct Play::UiMessenger::Impl
 private:
 	// 参考: https://zenn.dev/reputeless/books/siv3d-documentation/viewer/sample-visual
 	void drawText(
-		const Font& font, double fontSize, const String& text, const Vec2& pos, const ColorF& color, double t) const
+		AssetNameView fontKey,
+		double fontSize,
+		const String& text,
+		const Vec2& pos,
+		const ColorF& color,
+		double t) const
 	{
+		const auto font = FontAsset(fontKey);
 		const double scale = (fontSize / font.fontSize());
 		Vec2 penPos = pos;
 		const ScopedCustomShader2D shader{Font::GetPixelShader(font.method())};
 
-		for (auto&& [i, glyph] : Indexed(font.getGlyphs(text)))
+		auto glyphs = GetGlyphWithFallbacks(fontKey, text);
+		for (auto&& [i, glyph] : Indexed(glyphs))
 		{
 			if (glyph.codePoint == U'\n')
 			{
@@ -103,21 +113,8 @@ private:
 				break;
 			}
 
-			if (not font.hasGlyph(glyph.codePoint))
-			{
-				// フォールバックになったときうまく動作しなかったため対応
-				// TODO: これは一時的な対応に過ぎないので修正が必要
-				const double y = EaseInQuad(Saturate(1 - t / 0.3)) * -20.0;
-				const double a = color.a * Min(t / 0.3, 1.0);
-				auto t0 = font(glyph.codePoint);
-				(void)t0.draw(fontSize, penPos + Vec2{0, y}, ColorF{color, a});
-				penPos.x += t0.region().w * scale;
-			}
-			else
-			{
-				textEffect1(penPos, scale, glyph, color, (t - targetTime));
-				penPos.x += (glyph.xAdvance * scale);
-			}
+			textEffect1(penPos, scale, glyph, color, (t - targetTime));
+			penPos.x += (glyph.xAdvance * scale);
 		}
 	}
 
