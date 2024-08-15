@@ -5,6 +5,7 @@
 #include "LoungeBgDrawer.h"
 #include "LoungeMap.h"
 #include "Gm/LocalizedTextDatabase.h"
+#include "Play/PlayingUra.h"
 #include "Play/PlayScene.h"
 #include "Play/Map/BgMapDrawer.h"
 #include "Play/Other/PlayingTips.h"
@@ -16,7 +17,7 @@ namespace
 {
 	using namespace Lounge;
 
-	constexpr int floorAllowedToContinueFromMiddle = 10;
+	constexpr int floorAllowedToContinueFromMiddle_10 = 10;
 
 	enum class LoungeStairs
 	{
@@ -73,13 +74,25 @@ private:
 	void startPlayScene()
 	{
 		m_mapData = GetLoungeMap();
-		if (m_args.reachedFloor < floorAllowedToContinueFromMiddle)
+
+		if (m_args.reachedFloor < floorAllowedToContinueFromMiddle_10)
 		{
-			// 10階未満の場合は中間地点から始められない
-			m_mapData.RemoveBridgeEntranceForMiddle();
+			// 第 10 層未満の場合は中間地点から始められない
+			if (m_args.reachedFloor >= floorAllowedToContinueFromMiddle_10 / 2 && not Play::IsPlayingUra())
+			{
+				// しかし、第 5 層以上であれば第 5 層から始められることとする
+				m_floorForContinueFromMiddle = floorAllowedToContinueFromMiddle_10 / 2;
+				m_bgDrawer.SetContinueFromMiddle(m_floorForContinueFromMiddle);
+			}
+			else
+			{
+				// 橋を削除
+				m_mapData.RemoveBridgeEntranceForMiddle();
+			}
 		}
 		else
 		{
+			// 第 10 層以上の場合はその半分の地点から始められる
 			m_floorForContinueFromMiddle = m_args.reachedFloor / 2;
 			m_bgDrawer.SetContinueFromMiddle(m_floorForContinueFromMiddle);
 		}
