@@ -62,7 +62,7 @@ namespace Play
 			drawingPos.movedBy(texture.size / 2),
 			texture,
 			Palette::Crimson,
-			96));
+			96 + attacker.AttackedCount() * 12));
 		RelayTimeHealAmount(enemy.m_pos, GetEnemyKilledBonusHeal(attacker.AttackedCount()));
 	}
 

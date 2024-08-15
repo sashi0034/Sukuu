@@ -21,6 +21,19 @@ title_graphic_asset_maker = ""
 
 # プレイヤーの固定アイテム
 # 例: [1, 13]
+# Wing = 1,
+# Helmet = 2,
+# Pin = 3,
+# Mine = 4,
+# LightBulb = 5,
+# Magnet = 6,
+# Bookmark = 7,
+# Explorer = 8,
+# Grave = 9,
+# Sun = 10,
+# Tube = 11,
+# Solt = 12,
+# Rocket = 13,
 player_fixed_items = []
 
 # TIPS のテスト表示
