@@ -2,8 +2,14 @@
 
 namespace Util
 {
+	struct GlyphWithFont
+	{
+		Glyph glyph;
+		Font font;
+	};
+
 	[[nodiscard]]
-	Array<Glyph> GetGlyphWithFallbacks(AssetNameView key, const String& text);
+	Array<GlyphWithFont> GetGlyphWithFallbacks(AssetNameView key, const String& text);
 
 	[[nodiscard]]
 	Array<OutlineGlyph> RenderOutlineGlyphWithFallbacks(AssetNameView key, const String& text);

@@ -93,28 +93,55 @@ private:
 		const auto font = FontAsset(fontKey);
 		const double scale = (fontSize / font.fontSize());
 		Vec2 penPos = pos;
-		const ScopedCustomShader2D shader{Font::GetPixelShader(font.method())};
 
-		auto glyphs = GetGlyphWithFallbacks(fontKey, text);
-		for (auto&& [i, glyph] : Indexed(glyphs))
+		// ビットマップフォントに関しては後から描画する
+		Array<std::function<void()>> bitmapRenders{};
+
 		{
-			if (glyph.codePoint == U'\n')
+			// このときのシェーダは SDF or MSDF になるという想定
+			const ScopedCustomShader2D shader{Font::GetPixelShader(font.method())};
+
+			const auto glyphs = GetGlyphWithFallbacks(fontKey, text);
+			for (auto&& [i, glyphWithFont] : Indexed(glyphs))
 			{
-				penPos.x = pos.x;
-				penPos.y += (font.height() * scale);
-				continue;
+				const auto& glyph = glyphWithFont.glyph;
+				if (glyph.codePoint == U'\n')
+				{
+					penPos.x = pos.x;
+					penPos.y += (font.height() * scale);
+					continue;
+				}
+
+				const double characterPerSec = m_characterPerSecond;
+				const double targetTime = (i * characterPerSec);
+
+				if (t < targetTime)
+				{
+					break;
+				}
+
+				if (glyphWithFont.font.method() == FontMethod::Bitmap)
+				{
+					// Bitmap は後から描画
+					bitmapRenders.push_back([penPos, scale, glyph, &color, t, targetTime]()
+					{
+						textEffect1(penPos, scale, glyph, color, (t - targetTime));
+					});
+				}
+				else
+				{
+					// SDF or MSDF はその場で描画
+					textEffect1(penPos, scale, glyph, color, (t - targetTime));
+				}
+
+				penPos.x += (glyph.xAdvance * scale);
 			}
+		}
 
-			const double characterPerSec = m_characterPerSecond;
-			const double targetTime = (i * characterPerSec);
-
-			if (t < targetTime)
-			{
-				break;
-			}
-
-			textEffect1(penPos, scale, glyph, color, (t - targetTime));
-			penPos.x += (glyph.xAdvance * scale);
+		// Bitmap 描画
+		for (auto&& render : bitmapRenders)
+		{
+			render();
 		}
 	}
 
