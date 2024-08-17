@@ -112,7 +112,8 @@ public:
 
 		m_player = m_main.Birth(Player());
 
-		if (IsFloorSnowfall(data.floorIndex)) m_main.Birth(CaveSnowfall());
+		const auto snowfall = GetFloorSnowfall(data.floorIndex);
+		if (snowfall != CaveSnowfallKind::None) m_main.Birth(CaveSnowfall(snowfall));
 
 		m_uiItemContainer = m_ui.Birth(UiItemContainer());
 

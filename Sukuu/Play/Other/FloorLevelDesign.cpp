@@ -499,9 +499,15 @@ namespace Play
 		return [](double t) { return ScopedCustomShader2D{}; };
 	}
 
-	bool IsFloorSnowfall(int floorIndex)
+	CaveSnowfallKind GetFloorSnowfall(int floorIndex)
 	{
-		return InRange(floorIndex, 23, 28)
-			|| InRange(floorIndex, 44, 48);
+		if (InRange(floorIndex, 23, 26)) return CaveSnowfallKind::Steady;
+		if (InRange(floorIndex, 27, 28)) return CaveSnowfallKind::Blizzard;
+		if (InRange(floorIndex, 36, 40)) return CaveSnowfallKind::Flurries;
+		if (InRange(floorIndex, 44, 45)) return CaveSnowfallKind::Steady;
+		if (InRange(floorIndex, 46, 48)) return CaveSnowfallKind::Blizzard;
+		if (InRange(floorIndex, 49, 49)) return CaveSnowfallKind::Photons;
+		if (InRange(floorIndex, 50, 50)) return CaveSnowfallKind::Lumineer;
+		return CaveSnowfallKind::None;
 	}
 }

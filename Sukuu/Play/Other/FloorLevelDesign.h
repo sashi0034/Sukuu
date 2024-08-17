@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "CaveSnowfall.h"
 #include "Play/Enemy/EnemyDefinition.h"
 #include "Play/Map/MapGrid.h"
 
@@ -13,5 +14,5 @@ namespace Play
 
 	std::function<ScopedCustomShader2D(double t)> GetFloorBgShader(int floor);
 
-	bool IsFloorSnowfall(int floorIndex);
+	CaveSnowfallKind GetFloorSnowfall(int floorIndex);
 }

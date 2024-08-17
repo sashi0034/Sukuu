@@ -1,19 +1,11 @@
 ﻿#include "stdafx.h"
 #include "CaveSnowfall.h"
 
-#include "AssetKeys.h"
 #include "Assets.generated.h"
 #include "Play/PlayCore.h"
-#include "Util/TomlParametersWrapper.h"
 
 namespace
 {
-	template <typename T>
-	inline T getToml(const String& key)
-	{
-		return Util::GetTomlParameter<T>(U"play.cave_snowfall." + key);
-	}
-
 	struct SnowfallDust
 	{
 		double time;
@@ -30,39 +22,78 @@ namespace
 		double scaleAmplitude;
 		Optional<Trail> trail;
 	};
+
+	struct SnowfallConditions
+	{
+		int amount{};
+		double timescale{};
+		ColorF trailColor{};
+		ColorF particleColor{};
+	};
+
+	SnowfallConditions getConditions(Play::CaveSnowfallKind kind)
+	{
+		SnowfallConditions conditions{};
+
+		conditions.amount = 400;
+		if (kind == Play::CaveSnowfallKind::Flurries) conditions.amount = static_cast<int>(conditions.amount * 0.5);
+		if (kind == Play::CaveSnowfallKind::Blizzard) conditions.amount = static_cast<int>(conditions.amount * 3.0);
+		if (kind == Play::CaveSnowfallKind::Photons) conditions.amount = static_cast<int>(conditions.amount * 0.25);
+		if (kind == Play::CaveSnowfallKind::Lumineer) conditions.amount = static_cast<int>(conditions.amount * 0.5);
+
+		conditions.timescale = 1.0;
+		if (kind == Play::CaveSnowfallKind::Flurries) conditions.timescale *= 5.0;
+		if (kind == Play::CaveSnowfallKind::Blizzard) conditions.timescale *= 3.0;
+		if (kind == Play::CaveSnowfallKind::Photons) conditions.timescale *= 0.5;
+		if (kind == Play::CaveSnowfallKind::Lumineer) conditions.timescale *= 2.0;
+
+		const bool isGolden = kind == Play::CaveSnowfallKind::Photons || kind == Play::CaveSnowfallKind::Lumineer;
+
+		conditions.trailColor = ColorF{U"#c0c0ff"};
+		if (isGolden) conditions.trailColor = ColorF{U"#c0c000"};
+
+		conditions.particleColor = ColorF{U"#ffffff"};
+		if (isGolden) conditions.particleColor = ColorF{U"#ffff80"};
+
+		return conditions;
+	}
 }
 
 struct Play::CaveSnowfall::Impl
 {
+	CaveSnowfallKind m_kind{};
 	Array<SnowfallDust> m_dusts{};
 	double m_updateTimer{};
 
 	void Update()
 	{
-		const double updatePeriod = 1.0 / getToml<int>(U"update_freq");
+		const auto conditions = getConditions(m_kind);
+
+		constexpr int updateFrequency = 15;
+		const double updatePeriod = 1.0 / updateFrequency;
 		m_updateTimer += GetDeltaTime();
 		if (m_updateTimer > updatePeriod)
 		{
 			// ダストを更新
 			while (m_updateTimer > updatePeriod) m_updateTimer -= updatePeriod;
 
-			controlDustAmount();
+			controlDustAmount(conditions.amount);
 
 			for (auto&& d : m_dusts)
 			{
-				updateDust(d, updatePeriod);
+				updateDust(d, updatePeriod * conditions.timescale);
 			}
 		}
 
 		ScopedRenderStates2D sampler{BlendState::Default2D, SamplerState::ClampLinear};
 		for (auto&& d : m_dusts)
 		{
-			drawDust(d, m_updateTimer / updatePeriod);
+			drawDust(d, m_updateTimer / updatePeriod, conditions.trailColor, conditions.particleColor);
 		}
 	}
 
 private:
-	void controlDustAmount()
+	void controlDustAmount(int amount)
 	{
 		// const auto inversed = (Graphics2D::GetCameraTransform() * Graphics2D::GetLocalTransform()).inverse();
 		// const auto mapTl = inversed.transformPoint(Vec2{0, 0}).asPoint();
@@ -73,7 +104,7 @@ private:
 		const auto visibleRange = (Scene::Size() / DefaultCameraScale).asPoint();
 		const auto visibleRect = Rect(playerPoint - visibleRange / 2, visibleRange);
 
-		const double visiblePadding = getToml<double>(U"visible_padding");
+		constexpr double visiblePadding = 80;
 
 		for (auto&& dust : m_dusts)
 		{
@@ -95,7 +126,7 @@ private:
 		}
 
 		// 生成
-		while (m_dusts.size() < getToml<size_t>(U"dust_amount"))
+		while (m_dusts.size() < amount)
 		{
 			const double vr = Random(40, 120);
 			const double va = Random(15_deg, 45_deg);
@@ -118,7 +149,7 @@ private:
 		}
 	}
 
-	static void drawDust(SnowfallDust& dust, double interpolate)
+	static void drawDust(SnowfallDust& dust, double interpolate, const ColorF& trailColor, const ColorF& particleColor)
 	{
 		const auto pos = Math::Lerp(dust.oldPos, dust.pos, interpolate);
 
@@ -131,14 +162,14 @@ private:
 		{
 			dust.trail->update();
 			dust.trail->add(pos,
-			                ColorF{getToml<Color>(U"trail_color"), alpha},
+			                ColorF{trailColor, alpha},
 			                TextureAsset(AssetImages::particle).size().x * scale);
 			dust.trail->draw();
 		}
 
 		(void)TextureAsset(AssetImages::particle)
 		      .scaled(scale)
-		      .drawAt(pos, ColorF(1.0, alpha));
+		      .drawAt(pos, ColorF(particleColor, alpha));
 	}
 
 	static void updateDust(SnowfallDust& dust, double dt)
@@ -161,6 +192,11 @@ namespace Play
 	CaveSnowfall::CaveSnowfall() :
 		p_impl(std::make_shared<Impl>())
 	{
+	}
+
+	CaveSnowfall::CaveSnowfall(CaveSnowfallKind kind) : CaveSnowfall()
+	{
+		p_impl->m_kind = kind;
 	}
 
 	void CaveSnowfall::Update()

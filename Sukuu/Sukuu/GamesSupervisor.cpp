@@ -221,6 +221,7 @@ private:
 				checkSave(m_playData, true);
 
 				BgmManager::Instance().EndPlay();
+				yield.WaitForTime(2.0);
 				return true;
 			}
 			else
