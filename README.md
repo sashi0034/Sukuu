@@ -4,8 +4,8 @@
 
 ## About
 
-本リポジトリは Windows
-向けに開発されたゲームのソースコードです。このゲームは、[バンダイナムコスタジオ杯 2023](https://siv3d.github.io/ja-jp/event/gamejam2023/)
+本リポジトリには Windows
+向けに開発されたゲームのソースコードが含まれています。このゲームは、[バンダイナムコスタジオ杯 2023](https://siv3d.github.io/ja-jp/event/gamejam2023/)
 に提出する目的を持って開発されたものです。本作は最優秀賞を受賞しています。
 
 最新版については、ゲームジャムで提出した内容から発展させたものが『Mutable 50』というタイトルで Steam にてリリースされています。
@@ -34,7 +34,7 @@ https://store.steampowered.com/app/3147480/Mutable_50/
 
 - [`Sukuu/App/credit.html`](Sukuu/App/credit.html)
 
-## License
+## Licenses
 本プロジェクトに使用されている素材及びコードは、以下のライセンス条件に従います。
 
 1. ソースコードは GNU General Public License (GPL) で配布します。
@@ -43,6 +43,6 @@ https://store.steampowered.com/app/3147480/Mutable_50/
 
 3. フォント及びその他の第三者素材は各素材のオリジナルライセンスに従うものとします。
 
-## Bug Report
+## Bug Reports
 
 [Issues](https://github.com/sashi0034/Sukuu) にて、本作に関するバグ報告等を歓迎しています。
