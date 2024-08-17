@@ -11,6 +11,8 @@ namespace
 		U"tips_item_pin_2",
 		U"tips_item_magnet",
 		U"tips_use_sukuu",
+		U"tips_through_wall_with_sukuu",
+		U"tips_sleeping_enemy",
 		U"tips_effective_sukuu",
 		U"tips_clear_floor",
 		U"tips_heart_appears",
@@ -20,7 +22,8 @@ namespace
 	};
 
 	const Array<StringView> advancedTips{
-		U"tips_item_grave",
+		U"tips_item_grave_1",
+		U"tips_item_grave_2",
 		U"tips_item_sun",
 		U"tips_camera_movement_settings",
 		U"tips_running_sideeffect"
