@@ -251,6 +251,8 @@ private:
 		lounge.Kill();
 		yield();
 
+		BgmManager::Instance().EndPlay();
+
 		// タイトルに戻る
 		if (lounge.IsReturnToTitle()) return false;
 
