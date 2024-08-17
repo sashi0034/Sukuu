@@ -18,6 +18,9 @@ namespace
 {
 	using namespace Lounge;
 
+	int s_enteredCount{};
+	double s_bonusAppearedTimestamp{};
+
 	constexpr int floorAllowedToContinueFromMiddle_10 = 10;
 
 	enum class LoungeStairs
@@ -26,6 +29,61 @@ namespace
 		ToContinueFromBeginning,
 		ToContinueFromMiddle,
 	};
+
+	void installBonusItemsCrisscross(Play::GimmickGrid& gimmick, const LoungeMapData& mapData, Play::GimmickKind item)
+	{
+		gimmick[mapData.bookPoint.movedBy(-1, -1)] = item;
+		gimmick[mapData.bookPoint.movedBy(1, -1)] = item;
+		gimmick[mapData.bookPoint.movedBy(-1, 1)] = item;
+		gimmick[mapData.bookPoint.movedBy(1, 1)] = item;
+	}
+
+	void installBonusItemsAbundantly(Play::GimmickGrid& gimmick, const LoungeMapData& mapData, Play::GimmickKind item)
+	{
+		for (int x = -1; x <= 1; ++x)
+		{
+			for (int y = -1; y <= 1; ++y)
+			{
+				if (x == 0 && y == 0) continue;
+				gimmick[mapData.bookPoint.movedBy(x, y)] = item;
+			}
+		}
+	}
+
+	void setupBonusItems(Play::GimmickGrid& gimmick, const LoungeMapData& mapData)
+	{
+		if (Scene::Time() < 300 + s_bonusAppearedTimestamp)
+		{
+			// 一定時間感覚を空けないとボーナスは出現しない
+			return;
+		}
+
+		if (s_enteredCount >= 3 && RandomBool(0.3))
+		{
+			installBonusItemsAbundantly(gimmick, mapData, Play::GimmickKind::Item_Pin);
+			s_bonusAppearedTimestamp = Scene::Time();
+		}
+		else if (s_enteredCount >= 5 && RandomBool(0.1))
+		{
+			installBonusItemsCrisscross(gimmick, mapData, Play::GimmickKind::Item_Wing);
+			s_bonusAppearedTimestamp = Scene::Time();
+		}
+	}
+
+	void setupGimmicks(Play::GimmickGrid& gimmick, const LoungeMapData& mapData)
+	{
+		gimmick[mapData.stairsToTitlePoint] = Play::GimmickKind::Stairs;
+		gimmick[mapData.stairsToContinueFromBeginningPoint] = Play::GimmickKind::Stairs;
+		gimmick[mapData.stairsToContinueFromMiddlePoint] = Play::GimmickKind::Stairs;
+
+		gimmick[mapData.bookPoint] = Play::GimmickKind::SemiItem_Book;
+
+		if (not Play::IsPlayingUra())
+		{
+			// 稀にボーナスアイテム設置
+			setupBonusItems(gimmick, mapData);
+		}
+	}
 }
 
 struct LoungeScene::Impl
@@ -54,6 +112,8 @@ struct LoungeScene::Impl
 
 	void Init(ActorView self, const LoungeEnterArgs& args)
 	{
+		s_enteredCount++;
+
 		m_args = args;
 		m_playScene = self.AsParent().Birth(Play::PlayScene::Create());
 		m_play = m_playScene.GetCore();
@@ -112,11 +172,7 @@ private:
 		});
 
 		// ギミック反映
-		auto& gimmick = m_play.GetGimmick();
-		gimmick[m_mapData.bookPoint] = Play::GimmickKind::SemiItem_Book;
-		gimmick[m_mapData.stairsToTitlePoint] = Play::GimmickKind::Stairs;
-		gimmick[m_mapData.stairsToContinueFromBeginningPoint] = Play::GimmickKind::Stairs;
-		gimmick[m_mapData.stairsToContinueFromMiddlePoint] = Play::GimmickKind::Stairs;
+		setupGimmicks(m_play.GetGimmick(), m_mapData);
 
 		m_messenger = m_play.BirthUiMessenger();
 
@@ -246,5 +302,10 @@ namespace Lounge
 	int LoungeScene::NextFloor() const
 	{
 		return p_impl->m_nextFloor;
+	}
+
+	const Play::PlaySingletonData& LoungeScene::GetPlayData() const
+	{
+		return p_impl->m_play.CopyData();
 	}
 }

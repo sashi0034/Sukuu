@@ -1,6 +1,11 @@
 ﻿#pragma once
 #include "Forward.h"
 
+namespace Play
+{
+	struct PlaySingletonData;
+}
+
 namespace Lounge
 {
 	struct LoungeEnterArgs
@@ -21,6 +26,8 @@ namespace Lounge
 
 		bool IsReturnToTitle() const;
 		int NextFloor() const;
+
+		const Play::PlaySingletonData& GetPlayData() const;
 
 	private:
 		struct Impl;

@@ -252,20 +252,22 @@ private:
 		yield();
 
 		BgmManager::Instance().EndPlay();
+		yield.WaitForTime(1.0);
 
 		// タイトルに戻る
 		if (lounge.IsReturnToTitle()) return false;
 
 		// コンティニュー
+		m_playData = lounge.GetPlayData();
 		m_playData.floorIndex = lounge.NextFloor();
 		if (m_playData.floorIndex == 1)
 		{
 			// 最初からのときは時間計測も初期化
 			m_playData.measuredSeconds = {};
 		}
-		m_playData.playerPersonal = {};
+		// m_playData.playerPersonal = {};
 		m_playData.timeLimiter = {.maxTime = initialTimeLimit, .remainingTime = initialTimeLimit};
-		m_playData.itemIndexing = {};
+		// m_playData.itemIndexing = {};
 		return true;
 	}
 
