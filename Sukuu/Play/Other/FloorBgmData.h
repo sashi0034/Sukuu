@@ -5,5 +5,5 @@
 namespace Play
 {
 	using BgmInfo = Gm::BgmInfo;
-	BgmInfo GetFloorBgm(int floor);
+	BgmInfo GetFloorData(int floor);
 }

@@ -4,6 +4,7 @@
 #include "Assets.generated.h"
 #include "LoungeBgDrawer.h"
 #include "LoungeMap.h"
+#include "Gm/BgmManager.h"
 #include "Gm/LocalizedTextDatabase.h"
 #include "Play/PlayingUra.h"
 #include "Play/PlayScene.h"
@@ -187,6 +188,9 @@ private:
 		// 行動可能にする
 		m_play.GetPause().SetAllowed(true);
 		playerServices().canMove = true;
+
+		// BGM
+		Gm::BgmManager::Instance().RequestPlay({AssetBgms::zzzzzz, 10.0000, 60.5000});
 
 #if _DEBUG
 		if (GetTomlDebugValueOf<bool>(U"tips_test"))

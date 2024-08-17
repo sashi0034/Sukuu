@@ -13,7 +13,7 @@
 #include "Play/PlayingUra.h"
 #include "Play/PlayScene.h"
 #include "Play/Other/FloorLevelDesign.h"
-#include "Play/Other/FloorBgmInfo.h"
+#include "Play/Other/FloorBgmData.h"
 #include "Title/TitleScene.h"
 #include "Tutorial/TutorialScene.h"
 #include "Util/CoroUtil.h"
@@ -180,7 +180,7 @@ private:
 			auto&& play = playScene.GetCore();
 
 			// フロアに合わせたBGMを再生
-			Gm::BgmManager::Instance().RequestPlay(Play::GetFloorBgm(m_playData.floorIndex));
+			BgmManager::Instance().RequestPlay(Play::GetFloorData(m_playData.floorIndex));
 
 #if _DEBUG
 			if (not debugToml<bool>(U"skip_transition"))

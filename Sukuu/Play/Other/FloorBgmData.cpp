@@ -1,11 +1,11 @@
 ﻿#include "stdafx.h"
-#include "FloorBgmInfo.h"
+#include "FloorBgmData.h"
 
 #include "Assets.generated.h"
 
 namespace Play
 {
-	BgmInfo GetFloorBgm(int floor)
+	BgmInfo GetFloorData(int floor)
 	{
 		// 1-6F	とけいとう
 		if (floor <= 6) return {AssetBgms::tokeitou, 29.0909, 116.3636};
