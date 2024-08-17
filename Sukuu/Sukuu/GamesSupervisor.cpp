@@ -207,18 +207,26 @@ private:
 			playScene.Kill();
 			yield();
 
-			checkSave(m_playData, false);
-
 			if (m_playData.timeLimiter.remainingTime == 0)
 			{
 				// 回生の回廊へ
+				checkSave(m_playData, false);
+
+				BgmManager::Instance().EndPlay();
 				return false;
 			}
 			if (m_playData.floorIndex == Constants::MaxFloorIndex)
 			{
 				// エンディングへ
-				Gm::BgmManager::Instance().EndPlay();
+				checkSave(m_playData, true);
+
+				BgmManager::Instance().EndPlay();
 				return true;
+			}
+			else
+			{
+				// 次のフロアに移る前にセーブ
+				checkSave(m_playData, false);
 			}
 #if _DEBUG
 			if (not debugToml<bool>(U"constant_floor"))
