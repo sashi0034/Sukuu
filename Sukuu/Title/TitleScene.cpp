@@ -7,6 +7,7 @@
 #include "TitleBackground.h"
 #include "TitleGraphicAssetMaker.h"
 #include "TitleHud.h"
+#include "Gm/BgmManager.h"
 #include "Gm/GameCursor.h"
 #include "Gm/GamepadObserver.h"
 #include "Util/ActorContainer.h"
@@ -112,9 +113,7 @@ private:
 
 	void startProcess(YieldExtended& yield, ActorView self)
 	{
-		const auto bgm = AudioAsset(AssetSes::title_environment);
-		bgm.setLoop(true);
-		bgm.play(1.0s, Constants::BgmMixBus);
+		Gm::BgmManager::Instance().RequestPlay({AssetBgms::obake_dance_on_piano, 0.0, 70.0});
 		openTransition(yield, self);
 
 		yield.WaitForTime(0.3);
@@ -127,7 +126,7 @@ private:
 		m_hud.SetShowPrompt(false);
 		AudioAsset(AssetSes::title_start).playOneShot();
 
-		bgm.stop(0.0s);
+		Gm::BgmManager::Instance().EndPlay();
 		closeTransition(yield, self);
 
 		yield.WaitForTime(0.3);
