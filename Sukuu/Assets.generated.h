@@ -181,24 +181,48 @@ namespace AssetSes
 
 namespace AssetBgms
 {
+	constexpr StringView arabi_mau_yuki = U"asset/bgm/arabi_mau_yuki.mp3";
+	constexpr StringView chi_no_isan = U"asset/bgm/chi_no_isan.mp3";
 	constexpr StringView dear_my_rabbit = U"asset/bgm/dear_my_rabbit.mp3";
-	constexpr StringView kazegasane = U"asset/bgm/kazegasane.mp3";
+	constexpr StringView gekkou_no_ginsekai = U"asset/bgm/gekkou_no_ginsekai.mp3";
+	constexpr StringView houmatsu_no_inori = U"asset/bgm/houmatsu_no_inori.mp3";
+	constexpr StringView hushu = U"asset/bgm/hushu.mp3";
+	constexpr StringView itsukushimi_no_ame_shiro = U"asset/bgm/itsukushimi_no_ame_shiro.mp3";
+	constexpr StringView kazeutauranyou_hi = U"asset/bgm/kazeutauranyou_hi.mp3";
+	constexpr StringView kenzetsukasuimokukindo = U"asset/bgm/kenzetsukasuimokukindo.mp3";
+	constexpr StringView kigi_to_mizu_to_hikari = U"asset/bgm/kigi_to_mizu_to_hikari.mp3";
 	constexpr StringView obake_dance = U"asset/bgm/obake_dance.mp3";
+	constexpr StringView obake_dance_on_piano = U"asset/bgm/obake_dance_on_piano.mp3";
+	constexpr StringView okami_to_nanahiki_no_kinoko = U"asset/bgm/okami_to_nanahiki_no_kinoko.mp3";
+	constexpr StringView okinayozora = U"asset/bgm/okinayozora.mp3";
+	constexpr StringView oooooo = U"asset/bgm/oooooo.mp3";
+	constexpr StringView sabi_wo_idaku_yuhi_to_kaede = U"asset/bgm/sabi_wo_idaku_yuhi_to_kaede.mp3";
 	constexpr StringView shiro = U"asset/bgm/shiro.mp3";
 	constexpr StringView tokeitou = U"asset/bgm/tokeitou.mp3";
-	constexpr StringView tokeitou_2023 = U"asset/bgm/tokeitou_2023.mp3";
-	constexpr StringView yugata = U"asset/bgm/yugata.mp3";
+	constexpr StringView zzzzzz = U"asset/bgm/zzzzzz.mp3";
 
 	inline Array<StringView> GetKeys()
 	{
 		return {
+			arabi_mau_yuki,
+			chi_no_isan,
 			dear_my_rabbit,
-			kazegasane,
+			gekkou_no_ginsekai,
+			houmatsu_no_inori,
+			hushu,
+			itsukushimi_no_ame_shiro,
+			kazeutauranyou_hi,
+			kenzetsukasuimokukindo,
+			kigi_to_mizu_to_hikari,
 			obake_dance,
+			obake_dance_on_piano,
+			okami_to_nanahiki_no_kinoko,
+			okinayozora,
+			oooooo,
+			sabi_wo_idaku_yuhi_to_kaede,
 			shiro,
 			tokeitou,
-			tokeitou_2023,
-			yugata,
+			zzzzzz,
 		};
 	}
 }

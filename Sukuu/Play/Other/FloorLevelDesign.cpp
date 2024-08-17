@@ -2,7 +2,6 @@
 #include "FloorLevelDesign.h"
 
 #include "AssetKeys.h"
-#include "Assets.generated.h"
 #include "Play/PlayingUra.h"
 #include "Play/Enemy/EnSlimeCat.h"
 #include "Play/Enemy/EnCatfish.h"
@@ -504,15 +503,5 @@ namespace Play
 	{
 		return InRange(floorIndex, 23, 28)
 			|| InRange(floorIndex, 44, 48);
-	}
-
-	BgmInfo GetFloorBgm(int floor)
-	{
-		if (floor < maze_7) return {AssetBgms::tokeitou, 10.7, 179.7};
-		if (floor < maze_13) return {AssetBgms::obake_dance, 1.0, 125.9};
-		if (floor < maze_23) return {AssetBgms::yugata, 16.5, 101.5};
-		if (floor < maze_31) return {AssetBgms::kazegasane, 1.6, 174.2};
-		if (floor < maze_41) return {AssetBgms::shiro, 9.5, 105.5};
-		return {AssetBgms::tokeitou_2023, 31.0, 205.5};
 	}
 }

@@ -2,7 +2,7 @@
 #include "PlayerInternal.h"
 
 #include "Gm/GamepadObserver.h"
-#include "Play/PlayBgm.h"
+#include "Gm/BgmManager.h"
 #include "Play/PlayCore.h"
 #include "Util/CoroUtil.h"
 #include "Util/TomlParametersWrapper.h"
@@ -155,7 +155,7 @@ namespace Play::Player_detail
 			// 壁にいる時は、ボリューム下げる
 			rate = 0.3;
 		}
-		PlayBgm::Instance().SetVolumeRate(rate);
+		Gm::BgmManager::Instance().SetVolumeRate(rate);
 	}
 
 	static void constructRocketSpark(Array<TrailMotion>& trails)

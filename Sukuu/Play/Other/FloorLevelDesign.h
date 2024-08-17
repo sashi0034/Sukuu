@@ -14,6 +14,4 @@ namespace Play
 	std::function<ScopedCustomShader2D(double t)> GetFloorBgShader(int floor);
 
 	bool IsFloorSnowfall(int floorIndex);
-
-	BgmInfo GetFloorBgm(int floor);
 }

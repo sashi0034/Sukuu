@@ -5,6 +5,7 @@
 #include "Assets.generated.h"
 #include "Constants.h"
 #include "EndingOpenTransition.h"
+#include "Gm/BgmManager.h"
 #include "Gm/GameCursor.h"
 #include "Gm/LocalizedTextDatabase.h"
 #include "Play/PlayCore.h"
@@ -119,9 +120,7 @@ struct EndingHud::Impl
 private:
 	void flowchart(YieldExtended& yield, ActorView self, const Play::MeasuredSecondsArray& measured)
 	{
-		const auto bgm = AudioAsset(AssetBgms::dear_my_rabbit);
-		bgm.setLoop(true);
-		bgm.play();
+		Gm::BgmManager::Instance().RequestPlay({AssetBgms::shiro, 20.8696, 125.2174});
 
 #if 0
 #endif
@@ -177,7 +176,7 @@ private:
 
 		yield.WaitForTrue([]() { return Gm::CheckConfirmSimply(); });
 
-		bgm.stop(3.0s);
+		Gm::BgmManager::Instance().EndPlay();
 		yield.WaitForExpire(AnimateEasing<EaseOutSine>(self, &m_closeCloseAlpha, 0.0, 3.0));
 
 		// Presented by sashi

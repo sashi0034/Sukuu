@@ -10,10 +10,10 @@
 #include "Gm/LocalizedTextDatabase.h"
 #include "Gm/SteamWrapper.h"
 #include "Lounge/LoungeScene.h"
-#include "Play/PlayBgm.h"
 #include "Play/PlayingUra.h"
 #include "Play/PlayScene.h"
 #include "Play/Other/FloorLevelDesign.h"
+#include "Play/Other/FloorBgmInfo.h"
 #include "Title/TitleScene.h"
 #include "Tutorial/TutorialScene.h"
 #include "Util/CoroUtil.h"
@@ -180,7 +180,7 @@ private:
 			auto&& play = playScene.GetCore();
 
 			// フロアに合わせたBGMを再生
-			Play::PlayBgm::Instance().RequestPlay(Play::GetFloorBgm(m_playData.floorIndex));
+			Gm::BgmManager::Instance().RequestPlay(Play::GetFloorBgm(m_playData.floorIndex));
 
 #if _DEBUG
 			if (not debugToml<bool>(U"skip_transition"))
@@ -217,7 +217,7 @@ private:
 			if (m_playData.floorIndex == Constants::MaxFloorIndex)
 			{
 				// エンディングへ
-				Play::PlayBgm::Instance().EndPlay();
+				Gm::BgmManager::Instance().EndPlay();
 				return true;
 			}
 #if _DEBUG
@@ -320,6 +320,6 @@ namespace Sukuu
 	void GamesSupervisor::Update()
 	{
 		ActorBase::Update();
-		Play::PlayBgm::Instance().Refresh();
+		Gm::BgmManager::Instance().Refresh();
 	}
 }

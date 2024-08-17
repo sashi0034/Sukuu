@@ -9,6 +9,7 @@
 #include "Gm/GameCursor.h"
 #include "Gm/GamepadObserver.h"
 #include "Gm/LocalizedTextDatabase.h"
+#include "Gm/BgmManager.h"
 #include "Play/PlayScene.h"
 #include "Play/Enemy/EnKnight.h"
 #include "Play/Enemy/EnSlimeCat.h"
@@ -38,7 +39,6 @@ struct Tutorial::TutorialScene::Impl
 	Play::UiMessenger m_messanger{};
 	TutorialFocus m_focus{};
 	std::function<void()> m_postDraw{};
-	AudioAsset m_bgm = AudioAsset(AssetBgms::obake_dance);
 	bool m_retrying{};
 
 	void Init(ActorView self)
@@ -101,7 +101,7 @@ private:
 		// ポーズ画面にチュートリアル終了ボタンを追加
 		m_play.GetPause().AddButtonCancelTutorial([&]()
 		{
-			m_bgm.stop();
+			Gm::BgmManager::Instance().EndPlay();
 			m_finished = true;
 		});
 	}
@@ -136,7 +136,8 @@ private:
 		tutorialFinal(yield);
 
 		yield.WaitForTrue([this]() { return m_play.GetPlayer().IsTerminated(); });
-		m_bgm.stop(3.0s);
+
+		Gm::BgmManager::Instance().EndPlay(3.0);
 		yield.WaitForTime(3.0);
 		m_finished = true;
 	}
@@ -192,8 +193,7 @@ private:
 #endif
 
 		m_play.GetPause().SetAllowed(false);
-		m_bgm.setLoop(true);
-		m_bgm.play(Constants::BgmMixBus);
+		Gm::BgmManager::Instance().RequestPlay({AssetBgms::obake_dance_on_piano, 0.0, 70.0});
 
 		double prologueAlpha{};
 		const auto prologueFont = FontAsset(AssetKeys::RocknRoll_Sdf);
@@ -314,10 +314,10 @@ private:
 			}
 		});
 
-		(void)m_bgm.setVolume(0.7);
+		Gm::BgmManager::Instance().OverrideVolumeRate(0.7);
 		waitMessage(yield, Gm::LocalizedText(U"tutorial_surrounded_monsters"), messageWaitMedium);
 		waitMessage(yield, Gm::LocalizedText(U"tutorial_introduce_sukuu"), messageWaitMedium);
-		(void)m_bgm.setVolume(0.5);
+		Gm::BgmManager::Instance().OverrideVolumeRate(0.5);
 
 		bool hasScooped{};
 		playerServices().canScoop = true;
@@ -340,7 +340,7 @@ private:
 		timescaleController.Kill();
 		m_focus.Hide();
 		SetTimeScale(1.0);
-		(void)m_bgm.setVolume(1.0);
+		Gm::BgmManager::Instance().OverrideVolumeRate(none);
 		yield.WaitForTime(1.0);
 
 		playerServices().overrideCamera = none;

@@ -2,10 +2,10 @@
 #include "Player.h"
 
 #include "PlayScene.h"
-#include "PlayBgm.h"
 #include "PlayingUra.h"
 #include "Chara/CharaUtil.h"
 #include "Effect/ItemObtainEffect.h"
+#include "Gm/BgmManager.h"
 #include "Gm/GameConfig.h"
 #include "Item/ItemGrave.h"
 #include "Item/ItemMagnet.h"
@@ -144,7 +144,7 @@ struct Play::Player::Impl
 		if (PlayCore::Instance().GetTimeLimiter().GetData().remainingTime > 0) return;
 
 		// 以下、ゲームオーバー処理開始
-		PlayBgm::Instance().EndPlay();
+		Gm::BgmManager::Instance().EndPlay();
 		AudioAsset(AssetSes::fall_down).playOneShot();
 		m_gameOverStarted = true;
 		m_flowchart.Kill();
