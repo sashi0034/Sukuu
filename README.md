@@ -34,6 +34,15 @@ https://store.steampowered.com/app/3147480/Mutable_50/
 
 - [`Sukuu/App/credit.html`](Sukuu/App/credit.html)
 
+## License
+本プロジェクトに使用されている素材及びコードは、以下のライセンス条件に従います。
+
+1. ソースコードは GNU General Public License (GPL) で配布します。
+
+2. 画像及びサウンドアセットは Creative Commons Attribution-NoDerivs (CC BY-ND) で公開します。
+
+3. フォント及びその他の第三者素材は各素材のオリジナルライセンスに従うものとします。
+
 ## Bug Report
 
-[Issues](https://github.com/sashi0034/Sukuu) にて、本作に関するバグ報告を歓迎しています。
+[Issues](https://github.com/sashi0034/Sukuu) にて、本作に関するバグ報告等を歓迎しています。

@@ -41,3 +41,6 @@ tips_test = false
 
 # 起動時に Steam の Stat のリセットを行う
 steam_stat_reset = false
+
+# Steam が起動していなくても実行可能
+steam_no_require = false

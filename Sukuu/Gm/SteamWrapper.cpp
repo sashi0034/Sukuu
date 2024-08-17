@@ -59,6 +59,10 @@ namespace
 		{
 			if (not s_initializer.initialized)
 			{
+#if _DEBUG
+				if (Util::GetTomlDebugValueOf<bool>(U"steam_no_require")) return false;
+#endif
+				System::Exit();
 				return false;
 			}
 
