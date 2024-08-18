@@ -385,6 +385,16 @@ private:
 
 	void tutorialItem(YieldExtended& yield)
 	{
+		// 切られ役ナイト
+		{
+			auto k1 = m_play.GetEnemies().Birth(m_play.AsMainContent(), Play::EnKnight());
+			k1.InitTutorial(m_mapData.knightSpawnPoint.movedBy(2, 0) * Play::CellPx_24, Dir4::Left);
+
+			auto k2 = m_play.GetEnemies().Birth(m_play.AsMainContent(), Play::EnKnight());
+			k2.InitTutorial(m_mapData.knightSpawnPoint.movedBy(1, 0) * Play::CellPx_24, Dir4::Left);
+		}
+
+		// 検知用ナイト
 		auto knight = m_play.GetEnemies().Birth(m_play.AsMainContent(), Play::EnKnight());
 		knight.InitTutorial(m_mapData.knightSpawnPoint * Play::CellPx_24, Dir4::Left);
 
