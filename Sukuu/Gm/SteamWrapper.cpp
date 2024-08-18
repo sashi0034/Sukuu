@@ -112,13 +112,14 @@ namespace Gm
 		return GameLanguage::En;
 	}
 
-	void CheckStoreSteamStatOfReach(bool isUra, int floor)
+	void CheckStoreSteamStatOfCleared(bool isUra, int floor)
 	{
 		if (not Util::AssertStrongly(0 <= floor && floor <= 50)) return;
 
 		const auto userStat = SteamUserStats();
 		if (not userStat) return;
 
+		// reached となっているが、本当は cleared のつもり (Steam の実績 Web UI をもう触りたくない...)
 		std::string_view key = isUra ? "reached_ura" : "reached_standard";
 		int prev;
 		if (not userStat->GetStat(key.data(), &prev)) return;

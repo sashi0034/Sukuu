@@ -7,5 +7,5 @@ namespace Gm
 
 	GameLanguage GetSteamLanguage();
 
-	void CheckStoreSteamStatOfReach(bool isUra, int floor);
+	void CheckStoreSteamStatOfCleared(bool isUra, int floor);
 }

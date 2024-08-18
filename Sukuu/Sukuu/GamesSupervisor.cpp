@@ -301,8 +301,8 @@ private:
 			m_savedata = newData;
 		}
 
-		// Steam に送信
-		CheckStoreSteamStatOfReach(Play::IsPlayingUra(), newRecord.bestReached);
+		// Steam に送信 (到達フロアより 1 つ小さい値を送信、ただしクリア時は 50 と送信)
+		CheckStoreSteamStatOfCleared(Play::IsPlayingUra(), newRecord.completedTime != 0 ? 50 : newRecord.bestReached - 1);
 	}
 
 	static ReachedRecord& getReachedRecord(GameSavedata& data)
