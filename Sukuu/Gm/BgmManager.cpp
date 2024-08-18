@@ -63,6 +63,11 @@ namespace Gm
 	{
 	}
 
+	BgmManager::BgmManager(const BgmManager& other) :
+		p_impl(std::make_shared<Impl>(*other.p_impl))
+	{
+	}
+
 	void BgmManager::RequestPlay(const BgmInfo& bgm)
 	{
 		if (p_impl->m_musicInfo.music == bgm.music) return;
@@ -82,8 +87,8 @@ namespace Gm
 		p_impl->m_targetVolumeRate = rate;
 	}
 
-	void BgmManager::OverrideVolumeRate(Optional<double> rate)
-	{
-		p_impl->m_overriddenVolumeRate = rate;
-	}
+	// void BgmManager::OverrideVolumeRate(Optional<double> rate)
+	// {
+	// 	p_impl->m_overriddenVolumeRate = rate;
+	// }
 }

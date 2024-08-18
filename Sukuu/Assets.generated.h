@@ -191,6 +191,11 @@ namespace AssetBgms
 	constexpr StringView kazeutauranyou_hi = U"asset/bgm/kazeutauranyou_hi.mp3";
 	constexpr StringView kenzetsukasuimokukindo = U"asset/bgm/kenzetsukasuimokukindo.mp3";
 	constexpr StringView kigi_to_mizu_to_hikari = U"asset/bgm/kigi_to_mizu_to_hikari.mp3";
+	constexpr StringView obake_1 = U"asset/bgm/obake_1.mp3";
+	constexpr StringView obake_2 = U"asset/bgm/obake_2.mp3";
+	constexpr StringView obake_3 = U"asset/bgm/obake_3.mp3";
+	constexpr StringView obake_4 = U"asset/bgm/obake_4.mp3";
+	constexpr StringView obake_5 = U"asset/bgm/obake_5.mp3";
 	constexpr StringView obake_dance = U"asset/bgm/obake_dance.mp3";
 	constexpr StringView obake_dance_on_piano = U"asset/bgm/obake_dance_on_piano.mp3";
 	constexpr StringView okami_to_nanahiki_no_kinoko = U"asset/bgm/okami_to_nanahiki_no_kinoko.mp3";
@@ -214,6 +219,11 @@ namespace AssetBgms
 			kazeutauranyou_hi,
 			kenzetsukasuimokukindo,
 			kigi_to_mizu_to_hikari,
+			obake_1,
+			obake_2,
+			obake_3,
+			obake_4,
+			obake_5,
 			obake_dance,
 			obake_dance_on_piano,
 			okami_to_nanahiki_no_kinoko,

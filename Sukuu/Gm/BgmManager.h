@@ -13,7 +13,10 @@ namespace Gm
 	{
 	public:
 		static BgmManager& Instance();
+
 		BgmManager();
+		BgmManager(const BgmManager& other);
+
 		void Refresh();
 
 		void RequestPlay(const BgmInfo& bgm);
@@ -22,7 +25,7 @@ namespace Gm
 
 		/// @brief 音量レートを強制的に上書きする.
 		/// チュートリアルといった特殊シーンで使用.
-		void OverrideVolumeRate(Optional<double> rate);
+		// void OverrideVolumeRate(Optional<double> rate);
 
 	private:
 		struct Impl;

@@ -41,6 +41,9 @@ struct Tutorial::TutorialScene::Impl
 	std::function<void()> m_postDraw{};
 	bool m_retrying{};
 
+	// BGM (5 つのチャンネルを用意)
+	Array<Gm::BgmManager> m_bgms{};
+
 	void Init(ActorView self)
 	{
 		m_playScene = self.AsParent().Birth(Play::PlayScene::Create());
@@ -101,7 +104,7 @@ private:
 		// ポーズ画面にチュートリアル終了ボタンを追加
 		m_play.GetPause().AddButtonCancelTutorial([&]()
 		{
-			Gm::BgmManager::Instance().EndPlay();
+			endBgms(1.0);
 			m_finished = true;
 		});
 	}
@@ -137,7 +140,7 @@ private:
 
 		yield.WaitForTrue([this]() { return m_play.GetPlayer().IsTerminated(); });
 
-		Gm::BgmManager::Instance().EndPlay(3.0);
+		endBgms(3.0);
 		yield.WaitForTime(3.0);
 		m_finished = true;
 	}
@@ -186,6 +189,27 @@ private:
 		m_postDraw = {};
 	}
 
+	void initializeBgms()
+	{
+		for (const auto i : step(5)) m_bgms.emplace_back(Gm::BgmManager());
+
+		constexpr double loopBegin = 18.6345;
+		constexpr double loopEnd = 113.7288;
+		m_bgms[0].RequestPlay({AssetBgms::obake_1, loopBegin, loopEnd});
+		m_bgms[1].RequestPlay({AssetBgms::obake_2, loopBegin, loopEnd});
+		m_bgms[2].RequestPlay({AssetBgms::obake_3, loopBegin, loopEnd});
+		m_bgms[3].RequestPlay({AssetBgms::obake_4, loopBegin, loopEnd});
+		m_bgms[4].RequestPlay({AssetBgms::obake_5, loopBegin, loopEnd});
+
+		m_bgms[0].SetVolumeRate(1.0);
+		for (int i = 1; i < 5; ++i) m_bgms[i].SetVolumeRate(0.0);
+	}
+
+	void endBgms(double duration = 1.0)
+	{
+		for (const auto i : step(m_bgms.size())) m_bgms[i].EndPlay(duration);
+	}
+
 	void performOpening(YieldExtended& yield)
 	{
 #if _DEBUG
@@ -193,7 +217,8 @@ private:
 #endif
 
 		m_play.GetPause().SetAllowed(false);
-		Gm::BgmManager::Instance().RequestPlay({AssetBgms::obake_dance_on_piano, 0.0, 70.0});
+
+		initializeBgms();
 
 		double prologueAlpha{};
 		const auto prologueFont = FontAsset(AssetKeys::RocknRoll_Sdf);
@@ -264,6 +289,8 @@ private:
 		m_play.GetMap().At(m_mapData.firstBlockPoint).kind = Play::TerrainKind::Floor;
 
 		playerServices().onMoved = {};
+
+		m_bgms[1].SetVolumeRate(1.0);
 	}
 
 	void tutorialScoop(YieldExtended& yield)
@@ -314,10 +341,9 @@ private:
 			}
 		});
 
-		Gm::BgmManager::Instance().OverrideVolumeRate(0.7);
+		for (const int i : step(2)) m_bgms[i].SetVolumeRate(0.3);
 		waitMessage(yield, Gm::LocalizedText(U"tutorial_surrounded_monsters"), messageWaitMedium);
 		waitMessage(yield, Gm::LocalizedText(U"tutorial_introduce_sukuu"), messageWaitMedium);
-		Gm::BgmManager::Instance().OverrideVolumeRate(0.5);
 
 		bool hasScooped{};
 		playerServices().canScoop = true;
@@ -340,7 +366,9 @@ private:
 		timescaleController.Kill();
 		m_focus.Hide();
 		SetTimeScale(1.0);
-		Gm::BgmManager::Instance().OverrideVolumeRate(none);
+
+		for (const int i : step(3)) m_bgms[i].SetVolumeRate(1.0);
+
 		yield.WaitForTime(1.0);
 
 		playerServices().overrideCamera = none;
@@ -400,6 +428,8 @@ private:
 		playerServices().canMoveTo = {};
 		playerServices().canScoopTo = {};
 
+		m_bgms[3].SetVolumeRate(1.0);
+
 		waitMessage(yield, Gm::LocalizedText(U"tutorial_kill_enemy"), messageWaitShort);
 	}
 
@@ -432,6 +462,8 @@ private:
 
 		playerServices().canMove = true;
 		playerServices().canScoop = true;
+
+		m_bgms[4].SetVolumeRate(1.0);
 	}
 };
 
@@ -457,5 +489,6 @@ namespace Tutorial
 	{
 		ActorBase::Update();
 		if (p_impl->m_postDraw) p_impl->m_postDraw();
+		for (auto i : step(p_impl->m_bgms.size())) p_impl->m_bgms[i].Refresh();
 	}
 }
