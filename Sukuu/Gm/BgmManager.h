@@ -23,12 +23,11 @@ namespace Gm
 		void EndPlay(double fadeTime = 1.0);
 		void SetVolumeRate(double rate);
 
-		/// @brief 音量レートを強制的に上書きする.
-		/// チュートリアルといった特殊シーンで使用.
-		// void OverrideVolumeRate(Optional<double> rate);
-
 	private:
 		struct Impl;
 		std::shared_ptr<Impl> p_impl;
 	};
+
+	/// @brief BgmManager::Instance().Refresh() を毎フレーム呼び出すアドオンを初期化する
+	void InitBgmManagerAddon();
 }

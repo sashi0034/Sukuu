@@ -336,6 +336,5 @@ namespace Sukuu
 	void GamesSupervisor::Update()
 	{
 		ActorBase::Update();
-		Gm::BgmManager::Instance().Refresh();
 	}
 }

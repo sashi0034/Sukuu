@@ -3,6 +3,7 @@
 #include "AssetKeys.h"
 #include "Assets.generated.h"
 #include "Constants.h"
+#include "Gm/BgmManager.h"
 #include "Sukuu/AssetReloader.h"
 #include "Gm/GameCursor.h"
 #include "Gm/GamepadObserver.h"
@@ -54,6 +55,7 @@ void Main()
 	InitTomlDebugValueAddon();
 	InitVisualStudioHotReloadDetectorAddon();
 #endif
+	Gm::InitBgmManagerAddon();
 	Gm::InitLocalizedTextDatabaseAddon();
 	Gm::InitSteamWrapperAddon();
 

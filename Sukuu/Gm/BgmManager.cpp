@@ -10,6 +10,16 @@ namespace
 	BgmManager s_instance{};
 
 	constexpr double baseVolume = 0.7;
+
+	class BgmManagerAddon : public IAddon
+	{
+	public:
+		bool update() override
+		{
+			BgmManager::Instance().Refresh();
+			return true;
+		}
+	};
 }
 
 struct BgmManager::Impl
@@ -17,20 +27,12 @@ struct BgmManager::Impl
 	BgmInfo m_musicInfo{};
 	double m_volumeRate{1.0};
 	double m_targetVolumeRate{1.0};
-	Optional<double> m_overriddenVolumeRate{};
 
 	void Refresh()
 	{
 		if (m_musicInfo.music.isEmpty()) return;
 
-		if (m_overriddenVolumeRate)
-		{
-			m_volumeRate = *m_overriddenVolumeRate;
-		}
-		else
-		{
-			m_volumeRate = Math::Lerp(m_volumeRate, m_targetVolumeRate, Scene::DeltaTime() * 5.0);
-		}
+		m_volumeRate = Math::Lerp(m_volumeRate, m_targetVolumeRate, Scene::DeltaTime() * 5.0);
 
 		const auto playingMusic = AudioAsset(m_musicInfo.music);
 		(void)playingMusic.setVolume(m_volumeRate * baseVolume);
@@ -87,8 +89,8 @@ namespace Gm
 		p_impl->m_targetVolumeRate = rate;
 	}
 
-	// void BgmManager::OverrideVolumeRate(Optional<double> rate)
-	// {
-	// 	p_impl->m_overriddenVolumeRate = rate;
-	// }
+	void InitBgmManagerAddon()
+	{
+		Addon::Register<BgmManagerAddon>(U"BgmManagerAddon");
+	}
 }
