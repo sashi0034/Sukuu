@@ -142,6 +142,7 @@ private:
 		});
 		const bool retryTutorial = title.IsConcludedRetryTutorial();
 
+		BgmManager::Instance().EndPlay();
 		title.Kill();
 		yield();
 
