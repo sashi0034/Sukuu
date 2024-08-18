@@ -33,7 +33,11 @@ namespace
 
 		SteamInitializer()
 		{
-			// if (SteamAPI_RestartAppIfNecessary(steamAppId)) // TODO
+			if (SteamAPI_RestartAppIfNecessary(steamAppId))
+			{
+				errorMessage = U"[Steam] Restart required via Steam.";
+				return;
+			}
 
 			SteamErrMsg error{};
 			const auto initResult = SteamAPI_InitEx(&error);
