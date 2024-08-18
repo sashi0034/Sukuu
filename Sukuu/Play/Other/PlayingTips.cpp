@@ -14,11 +14,11 @@ namespace
 		U"tips_through_wall_with_sukuu",
 		U"tips_sleeping_enemy",
 		U"tips_effective_sukuu",
+		U"tips_one_blow",
 		U"tips_clear_floor",
 		U"tips_heart_appears",
 		U"tips_about_maze",
 		U"tips_use_item_while_moving",
-
 	};
 
 	const Array<StringView> advancedTips{
