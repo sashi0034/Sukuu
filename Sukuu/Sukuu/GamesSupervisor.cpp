@@ -259,16 +259,18 @@ private:
 		if (lounge.IsReturnToTitle()) return false;
 
 		// コンティニュー
-		m_playData = lounge.GetPlayData();
 		m_playData.floorIndex = lounge.NextFloor();
 		if (m_playData.floorIndex == 1)
 		{
 			// 最初からのときは時間計測も初期化
 			m_playData.measuredSeconds = {};
 		}
-		// m_playData.playerPersonal = {};
+
+		const auto loungePlayData = lounge.GetPlayData();
+
+		m_playData.playerPersonal.items = loungePlayData.playerPersonal.items;
 		m_playData.timeLimiter = {.maxTime = initialTimeLimit, .remainingTime = initialTimeLimit};
-		// m_playData.itemIndexing = {};
+		m_playData.itemIndexing = loungePlayData.itemIndexing;
 		return true;
 	}
 
