@@ -51,6 +51,7 @@ struct Play::Player::Impl
 
 	PlayerPersonalData m_personal{};
 	CharaPosition m_pos;
+	bool m_itemForbidden{true};
 	Vec2 m_viewGapOffset{};
 	double m_moveSpeed = 1.0;
 	double m_cameraScale = DefaultCameraScale;
@@ -262,6 +263,7 @@ struct Play::Player::Impl
 
 	bool CanUseItem(ConsumableItem item) const
 	{
+		if (m_itemForbidden) return false;
 		if (m_slowMotion) return false;
 		if (PlayCore::Instance().GetTimeLimiter().GetData().remainingTime <= 0) return false;
 
@@ -270,7 +272,6 @@ struct Play::Player::Impl
 		case ConsumableItem::None:
 			return false;
 		case ConsumableItem::Wing:
-			if (not m_viewGapOffset.isZero()) return false; // 連続使用が出来てしまうバグの対策
 			return m_act == PlayerAct::Idle;
 		case ConsumableItem::Helmet:
 			return not m_guardHelmet;
@@ -466,6 +467,7 @@ private:
 		m_cameraOffsetDestination = {0, 0};
 		m_flowchart.Kill();
 		m_distField.Clear();
+		m_itemForbidden = true;
 		m_subUpdating = {};
 		m_scoopRequested = false;
 		m_slowMotion = false;
@@ -488,6 +490,9 @@ private:
 		{
 			m_act = PlayerAct::Idle;
 		}
+
+		m_itemForbidden = false;
+
 		refreshDistField();
 
 		// キー入力待ち
@@ -863,7 +868,9 @@ private:
 		case GimmickKind::Arrow_left: [[fallthrough]];
 		case GimmickKind::Arrow_down:
 			m_immortal.immortalStock++;
+			m_itemForbidden = true;
 			moveArrowWarp(yield, self, newPoint, false);
+			m_itemForbidden = false;
 			m_immortal.immortalStock--;
 			break;
 		case GimmickKind::DemiArrow_right: [[fallthrough]];
@@ -871,7 +878,9 @@ private:
 		case GimmickKind::DemiArrow_left: [[fallthrough]];
 		case GimmickKind::DemiArrow_down:
 			m_immortal.immortalStock++;
+			m_itemForbidden = true;
 			moveArrowWarp(yield, self, newPoint, true);
+			m_itemForbidden = false;
 			m_immortal.immortalStock--;
 
 			m_immortal.immortalTime += 0.5;
