@@ -216,7 +216,7 @@ private:
 				BgmManager::Instance().EndPlay();
 				return false;
 			}
-			if (m_playData.floorIndex == Constants::MaxFloorIndex)
+			if (not floorDown && m_playData.floorIndex == Constants::MaxFloorIndex)
 			{
 				// エンディングへ
 				checkSave(m_playData, true);
