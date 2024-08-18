@@ -83,7 +83,11 @@ namespace Gm::detail
 
 		const int fontSize = DlFontSize();
 		const auto exitRect = exitText.region(fontSize, Arg::leftCenter = exitPoint).stretched(32, 4);
-		*exitHover = not IsUsingGamepad() && exitRect.intersects(Cursor::Pos());
+
+		// IsUsingGamepad() を考慮するとゲームパッド設定画面で戻れなくなってしまうので、仕方が無いが IsUsingGamepad() を無視する
+		// *exitHover = not IsUsingGamepad() && exitRect.intersects(Cursor::Pos());
+		*exitHover = exitRect.intersects(Cursor::Pos());
+
 		(void)exitRect.rounded(8).draw(DlGray * (*exitHover ? 0.7 : 1.0));
 		(void)exitText.draw(fontSize, Arg::leftCenter = exitPoint, ColorF(1));
 	}

@@ -40,21 +40,43 @@ namespace
 		Finished,
 	};
 
+	String getButtonLiteral(RegisterStage b)
+	{
+		switch (b)
+		{
+		case RegisterStage::Register_A: return U"[ A ]";
+		case RegisterStage::Register_B: return U"[ B ]";
+		case RegisterStage::Register_X: return U"[ X ]";
+		case RegisterStage::Register_Y: return U"[ Y ]";
+		case RegisterStage::Register_DRight: return U"[ → ]";
+		case RegisterStage::Register_DUp: return U"[ ↑ ]";
+		case RegisterStage::Register_DLeft: return U"[ ← ]";
+		case RegisterStage::Register_DDown: return U"[ ↓ ]";
+		case RegisterStage::Register_LB: return U"[ LB ]";
+		case RegisterStage::Register_RB: return U"[ RB ]";
+		case RegisterStage::Register_LT: return U"[ LT ]";
+		case RegisterStage::Register_RT: return U"[ RT ]";
+		case RegisterStage::Register_Menu: return U"[ Menu ]";
+		default: return U"";
+		}
+	}
+
 	String stageDescription(RegisterStage r)
 	{
-		if (r == RegisterStage::Register_A)return U"[ A ] " + U"register_bt_item"_localize;
-		if (r == RegisterStage::Register_B)return U"[ B ] " + U"register_bt_dash"_localize;
-		if (r == RegisterStage::Register_X)return U"[ X ] ?";
-		if (r == RegisterStage::Register_Y)return U"[ Y ] ?";
-		if (r == RegisterStage::Register_DRight)return U"[ Right ] " + U"register_bt_move"_localize;
-		if (r == RegisterStage::Register_DUp)return U"[ Up ] " + U"register_bt_move"_localize;
-		if (r == RegisterStage::Register_DLeft)return U"[ Left ] " + U"register_bt_move"_localize;
-		if (r == RegisterStage::Register_DDown)return U"[ Down ] " + U"register_bt_move"_localize;
-		if (r == RegisterStage::Register_LB)return U"[ LB ] " + U"register_bt_change_item"_localize;
-		if (r == RegisterStage::Register_RB)return U"[ RB ] " + U"register_bt_change_item"_localize;;
-		if (r == RegisterStage::Register_LT)return U"[ LT ] " + U"register_bt_turn_direction"_localize;
-		if (r == RegisterStage::Register_RT)return U"[ RT ] " + U"register_bt_scoop"_localize;
-		if (r == RegisterStage::Register_Menu)return U"[ Menu ] " + U"register_bt_pause"_localize;
+		const auto l = getButtonLiteral(r) + U" ";
+		if (r == RegisterStage::Register_A) return l + U"register_bt_item"_localize;
+		if (r == RegisterStage::Register_B) return l + U"register_bt_dash"_localize;
+		if (r == RegisterStage::Register_X) return l + U"?"_s;
+		if (r == RegisterStage::Register_Y) return l + U"?"_s;
+		if (r == RegisterStage::Register_DRight) return l + U"register_bt_move"_localize;
+		if (r == RegisterStage::Register_DUp) return l + U"register_bt_move"_localize;
+		if (r == RegisterStage::Register_DLeft) return l + U"register_bt_move"_localize;
+		if (r == RegisterStage::Register_DDown) return l + U"register_bt_move"_localize;
+		if (r == RegisterStage::Register_LB) return l + U"register_bt_change_item"_localize;
+		if (r == RegisterStage::Register_RB) return l + U"register_bt_change_item"_localize;;
+		if (r == RegisterStage::Register_LT) return l + U"register_bt_turn_direction"_localize;
+		if (r == RegisterStage::Register_RT) return l + U"register_bt_scoop"_localize;
+		if (r == RegisterStage::Register_Menu) return l + U"register_bt_pause"_localize;
 		return U"registration_finish"_localize;
 	};
 
@@ -68,16 +90,39 @@ namespace
 		double passedCurrentStage{};
 	};
 
+	void drawProgressState(const InternalState& state)
+	{
+		for (int i = 0; i < static_cast<int>(RegisterStage::Finished); ++i)
+		{
+			const auto buttonLiteral = getButtonLiteral(static_cast<RegisterStage>(i));
+
+			const auto buttonStatus =
+				i < static_cast<int>(state.stage)
+					? U"✅ id: {}"_fmt(state.registered[i])
+					: U"⬜";
+			constexpr auto color = ColorF{0.6};
+			const auto pos = Point{Scene::Size().x - 320, 32}.movedBy(0, i * 48);
+
+			(void)FontAsset(AssetKeys::RocknRoll_Sdf)(buttonLiteral).draw(24, pos, color);
+			(void)FontAsset(AssetKeys::RocknRoll_Sdf)(buttonStatus).draw(24, pos.movedBy(128, 0), color);
+		}
+	}
+
 	void drawTexts(const InternalState& state, const GamepadInfo& gamepad, bool* exitHover)
 	{
 		const auto fontSize = DlFontSize();
 
+		// 「コントローラ登録」
 		DrawDialogTitle(U"controller_registration"_localize + U"\n" + gamepad.name);
 
 		const auto bottom = Vec2{Scene::Center().x, Scene::Size().y};
 		const auto bottom1 = DlBottom1();
 
+		// 「戻る」
 		DrawDialogExit(exitHover);
+
+		// 進捗状況
+		drawProgressState(state);
 
 		const auto rollbackArea = FontAsset(AssetKeys::RocknRoll_Sdf)(U"Backspace " + U"register_reset"_localize)
 			.drawAt(fontSize, bottom1, DlBlack);
@@ -92,8 +137,10 @@ namespace
 		              .draw(state.stage == RegisterStage::Finished ? DlRed : DlGray);
 		(void)buttDesc.drawAt(fontSize, bottom3, Palette::White);
 
+		// 下側の水平線
 		DrawDialogBottomLine();
 
+		// キーボード絵文字
 		state.keyboardEmoji.resized(getToml<int>(U"keyboard_size"))
 		     .draw(Arg::rightCenter = Vec2{rollbackArea.leftX() - 16, bottom1.y});
 	}
