@@ -71,8 +71,11 @@ private:
 		if (m_attack.AttackedCount() == 0)
 		{
 			// また取れるようにする
-			PlayCore::Instance().GetGimmick()[m_pos.actualPos.MapPoint()] =
-				GimmickKind::Item_Pin;
+			auto& gimmick = PlayCore::Instance().GetGimmick();
+			if (gimmick[m_pos.actualPos.MapPoint()] == GimmickKind::None)
+			{
+				gimmick[m_pos.actualPos.MapPoint()] = GimmickKind::Item_Pin;
+			}
 		}
 		else
 		{
