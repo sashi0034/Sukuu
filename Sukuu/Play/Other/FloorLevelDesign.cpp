@@ -342,9 +342,9 @@ namespace
 		}
 		case EnemyKind::HandMaster: {
 			if (not IsPlayingUra()) return false;
-			if (floorIndex <= 0) return false;
+			if (floorIndex <= 1) return false;
 			if (IsFloorExistVessel(floorIndex) || IsFloorExistVessel(floorIndex - 1)) return false;
-			if (RandomBool(0.8)) return false;
+			if (RandomBool(floorIndex > 45 ? 0.6 : 0.8)) return false;
 			auto enemy = enemyContainer.Birth(enemyParent, EnHandMaster());
 			enemy.Init();
 			return true;
