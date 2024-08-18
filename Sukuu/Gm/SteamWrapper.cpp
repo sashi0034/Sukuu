@@ -28,6 +28,7 @@ namespace
 	class SteamInitializer
 	{
 	public:
+		String errorMessage{};
 		bool initialized{};
 
 		SteamInitializer()
@@ -38,12 +39,9 @@ namespace
 			const auto initResult = SteamAPI_InitEx(&error);
 			if (initResult != k_ESteamAPIInitResult_OK)
 			{
-				std::cout
-					<< fmt::format(
-						"[Steam] Failed to initialize: {}\n{}",
-						static_cast<int>(initResult),
-						error)
-					<< std::endl;
+				errorMessage = U"[Steam] Failed to initialize: {}\n{}"_fmt(
+					static_cast<int>(initResult),
+					Unicode::Widen(error));
 				return;
 			}
 
@@ -62,6 +60,7 @@ namespace
 #if _DEBUG
 				if (Util::GetTomlDebugValueOf<bool>(U"steam_no_require")) return false;
 #endif
+				if (not s_initializer.errorMessage.empty()) Util::ErrorLog(s_initializer.errorMessage);
 				System::Exit();
 				return false;
 			}
