@@ -270,6 +270,7 @@ struct Play::Player::Impl
 		case ConsumableItem::None:
 			return false;
 		case ConsumableItem::Wing:
+			if (not m_viewGapOffset.isZero()) return false; // 連続使用が出来てしまうバグの対策
 			return m_act == PlayerAct::Idle;
 		case ConsumableItem::Helmet:
 			return not m_guardHelmet;
