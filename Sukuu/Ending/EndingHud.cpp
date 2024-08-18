@@ -104,7 +104,7 @@ struct EndingHud::Impl
 		if (m_staffsAlpha > 0)
 		{
 			auto&& font = FontAsset(AssetKeys::RocknRoll_Sdf_Bold);
-			font(U"Music Composer\n- bu\n\nProgram and Graphic Design\n- sashi")
+			font(U"Music Composer\n- BU NORINOBU\n\nProgram and Graphic Design\n- SASHI")
 				.drawAt(textSize, Scene::Center(), ColorF(1.0, m_staffsAlpha));
 		}
 
