@@ -53,7 +53,7 @@ namespace
 		if (isGolden) conditions.trailColor = ColorF{U"#c0c000"};
 
 		conditions.particleColor = ColorF{U"#ffffff"};
-		if (isGolden) conditions.particleColor = ColorF{U"#ffff80"};
+		if (isGolden) conditions.particleColor = ColorF{U"#ffff20"};
 
 		return conditions;
 	}
@@ -70,7 +70,7 @@ struct Play::CaveSnowfall::Impl
 		const auto conditions = getConditions(m_kind);
 
 		constexpr int updateFrequency = 15;
-		const double updatePeriod = 1.0 / updateFrequency;
+		constexpr double updatePeriod = 1.0 / updateFrequency;
 		m_updateTimer += GetDeltaTime();
 		if (m_updateTimer > updatePeriod)
 		{
@@ -85,7 +85,7 @@ struct Play::CaveSnowfall::Impl
 			}
 		}
 
-		ScopedRenderStates2D sampler{BlendState::Default2D, SamplerState::ClampLinear};
+		ScopedRenderStates2D sampler{BlendState::Additive, SamplerState::ClampLinear};
 		for (auto&& d : m_dusts)
 		{
 			drawDust(d, m_updateTimer / updatePeriod, conditions.trailColor, conditions.particleColor);
