@@ -79,6 +79,7 @@ struct Title::TitleHud::Impl
 				if (Gm::DialogYesNo(U"ask_ura_switch"_localize) == MessageBoxResult::Yes)
 				{
 					Play::SetPlayingUra(not Play::IsPlayingUra());
+					AudioAsset(AssetSes::mode_transition).playOneShot();
 				}
 			}));
 		}

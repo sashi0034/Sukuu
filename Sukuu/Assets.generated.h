@@ -137,6 +137,7 @@ namespace AssetSes
 	constexpr StringView game_over_front = U"asset/se/game_over_front.mp3";
 	constexpr StringView item_enter = U"asset/se/item_enter.mp3";
 	constexpr StringView item_use = U"asset/se/item_use.mp3";
+	constexpr StringView mode_transition = U"asset/se/mode_transition.mp3";
 	constexpr StringView recover_large = U"asset/se/recover_large.mp3";
 	constexpr StringView recover_small = U"asset/se/recover_small.mp3";
 	constexpr StringView scoop_move = U"asset/se/scoop_move.mp3";
@@ -164,6 +165,7 @@ namespace AssetSes
 			game_over_front,
 			item_enter,
 			item_use,
+			mode_transition,
 			recover_large,
 			recover_small,
 			scoop_move,
