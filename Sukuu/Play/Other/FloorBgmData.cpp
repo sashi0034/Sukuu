@@ -24,7 +24,7 @@ namespace Play
 		// 24-26F	月光の銀世界
 		if (floor <= 26) return {AssetBgms::gekkou_no_ginsekai, 0.0000, 153.3333};
 		// 27-28F	荒び舞う雪、銀
-		if (floor <= 28) return {AssetBgms::arabi_mau_yuki, 0.0000, 112.0000};
+		if (floor <= 28) return {AssetBgms::sumabi_mau_yuki, 0.0000, 112.0000};
 		// 29-30F	錆を抱く夕陽と楓
 		if (floor <= 30) return {AssetBgms::sabi_wo_idaku_yuhi_to_kaede, 12.7500, 104.0403};
 		// 31F	風謳う乱葉、緋
@@ -34,7 +34,7 @@ namespace Play
 		// 36-40F	風襲
 		if (floor <= 40) return {AssetBgms::hushu, 7.5000, 93.7500};
 		// 41F	釼囓禍燧黙緊弩
-		if (floor <= 41) return {AssetBgms::kenzetsukasuimokukindo, 0.0000, 103.5294};
+		if (floor <= 41) return {AssetBgms::nichigetsukasuimokukindo, 0.0000, 103.5294};
 		// 42-45F	知の遺産
 		if (floor <= 45) return {AssetBgms::chi_no_isan, 30.9092, 118.1818};
 		// 46-50F	Dear My Rabbit

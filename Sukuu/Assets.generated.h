@@ -181,7 +181,6 @@ namespace AssetSes
 
 namespace AssetBgms
 {
-	constexpr StringView arabi_mau_yuki = U"asset/bgm/arabi_mau_yuki.mp3";
 	constexpr StringView chi_no_isan = U"asset/bgm/chi_no_isan.mp3";
 	constexpr StringView dear_my_rabbit = U"asset/bgm/dear_my_rabbit.mp3";
 	constexpr StringView gekkou_no_ginsekai = U"asset/bgm/gekkou_no_ginsekai.mp3";
@@ -189,8 +188,8 @@ namespace AssetBgms
 	constexpr StringView hushu = U"asset/bgm/hushu.mp3";
 	constexpr StringView itsukushimi_no_ame_shiro = U"asset/bgm/itsukushimi_no_ame_shiro.mp3";
 	constexpr StringView kazeutauranyou_hi = U"asset/bgm/kazeutauranyou_hi.mp3";
-	constexpr StringView kenzetsukasuimokukindo = U"asset/bgm/kenzetsukasuimokukindo.mp3";
 	constexpr StringView kigi_to_mizu_to_hikari = U"asset/bgm/kigi_to_mizu_to_hikari.mp3";
+	constexpr StringView nichigetsukasuimokukindo = U"asset/bgm/nichigetsukasuimokukindo.mp3";
 	constexpr StringView obake_1 = U"asset/bgm/obake_1.mp3";
 	constexpr StringView obake_2 = U"asset/bgm/obake_2.mp3";
 	constexpr StringView obake_3 = U"asset/bgm/obake_3.mp3";
@@ -203,13 +202,13 @@ namespace AssetBgms
 	constexpr StringView oooooo = U"asset/bgm/oooooo.mp3";
 	constexpr StringView sabi_wo_idaku_yuhi_to_kaede = U"asset/bgm/sabi_wo_idaku_yuhi_to_kaede.mp3";
 	constexpr StringView shiro = U"asset/bgm/shiro.mp3";
+	constexpr StringView sumabi_mau_yuki = U"asset/bgm/sumabi_mau_yuki.mp3";
 	constexpr StringView tokeitou = U"asset/bgm/tokeitou.mp3";
 	constexpr StringView zzzzzz = U"asset/bgm/zzzzzz.mp3";
 
 	inline Array<StringView> GetKeys()
 	{
 		return {
-			arabi_mau_yuki,
 			chi_no_isan,
 			dear_my_rabbit,
 			gekkou_no_ginsekai,
@@ -217,8 +216,8 @@ namespace AssetBgms
 			hushu,
 			itsukushimi_no_ame_shiro,
 			kazeutauranyou_hi,
-			kenzetsukasuimokukindo,
 			kigi_to_mizu_to_hikari,
+			nichigetsukasuimokukindo,
 			obake_1,
 			obake_2,
 			obake_3,
@@ -231,6 +230,7 @@ namespace AssetBgms
 			oooooo,
 			sabi_wo_idaku_yuhi_to_kaede,
 			shiro,
+			sumabi_mau_yuki,
 			tokeitou,
 			zzzzzz,
 		};
