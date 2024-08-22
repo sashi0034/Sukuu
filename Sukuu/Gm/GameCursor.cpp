@@ -30,21 +30,21 @@ namespace Gm
 		s_hide = false;
 	}
 
-	void MoveCursorByGamepad()
-	{
-		const auto gamepad = Gamepad(GamepadPlayer_0);
-		if (not gamepad) return;
-
-		if (s_gamepadCursor.asPoint() != Cursor::Pos())
-		{
-			s_gamepadCursor = Cursor::Pos();
-		}
-
-		s_gamepadCursor = s_gamepadCursor + 2048 * GetGamepadAxeL() * Scene::DeltaTime();
-		s_gamepadCursor.clamp(Rect(Scene::Size()).stretched(-Constants::CursorSize_64 / 2));
-		Cursor::SetPos(s_gamepadCursor.asPoint());
-		// FIXME: https://github.com/Siv3D/OpenSiv3D/issues/1167
-	}
+	// void MoveCursorByGamepad()
+	// {
+	// 	const auto gamepad = Gamepad(GamepadPlayer_0);
+	// 	if (not gamepad) return;
+	//
+	// 	if (s_gamepadCursor.asPoint() != Cursor::Pos())
+	// 	{
+	// 		s_gamepadCursor = Cursor::Pos();
+	// 	}
+	//
+	// 	s_gamepadCursor = s_gamepadCursor + 2048 * GetGamepadAxeL() * Scene::DeltaTime();
+	// 	s_gamepadCursor.clamp(Rect(Scene::Size()).stretched(-Constants::CursorSize_64 / 2));
+	// 	Cursor::SetPos(s_gamepadCursor.asPoint());
+	// 	// FIXME: https://github.com/Siv3D/OpenSiv3D/issues/1167
+	// }
 
 	bool CheckConfirmSimply()
 	{

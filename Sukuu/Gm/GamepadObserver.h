@@ -6,12 +6,26 @@ namespace Gm
 {
 	bool IsUsingGamepad();
 
-	Input GetGamepadInput(GamepadButton button);
+	/// @brief Input で取得した値を保存する構造体
+	struct RetrievedInput
+	{
+		bool isDown;
+		bool isPressed;
+		bool isUp;
+
+		bool down() const { return isDown; }
+		bool pressed() const { return isPressed; }
+		bool up() const { return isUp; }
+
+		static RetrievedInput From(const Input& input);
+	};
+
+	RetrievedInput GetGamepadInput(GamepadButton button);
 	bool IsGamepadPressed(GamepadButton button);
 	bool IsGamepadUp(GamepadButton button);
 	bool IsGamepadDown(GamepadButton button);
 
-	Vec2 GetGamepadAxeL();
+	// Vec2 GetGamepadAxeL();
 
 	void RefreshGamepad();
 
@@ -25,4 +39,6 @@ namespace Gm
 		struct Impl;
 		std::shared_ptr<Impl> p_impl;
 	};
+
+	void InitXInputWatcherAddon();
 }

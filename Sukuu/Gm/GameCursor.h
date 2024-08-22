@@ -5,7 +5,7 @@ namespace Gm
 	void RequestHideGameCursor();
 	void UpdateGameCursor();
 
-	void MoveCursorByGamepad(); // FIXME
+	// void MoveCursorByGamepad(); // FIXME
 
 	bool CheckConfirmSimply();
 }

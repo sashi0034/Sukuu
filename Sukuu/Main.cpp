@@ -58,6 +58,7 @@ void Main()
 	Gm::InitBgmManagerAddon();
 	Gm::InitLocalizedTextDatabaseAddon();
 	Gm::InitSteamWrapperAddon();
+	Gm::InitXInputWatcherAddon();
 
 	// アクター初期化
 	ActorContainer actorRoot{};
