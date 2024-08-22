@@ -9,6 +9,7 @@
 #include "Play/PlayCore.h"
 #include "Util/Utilities.h"
 #include "Gm/LocalizedTextDatabase.h"
+#include "Gm/SteamWrapper.h"
 
 struct Play::PlayingPause::Impl
 {
@@ -52,10 +53,14 @@ struct Play::PlayingPause::Impl
 		if (not Window::GetState().focused) m_paused = true;
 #endif
 
+		// ポーズ有効化切り替え
 		const bool requestDown = Gm::IsUsingGamepad()
 			                         ? IsGamepadDown(Gm::GamepadButton::Menu)
 			                         : (KeyEscape.down() || KeyTab.down());
 		if (requestDown) m_paused = not m_paused;
+
+		// ウィンドウにフォーカスが無いなら強制的にポーズ
+		if (not Window::GetState().focused || Gm::IsSteamOverlayActivated()) m_paused = true;
 
 		if (not m_paused) return;
 

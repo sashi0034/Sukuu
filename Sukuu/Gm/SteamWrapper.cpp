@@ -55,8 +55,12 @@ namespace
 
 	SteamInitializer s_initializer{};
 
+	bool s_overlayActivated = false;
+
 	struct SteamWrapperAddon : IAddon
 	{
+		STEAM_CALLBACK(SteamWrapperAddon, onGameOverlayActivated, GameOverlayActivated_t);
+
 		bool init() override
 		{
 			if (not s_initializer.initialized)
@@ -91,7 +95,25 @@ namespace
 		{
 			SteamAPI_Shutdown();
 		}
+
+		bool update() override
+		{
+			if (s_initializer.initialized)
+			{
+				SteamAPI_RunCallbacks();
+			}
+
+			return true;
+		}
 	};
+
+	// オーバーレイ表示時のコールバック
+	void SteamWrapperAddon::onGameOverlayActivated(GameOverlayActivated_t* pCallback)
+	{
+		if (pCallback->m_nAppID != steamAppId) return;
+
+		s_overlayActivated = pCallback->m_bActive;
+	}
 }
 
 namespace Gm
@@ -158,6 +180,8 @@ namespace Gm
 		const auto steamInput = SteamInput();
 		if (not steamFriends || not steamInput) return;
 
+		if (IsSteamOverlayActivated()) return;
+
 		// const auto steamUtils = SteamUtils();
 		// if (not steamUtils) return;
 		// SteamUtils()->IsSteamInBigPictureMode() の判定の導入も検討したが、Big Picture でも ShowBindingPanel は微妙だった
@@ -168,7 +192,13 @@ namespace Gm
 		}
 		else
 		{
+			// フルスクリーンで ShowBindingPanel をするとゲームウィンドウの背面に表示されるため、代わりに Overlay 表示をする
 			steamFriends->ActivateGameOverlay("Settings");
 		}
+	}
+
+	bool IsSteamOverlayActivated()
+	{
+		return s_overlayActivated;
 	}
 }
