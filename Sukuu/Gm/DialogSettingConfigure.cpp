@@ -7,6 +7,7 @@
 #include "GameConfig.h"
 #include "GamepadObserver.h"
 #include "LocalizedTextDatabase.h"
+#include "SteamWrapper.h"
 #include "detail/GameDialogCommon.h"
 #include "Util/TomlParametersWrapper.h"
 
@@ -238,6 +239,13 @@ namespace
 		{
 			const auto gamepad = Gamepad(GamepadPlayer_0);
 			if (not gamepad) return;
+
+			if (XInput(GamepadPlayer_0).isConnected())
+			{
+				ShowSteamKeyconfig();
+				return;
+			}
+
 			if (const auto registered = DialogGamepadRegister())
 				editing.gamepad_mapping[gamepad.getInfo().name] = registered.value();
 		}));

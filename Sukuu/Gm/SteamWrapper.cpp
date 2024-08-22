@@ -69,9 +69,12 @@ namespace
 				return false;
 			}
 
-			if (not SteamUserStats()->RequestCurrentStats())
+			if (const auto userStat = SteamUserStats())
 			{
-				Util::ErrorLog(U"[Steam] Failed to request for current stats");
+				if (not userStat->RequestCurrentStats())
+				{
+					Util::ErrorLog(U"[Steam] Failed to request for current stats");
+				}
 			}
 
 #if _DEBUG
@@ -147,5 +150,25 @@ namespace Gm
 		}
 
 		userStat->StoreStats();
+	}
+
+	void ShowSteamKeyconfig(int playerIndex)
+	{
+		const auto steamFriends = SteamFriends();
+		const auto steamInput = SteamInput();
+		if (not steamFriends || not steamInput) return;
+
+		// const auto steamUtils = SteamUtils();
+		// if (not steamUtils) return;
+		// SteamUtils()->IsSteamInBigPictureMode() の判定の導入も検討したが、Big Picture でも ShowBindingPanel は微妙だった
+
+		if (not Window::GetState().fullscreen)
+		{
+			steamInput->ShowBindingPanel(steamInput->GetControllerForGamepadIndex(playerIndex));
+		}
+		else
+		{
+			steamFriends->ActivateGameOverlay("Settings");
+		}
 	}
 }
