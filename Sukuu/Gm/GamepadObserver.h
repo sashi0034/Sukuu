@@ -17,6 +17,9 @@ namespace Gm
 		bool pressed() const { return isPressed; }
 		bool up() const { return isUp; }
 
+		[[nodiscard]]
+		friend RetrievedInput operator ||(Input left, RetrievedInput right) noexcept;
+
 		static RetrievedInput From(const Input& input);
 	};
 

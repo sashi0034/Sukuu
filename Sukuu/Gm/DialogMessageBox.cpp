@@ -45,7 +45,7 @@ namespace
 	void updateYesNoButton(
 		const Rect& rect,
 		StringView text,
-		const InputGroup& alt,
+		const RetrievedInput& alt,
 		OptionalResponse answer,
 		OptionalResponse* confirmed,
 		bool allowedConfirm)
@@ -93,7 +93,7 @@ namespace
 			updateYesNoButton(
 				yesRect,
 				U"dialogue_yes"_localize + U" {}"_fmt(IsUsingGamepad() ? U"[A]" : U"(Y)"),
-				KeyY | GetGamepadInput(GamepadButton::A),
+				KeyY || GetGamepadInput(GamepadButton::A),
 				OptionalResponse::Yes,
 				confirmed,
 				allowedConfirm);
@@ -102,7 +102,7 @@ namespace
 			updateYesNoButton(
 				noRect,
 				U"dialogue_no"_localize + U" {}"_fmt(IsUsingGamepad() ? U"[B]" : U"(N)"),
-				KeyN | GetGamepadInput(GamepadButton::B),
+				KeyN || GetGamepadInput(GamepadButton::B),
 				OptionalResponse::No,
 				confirmed,
 				allowedConfirm);
@@ -114,7 +114,7 @@ namespace
 			updateYesNoButton(
 				okRect,
 				U"dialogue_ok"_localize + U" {}"_fmt(IsUsingGamepad() ? U"[A]" : U"(Y)"),
-				KeyY | GetGamepadInput(GamepadButton::A),
+				KeyY || GetGamepadInput(GamepadButton::A),
 				OptionalResponse::Ok,
 				confirmed,
 				allowedConfirm);

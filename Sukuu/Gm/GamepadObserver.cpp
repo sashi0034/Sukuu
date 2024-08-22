@@ -177,6 +177,15 @@ namespace Gm
 		return s_instance->isUsingGamepad;
 	}
 
+	RetrievedInput operator||(Input left, RetrievedInput right) noexcept
+	{
+		return {
+			.isDown = left.down() || right.down(),
+			.isPressed = left.pressed() || right.pressed(),
+			.isUp = left.up() || right.up()
+		};
+	}
+
 	RetrievedInput RetrievedInput::From(const Input& input)
 	{
 		return {.isDown = input.down(), .isPressed = input.pressed(), .isUp = input.up()};
