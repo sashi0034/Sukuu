@@ -93,7 +93,8 @@ struct Play::UiMiniMap::Impl
 		{
 			if (m_flag[p].isRendered) continue;
 			if (gimmick[p] == GimmickKind::Stairs ||
-				GimmickToItem(gimmick[p]) != ConsumableItem::None)
+				GimmickToItem(gimmick[p]) != ConsumableItem::None ||
+				IsSemiItemGimmick(gimmick[p]))
 			{
 				inquireStairsAndItemsAt(gimmick, renderCell, p, p * renderCell);
 			}
