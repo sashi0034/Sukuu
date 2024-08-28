@@ -58,7 +58,7 @@ struct Play::Player::Impl
 	double m_focusCameraRate = 1.0;
 	ActorWeak m_focusCameraProcess{};
 	Vec2 m_cameraOffset{};
-	Vec2 m_cameraOffsetDestination{};
+	bool m_shiftCameraOffset{false};
 	PlayerAct m_act = PlayerAct::Idle;
 	AnimTimer m_animTimer{};
 	Dir4Type m_direction{Dir4::Down};
@@ -109,10 +109,11 @@ struct Play::Player::Impl
 		}
 
 		// カメラのオフセットを移動
-		const auto cameraDestination = [this]
+		const auto cameraDestination = [this]() -> Vec2
 		{
 			if (const auto overriding = m_exportedService.overrideCamera) return overriding.value();
-			return m_cameraOffsetDestination;
+			if (not m_shiftCameraOffset) return {};
+			return getDirectionCameraOffset(m_direction);
 		}();
 		m_cameraOffset += (cameraDestination - m_cameraOffset)
 			* Scene::DeltaTime()
@@ -464,7 +465,7 @@ private:
 
 	void breakFlowchart()
 	{
-		m_cameraOffsetDestination = {0, 0};
+		m_shiftCameraOffset = false;
 		m_flowchart.Kill();
 		m_distField.Clear();
 		m_itemForbidden = true;
@@ -492,6 +493,7 @@ private:
 		}
 
 		m_itemForbidden = false;
+		m_shiftCameraOffset = true;
 
 		refreshDistField();
 
@@ -530,7 +532,6 @@ private:
 		m_act = IsDashingInput() ? PlayerAct::Running : PlayerAct::Walk;
 		m_direction = moveDir;
 		m_scoopContinuous = 0;
-		m_cameraOffsetDestination = getDirectionCameraOffset(moveDir);
 
 		// 移動
 		const auto newPos = Vec2(m_pos.actualPos + moveDir.ToXY() * CellPx_24);
@@ -611,7 +612,6 @@ private:
 			m_direction = Gm::IsUsingGamepad()
 				              ? (moveInput != Dir4::Invalid ? moveInput : m_direction)
 				              : Dir4::FromXY(Cursor::PosF() - center);
-			m_cameraOffsetDestination = getDirectionCameraOffset(m_direction);
 			m_subUpdating = [center, d = m_direction, t = m_animTimer.Time()]()
 			{
 				drawArrow(center, d, 32 - 4 * Periodic::Jump0_1(0.5s, t));
@@ -797,7 +797,7 @@ private:
 
 	void prepareEndFloor()
 	{
-		m_cameraOffsetDestination = {0, 0};
+		m_shiftCameraOffset = false;
 		m_subUpdating = {};
 		m_immortal.immortalStock++;
 		PlayCore::Instance().GetTimeLimiter().SetImmortal(true);
