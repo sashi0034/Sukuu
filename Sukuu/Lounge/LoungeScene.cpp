@@ -58,12 +58,14 @@ namespace
 			return;
 		}
 
-		if (s_enteredCount >= 3 && RandomBool(0.3))
+		// if (s_enteredCount < 3) return;
+
+		if (RandomBool(0.3))
 		{
 			installBonusItemsAbundantly(gimmick, mapData, Play::GimmickKind::Item_Pin);
 			s_bonusAppearedTimestamp = Scene::Time();
 		}
-		else if (s_enteredCount >= 5 && RandomBool(0.1))
+		else if (RandomBool(0.1))
 		{
 			installBonusItemsCrisscross(gimmick, mapData, Play::GimmickKind::Item_Wing);
 			s_bonusAppearedTimestamp = Scene::Time();
