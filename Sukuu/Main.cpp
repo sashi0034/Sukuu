@@ -30,10 +30,6 @@ void Main()
 	Scene::Resize(1920, 1080);
 	Window::Resize(Size{1280, 720});
 	System::SetTerminationTriggers(UserAction::CloseButtonClicked);
-#if not _DEBUG
-	Window::SetFullscreen(true);
-#endif
-	System::Update();
 
 #if _DEBUG
 	for (auto&& path : AssetImages::GetKeys()) TextureAsset::Register(path, path);
