@@ -149,10 +149,7 @@ struct Play::Player::Impl
 		Gm::BgmManager::Instance().EndPlay();
 		AudioAsset(AssetSes::fall_down).playOneShot();
 		m_gameOverStarted = true;
-		m_flowchart.Kill();
-		m_distField.Clear();
-		m_subUpdating = {};
-		m_slowMotion = false;
+		breakFlowchart();
 		m_immortal.immortalStock++;
 		AnimateEasing<EaseOutCirc>(self, &m_cameraScale, 8.0, 0.5);
 		StartCoro(self, [this](YieldExtended yield)
