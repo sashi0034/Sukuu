@@ -162,7 +162,7 @@ private:
 
 	void drawBg() const
 	{
-		const ScopedRenderStates2D state{SamplerState::BorderNearest};
+		const ScopedRenderStates2D state{SamplerState::ClampNearest};
 
 		// 原っぱのプレーン
 		{

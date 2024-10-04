@@ -179,7 +179,7 @@ public:
 			                         ? Transformer2D(m_player.CameraTransform(), TransformCursor::Yes)
 			                         : m_debugCamera.createTransformer();
 
-		const ScopedRenderStates2D sampler{SamplerState::BorderNearest};
+		const ScopedRenderStates2D sampler{SamplerState::ClampNearest};
 
 		const bool isSlowMotion = not m_pause.IsPaused() && m_player.IsSlowMotion();
 		const ScopedRenderTarget2D rt0{

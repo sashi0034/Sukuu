@@ -151,7 +151,7 @@ private:
 		Graphics3D::SetSunDirection(sunDir);
 
 		const ScopedRenderTarget3D target{m_renderTexture.clear(getToml<ColorF>(U"bg_color"))};
-		const ScopedRenderStates3D state{SamplerState::BorderNearest};
+		const ScopedRenderStates3D state{SamplerState::ClampNearest};
 
 		constexpr double dotScale = 2;
 		(void)Plane{maxMapSize.x * dotScale}.draw(m_mapTexture, Palette::Thistle);
