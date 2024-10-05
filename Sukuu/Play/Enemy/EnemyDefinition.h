@@ -35,7 +35,7 @@ namespace Play
 	{
 	public:
 		template <typename T>
-		const T& Birth(ActorContainer& parent, const T& enemy)
+		T Birth(ActorContainer& parent, const T& enemy)
 		{
 			static_assert(std::is_base_of<EnemyBase, T>::value);
 			emplace_back(std::make_unique<T>(parent.Birth(enemy)));

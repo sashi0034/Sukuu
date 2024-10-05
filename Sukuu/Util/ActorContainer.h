@@ -10,7 +10,7 @@ namespace Util
 		void Kill();
 
 		template <typename T>
-		const T& Birth(const T& actor)
+		T Birth(const T& actor)
 		{
 			static_assert(std::is_base_of<ActorBase, T>::value);
 			m_actorList.emplace_back(std::make_unique<T>(actor));
