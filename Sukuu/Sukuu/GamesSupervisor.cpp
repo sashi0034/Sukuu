@@ -219,6 +219,17 @@ private:
 			playScene.Kill();
 			yield();
 
+#if _DEBUG
+			if (debugToml<bool>(U"print_measured_times"))
+			{
+				Console.writeln(U"---");
+				for (int i = 0; i < m_playData.measuredSeconds.size(); i++)
+				{
+					Console.writeln(U"{}F: {}"_fmt(i, m_playData.measuredSeconds[i]));
+				}
+			}
+#endif
+
 			if (m_playData.timeLimiter.remainingTime == 0)
 			{
 				// 回生の回廊へ
