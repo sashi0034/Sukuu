@@ -47,3 +47,6 @@ steam_no_require = false
 
 # 階段到達のたびに計測時間を出力
 print_measured_times = false
+
+# セーブ無効化
+no_save = false

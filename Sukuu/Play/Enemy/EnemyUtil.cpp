@@ -5,6 +5,7 @@
 #include "Play/PlayCore.h"
 #include "Play/Effect/FragmentTextureEffect.h"
 #include "Play/Other/PlayPenaltyBonus.h"
+#include "Util/EasingAnimation.h"
 #include "Util/TomlParametersWrapper.h"
 
 namespace
@@ -15,6 +16,29 @@ namespace
 	inline T getToml(const String& key)
 	{
 		return Util::GetTomlParameter<T>(U"play.enemy." + key);
+	}
+
+	// マグネット上で小刻みに一回転をする演出
+	void performMagnetTrap(YieldExtended& yield, ActorView self, EnemyTransform& transform)
+	{
+		transform.m_dir = transform.m_dir.RotatedL();
+
+		double theta = 0.0;
+		const double penalty = getToml<double>(U"magnet_penalty");
+		auto easing = AnimateEasing<EaseInLinear>(self, &theta, Math::TwoPi, penalty);
+
+		const Vec2 viewStart = transform.m_pos.actualPos;
+		const Vec2 viewEnd = transform.m_pos.actualPos.movedBy(transform.m_dir.ToXY() * 8.0);
+		const Vec2 viewCenter = (viewStart + viewEnd) / 2.0;
+		const double viewRadius = viewStart.distanceFrom(viewEnd) / 2.0;
+		const double startTheta = (viewStart - viewCenter).getAngle();
+
+		while (true)
+		{
+			transform.m_pos.viewPos = viewCenter + Circular(viewRadius, startTheta + theta);
+			if (easing.IsDead()) break;
+			yield();
+		}
 	}
 }
 
@@ -215,9 +239,9 @@ namespace Play
 			transform.m_trapped = EnemyTrappedState::Captured;
 			while (gimmick[currentPoint] == GimmickKind::Installed_Magnet)
 			{
-				yield.WaitForTime(getToml<double>(U"magnet_penalty"));
-				transform.m_dir = transform.m_dir.Rotated(RandomBool(0.5));
+				performMagnetTrap(yield, self, transform);
 			}
+
 			transform.m_trapped = EnemyTrappedState::Normal;
 			return true;
 		case GimmickKind::Arrow_right: [[fallthrough]];

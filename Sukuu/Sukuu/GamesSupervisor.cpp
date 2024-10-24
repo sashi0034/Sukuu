@@ -304,6 +304,9 @@ private:
 
 	void requestSave(const Play::PlaySingletonData& data, bool isCleared)
 	{
+#if _DEBUG
+		if (debugToml<bool>(U"no_save")) return;
+#endif
 		getReachedRecord(m_savedata).bestReached = Max(data.floorIndex, getReachedRecord(m_savedata).bestReached);
 
 		const double previousCompletedTime = getReachedRecord(m_savedata).completedTime;
