@@ -27,7 +27,7 @@ struct Play::ItemSun::Impl
 	AnimTimer m_animTimer{};
 
 	double m_rotation{};
-	double m_targetRotation{};
+	ActorWeak m_rotateAnimation{};
 
 	ItemAttackerAffair m_attack{ConsumableItem::Pin};
 	bool m_blinking{};
@@ -38,7 +38,6 @@ struct Play::ItemSun::Impl
 	{
 		m_animTimer.Tick();
 
-		m_rotation = Math::Lerp(m_rotation, m_targetRotation, 10.0 * GetDeltaTime());
 		const double alpha =
 			m_blinking
 				? static_cast<int>(m_animTimer.Time() * 1000) % 200 > 100
@@ -100,11 +99,15 @@ private:
 			{
 				m_dir = m_dir.RotatedR();
 
+				if (m_rotateAnimation.IsDead())
+				{
+					m_rotation = 0.0;
+					m_rotateAnimation = AnimateEasing<EaseOutBack>(self, &m_rotation, Math::TwoPi, 0.3);
+				}
+
 				yield();
 				continue;
 			}
-
-			m_targetRotation = -m_dir.GetIndex() * Math::TwoPi;
 
 			const auto nextPos = m_pos.actualPos + m_dir.ToXY() * moveUnit;
 			ProcessMoveCharaPos(yield, self, m_pos, nextPos, getToml<double>(U"move_duration"));
