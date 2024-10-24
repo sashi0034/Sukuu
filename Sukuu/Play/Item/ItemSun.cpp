@@ -29,9 +29,13 @@ struct Play::ItemSun::Impl
 	ItemAttackerAffair m_attack{ConsumableItem::Pin};
 	bool m_blinking{};
 
+	Trail m_trail{};
+
 	void Update()
 	{
 		m_animTimer.Tick();
+
+		updateTrail();
 
 		const double alpha =
 			m_blinking
@@ -64,6 +68,15 @@ private:
 	Vec2 getDrawPos() const
 	{
 		return m_pos.viewPos.movedBy(GetItemCellPadding(spriteRect.size));
+	}
+
+	void updateTrail()
+	{
+		const auto trailPosition =
+			getDrawPos() + Vec2::One() * spriteRect.size / 2;
+		m_trail.add(trailPosition, ColorF{1, 0.62, 0.03}, 12.0 + 8.0 * Periodic::Sine1_1(0.1s, m_animTimer.Time()));
+		m_trail.update(GetDeltaTime());
+		m_trail.draw();
 	}
 
 	void flowchartLoop(YieldExtended& yield, ActorView self)
