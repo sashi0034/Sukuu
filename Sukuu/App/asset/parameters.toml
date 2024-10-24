@@ -120,10 +120,9 @@ scale_speed = 16.0
 scale_rate = 0.1
 
 [play.item_sun]
-move_duration = 0.1
-rotation_speed = 0.2
-movable_count = 40
-blinking_start = 32
+move_duration = 0.025
+movable_count = 240
+blinking_start = 192
 
 [play.cave_vision]
 default_vision_radius = 160
