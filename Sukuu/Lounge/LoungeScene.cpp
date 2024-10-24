@@ -306,7 +306,7 @@ namespace Lounge
 		return p_impl->m_nextFloor;
 	}
 
-	const Play::PlaySingletonData& LoungeScene::GetPlayData() const
+	Play::PlaySingletonData LoungeScene::GetPlayData() const
 	{
 		return p_impl->m_play.CopyData();
 	}

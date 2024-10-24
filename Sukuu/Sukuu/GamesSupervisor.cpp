@@ -33,6 +33,16 @@ namespace
 #endif
 
 	constexpr double initialTimeLimit = 90.0;
+
+	ReachedRecord& getReachedRecord(GameSavedata& data)
+	{
+		return data.GetReached(Play::IsPlayingUra());
+	}
+
+	TemporaryRecord& getTemporaryRecord(GameSavedata& data)
+	{
+		return data.GetTemporary(Play::IsPlayingUra());
+	}
 }
 
 struct Sukuu::GamesSupervisor::Impl
@@ -81,6 +91,7 @@ private:
 	title:
 		triedTutorial = true;
 		if (const bool retryTutorial = titleLoop(yield, self)) goto tutorial;
+		if (getTemporaryRecord(m_savedata).floorIndex > 0) goto lounge;
 	play:
 		if (const bool clearedPlay = playLoop(yield, self)) goto ending;
 	lounge:
@@ -211,15 +222,15 @@ private:
 			if (m_playData.timeLimiter.remainingTime == 0)
 			{
 				// 回生の回廊へ
-				checkSave(m_playData, false);
+				requestSave(m_playData, false);
 
 				BgmManager::Instance().EndPlay();
 				return false;
 			}
-			if (not floorDown && m_playData.floorIndex == Constants::MaxFloorIndex)
+			if (not floorDown && m_playData.floorIndex == Constants::MaxFloor_50)
 			{
 				// エンディングへ
-				checkSave(m_playData, true);
+				requestSave(m_playData, true);
 
 				BgmManager::Instance().EndPlay();
 				yield.WaitForTime(2.0);
@@ -228,7 +239,7 @@ private:
 			else
 			{
 				// 次のフロアに移る前にセーブ
-				checkSave(m_playData, false);
+				requestSave(m_playData, false);
 			}
 #if _DEBUG
 			if (not debugToml<bool>(U"constant_floor"))
@@ -237,7 +248,8 @@ private:
 				if (floorDown) m_playData.floorIndex--;
 				else m_playData.floorIndex++;
 			}
-			checkSave(m_playData, false);
+
+			requestSave(m_playData, false);
 			m_playData.timeLimiter.maxTime += 3;
 			m_playData.timeLimiter.remainingTime += 3;
 		}
@@ -247,7 +259,7 @@ private:
 	bool loungeLoop(YieldExtended& yield, ActorView self)
 	{
 		auto lounge = self.AsParent().Birth(Lounge::LoungeScene());
-		lounge.Init({.reachedFloor = m_playData.floorIndex});
+		lounge.Init({.reachedFloor = getTemporaryRecord(m_savedata).floorIndex});
 		yield.WaitForTrue([&]() { return lounge.IsConcluded(); });
 		lounge.Kill();
 		yield();
@@ -265,6 +277,11 @@ private:
 			// 最初からのときは時間計測も初期化
 			m_playData.measuredSeconds = {};
 		}
+		else
+		{
+			// 保存された時間計測を引き継ぐ
+			m_playData.measuredSeconds = getTemporaryRecord(m_savedata).measuredSeconds;
+		}
 
 		const auto loungePlayData = lounge.GetPlayData();
 
@@ -274,40 +291,27 @@ private:
 		return true;
 	}
 
-	void checkSave(const Play::PlaySingletonData& data, bool isCleared)
+	void requestSave(const Play::PlaySingletonData& data, bool isCleared)
 	{
-		const auto newRecord = ReachedRecord{
-			.bestReached = data.floorIndex,
-			.completedTime = isCleared ? data.measuredSeconds.Sum() : 0
-		};
-		auto newData = GameSavedata(m_savedata);
-		getReachedRecord(newData) = newRecord;
+		getReachedRecord(m_savedata).bestReached = Max(data.floorIndex, getReachedRecord(m_savedata).bestReached);
 
-		const auto savedRecord = getReachedRecord(m_savedata);
-
-		// 到達フロア更新
-		const bool updatedReached = newRecord.bestReached > savedRecord.bestReached;
-
-		// クリア時間更新
-		const bool updatedCleared =
-			newRecord.bestReached == 50
-			&& 0 < newRecord.completedTime
-			&& (savedRecord.completedTime == 0 || newRecord.completedTime < savedRecord.completedTime);
-
-		if (updatedReached || updatedCleared)
+		const double previousCompletedTime = getReachedRecord(m_savedata).completedTime;
+		if (isCleared && (data.measuredSeconds.Sum() < previousCompletedTime || previousCompletedTime == 0))
 		{
-			// セーブデータ更新
-			StoreSavedata(newData);
-			m_savedata = newData;
+			getReachedRecord(m_savedata).completedTime = data.measuredSeconds.Sum();
 		}
 
-		// Steam に送信 (到達フロアより 1 つ小さい値を送信、ただしクリア時は 50 と送信)
-		CheckStoreSteamStatOfCleared(Play::IsPlayingUra(), newRecord.completedTime != 0 ? 50 : newRecord.bestReached - 1);
-	}
+		getTemporaryRecord(m_savedata).floorIndex = data.floorIndex;
+		getTemporaryRecord(m_savedata).measuredSeconds = data.measuredSeconds;
 
-	static ReachedRecord& getReachedRecord(GameSavedata& data)
-	{
-		return data.GetRecord(Play::IsPlayingUra());
+		// セーブデータ更新
+		StoreSavedata(m_savedata);
+
+		// Steam に送信 (到達フロアより 1 つ小さい値を送信、ただしクリア時は 50 と送信)
+		CheckStoreSteamStatOfCleared(
+			Play::IsPlayingUra(),
+			getReachedRecord(m_savedata).completedTime != 0 ? 50 : getReachedRecord(m_savedata).bestReached - 1
+		);
 	}
 
 	void endingLoop(YieldExtended& yield, ActorView self) const
@@ -316,7 +320,7 @@ private:
 		ending.Init(m_playData.measuredSeconds);
 		yield.WaitForTrue([&]() { return ending.IsFinished(); });
 
-		if (m_savedata.ura.bestReached == 0) DialogOk(U"announce_release_ura"_localize);
+		if (m_savedata.ura_record.bestReached == 0) DialogOk(U"announce_release_ura"_localize);
 
 		ending.Kill();
 	}

@@ -27,7 +27,7 @@ namespace Lounge
 		bool IsReturnToTitle() const;
 		int NextFloor() const;
 
-		const Play::PlaySingletonData& GetPlayData() const;
+		Play::PlaySingletonData GetPlayData() const;
 
 	private:
 		struct Impl;

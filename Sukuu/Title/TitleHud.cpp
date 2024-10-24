@@ -72,7 +72,7 @@ struct Title::TitleHud::Impl
 			Gm::DialogSettingConfigure();
 		}));
 
-		if (savedata.standard.completedTime > 0)
+		if (savedata.standard_record.completedTime > 0)
 		{
 			m_buttons.push_back(CornerButton(U"ura_switch"_sv, []()
 			{
@@ -167,9 +167,9 @@ struct Title::TitleHud::Impl
 private:
 	String getRecordText() const
 	{
-		const auto& record = m_saved.GetRecord(Play::IsPlayingUra());
+		const auto& record = m_saved.GetReached(Play::IsPlayingUra());
 		if (record.bestReached == 0) return U"";
-		if (record.bestReached == Constants::MaxFloorIndex && record.completedTime > 0)
+		if (record.bestReached == Constants::MaxFloor_50 && record.completedTime > 0)
 		{
 			return U"title_record_on_50"_localizef(FormatTimeSeconds(record.completedTime));
 		}

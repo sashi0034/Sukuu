@@ -138,7 +138,7 @@ private:
 		{
 			m_slideTexts.push_back(SlideText());
 		}
-		constexpr int slideSteps_5 = Constants::MaxFloorIndex / numLines;
+		constexpr int slideSteps_5 = Constants::MaxFloor_50 / numLines;
 
 		// 50層すべての記録を表示
 		for (const auto d : step(slideSteps_5))

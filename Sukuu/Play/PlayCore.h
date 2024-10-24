@@ -24,9 +24,16 @@ namespace Play
 		Vec2 initialPlayerPos;
 	};
 
-	class MeasuredSecondsArray : public std::array<double, Constants::MaxFloorIndex + 1>
+	class MeasuredSecondsArray : public std::array<double, Constants::MaxFloor_50 + 1>
 	{
 	public:
+		MeasuredSecondsArray() = default;
+
+		MeasuredSecondsArray(const std::array<double, Constants::MaxFloor_50 + 1>& a) :
+			std::array<double, Constants::MaxFloor_50 + 1>(a)
+		{
+		}
+
 		double Sum() const { return SumArrayValues<double>(*this); }
 	};
 

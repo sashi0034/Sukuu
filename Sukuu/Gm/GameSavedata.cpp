@@ -9,6 +9,8 @@ namespace
 
 	constexpr int alignedSaveDataSize = 1024;
 
+	static_assert(sizeof(GameSavedata) < alignedSaveDataSize);
+
 	struct ReservedSavedata : GameSavedata
 	{
 		uint8 reserved[alignedSaveDataSize - sizeof(GameSavedata)]{};

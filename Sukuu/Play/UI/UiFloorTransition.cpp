@@ -109,9 +109,9 @@ private:
 		m_textHeightScale = 0;
 		AnimateEasing<EaseOutBack>(self, &m_textHeightScale, 1.0, 0.5);
 
-		m_subheading = Constants::MaxFloorIndex == floorIndex
+		m_subheading = Constants::MaxFloor_50 == floorIndex
 			               ? U"last_layer_name"_localize
-			               : U"remaining_layers"_localizef(Constants::MaxFloorIndex - floorIndex + 1);
+			               : U"remaining_layers"_localizef(Constants::MaxFloor_50 - floorIndex + 1);
 
 		m_glyphs = RenderOutlineGlyphWithFallbacks(
 			AssetKeys::RocknRoll_72_Bitmap, U"layer_name"_localizef(Gm::LocalizeOrdinals(floorIndex)));
