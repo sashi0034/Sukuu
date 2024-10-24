@@ -199,6 +199,7 @@ private:
 		m_play.EnableCaveVision(false);
 
 		m_play.GetPause().AddButtonExitGame();
+		m_play.GetPause().SetAllowed(false); // 後から true にする
 	}
 
 	void onPlayerMoved(Vec2 pos)
@@ -246,6 +247,8 @@ private:
 		// 行動可能にする
 		m_play.GetPause().SetAllowed(true);
 		playerServices().canMove = true;
+
+		m_play.GetPause().SetAllowed(true);
 
 		// BGM
 		Gm::BgmManager::Instance().RequestPlay({AssetBgms::zzzzzz, 10.0000, 60.5000});
