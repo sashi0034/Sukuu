@@ -12,6 +12,7 @@
 #include "Sukuu/GamesSupervisor.h"
 #include "Util/ActorContainer.h"
 #include "Util/ErrorLogger.h"
+#include "Util/LivePPAddon.h"
 #include "Util/TomlDebugValueWrapper.h"
 #include "Util/TomlParametersWrapper.h"
 #include "Util/Utilities.h"
@@ -50,6 +51,7 @@ void Main()
 	InitAssetReloader();
 	InitTomlDebugValueAddon();
 	InitVisualStudioHotReloadDetectorAddon();
+	InitLivePPAddon();
 #endif
 	Gm::InitBgmManagerAddon();
 	Gm::InitLocalizedTextDatabaseAddon();

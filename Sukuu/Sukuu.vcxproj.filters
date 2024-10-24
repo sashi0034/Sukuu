@@ -333,9 +333,6 @@
     <ClCompile Include="Play\Other\PlayingTips.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Play\PlayBgm.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Play\PlayCore.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -415,6 +412,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Gm\SteamWrapper.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Gm\BgmManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Play\Other\FloorBgmData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Util\GlyphWithFallbacks.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1289,9 +1295,6 @@
     <ClInclude Include="Play\Other\TimeLimiter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Play\PlayBgm.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Play\PlayCore.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1374,6 +1377,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Gm\SteamWrapper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Gm\BgmManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Play\Other\FloorBgmData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Util\GlyphWithFallbacks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

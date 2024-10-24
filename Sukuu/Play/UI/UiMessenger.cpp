@@ -37,7 +37,7 @@ struct Play::UiMessenger::Impl
 	String m_message{};
 	double m_alpha{};
 	ActorWeak m_startedCoro{};
-	double m_characterPerSecond{0.05}; // TODO: ゲーム言語に応じて速度変更をする
+	double m_characterPerSecond{0.05};
 
 	void Update()
 	{
