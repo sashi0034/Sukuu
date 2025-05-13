@@ -4,3 +4,4 @@
 #include <iso646.h>
 #include <boost/coroutine2/coroutine.hpp>
 #include <source_location>
+#include <span>
