@@ -33,6 +33,7 @@ namespace
 
 		SteamInitializer()
 		{
+#if 1
 			if (SteamAPI_RestartAppIfNecessary(steamAppId))
 			{
 				errorMessage = U"[Steam] Restart required via Steam.";
@@ -48,6 +49,7 @@ namespace
 					Unicode::Widen(error));
 				return;
 			}
+#endif
 
 			initialized = true;
 		}
@@ -66,7 +68,7 @@ namespace
 			if (not s_initializer.initialized)
 			{
 #if _DEBUG
-				if (Util::GetTomlDebugValueOf<bool>(U"steam_no_require")) return false;
+				if (Util::GetTomlDebugValueOf<bool>(U"steam_unneeded")) return false;
 #endif
 				if (not s_initializer.errorMessage.empty()) Util::ErrorLog(s_initializer.errorMessage);
 				System::Exit();

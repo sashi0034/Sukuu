@@ -43,7 +43,7 @@ tips_test = false
 steam_stat_reset = false
 
 # Steam が起動していなくても実行可能
-steam_no_require = false
+steam_unneeded = false
 
 # 階段到達のたびに計測時間を出力
 print_measured_times = false
