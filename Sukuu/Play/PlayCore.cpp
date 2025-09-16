@@ -11,6 +11,7 @@
 #include "Other\FloorLevelDesign.h"
 #include "Other/PlayingPause.h"
 #include "UI/UiCurrentFloor.h"
+#include "UI/UiDangerMarker.h"
 #include "UI/UiDashKeep.h"
 #include "UI/UiFloorTransition.h"
 #include "UI/UiGameOver.h"
@@ -63,13 +64,17 @@ public:
 	BgMapDrawer m_bgMapDrawer{};
 	Player m_player{};
 	EnemyContainer m_enemies{};
+
 	Camera2D m_debugCamera{};
 	CameraKind::Value m_camera = CameraKind::Player;
+
 	ActorContainer m_ui{};
 	UiItemContainer m_uiItemContainer{};
 	UiMiniMap m_uiMiniMap{};
 	UiTimeLimiter m_uiTimeLimiter{};
 	UiDashKeep m_uiDashKeep{};
+	UiDangerMarker m_uiDangerMarker{};
+
 	CaveVision m_caveVision{};
 	int m_hitStoppingRequested{};
 	EffectWrapper m_fgEffect{};
@@ -123,6 +128,8 @@ public:
 
 		m_uiDashKeep = m_ui.Birth(UiDashKeep());
 
+		m_uiDangerMarker = m_ui.Birth(UiDangerMarker());
+
 		m_uiCurrentFloor = m_ui.Birth(UiCurrentFloor());
 
 		m_uiGameOver = m_ui.Birth(UiGameOver());
@@ -153,6 +160,8 @@ public:
 		m_uiTimeLimiter.Init(data.timeLimiter);
 
 		m_uiDashKeep.Init(data.dashKeeping);
+
+		m_uiDangerMarker.Init();
 
 		m_slowMotion.bufferTexture = RenderTexture(Scene::Size());
 	}
