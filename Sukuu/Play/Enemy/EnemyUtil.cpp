@@ -64,9 +64,12 @@ namespace Play
 
 	void DrawEnemyBasically(const IEnemyInternal& enemy, AssetNameView emotion)
 	{
-		const auto drawingPos = enemy.GetDrawPos();
-		(void)enemy.GetTexture().draw(drawingPos);
-		if (not emotion.empty()) DrawCharaEmotion(drawingPos, emotion);
+		const auto drawPos = enemy.GetDrawPos();
+		(void)enemy.GetTexture().draw(drawPos);
+
+		if (not emotion.empty()) DrawCharaEmotion(drawPos, emotion);
+
+		PlayCore::Instance().GetDangerMarker().MarkEnemy({drawPos, enemy.GetTexture().size});
 	}
 
 	bool IsEnemyCollided(const EnemyTransform& transform, const RectF& collider)

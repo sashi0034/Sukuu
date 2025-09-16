@@ -402,6 +402,16 @@ namespace Play
 		return p_impl->m_uiDashKeep;
 	}
 
+	UiDangerMarker& PlayCore::GetDangerMarker()
+	{
+		return p_impl->m_uiDangerMarker;
+	}
+
+	const UiDangerMarker& PlayCore::GetDangerMarker() const
+	{
+		return p_impl->m_uiDangerMarker;
+	}
+
 	EffectWrapper& PlayCore::FgEffect()
 	{
 		return p_impl->m_fgEffect;

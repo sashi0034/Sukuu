@@ -8,6 +8,7 @@
 #include "Map/MapGrid.h"
 #include "Other/PlayingPause.h"
 #include "Other/TimeLimiter.h"
+#include "UI/UiDangerMarker.h"
 #include "UI/UiDashKeep.h"
 #include "UI/UiMessenger.h"
 #include "UI/UiMiniMap.h"
@@ -84,6 +85,9 @@ namespace Play
 
 		UiDashKeep& GetDashKeep();
 		const UiDashKeep& GetDashKeep() const;
+
+		UiDangerMarker& GetDangerMarker();
+		const UiDangerMarker& GetDangerMarker() const;
 
 		EffectWrapper& FgEffect();
 		const EffectWrapper& FgEffect() const;

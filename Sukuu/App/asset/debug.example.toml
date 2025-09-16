@@ -3,13 +3,18 @@
 entry_point = "title"
 
 skip_transition = false
+
 visualize_player_distance = false
+
 initial_timelimit = 300.0
 
 # 初期フロア (0: 無効)
 initial_floor = 0
 
 constant_floor = false
+
+no_pause = false
+
 ura_enable = false
 
 # チュートリアル: 移動方法から

@@ -259,7 +259,7 @@ namespace Play
 		}
 
 		auto&& gimmick = scene.GetGimmick();;
-		// 木の描画のため縦方向は若干余裕がある
+		// 木の描画のため縦方向は若干余裕を設ける
 		for (int y = mapTl.y - 1; y < mapBr.y + 2; ++y)
 		{
 			for (int x = mapTl.x - 1; x < mapBr.x + 1; ++x)

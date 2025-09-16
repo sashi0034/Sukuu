@@ -13,6 +13,8 @@ namespace Play
 
 		void Update() override;
 
+		void MarkEnemy(const RectF& rect);
+
 	private:
 		struct Impl;
 		std::shared_ptr<Impl> p_impl;

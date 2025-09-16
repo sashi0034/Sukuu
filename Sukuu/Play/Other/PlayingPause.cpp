@@ -10,6 +10,7 @@
 #include "Util/Utilities.h"
 #include "Gm/LocalizedTextDatabase.h"
 #include "Gm/SteamWrapper.h"
+#include "Util/TomlDebugValueWrapper.h"
 
 struct Play::PlayingPause::Impl
 {
@@ -47,11 +48,15 @@ struct Play::PlayingPause::Impl
 		if (not m_pauseAllowed) return;
 		if (m_buttons.size() == 0) return;
 
-		const Transformer2D transform{Mat3x2::Identity(), TransformCursor::Yes, Transformer2D::Target::SetLocal};
-
-#if not _DEBUG
-		if (not Window::GetState().focused) m_paused = true;
+#if _DEBUG
+		if (GetTomlDebugValueOf<bool>(U"no_pause"))
+		{
+			m_paused = false;
+			return;
+		}
 #endif
+
+		const Transformer2D transform{Mat3x2::Identity(), TransformCursor::Yes, Transformer2D::Target::SetLocal};
 
 		// ポーズ有効化切り替え
 		const bool requestDown = Gm::IsUsingGamepad()
