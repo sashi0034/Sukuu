@@ -22,6 +22,8 @@
 1. 本作を Steam でリリースするに伴い、Steamworks SDK を利用しています。ビルドするには、`STEAMWORKS_SDK` に Steamworks SDK
    のパスを環境変数に設定する必要があります。
 
+1. [Live++](https://www.liveplusplus.tech/jpn/features.html) を利用しています。プロジェクト直下に LivePP 以下を配置してください。
+
 - 本作の開発には Jetbrains Rider を使用しました。
 
 ## Credits
