@@ -4,15 +4,11 @@
 
 ## About
 
-本リポジトリには Windows
-向けに開発されたゲームのソースコードが含まれています。このゲームは、[バンダイナムコスタジオ杯 2023](https://siv3d.github.io/ja-jp/event/gamejam2023/)
-に提出する目的を持って開発されたものです。本作は最優秀賞を受賞しています。
+このゲームは、[バンダイナムコスタジオ杯 2023](https://siv3d.github.io/ja-jp/event/gamejam2023/)
+に提出したゲームのリポジトリです。本作は最優秀賞を受賞しました。
 
-最新版については、ゲームジャムで提出した内容から発展させたものが『Mutable 50』というタイトルで Steam にてリリースされています。
+最新版については、ゲームジャムで提出した内容に改良を加えたものを『Mutable 50』というタイトルで Steam でリリースしています。(https://store.steampowered.com/app/3147480/Mutable_50/)
 
-ストアページは以下のリンクからアクセスできます。
-
-https://store.steampowered.com/app/3147480/Mutable_50/
 
 ## Build
 
@@ -26,16 +22,13 @@ https://store.steampowered.com/app/3147480/Mutable_50/
 1. 本作を Steam でリリースするに伴い、Steamworks SDK を利用しています。ビルドするには、`STEAMWORKS_SDK` に Steamworks SDK
    のパスを環境変数に設定する必要があります。
 
-- 本作の開発には Jetbrains Rider を使用しています。`.idea` に本プロジェクト用の設定ファイルが含まれています。
+- 本作の開発には Jetbrains Rider を使用しました。
 
 ## Credits
-
-以下のファイルに本作に関わるクレジット情報が含まれています。
 
 - [`Sukuu/App/credit.html`](Sukuu/App/credit.html)
 
 ## Licenses
-本プロジェクトは以下のライセンス条件に従います。
 
 1. ソースコードは GNU General Public License (GPL) で配布します。
 
@@ -43,4 +36,4 @@ https://store.steampowered.com/app/3147480/Mutable_50/
 
 ## Bug Reports
 
-[Issues](https://github.com/sashi0034/Sukuu) にて、本作に関するバグ報告等を歓迎しています。
+[Issues](https://github.com/sashi0034/Sukuu) でバグ報告等を歓迎しています。
